@@ -55,7 +55,7 @@
     "includedScripts": []
   },
   "workspaces": [
-    "packages/common/utils/tsconfig",
-    "packages/common/utils/eslint-config-custom"
+    "packages/common/config/tsconfig",
+    "packages/common/config/eslint-config-custom"
   ]
 }

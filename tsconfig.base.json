@@ -19,7 +19,8 @@
       "@owl-app/registry": ["packages/common/registry/src/index.ts"],
       "@owl-app/registry-nestjs": [
         "packages/server/registry-nestjs/src/index.ts"
-      ]
+      ],
+      "@owl-app/utils": ["packages/common/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

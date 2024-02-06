@@ -1,0 +1,44 @@
+{
+  "name": "@owl-app/utils",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/common/utils/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/common/utils"],
+      "options": {
+        "commands": [
+          "npx rimraf dist/packages/common/utils",
+          "npx tsc -p packages/common/utils/tsconfig.build.json",
+          "npx copyfiles -f \"packages/common/utils/package.json\" \"packages/common/utils/README.md\" \"LICENSE\" dist/packages/common/utils"
+        ],
+        "cwd": ".",
+        "parallel": false
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npx copyfiles -f \"dist/packages/common/utils/src/*\" dist/packages/common/utils/dist",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npx rimraf dist/packages/common/utils/src",
+            "forwardAllArgs": false
+          },
+          "node tools/scripts/publish.mjs @owl-app/registry-nestjs {args.ver} {args.tag}"
+        ],
+        "cwd": ".",
+        "parallel": false,
+        "packageDir": "{workspaceRoot}/dist/packages/common/utils/"
+      },
+      "dependsOn": ["build"]
+    }
+  },
+  "tags": []
+}
+
+
