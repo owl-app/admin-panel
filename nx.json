@@ -17,10 +17,7 @@
   "nxCloudAccessToken": "OWJiODI5MjItOWRiYS00ZmViLTg4NWEtZWFiNzBmYmM1NTA4fHJlYWQtd3JpdGU=",
   "targetDefaults": {
     "build": {
-      "inputs": [
-        "production",
-        "^production"
-      ],
+      "inputs": ["production", "^production"],
       "dependsOn": ["^build"]
     },
     "lint": {

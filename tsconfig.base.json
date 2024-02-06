@@ -11,9 +11,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "paths": {
-      "@owl-app/registry": ["packages/core/registry/core/src/index.ts"],
+      "@owl-app/lib-api-core": ["libs/api/core/src/index.ts"],
+      "@owl-app/registry": ["packages/common/registry/src/index.ts"],
       "@owl-app/registry-nestjs": [
-        "packages/core/registry/registry-nestjs/src/index.ts"
+        "packages/server/registry-nestjs/src/index.ts"
       ]
     }
   },

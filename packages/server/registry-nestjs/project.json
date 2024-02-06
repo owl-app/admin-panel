@@ -1,0 +1,42 @@
+{
+  "name": "@owl-app/registry-nestjs",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/server/registry-nestjs/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/server/registry-nestjs/"],
+      "options": {
+        "commands": [
+          "npx rimraf dist/packages/server/registry-nestjs",
+          "npx tsc -p packages/server/registry-nestjs/tsconfig.build.json",
+          "npx copyfiles -f \"packages/server/registry-nestjs/package.json\" \"packages/server/registry-nestjs/README.md\" \"LICENSE\" dist/packages/server/registry-nestjs"
+        ],
+        "cwd": ".",
+        "parallel": false
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npx copyfiles -f \"dist/packages/server/registry-nestjs/src/*\" dist/packages/server/registry-nestjs/dist",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npx rimraf dist/packages/server/registry-nestjs/src",
+            "forwardAllArgs": false
+          },
+          "node tools/scripts/publish.mjs @owl-app/registry-nestjs {args.ver} {args.tag}"
+        ],
+        "cwd": ".",
+        "parallel": false,
+        "packageDir": "{workspaceRoot}/dist/packages/server/registry-nestjs/"
+      },
+      "dependsOn": ["build"]
+    }
+  },
+  "tags": []
+}

@@ -1,12 +1,11 @@
 {
-  "root": true,
-  "extends": ["custom/base"],
+  "extends": ["custom/server", "../../../.eslintrc.base.json"],
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
       "parserOptions": {
-        "project": ["packages/core/registry/registry-nestjs/tsconfig.eslint.json"]
+        "project": ["packages/common/registry/tsconfig.eslint.json"]
       }
     }
   ]
