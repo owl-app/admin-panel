@@ -1,4 +1,10 @@
-# AdminPanel
+# Admin panel
+
+NestJs, Vue.
+
+## Features
+- RBAC
+- CRUD
 
 ## Commands
 
