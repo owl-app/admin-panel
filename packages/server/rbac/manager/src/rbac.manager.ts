@@ -5,7 +5,7 @@ import {
   isNotEmpty,
   isNumeric,
   isObject,
-} from '@owl/common';
+} from '@owl-app/utils';
 import { IAccessCheckerInterface } from './access-checker.interface';
 import {
   IItemsStorageInterface,
@@ -30,20 +30,20 @@ import { DefaultRoleNotFoundException } from './exceptions/default-role-not-foun
 /**
  * An authorization manager that helps with building RBAC hierarchy and check for permissions.
  */
-export class Manager implements IAccessCheckerInterface {
+export default class Manager implements IAccessCheckerInterface {
   /**
    * A list of role names that are assigned to every user automatically without calling {@see assign()}.
    * Note that these roles are applied to users, regardless of their state of authentication.
    */
-  private _defaultRoleNames: Array<string> = [];
+  private defaultRoleNames: Array<string> = [];
 
-  private _guestRoleName: string | null = null;
+  private guestRoleName: string | null = null;
 
   constructor(
     readonly itemsStorage: IItemsStorageInterface,
     readonly assignmentsStorage: IAssignmentsStorageInterface,
     readonly serviceRegistryRules: IServiceRegistry<IRuleInterface>,
-    readonly enableDirectPermissions: boolean = false
+    readonly enableDirectPermissions = false
   ) {}
 
   async userHasPermission(
@@ -266,12 +266,12 @@ export class Manager implements IAccessCheckerInterface {
    * @return Role[] All roles directly assigned to the user. The array is indexed by the role names.
    */
   async getRolesByUserId(userId: UserId): Promise<Array<Role>> {
-    const parsedUserId = this.ensureStringUserId(userId),
-      assigments: Record<string, Assignment> =
-        await this.assignmentsStorage.getByUserId(parsedUserId),
-      roles = this.getDefaultRoles();
+    const parsedUserId = this.ensureStringUserId(userId)
+    const assigments: Record<string, Assignment> =
+        await this.assignmentsStorage.getByUserId(parsedUserId)
+    const roles = this.getDefaultRoles();
 
-    for (const name in assigments) {
+    Object.keys(assigments).forEach(async (name) => {
       const role: Role | null = await this.itemsStorage.getRole(
         assigments[name].itemName
       );
@@ -279,7 +279,7 @@ export class Manager implements IAccessCheckerInterface {
       if (role !== null) {
         roles.push(role);
       }
-    }
+    })
 
     return roles;
   }
@@ -313,7 +313,6 @@ export class Manager implements IAccessCheckerInterface {
    * @param string roleName The role name.
    *
    * @return Permission[] All permissions that the role represents. The array is indexed by the permission names.
-   * @psalm-return array<string,Permission>
    */
   async getPermissionsByRoleName(
     roleName: string
@@ -341,7 +340,6 @@ export class Manager implements IAccessCheckerInterface {
     const parsedUserId = this.ensureStringUserId(userId);
 
     return Object.assign(
-      // await this.getDirectPermissionsByUser(parsedUserId),
       await this.getInheritedPermissionsByUser(parsedUserId)
     );
   }
@@ -376,20 +374,22 @@ export class Manager implements IAccessCheckerInterface {
     ];
     const userAssignments = await this.assignmentsStorage.getAll();
 
-    for (const userId in userAssignments) {
-      roles.every((role: string) => {
+    Object.keys(userAssignments).forEach(async (userId) => {
+      roles.every((role: string): void => {
         if (role in userAssignments[userId]) {
           result.push(userId);
         }
       });
-    }
+    });
 
     return result;
   }
 
   async getAllRoles(): Promise<Role[]>
   {
-    return await this.itemsStorage.getRoles();
+    const roles = await this.itemsStorage.getRoles();
+
+    return roles;
   }
 
   /**
@@ -427,7 +427,9 @@ export class Manager implements IAccessCheckerInterface {
 
   async getAllPermissions(): Promise<Permission[]>
   {
-    return await this.itemsStorage.getPermissions();
+    const itemSorages = await this.itemsStorage.getPermissions();
+
+    return itemSorages;
   }
 
   /**
@@ -481,11 +483,10 @@ export class Manager implements IAccessCheckerInterface {
     roleNames: CallbackDefaultRoleNames | Array<string>
   ): this {
     if (Array.isArray(roleNames)) {
-      this._defaultRoleNames = roleNames;
+      this.defaultRoleNames = roleNames;
       return this;
     }
 
-    /** @psalm-suppress RedundantConditionGivenDocblockType */
     if (isFunction(roleNames)) {
       const defaultRoleNames = roleNames();
 
@@ -494,7 +495,7 @@ export class Manager implements IAccessCheckerInterface {
           'Default role names closure must return an array.'
         );
       }
-      this._defaultRoleNames = defaultRoleNames;
+      this.defaultRoleNames = defaultRoleNames;
       return this;
     }
 
@@ -509,7 +510,7 @@ export class Manager implements IAccessCheckerInterface {
    * @return string[] Default role names.
    */
   getDefaultRoleNames(): Array<string> {
-    return this._defaultRoleNames;
+    return this.defaultRoleNames;
   }
 
   /**
@@ -520,7 +521,7 @@ export class Manager implements IAccessCheckerInterface {
   getDefaultRoles(): Array<Role> {
     const roles: Array<Role> = [];
 
-    Object.values(this._defaultRoleNames).forEach(async (roleName: string) => {
+    Object.values(this.defaultRoleNames).forEach(async (roleName: string) => {
       const role = await this.itemsStorage.getRole(roleName);
 
       if (role === null) {
@@ -541,7 +542,7 @@ export class Manager implements IAccessCheckerInterface {
    * @param string|null $name The guest role name.
    */
   setGuestRoleName(name: string | null): this {
-    this._guestRoleName = name;
+    this.guestRoleName = name;
     return this;
   }
 
@@ -598,24 +599,18 @@ export class Manager implements IAccessCheckerInterface {
     return (await this.itemsStorage.get(name)) !== null;
   }
 
-  /**
-   * @param array<string,mixed> $permissionNames
-   *
-   * @return Permission[]
-   * @psalm-return array<string,Permission>
-   */
   private async normalizePermissions(
     permissionNames: Record<string, boolean>
   ): Promise<Record<string, Permission>> {
     const normalizePermissions: Record<string, Permission> = {};
 
-    for (const permissionName in permissionNames) {
+    Object.keys(permissionNames).forEach(async (permissionName) => {
       const permission = await this.itemsStorage.getPermission(permissionName);
 
       if (permission !== null) {
         normalizePermissions[permissionName] = permission;
       }
-    }
+    })
 
     return normalizePermissions;
   }
@@ -626,7 +621,6 @@ export class Manager implements IAccessCheckerInterface {
    * @param string $userId The user ID.
    *
    * @return Permission[] All direct permissions that the user has. The array is indexed by the permission names.
-   * @psalm-return array<string,Permission>
    */
   private async getDirectPermissionsByUser(
     userId: string
@@ -634,7 +628,7 @@ export class Manager implements IAccessCheckerInterface {
     const permissions: Record<string, Permission> = {};
     const assigments = await this.assignmentsStorage.getByUserId(userId);
 
-    for (const name in assigments) {
+    Object.keys(assigments).forEach(async (name) => { 
       const permission = await this.itemsStorage.getPermission(
         assigments[name].itemName
       );
@@ -642,7 +636,7 @@ export class Manager implements IAccessCheckerInterface {
       if (permission !== null) {
         permissions[name] = permission;
       }
-    }
+    });
 
     return permissions;
   }
@@ -661,9 +655,9 @@ export class Manager implements IAccessCheckerInterface {
     const result:Record<string, boolean> = {};
 
     const forLoop = async () => {
-      for (const roleName in assignments) {
+      Object.keys(assignments).forEach(async (roleName) => { 
         await this.getChildrenRecursive(roleName, result);
-      }
+      })
     }
 
     await forLoop();
@@ -672,7 +666,9 @@ export class Manager implements IAccessCheckerInterface {
       return {};
     }
 
-    return await this.normalizePermissions(result);
+    const normalizedPermissions = await this.normalizePermissions(result);
+
+    return normalizedPermissions;
   }
 
   private async removeItem(name: string): Promise<void> {
@@ -713,6 +709,7 @@ export class Manager implements IAccessCheckerInterface {
       return true;
     }
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const parentName in this.itemsStorage.getParents(item.name)) {
       if (parentName in assignments) {
         return true;
@@ -723,19 +720,19 @@ export class Manager implements IAccessCheckerInterface {
   }
 
   private async guestHasPermission(permissionName: string): Promise<boolean> {
-    if (this._guestRoleName === null) {
+    if (this.guestRoleName === null) {
       return false;
     }
 
     if (
-      this.itemsStorage.getRole(this._guestRoleName) === null ||
-      !this.itemsStorage.hasChildren(this._guestRoleName)
+      this.itemsStorage.getRole(this.guestRoleName) === null ||
+      !this.itemsStorage.hasChildren(this.guestRoleName)
     ) {
       return false;
     }
 
     const permissions = await this.itemsStorage.getChildren(
-      this._guestRoleName
+      this.guestRoleName
     );
 
     return isNotEmpty(permissions[permissionName]);
@@ -778,9 +775,7 @@ export class Manager implements IAccessCheckerInterface {
    * Recursively finds all children and grand children of the specified item.
    *
    * @param string $name The name of the item whose children are to be looked for.
-   * @param true[] $result The children and grand children (in array keys).
-   *
-   * @psalm-param array<string,true> $result
+   * @param array<string, boolean> $result The children and grand children (in array keys).
    */
   private async getChildrenRecursive(
     name: string,
@@ -793,10 +788,10 @@ export class Manager implements IAccessCheckerInterface {
     }
 
     const forLoop = async () => {
-      for (const childName in children) {
+      Object.keys(children).forEach(async (childName) => {
         result[childName] = true;
         await this.getChildrenRecursive(childName, result);
-      }
+      });
     }
 
     await forLoop();
@@ -804,8 +799,6 @@ export class Manager implements IAccessCheckerInterface {
 
   /**
    * @param true[] $array
-   *
-   * @psalm-param array<string,true> $array
    *
    * @return Role[]
    */
