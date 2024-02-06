@@ -12,6 +12,10 @@
     "skipDefaultLibCheck": true,
     "paths": {
       "@owl-app/lib-api-core": ["libs/api/core/src/index.ts"],
+      "@owl-app/rbac-manager": ["packages/server/rbac/manager/src/index.ts"],
+      "@owl-app/rbac-storage-typerom": [
+        "packages/server/rbac/storage-typeorm/src/index.ts"
+      ],
       "@owl-app/registry": ["packages/common/registry/src/index.ts"],
       "@owl-app/registry-nestjs": [
         "packages/server/registry-nestjs/src/index.ts"

@@ -1,0 +1,9 @@
+{
+  "extends": ["tsconfig/server.json", "../../../../tsconfig.base.json"],
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
+

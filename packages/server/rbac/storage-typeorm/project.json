@@ -1,0 +1,23 @@
+{
+  "name": "@owl-app/rbac-storage-typeorm",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/server/rbac/storage-typeorm/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/server/rbac/storage-typeorm",
+        "main": "packages/server/rbac/storage-typeorm/src/index.ts",
+        "tsConfig": "packages/server/rbac/storage-typeorm/tsconfig.lib.json",
+        "assets": ["packages/server/rbac/storage-typeorm/*.md"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs @owl-app/rbac-storage-typeorm {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    }
+  },
+  "tags": []
+}
