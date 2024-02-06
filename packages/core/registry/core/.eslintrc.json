@@ -1,0 +1,13 @@
+{
+  "root": true,
+  "extends": ["custom/server"],
+  "ignorePatterns": ["!**/*"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parserOptions": {
+        "project": ["packages/core/registry/core/tsconfig.eslint.json"]
+      }
+    }
+  ]
+}

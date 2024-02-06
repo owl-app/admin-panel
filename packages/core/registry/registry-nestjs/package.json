@@ -1,0 +1,22 @@
+{
+  "name": "@owl-app/registry-nestjs",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "source": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "dependencies": {
+    "@owl-app/registry": "^0.0.1",
+    "@nestjs/common": "^10.3.1",
+    "@nestjs/config": "^3.1.1"
+  },
+  "devDependencies": {
+    "tsconfig": "^0.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0 <=20.x.x",
+    "npm": ">=6.0.0"
+  }
+}

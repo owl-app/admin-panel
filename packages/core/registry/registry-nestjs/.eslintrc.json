@@ -1,0 +1,13 @@
+{
+  "root": true,
+  "extends": ["custom/base"],
+  "ignorePatterns": ["!**/*"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parserOptions": {
+        "project": ["packages/core/registry/registry-nestjs/tsconfig.eslint.json"]
+      }
+    }
+  ]
+}
