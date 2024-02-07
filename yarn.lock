@@ -1850,7 +1850,7 @@
   dependencies:
     "@nx/eslint" "18.0.2"
 
-"@nx/nest@18.0.2", "@nx/nest@^18.0.0":
+"@nx/nest@18.0.2":
   version "18.0.2"
   resolved "https://registry.yarnpkg.com/@nx/nest/-/nest-18.0.2.tgz#e54c765c8b12441a3d2e5192a0d81bcbf906c852"
   integrity sha512-ka+Cbc6Ck11eM0BBXOZTSLNSmvILoKOYj8nou//mK0iFNC8basJSD5uouheARtJJbVrawtdNeYHdyorpm6s45g==

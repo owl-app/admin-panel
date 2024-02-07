@@ -6,7 +6,7 @@
       "files": ["*.ts", "*.tsx"],
       "parserOptions": {
         "project": [
-          "packages/server/registry/registry-nestjs/tsconfig.eslint.json"
+          "packages/server/registry-nestjs/tsconfig.eslint.json"
         ]
       }
     }
