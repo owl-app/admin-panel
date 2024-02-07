@@ -1,0 +1,20 @@
+{
+  "name": "@owl-app/lib-api-bulding-blocks",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/building-blocks/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/api/building-blocks",
+        "tsConfig": "libs/api/building-blocks/tsconfig.lib.json",
+        "packageJson": "libs/api/building-blocks/package.json",
+        "main": "libs/api/building-blocks/src/index.ts",
+        "assets": ["libs/api/building-blocks/*.md"]
+      }
+    }
+  },
+  "tags": []
+}
