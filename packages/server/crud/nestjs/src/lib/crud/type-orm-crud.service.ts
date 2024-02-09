@@ -3,7 +3,7 @@ import {
 QueryService
 } from '@owl-app/crud-core';
 import { TypeOrmQueryService } from '../services';
-import { BaseCrudService, IBaseCRUDService } from './base-query.service';
+import { BaseCrudService, IBaseCRUDService } from './base-crud.service';
 
 export class CustomTypeOrmQueryService<Entity> 
   extends TypeOrmQueryService<Entity> 

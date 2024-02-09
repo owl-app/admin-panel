@@ -6,7 +6,7 @@ import {
   AssemblerQueryService
 } from '@owl-app/crud-core';
 import { PaginatedRequest, Pagination} from '../pagination';
-import { BaseCrudService } from './base-query.service';
+import { BaseCrudService } from './base-crud.service';
 
 type DefaultDeepPartial<Cls, T> = unknown extends Cls ? DeepPartial<T> : Cls;
 

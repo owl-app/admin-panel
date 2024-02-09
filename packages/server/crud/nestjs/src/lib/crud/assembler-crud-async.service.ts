@@ -6,7 +6,7 @@ import {
   AssemblerQueryService as BaseAssemblerQueryService,
 } from '@owl-app/crud-core';
 import { IAssemblerCRUDService } from './assembler-crud.service';
-import { BaseCrudService } from './base-query.service';
+import { BaseCrudService } from './base-crud.service';
 import { AsyncAssembler } from './async.assembler';
 
 type DefaultDeepPartial<Cls, T> = unknown extends Cls ? DeepPartial<T> : Cls;
