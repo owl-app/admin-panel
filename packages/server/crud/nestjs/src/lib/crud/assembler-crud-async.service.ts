@@ -6,7 +6,7 @@ import {
   AssemblerQueryService as BaseAssemblerQueryService,
 } from '@owl-app/crud-core';
 import { IAssemblerCRUDService } from './assembler-crud.service';
-import { BaseAsyncCRUDService } from './base-query.service';
+import { BaseCrudService } from './base-query.service';
 import { AsyncAssembler } from './async.assembler';
 
 type DefaultDeepPartial<Cls, T> = unknown extends Cls ? DeepPartial<T> : Cls;
@@ -67,7 +67,7 @@ export const AssemblerAsyncCrudService = <
   CreateDTOClass?: Class<CreateDTO>,
   CreateEntityClass?: Class<CreateEntity>
 ): Class<IAssemblerAsyncQueryService<DTO, C, U>> &
-  Class<IAssemblerCRUDService<Entity, DTO>> => BaseAsyncCRUDService(
+  Class<IAssemblerCRUDService<Entity, DTO>> => BaseCrudService(
     entityClass,
     DTOClass,
     CreateDTOClass,

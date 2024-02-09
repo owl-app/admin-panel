@@ -1,12 +1,12 @@
-import { AssemblerQueryService } from '@owl-app/crud-core';
 import {
   Class,
   Filter,
   QueryService,
-  DeepPartial
+  DeepPartial,
+  AssemblerQueryService
 } from '@owl-app/crud-core';
 import { PaginatedRequest, Pagination} from '../pagination';
-import { BaseAsyncCRUDService } from './base-query.service';
+import { BaseCrudService } from './base-query.service';
 
 type DefaultDeepPartial<Cls, T> = unknown extends Cls ? DeepPartial<T> : Cls;
 
@@ -37,7 +37,7 @@ export const AssemblerCrudService = <
     Entity
   > {}
 
-  return BaseAsyncCRUDService(
+  return BaseCrudService(
     entityClass,
     DTOClass
   )(CustomAssemblerServiceQuery) as unknown as Class<

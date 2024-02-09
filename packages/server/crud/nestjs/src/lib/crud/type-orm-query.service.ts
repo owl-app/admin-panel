@@ -3,7 +3,7 @@ import {
 QueryService
 } from '@owl-app/crud-core';
 import { TypeOrmQueryService } from '../services';
-import { BaseCRUDService, IBaseCRUDService } from './base-query.service';
+import { BaseCrudService, IBaseCRUDService } from './base-query.service';
 
 export class CustomTypeOrmQueryService<Entity> 
   extends TypeOrmQueryService<Entity> 
@@ -12,7 +12,7 @@ export class CustomTypeOrmQueryService<Entity>
 
 export const TypeOrmCrudService = <Entity>(
   entityClass: Class<Entity>
-): Class<TypeOrmQueryService<Entity>> & Class<IBaseCRUDService<Entity>> => BaseCRUDService(entityClass)(CustomTypeOrmQueryService) as unknown as Class<
+): Class<TypeOrmQueryService<Entity>> & Class<IBaseCRUDService<Entity>> => BaseCrudService(entityClass)(CustomTypeOrmQueryService) as unknown as Class<
     TypeOrmQueryService<Entity>
   > &
     Class<IBaseCRUDService<Entity>>;
