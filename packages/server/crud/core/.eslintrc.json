@@ -1,0 +1,15 @@
+{
+  "extends": ["custom/server", "../../../../.eslintrc.base.json"],
+  "ignorePatterns": ["!**/*"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parserOptions": {
+        "project": [
+          "packages/server/crud/core/tsconfig.eslint.json"
+        ]
+      }
+    }
+  ]
+}
+

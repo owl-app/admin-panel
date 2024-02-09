@@ -1,0 +1,11 @@
+{
+  "extends": ["tsconfig/server.json", "../../../../tsconfig.base.json"],
+  "compilerOptions": {
+    "strictPropertyInitialization": false,
+    "strictNullChecks": false,
+    "removeComments": true,
+    "types": ["lodash", "jest"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
