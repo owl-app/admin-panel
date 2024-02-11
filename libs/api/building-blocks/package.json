@@ -1,10 +1,22 @@
 {
   "name": "@owl-app/lib-api-bulding-blocks",
-  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "source": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
   "dependencies": {
-    "tslib": "^2.3.0"
+    "@owl-app/request-context-nestjs": "^0.0.1",
+    "@nestjs/common": "^10.0.0"
   },
-  "type": "commonjs",
-  "main": "./src/index.js",
-  "typings": "./src/index.d.ts"
+  "devDependencies": {
+    "tsconfig": "^0.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0 <=20.x.x",
+    "npm": ">=6.0.0"
+  }
 }
+
+
