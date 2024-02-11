@@ -1583,13 +1583,6 @@
   dependencies:
     "@nx/eslint-plugin" "18.0.0"
 
-"@nrwl/jest@18.0.0":
-  version "18.0.0"
-  resolved "https://registry.yarnpkg.com/@nrwl/jest/-/jest-18.0.0.tgz#5361ad28479a073689f94b392831c386ad7e51a7"
-  integrity sha512-Fx2UpmLfo/Fb0BiWrieJpK6R+RM9OiJZBngic0lUw6at2+4d6c5b8GsJZ5a/J3hyyzMRE119r2nyOswKzobtTg==
-  dependencies:
-    "@nx/jest" "18.0.0"
-
 "@nrwl/jest@18.0.2":
   version "18.0.2"
   resolved "https://registry.yarnpkg.com/@nrwl/jest/-/jest-18.0.2.tgz#ed84543bad36227cead39cd833edbe2949d73bc8"
@@ -1617,13 +1610,6 @@
   integrity sha512-4MFYVDexqaRJvmBljkz9pBo5+pJXxCqPFdUtxtWtnX4MxVCZvPYWbmQhcmYUB59aGWI0fA1dSBIVFZJtFlewvw==
   dependencies:
     "@nx/nest" "18.0.2"
-
-"@nrwl/node@18.0.0":
-  version "18.0.0"
-  resolved "https://registry.yarnpkg.com/@nrwl/node/-/node-18.0.0.tgz#7239b2566903e340672eadbf79c5c4bc7eb0f24e"
-  integrity sha512-F+h3oVdl4NkJCGFa8AkqdnY6zvHrUF/QYLjf3W1BRJ0DSrP26MICzKjOFZgBFPgaMpSZCmiZj7IfcU7H8Sy9eg==
-  dependencies:
-    "@nx/node" "18.0.0"
 
 "@nrwl/node@18.0.2":
   version "18.0.2"
@@ -1655,12 +1641,12 @@
   dependencies:
     "@nx/web" "18.0.0"
 
-"@nrwl/webpack@18.0.0":
-  version "18.0.0"
-  resolved "https://registry.yarnpkg.com/@nrwl/webpack/-/webpack-18.0.0.tgz#2164f3480da31c9d7e8a17f7cda48aeb6de70826"
-  integrity sha512-W03xmFVj2S3GhREdxB/ymwvlaEYTiec2lQki3xAaGBextAFChW65qsOQ1PTUTxoATQgA+a1iUP0t1bNvq3hWpw==
+"@nrwl/webpack@18.0.2":
+  version "18.0.2"
+  resolved "https://registry.yarnpkg.com/@nrwl/webpack/-/webpack-18.0.2.tgz#0a829ba6d20788f31d9a79d9690a0283bbe3185c"
+  integrity sha512-oPujjd7wcDZe16JKgKN5qBI3oeqErRyAgG5vMCSulbHGJA0Qx7fiMJPsAGp0poNDAgsXD51lRCYYss9sXKu6EA==
   dependencies:
-    "@nx/webpack" "18.0.0"
+    "@nx/webpack" "18.0.2"
 
 "@nrwl/workspace@18.0.0":
   version "18.0.0"
@@ -1752,26 +1738,6 @@
     eslint "^8.0.0"
     tslib "^2.3.0"
     typescript "~5.3.2"
-
-"@nx/jest@18.0.0":
-  version "18.0.0"
-  resolved "https://registry.yarnpkg.com/@nx/jest/-/jest-18.0.0.tgz#9e1b985b25a91a2c37c55a3b2e78dc255e819e24"
-  integrity sha512-YF5ILk32fLVmQtjM60kK42Hbe/s9uQTjw+7EAFjp9gRwXc4DG3HRCoGIxk6U7k6TfhC5Gm5A2piR2bkK+blwBA==
-  dependencies:
-    "@jest/reporters" "^29.4.1"
-    "@jest/test-result" "^29.4.1"
-    "@nrwl/jest" "18.0.0"
-    "@nx/devkit" "18.0.0"
-    "@nx/js" "18.0.0"
-    "@phenomnomnominal/tsquery" "~5.0.1"
-    chalk "^4.1.0"
-    identity-obj-proxy "3.0.0"
-    jest-config "^29.4.1"
-    jest-resolve "^29.4.1"
-    jest-util "^29.4.1"
-    minimatch "9.0.3"
-    resolve.exports "1.1.0"
-    tslib "^2.3.0"
 
 "@nx/jest@18.0.2":
   version "18.0.2"
@@ -1891,18 +1857,6 @@
     "@nx/js" "18.0.2"
     "@nx/node" "18.0.2"
     "@phenomnomnominal/tsquery" "~5.0.1"
-    tslib "^2.3.0"
-
-"@nx/node@18.0.0":
-  version "18.0.0"
-  resolved "https://registry.yarnpkg.com/@nx/node/-/node-18.0.0.tgz#ffea2adb0d734d6eb62ec669fb16248ee7d065cd"
-  integrity sha512-A8I0Ux/NcI4dbEom7MgBUqs3jSkaou0brUq0Nl+Ym2x4s2WqYs9WHVa8aRO84hCyId4V/FQM6nbM5Cv5cZ6HEg==
-  dependencies:
-    "@nrwl/node" "18.0.0"
-    "@nx/devkit" "18.0.0"
-    "@nx/eslint" "18.0.0"
-    "@nx/jest" "18.0.0"
-    "@nx/js" "18.0.0"
     tslib "^2.3.0"
 
 "@nx/node@18.0.2":
@@ -2030,15 +1984,15 @@
     http-server "^14.1.0"
     tslib "^2.3.0"
 
-"@nx/webpack@18.0.0":
-  version "18.0.0"
-  resolved "https://registry.yarnpkg.com/@nx/webpack/-/webpack-18.0.0.tgz#53f0ec50e08ad899bb63a3f19acecb22be66b591"
-  integrity sha512-ketRF1AJnTBB2mo4rgHopcEIE/IRuQ4I0G+QfFeom4u3BhEoCLwak5I99CH3U83TLIIaQLtLh3kHUb8JbeTwHg==
+"@nx/webpack@18.0.2":
+  version "18.0.2"
+  resolved "https://registry.yarnpkg.com/@nx/webpack/-/webpack-18.0.2.tgz#72de194adc1be6f3fc52ae938fbe590937b4159a"
+  integrity sha512-UXt87yFQr8GifCA5JJn0yBaQwOrw25jduPVZQ6ISEYmElCQdIOeQfWNP2o+8Q/4wta4SOKcR4vAFEwU+qHESMg==
   dependencies:
     "@babel/core" "^7.23.2"
-    "@nrwl/webpack" "18.0.0"
-    "@nx/devkit" "18.0.0"
-    "@nx/js" "18.0.0"
+    "@nrwl/webpack" "18.0.2"
+    "@nx/devkit" "18.0.2"
+    "@nx/js" "18.0.2"
     autoprefixer "^10.4.9"
     babel-loader "^9.1.2"
     browserslist "^4.21.4"

@@ -13,10 +13,9 @@
     "paths": {
       "@owl-app/crud-core": ["packages/server/crud/core/src/index.ts"],
       "@owl-app/crud-nestjs": ["packages/server/crud/nestjs/src/index.ts"],
-      "@owl-app/lib-api-bulding-blocks": [
-        "libs/api/building-blocks/src/index.ts"
-      ],
+      "@owl-app/lib-api-bulding-blocks/*": ["libs/api/building-blocks/src/*"],
       "@owl-app/lib-api-core": ["libs/api/core/src/index.ts"],
+      "@owl-app/lib-contracts": ["libs/contracts/src/index.ts"],
       "@owl-app/rbac-manager": ["packages/server/rbac/manager/src/index.ts"],
       "@owl-app/rbac-storage-typerom": [
         "packages/server/rbac/storage-typeorm/src/index.ts"
@@ -24,6 +23,9 @@
       "@owl-app/registry": ["packages/common/registry/src/index.ts"],
       "@owl-app/registry-nestjs": [
         "packages/server/registry-nestjs/src/index.ts"
+      ],
+      "@owl-app/request-context-nestjs": [
+        "packages/server/http/request-context-nestjs/src/index.ts"
       ],
       "@owl-app/utils": ["packages/common/utils/src/index.ts"]
     }
