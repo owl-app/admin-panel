@@ -1,0 +1,16 @@
+{
+  "extends": ["custom/server", "../../../../.eslintrc.base.json"],
+  "ignorePatterns": ["!**/*"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parserOptions": {
+        "project": [
+          "packages/server/logger/winston-nestjs/tsconfig.eslint.json"
+        ]
+      }
+    }
+  ]
+}
+
+
