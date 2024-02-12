@@ -1,5 +1,5 @@
 import { registerAs } from "@nestjs/config";
-import { APP_CONFIG_NAME, IConfigApp } from "@owl/server-core";
+import { APP_CONFIG_NAME, IConfigApp } from "@owl-app/lib-api-bulding-blocks/domain/config";
 
 export default registerAs(APP_CONFIG_NAME, (): IConfigApp => {
     return {

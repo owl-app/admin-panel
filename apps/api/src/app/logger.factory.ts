@@ -1,6 +1,6 @@
-import { ConfigService } from "@nestjs/config";
-import { WinstonModuleOptions, utilities as nestWinstonModuleUtilities } from "@owl/server-core";
-import winston from "winston";
+import { ConfigService } from "@nestjs/config"
+import winston from "winston"
+import { WinstonModuleOptions, utilities as nestWinstonModuleUtilities } from "@owl-app/winston-logger-nestjs"
 
 export default (configService: ConfigService): WinstonModuleOptions => {
     return {

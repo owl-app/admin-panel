@@ -1,6 +1,6 @@
-import { bootstrap } from '@owl/server-core';
+import { bootstrap } from './bootstrap';
 
-import { BootstrapModule } from './bootstrap';
+import { BootstrapModule } from './app/bootstrap.module';
 
 bootstrap(BootstrapModule)
   .catch((error) => {

@@ -10,7 +10,7 @@ import chalk from 'chalk';
 import { urlencoded, json } from 'express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import { APP_CONFIG_NAME, IConfigApp } from '../config';
+import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-bulding-blocks/domain/config';
 import { JwtAuthGuard } from '@owl/jwt-auth-guard';
 import { HttpExceptionsFilter } from '../http';
 // import { EntitySubscriberInterface } from 'typeorm';

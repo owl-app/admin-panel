@@ -5,14 +5,13 @@ import {
   Module,
   NestModule,
   OnApplicationShutdown
-} from '@nestjs/common';
-import { ConfigModule, ConfigService} from '@nestjs/config';
-import { AppModule } from './app.module';
-import { WinstonLoggerModule } from '@owl/server-core';
-import { DatabaseModule } from '@owl/server-core';
-import { WINSTON_MODULE_NEST_PROVIDER } from '@owl/server-core';
+} from '@nestjs/common'
+import { ConfigModule, ConfigService} from '@nestjs/config'
+import { AppModule } from './app.module'
+import { WinstonLoggerModule, WINSTON_MODULE_NEST_PROVIDER } from '@owl-app/winston-logger-nestjs'
+import { DatabaseModule } from './database.module'
 import loggerFactory from './logger.factory'
-import config from '../config';
+import config from '../config'
 
 @Module({
   imports: [
