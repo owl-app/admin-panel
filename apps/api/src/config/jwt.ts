@@ -1,5 +1,5 @@
 import { registerAs } from "@nestjs/config";
-import { IJwtConfig, JWT_CONFIG_NAME } from "@owl/api-auth";
+import { IJwtConfig, JWT_CONFIG_NAME } from "@owl-app/lib-api-module-auth/domain";
 
 export default registerAs(JWT_CONFIG_NAME, (): IJwtConfig => {
     return {
