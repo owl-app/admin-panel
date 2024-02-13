@@ -1,2 +1,5 @@
 export { NestjsQueryTypeOrmModule } from './lib/module'
+export { ClassTransformerAsyncAssembler } from './lib/crud/class-transformer-async.assembler'
+export { AssemblerAsyncCrudService } from './lib/crud/assembler-crud-async.service'
 export { TypeOrmQueryService, type TypeOrmQueryServiceOpts } from './lib/services'
+export * from './lib/pagination'

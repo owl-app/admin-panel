@@ -6,7 +6,7 @@ import {
   AggregateResponse,
   GroupBy
 } from '@owl-app/crud-core'
-import { camelCase } from 'change-case'
+import { camelCase } from 'change-case-all'
 import { Repository, SelectQueryBuilder } from 'typeorm'
 
 enum AggregateFuncs {
