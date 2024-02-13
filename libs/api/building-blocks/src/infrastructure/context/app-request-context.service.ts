@@ -18,7 +18,7 @@ export class AppRequestContextService {
 		return null;
 	}
 
-  get currentRequestId(): number | undefined {
+  get currentRequestId(): string | undefined {
     return AppRequestContext.get()?.req.requestId;
   }
 

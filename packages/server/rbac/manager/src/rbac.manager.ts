@@ -30,7 +30,7 @@ import { DefaultRoleNotFoundException } from './exceptions/default-role-not-foun
 /**
  * An authorization manager that helps with building RBAC hierarchy and check for permissions.
  */
-export default class Manager implements IAccessCheckerInterface {
+export class Manager implements IAccessCheckerInterface {
   /**
    * A list of role names that are assigned to every user automatically without calling {@see assign()}.
    * Note that these roles are applied to users, regardless of their state of authentication.

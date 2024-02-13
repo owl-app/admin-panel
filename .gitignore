@@ -5,6 +5,11 @@ dist
 tmp
 /out-tsc
 
+#logs
+/var/logs/*
+!/var/logs/.gitkeep
+!/var/.gitkeep
+
 # dependencies
 node_modules
 
