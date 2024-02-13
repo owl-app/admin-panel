@@ -1,18 +1,17 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
+import { Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { JwtModule, JwtService } from '@nestjs/jwt'
 import { WinstonLoggerModule } from '@owl-app/winston-logger-nestjs'
-import { SharedUserModule } from '@owl/server-common-user';
 
-import { IJwtConfig } from './domain/config/jwt-config.interface';
+import { IJwtConfig } from './domain/config/jwt-config.interface'
 
 import { IS_AUTHENTICATED_USECASE } from './application/is-authenticated'
-import { LOGIN_USECASE } from './application/login';
+import { LOGIN_USECASE } from './application/login'
 
-import { jwtConfigProvider } from './infrastructure/providers/jwt-config.provider';
-import { loginProvider } from './infrastructure/providers/login.provider';
-import { LoginController } from './presentation/api/login/login.controller';
-import { JwtTokenService } from './infrastructure/jwt/services/jwt.service';
+import { JWT_CONFIG, jwtConfigProvider } from './infrastructure/providers/jwt-config.provider';
+import { loginProvider } from './infrastructure/providers/login.provider'
+import { LoginController } from './presentation/api/login/login.controller'
+import { JwtTokenService } from './infrastructure/jwt/services/jwt.service'
 import { LocalStrategy } from './infrastructure/jwt/strategies/local.strategy'
 import { JwtStrategy } from './infrastructure/jwt/strategies/jwt.strategy'
 import { BcryptService } from './infrastructure/services/bcrypt.service'
@@ -20,9 +19,12 @@ import { isAuthenticatedProvider } from './infrastructure/providers/is-authentic
 
 import { IsAuthenticatedController } from './presentation/api/is-authenticated/is-authenticated.controller'
 
+import { UserGatewayModule } from './integration/gateway.module'
+import { IUserGateway, UserGateway } from './integration/user.gateway'
+
 @Module({
   imports: [
-    SharedUserModule,
+    UserGatewayModule,
     WinstonLoggerModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -45,8 +47,16 @@ import { IsAuthenticatedController } from './presentation/api/is-authenticated/i
     jwtConfigProvider,
     loginProvider,
     isAuthenticatedProvider,
-
-    JwtTokenService,
+    {
+      inject: [JWT_CONFIG, JwtService, BcryptService, IUserGateway],
+      provide: JwtTokenService,
+      useFactory: (
+        config: IJwtConfig,
+        jwtService: JwtService,
+        bcryptService: BcryptService,
+        userGatrway: UserGateway,
+      ) => new JwtTokenService(config, jwtService, bcryptService, userGatrway),
+    },
     LocalStrategy,
     JwtStrategy,
     BcryptService

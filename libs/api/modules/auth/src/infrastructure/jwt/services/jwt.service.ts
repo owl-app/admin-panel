@@ -3,15 +3,17 @@ import { JwtService } from '@nestjs/jwt';
 import { IUser } from '@owl-app/lib-contracts';
 
 import { IJwtService, IJwtServicePayload } from '../../../domain/services/jwt.interface';
-import { IBcryptService } from '../../../domain/services/bcrypt.interface';
-import { IJwtConfig } from '../../../domain/config/jwt-config.interface';
+import { type IBcryptService } from '../../../domain/services/bcrypt.interface';
+import { type IJwtConfig } from '../../../domain/config/jwt-config.interface';
+import { IUserGateway } from '../../../integration/user.gateway';
 
 @Injectable()
-export class JwtTokenService<User = IUser> implements IJwtService<User> {
+export class JwtTokenService implements IJwtService<IUser> {
   constructor( 
     private readonly jwtConfig: IJwtConfig,
     private readonly jwtService: JwtService,
-    private readonly bcryptService: IBcryptService
+    private readonly bcryptService: IBcryptService,
+    private readonly userGateway: IUserGateway
   ) {}
 
   async checkToken(token: string): Promise<any> {
@@ -46,8 +48,8 @@ export class JwtTokenService<User = IUser> implements IJwtService<User> {
     return token;
   }
 
-  async validateUserForLocalStragtegy(email: string, pass: string): Promise<User|null> {
-    const user = await this.userRepository.getUserByEmail(email);
+  async validateUserForLocalStragtegy(email: string, pass: string): Promise<IUser|null> {
+    const user = await this.userGateway.getUserByEmail(email);
 
     if (!user) {
       return null;
@@ -64,16 +66,16 @@ export class JwtTokenService<User = IUser> implements IJwtService<User> {
     return null;
   }
 
-  async validateUserForJWTStragtegy(email: string): Promise<User|null> {
-    const user = await this.userRepository.getUserByEmail(email);
+  async validateUserForJWTStragtegy(email: string): Promise<IUser|null> {
+    const user = await this.userGateway.getUserByEmail(email);
     if (!user) {
       return null;
     }
     return user;
   }
 
-  async getUserIfRefreshTokenMatches(refreshToken: string, email: string): Promise<User|null> {
-    const user = await this.userRepository.getUserByEmail(email);
+  async getUserIfRefreshTokenMatches(refreshToken: string, email: string): Promise<IUser|null> {
+    const user = await this.userGateway.getUserByEmail(email);
     if (!user) {
       return null;
     }
@@ -90,14 +92,14 @@ export class JwtTokenService<User = IUser> implements IJwtService<User> {
   }
 
   private async updateLoginTime(email: string): Promise<void> {
-    await this.userRepository.updateLastLogin(email);
+    await this.userGateway.updateLastLogin(email);
   }
 
   private async setCurrentRefreshToken(refreshToken: string, email: string) {
     const currentHashedRefreshToken = await this.bcryptService.hash(
       refreshToken
     );
-    await this.userRepository.updateRefreshToken(
+    await this.userGateway.updateRefreshToken(
       email,
       currentHashedRefreshToken
     );

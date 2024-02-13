@@ -1,6 +1,6 @@
 # lib-api-module-auth
 
-This library was generated with [Nx](https://nx.dev).
+API auth module for NestJS applications.
 
 ## Building
 
