@@ -5,6 +5,7 @@ tmp
 
 # app
 .env.development.local
+.env.production.local
 
 # dependencies
 node_modules
