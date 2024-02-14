@@ -12,10 +12,10 @@
     "config-env:prod": "cross-env NODE_ENV=production yarn run config-env",
     "start": "concurrently --raw --kill-others \"yarn start:api\" \"yarn start:owl\"",
     "start:owl": "yarn run config-env:dev & npx nx serve owl",
-    "start:api": "cross-env NODE_ENV=development env-cmd -f .env.development.local npx nx serve api",
-    "build:api": "cross-env NODE_ENV=development npx nx build api",
+    "start:api": "cross-env NODE_ENV=development npx nx serve api",
+    "build:api": "cross-env NODE_ENV=production npx nx build api",
     "build:owl": "cross-env NODE_ENV=development npx nx build owl",
-    "start:build": "cross-env NODE_ENV=production nodemon dist/apps/api/main.js"
+    "start:build": "cross-env NODE_ENV=production env-cmd -f .env.production nodemon dist/apps/api/main.js"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.1",

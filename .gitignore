@@ -4,8 +4,8 @@ tmp
 /out-tsc
 
 # app
-.env.development.local
-.env.production.local
+.env.development
+.env.production
 
 # dependencies
 node_modules
