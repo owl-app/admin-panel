@@ -19,7 +19,8 @@ import config from '../config'
       DatabaseModule,
       ConfigModule.forRoot({
           isGlobal: true,
-          envFilePath: [`.env.${process.env.NODE_ENV}.local`, `.env.${process.env.NODE_ENV}`],
+          // this not work in nx
+          envFilePath: [`.env.${process.env.NODE_ENV}`, `.env`],
           load: config,
       }),
       WinstonLoggerModule.forRootAsync({
