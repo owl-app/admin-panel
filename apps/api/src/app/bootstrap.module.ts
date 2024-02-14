@@ -13,14 +13,13 @@ import { DatabaseModule } from './database.module'
 import loggerFactory from './logger.factory'
 import config from '../config'
 
-console.log(process.env.NODE_ENV)
-
 @Module({
   imports: [
       AppModule,
+      DatabaseModule,
       ConfigModule.forRoot({
           isGlobal: true,
-          envFilePath: ['.env.' + process.env.NODE_ENV +'.local', '.env.' + process.env.NODE_ENV],
+          envFilePath: [`.env.${process.env.NODE_ENV}.local`, `.env.${process.env.NODE_ENV}`],
           load: config,
       }),
       WinstonLoggerModule.forRootAsync({
@@ -33,7 +32,6 @@ console.log(process.env.NODE_ENV)
           imports: [ConfigModule],
           inject: [ConfigService],
       }),
-      DatabaseModule,
       // HealthIndicatorModule,
       // SharedModule
   ]

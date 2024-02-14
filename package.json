@@ -12,7 +12,7 @@
     "config-env:prod": "cross-env NODE_ENV=production yarn run config-env",
     "start": "concurrently --raw --kill-others \"yarn start:api\" \"yarn start:owl\"",
     "start:owl": "yarn run config-env:dev & npx nx serve owl",
-    "start:api": "cross-env NODE_ENV=development npx nx serve api",
+    "start:api": "cross-env NODE_ENV=development env-cmd -f .env.development.local npx nx serve api",
     "build:api": "cross-env NODE_ENV=development npx nx build api",
     "build:owl": "cross-env NODE_ENV=development npx nx build owl",
     "start:build": "cross-env NODE_ENV=production nodemon dist/apps/api/main.js"
@@ -32,7 +32,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cross-env": "^7.0.3",
-    "dotenv-flow": "^4.1.0",
+    "env-cmd": "^10.1.0",
     "express": "^4.18.2",
     "express-session": "^1.18.0",
     "fast-safe-stringify": "^2.1.1",
