@@ -27,7 +27,7 @@ export class UserRepository extends Repository<User> implements IUserRepository 
     if (!adminUserEntity) {
       return null;
     }
-    return this.toUser(adminUserEntity);
+    return adminUserEntity;
   }
 
   async getUserByEmail(email: string): Promise<IUser> {
@@ -39,7 +39,7 @@ export class UserRepository extends Repository<User> implements IUserRepository 
     if (!adminUserEntity) {
       return null;
     }
-    return this.toUser(adminUserEntity);
+    return adminUserEntity;
   }
 
   async updateRefreshToken(email: string, refreshToken: string): Promise<void> {
@@ -71,6 +71,7 @@ export class UserRepository extends Repository<User> implements IUserRepository 
     adminUser.email = adminUserEntity.email;
     adminUser.firstName = adminUserEntity.firstName;
     adminUser.lastName = adminUserEntity.lastName;
+    adminUser.passwordHash = adminUserEntity.passwordHash;
 
     return adminUser;
   }
