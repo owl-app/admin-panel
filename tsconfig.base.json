@@ -16,6 +16,9 @@
       "@owl-app/lib-api-bulding-blocks/*": ["libs/api/building-blocks/src/*"],
       "@owl-app/lib-api-core": ["libs/api/core/src/index.ts"],
       "@owl-app/lib-api-module-auth/*": ["libs/api/modules/auth/src/*"],
+      "@owl-app/lib-api-module-user-access": [
+        "libs/api/modules/user-access/src/index.ts"
+      ],
       "@owl-app/lib-api-module-user/*": ["libs/api/modules/user/src/*"],
       "@owl-app/lib-contracts": ["libs/contracts/src/index.ts"],
       "@owl-app/rbac-manager": ["packages/server/rbac/manager/src/index.ts"],

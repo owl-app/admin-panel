@@ -1,0 +1,24 @@
+{
+  "name": "@owl-app/lib-api-module-user-access",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/modules/user-access/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/libs/api/modules/user-access"],
+      "options": {
+        "commands": [
+          "npx rimraf dist/libs/api/modules/user-access",
+          "npx tsc -p libs/api/modules/user-access/tsconfig.build.json",
+          "npx copyfiles -f \"libs/api/modules/user-access/package.json\" \"libs/api/modules/user-access/README.md\" \"LICENSE\" dist/libs/api/modules/user-access"
+        ],
+        "cwd": ".",
+        "parallel": false
+      }
+    }
+  },
+  "tags": []
+}
+
+
