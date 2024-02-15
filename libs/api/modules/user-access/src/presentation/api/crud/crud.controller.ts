@@ -21,7 +21,7 @@ import { Manager } from '@owl-app/rbac-manager'
 
 import { CreateUserRequest, UpdateUserDto, UserResponse, FilterUserDto, UserPaginatedResponseDto } from './dto'
 
-import { UserService } from '../../../infrastructure/service/crud.service'
+import { UserService } from '../../../infrastructure/services/crud.service'
 
 @ApiTags('User')
 @Controller('users')

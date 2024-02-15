@@ -1,7 +1,7 @@
-import { Type } from "@nestjs/common";
 import { ApiExtraModels, ApiProperty } from "@nestjs/swagger";
-import { IUser } from "@owl-app/lib-contracts";
 import { Transform, TransformFnParams } from "class-transformer";
+
+import { IUser } from "@owl-app/lib-contracts";
 
 @ApiExtraModels()
 export class UserMeResponse implements IUser{

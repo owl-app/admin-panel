@@ -1,4 +1,5 @@
 import { EntitySchema } from "typeorm"
+
 import { User } from "../../../domain/model/user"
 
 export const UserEntity = new EntitySchema<User>({

@@ -11,7 +11,7 @@ import { urlencoded, json } from 'express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-bulding-blocks/domain/config';
-import { JwtAuthGuard } from '@owl-app/lib-api-module-auth/infrastructure';
+import { JwtAuthGuard } from '@owl-app/lib-api-module-user-access/infrastructure/jwt/guards/jwt-auth.guard';
 // import { HttpExceptionsFilter } from '../http';
 // import { EntitySubscriberInterface } from 'typeorm';
 // // import { IPluginConfig } from '@gauzy/common';

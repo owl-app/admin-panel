@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { IUser } from '@owl-app/lib-contracts';
-import { User } from '../../../domain';
 
+import { User } from '../../../domain/model/user';
 import { IUserRepository } from '../../../domain/repository/user-repository.interface';
 
 @Injectable()

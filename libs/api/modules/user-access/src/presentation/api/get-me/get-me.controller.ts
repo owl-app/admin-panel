@@ -5,7 +5,7 @@ import { AppRequestContextService } from '@owl-app/lib-api-bulding-blocks/infras
 
 import { UserWithPermissionResponse } from './dto/user-with-permission.response';
 
-import { GET_ME_USECASE, GetMeUseCase } from '../../../use-cases/get-me';
+import { GET_ME_USECASE, GetMeUseCase } from '../../../application/get-me';
 
 @Controller('user')
 @ApiTags('User')

@@ -1,4 +1,5 @@
 import { ConfigService } from "@nestjs/config";
+
 import { IJwtConfig, JWT_CONFIG_NAME } from "../../domain/config/jwt-config.interface";
 
 export const JWT_CONFIG = 'JwtConfig';

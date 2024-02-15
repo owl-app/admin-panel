@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IUserResponse } from "@owl-app/lib-contracts";
 import { Transform, TransformFnParams } from "class-transformer";
 import { IsOptional } from "class-validator";
+
+import { IUserResponse } from "@owl-app/lib-contracts";
 
 export class UserResponse implements IUserResponse {
 

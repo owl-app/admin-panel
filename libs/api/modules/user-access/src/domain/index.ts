@@ -1,1 +1,0 @@
-export * from './config/jwt-config.interface'

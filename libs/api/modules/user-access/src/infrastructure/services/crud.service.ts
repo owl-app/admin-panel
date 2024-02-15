@@ -6,7 +6,7 @@ import {
 } from '@owl-app/crud-core';
 import { isEmpty } from '@owl-app/utils';
 
-import { UserAssembler } from '../query/user.assembler';
+import { UserAssembler } from '../assembler/user.assembler';
 
 import { User } from '../../domain/model/user';
 

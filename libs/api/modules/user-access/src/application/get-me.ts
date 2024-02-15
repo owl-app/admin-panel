@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { IUserWithPermission } from '@owl-app/lib-contracts';
 
-import { IUserRepository } from '../domain';
+import { IUserRepository } from '../domain/repository/user-repository.interface';
 
 export const GET_ME_USECASE = 'GetMeUseCase';
 
