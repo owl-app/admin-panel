@@ -8,10 +8,12 @@ import { JwtTokenService } from '../services/jwt.service';
 import { JWT_CONFIG } from '../../providers/jwt-config.provider';
 
 import { type IJwtConfig } from '../../../domain/config/jwt-config.interface';
+import { IJwtService } from '../../../domain/services/jwt.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
+    @Inject(IJwtService)
     private readonly jwtTokenService: JwtTokenService,
     @Inject(WINSTON_MODULE_PROVIDER)
     private readonly logger: WinstonLogger,

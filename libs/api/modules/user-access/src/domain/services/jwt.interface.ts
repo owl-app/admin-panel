@@ -17,3 +17,6 @@ export interface IJwtService<User> {
 
   getUserIfRefreshTokenMatches(refreshToken: string, email: string): Promise<User|null>;
 }
+
+
+export const IJwtService = Symbol('IJwtService');

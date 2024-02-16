@@ -1,5 +1,7 @@
 import { JwtService } from '@nestjs/jwt';
 
+import { IJwtService } from '../../domain/services/jwt.interface'
+
 import { JWT_CONFIG } from './jwt-config.provider';
 import { JwtTokenService } from "../jwt/services/jwt.service";
 import { BcryptService } from '../services/bcrypt.service';
@@ -9,7 +11,7 @@ import { IUserRepository } from '../../domain/repository/user-repository.interfa
 
 export const jwtServiceProvider = {
   inject: [JWT_CONFIG, IUserRepository, JwtService, BcryptService],
-  provide: JwtTokenService,
+  provide: IJwtService,
   useFactory: (
     config: IJwtConfig,
     userRepository: IUserRepository,

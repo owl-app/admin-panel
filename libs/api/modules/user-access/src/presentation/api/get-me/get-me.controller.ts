@@ -5,15 +5,15 @@ import { AppRequestContextService } from '@owl-app/lib-api-bulding-blocks/infras
 
 import { UserWithPermissionResponse } from './dto/user-with-permission.response';
 
-import { GET_ME_USECASE, GetMeUseCase } from '../../../application/get-me';
+import { IUserRepository } from '../../../domain/repository/user-repository.interface';
 
 @Controller('user')
 @ApiTags('User')
 @ApiBearerAuth()
 export class GetMeController {
   constructor(
-    @Inject(GET_ME_USECASE)
-    private readonly getMeUseCase: GetMeUseCase,
+    @Inject(IUserRepository)
+    private readonly userRepository: IUserRepository,
     private requestContextService: AppRequestContextService
   ) {}
 
@@ -30,8 +30,10 @@ export class GetMeController {
   @Get('/me')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getMe(): Promise<UserWithPermissionResponse> {
-    const userWithPermission = await this.getMeUseCase.execute(this.requestContextService.currentRequestId);
+    const user = await this.userRepository.findOneByIdString(this.requestContextService.currentRequestId);
 
-    return userWithPermission;
+    return {
+      user
+    };
   }
 }

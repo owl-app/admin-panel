@@ -3,11 +3,14 @@ import { PassportStrategy } from '@nestjs/passport'
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { WINSTON_MODULE_PROVIDER, WinstonLogger } from '@owl-app/winston-logger-nestjs'
 
+import { IJwtService } from '../../../domain/services/jwt.interface';
+
 import { JwtTokenService } from '../services/jwt.service'
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(
+    @Inject(IJwtService)
     private readonly jwtTokenService: JwtTokenService,
     @Inject(WINSTON_MODULE_PROVIDER)
     private readonly logger: WinstonLogger

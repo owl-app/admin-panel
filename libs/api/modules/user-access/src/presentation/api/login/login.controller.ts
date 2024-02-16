@@ -4,7 +4,7 @@ import { IAuthResponse, IUser } from '@owl-app/lib-contracts';
 
 import { AuthRequest } from './dtos/auth.request';
 
-import { LOGIN_USECASE, LoginUseCase } from '../../../application/login';
+import { IJwtService } from '../../../domain/services/jwt.interface';
 
 import { LocalAuthGuard } from '../../../infrastructure/jwt/guards/local-auth.guard';
 import type RequestWithUser from '../../../infrastructure/http/request-with-user.interface';
@@ -19,8 +19,8 @@ import { Public } from '../../../infrastructure/jwt/guards/jwt-auth.metadata';
 @ApiResponse({ status: 500, description: 'Internal error' })
 export class LoginController {
   constructor(
-    @Inject(LOGIN_USECASE)
-    private readonly loginUseCase: LoginUseCase<IUser>,
+    @Inject(IJwtService)
+    private readonly jwtTokenService: IJwtService<IUser>,
   ) {}
 
   @ApiOperation({ description: 'login' })
@@ -33,11 +33,13 @@ export class LoginController {
   async login(@Body() auth: AuthRequest, @Request() request: RequestWithUser): Promise<IAuthResponse> {
     const { user } = request;
 
-    const tokens = await this.loginUseCase.execute(auth.email);
+    const accessToken = await this.jwtTokenService.getJwtToken(user.email);
+    const refreshToken = await this.jwtTokenService.getJwtRefreshToken(user.email);
 
     return {
       user,
-      ...tokens
+      accessToken,
+      refreshToken
     }
   }
 }

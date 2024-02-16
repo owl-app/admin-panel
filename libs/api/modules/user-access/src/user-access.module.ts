@@ -10,21 +10,17 @@ import { IUserRepository } from './domain/repository/user-repository.interface'
 import { IJwtConfig } from './domain/config/jwt-config.interface'
 
 import { jwtConfigProvider } from './infrastructure/providers/jwt-config.provider';
-import { loginProvider } from './infrastructure/providers/login.provider'
 import { LocalStrategy } from './infrastructure/jwt/strategies/local.strategy'
 import { JwtStrategy } from './infrastructure/jwt/strategies/jwt.strategy'
 import { BcryptService } from './infrastructure/services/bcrypt.service'
-import { isAuthenticatedProvider } from './infrastructure/providers/is-authenticated.provider'
 import { UserEntity } from './infrastructure/persistence/entity/user'
 import { UserService } from './infrastructure/services/crud.service'
 import { UserAssembler } from './infrastructure/assembler/user.assembler'
 import { UserRepository } from './infrastructure/persistence/repository/user.repository'
-import { getMeProvider } from './infrastructure/providers/get-me.provider'
 import { jwtServiceProvider } from './infrastructure/providers/jwt-service.provider'
 
 import { UserCrudController } from './presentation/api/crud/crud.controller'
 import { LoginController } from './presentation/api/login/login.controller'
-import { IsAuthenticatedController } from './presentation/api/is-authenticated/is-authenticated.controller'
 import { GetMeController } from './presentation/api/get-me/get-me.controller'
 
 @Module({
@@ -49,21 +45,17 @@ import { GetMeController } from './presentation/api/get-me/get-me.controller'
   ],
   controllers: [
     LoginController,
-    IsAuthenticatedController,
     UserCrudController,
     GetMeController
   ],
   providers: [
     // auth
     jwtConfigProvider,
-    loginProvider,
-    isAuthenticatedProvider,
     jwtServiceProvider,
     LocalStrategy,
     JwtStrategy,
     BcryptService,
     // user
-    getMeProvider,
     UserService,
     UserRepository,
     AppRequestContextService,
