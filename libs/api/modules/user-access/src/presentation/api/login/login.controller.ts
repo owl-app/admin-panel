@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Inject, Post, Req, Request, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, HttpCode, HttpStatus, Inject, Post, Request, UseGuards } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IAuthResponse, IUser } from '@owl-app/lib-contracts';
 
 import { AuthRequest } from './dtos/auth.request';
@@ -24,9 +24,11 @@ export class LoginController {
   ) {}
 
   @ApiOperation({ description: 'login' })
+  @HttpCode(HttpStatus.OK)
   @ApiBody({ type: AuthRequest })
   @UseGuards(LocalAuthGuard)
   @Public()
+  @ApiResponse({ status: HttpStatus.OK })
   @Post('/login')
   async login(@Body() auth: AuthRequest, @Request() request: RequestWithUser): Promise<IAuthResponse> {
     const { user } = request;

@@ -9,7 +9,6 @@ import { RequestContextModule } from "@owl-app/request-context-nestjs"
 @Module({
   imports: [
     UserAccessModule,
-    //AuthModule,
     RequestContextModule,
     // RbacModule.forFeature({
     //     imports: [
