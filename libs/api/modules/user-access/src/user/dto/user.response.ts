@@ -21,4 +21,3 @@ export class UserResponse implements IUserResponse {
     lastName?: string;
 
 }
-  

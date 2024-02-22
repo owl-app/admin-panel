@@ -40,7 +40,7 @@ export interface IUserRequest {
 }
 
 export interface IUserResponse {
-	id: string;
+	id?: string;
 	email: string;
 	firstName?: string;
 	lastName?: string;

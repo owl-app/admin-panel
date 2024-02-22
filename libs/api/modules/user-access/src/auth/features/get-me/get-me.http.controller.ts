@@ -3,9 +3,14 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 
 import { AppRequestContextService } from '@owl-app/lib-api-bulding-blocks/context/app-request-context.service';
 
-import { UserWithPermissionResponse } from './dto/user-with-permission.response';
+import { User } from '../../../domain/model/user'
 
 import { IUserRepository } from '../../../database/repository/user-repository.interface';
+
+import userMapper from '../../mapping'
+import { UserResponse } from '../../dto/user.response'
+
+import { UserWithPermissionResponse } from './dto/user-with-permission.response';
 
 @Controller('user')
 @ApiTags('User')
@@ -33,7 +38,7 @@ export class GetMeController {
     const user = await this.userRepository.findOneByIdString(this.requestContextService.currentRequestId);
 
     return {
-      user
+      user: userMapper.map<User, UserResponse>(user, new UserResponse()),
     };
   }
 }

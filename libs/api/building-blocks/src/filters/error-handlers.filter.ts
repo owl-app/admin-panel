@@ -54,10 +54,10 @@ export class ErrorHandlersFilter implements ExceptionFilter {
     }
 
     if (err instanceof UnauthorizedException) {
+      console.log(err)
       const problem = new ProblemDocument({
         type: UnauthorizedException.name,
         title: err.message,
-        detail: err.stack,
         status: err.getStatus()
       });
       response.status(HttpStatus.UNAUTHORIZED).json(problem);

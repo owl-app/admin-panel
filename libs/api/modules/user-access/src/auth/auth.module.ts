@@ -7,17 +7,16 @@ import { WinstonLoggerModule } from '@owl-app/winston-logger-nestjs'
 
 import { IJwtConfig, JWT_CONFIG_NAME } from '@owl-app/lib-api-bulding-blocks/config/jwt'
 import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface'
-import { LocalStrategy } from '@owl-app/lib-api-bulding-blocks/passport/local.strategy'
 import { AppRequestContextService } from '@owl-app/lib-api-bulding-blocks/context/app-request-context.service'
 
 import { IUserRepository } from '../database/repository/user-repository.interface'
 import { UserRepository } from '../database/repository/user.repository'
 import { UserEntity } from '../database/entity/user.entity'
 
+import { LocalStrategy } from './passport/local.strategy'
+import { LoginController } from './features/login/login.http.controller'
+import { GetMeController } from './features/get-me/get-me.http.controller'
 import JwtTokenService from './jwt-token.service'
-
-import { LoginController } from './features/login/login.controller'
-import { GetMeController } from './features/get-me/get-me.controller'
 
 @Module({
   imports: [

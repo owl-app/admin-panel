@@ -7,8 +7,10 @@ import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-bulding-blocks/con
 import { Assembler, DeepPartial } from '@owl-app/crud-core'
 
 import { User } from '../../../../domain/model/user'
+import { UserResponse } from '../../../dto/user.response'
+import mapper from '../../../mapping'
 
-import { CreateUserRequest, UserResponse } from './dto'
+import { CreateUserRequest } from './dto'
 
 @Assembler(UserResponse, User)
 export class UserAssembler extends ClassTransformerAsyncAssembler<
@@ -29,5 +31,10 @@ export class UserAssembler extends ClassTransformerAsyncAssembler<
     model.email = dto.email;
 
     return model;
+  }
+
+  convertToDTO(user: User): UserResponse
+  {
+    return mapper.map<User, UserResponse>(user, new UserResponse());
   }
 }

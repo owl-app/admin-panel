@@ -2,13 +2,19 @@ import { Body, Controller, HttpCode, HttpStatus, Inject, Post, Request, UseGuard
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
-import { IAuthResponse, IUser } from '@owl-app/lib-contracts'
+import { IUser } from '@owl-app/lib-contracts'
 import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface'
 import { Public } from '@owl-app/lib-api-bulding-blocks/passport/jwt.guard'
 
-import { AuthRequest } from './dtos/auth.request'
+import { User } from '../../../domain/model/user'
 
+import userMapper from '../../mapping'
+import { UserResponse } from '../../dto/user.response'
+
+import { loginValidation } from './validation'
 import type RequestWithUser from './request-with-user.interface'
+import { AuthResponse } from './dto/auth.response'
+import { AuthRequest } from './dto/auth.request'
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -28,16 +34,20 @@ export class LoginController {
   @ApiBody({ type: AuthRequest })
   @UseGuards(AuthGuard('local'))
   @Public()
-  @ApiResponse({ status: HttpStatus.OK })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The user has been successfully logged.',
+    type: AuthResponse,
+  })
   @Post('/login')
-  async login(@Body() auth: AuthRequest, @Request() request: RequestWithUser): Promise<IAuthResponse> {
+  async login(@Body() auth: AuthRequest, @Request() request: RequestWithUser): Promise<AuthResponse> {
     const { user } = request;
 
     const accessToken = await this.jwtTokenService.getJwtToken(user.email);
     const refreshToken = await this.jwtTokenService.getJwtRefreshToken(user.email);
 
     return {
-      user,
+      user: userMapper.map<User, UserResponse>(user, new UserResponse()),
       accessToken,
       refreshToken
     }

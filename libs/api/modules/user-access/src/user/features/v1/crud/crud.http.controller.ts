@@ -19,9 +19,13 @@ import { PaginatedRequest } from '@owl-app/crud-nestjs'
 
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
 
+import{ User } from '../../../../domain/model/user'
+import mapper from '../../../mapping'
+import { UserResponse } from '../../../dto/user.response'
+
 import { UserService } from './user.service'
-import { CreateUserRequest, UpdateUserDto, UserResponse, FilterUserDto, UserPaginatedResponseDto } from './dto'
-import { createUserValidations } from './crud.validation'
+import { CreateUserRequest, UpdateUserDto, FilterUserDto, UserPaginatedResponseDto } from './dto'
+import { createUserValidation } from './validation'
 
 @ApiTags('User')
 @Controller('users')
@@ -60,11 +64,11 @@ export class UserCrudController {
   @Post()
   @UsePipes(new ValidationPipe())
   async create(@Body() createUserRequest: CreateUserRequest) {
-    await createUserValidations.validateAsync(createUserRequest, { abortEarly: false });
+    await createUserValidation.validateAsync(createUserRequest, { abortEarly: false });
 
     const createdUser = await this.service.createAsyncOne(createUserRequest);
 
-    return createdUser;
+    return mapper.map<User, UserResponse>(createdUser, new UserResponse());
   }
 
 	@ApiOperation({ summary: 'Update user' })
@@ -87,7 +91,10 @@ export class UserCrudController {
 		@Param('id', UUIDValidationPipe) id: string,
 		@Body() updateUserDto: UpdateUserDto,
 	): Promise<UserResponse> {
-		return await this.service.updateOne(id, updateUserDto);
+
+    const updatedUser = await this.service.updateOne(id, updateUserDto);
+
+		return  mapper.map<User, UserResponse>(updatedUser, new UserResponse());
 	}
 
   @ApiOperation({ summary: 'Find all users by filters using pagination' })
@@ -108,15 +115,7 @@ export class UserCrudController {
   ): Promise<UserPaginatedResponseDto> {
     const paginated = await this.service.search(filters, pagination);
 
-    return new UserPaginatedResponseDto({
-      ...paginated,
-      items: paginated.items.map((user) => ({
-        id: user.id,
-        lastName: user.lastName,
-        firstName: user.firstName,
-        email: user.email,
-      })),
-    });
+    return new UserPaginatedResponseDto(paginated);
   }
 
   @ApiOperation({ summary: 'Delete user' })

@@ -1,6 +1,6 @@
 import Joi from "joi"
 
-export const createUserValidations = Joi.object({
+export const createUserValidation = Joi.object({
   email: Joi.string().required().email(),
   name: Joi.string().required()
 });

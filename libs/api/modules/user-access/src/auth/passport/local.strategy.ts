@@ -1,12 +1,12 @@
 import { Strategy } from 'passport-local'
 import { PassportStrategy } from '@nestjs/passport'
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
+import { WINSTON_MODULE_PROVIDER, WinstonLogger } from '@owl-app/winston-logger-nestjs'
 
 import { IUser } from '@owl-app/lib-contracts';
 
-import { WINSTON_MODULE_PROVIDER, WinstonLogger } from '@owl-app/winston-logger-nestjs'
-
-import { IJwtTokenService } from './jwt-token.interface';
+import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface'
+import { loginValidation } from '../features/login/validation';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -20,10 +20,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string) {
-    if (!email || !password) {
-      this.logger.warn('LocalStrategy', `Email or password is missing`);
-      throw new UnauthorizedException();
-    }
+    await loginValidation.validateAsync({email, password}, { abortEarly: false });
+  
     const user = await this.jwtTokenService.validateUserForLocalStragtegy(email, password);
     if (!user) {
       this.logger.warn('LocalStrategy', `Invalid email or password`);

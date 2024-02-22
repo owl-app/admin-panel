@@ -1,16 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common'
 
-import { PaginatedRequest, AssemblerAsyncCrudService, Pagination } from '@owl-app/crud-nestjs';
-import {
-  InjectQueryService,
-  QueryService
-} from '@owl-app/crud-core';
-import { isEmpty } from '@owl-app/utils';
+import { PaginatedRequest, AssemblerAsyncCrudService, Pagination } from '@owl-app/crud-nestjs'
+import { InjectQueryService, QueryService } from '@owl-app/crud-core';
+import { isEmpty } from '@owl-app/utils'
 
 import { User } from '../../../../domain/model/user'
+import { UserResponse } from '../../../dto/user.response'
+import mapper from '../../../mapping'
 
-import { UserAssembler } from './user.assembler';
-import { CreateUserRequest, UserResponse, FilterUserDto } from './dto'
+import { UserAssembler } from './user.assembler'
+import { CreateUserRequest, FilterUserDto } from './dto'
 
 @Injectable()
 export class UserService extends AssemblerAsyncCrudService(
@@ -49,11 +48,16 @@ export class UserService extends AssemblerAsyncCrudService(
       });
     }
 
-    return await this.paginated(
+    const result = await this.paginated(
       {
         or: availableFilters,
       },
       pagination
     );
+
+    return {
+        ...result,
+        items: result.items.map((user) => mapper.map<User, UserResponse>(user, new UserResponse()))
+    }
   }
 }

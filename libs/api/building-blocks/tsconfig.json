@@ -3,7 +3,7 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["src"],
+  "include": ["src", "../modules/user-access/src/auth/passport/local.strategy.ts"],
   "exclude": ["node_modules"]
 }
 
