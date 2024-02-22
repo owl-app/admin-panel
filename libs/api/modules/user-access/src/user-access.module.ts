@@ -1,68 +1,25 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule, ConfigService } from '@nestjs/config'
-import { JwtModule } from '@nestjs/jwt'
-import { WinstonLoggerModule } from '@owl-app/winston-logger-nestjs'
-import { NestjsQueryCoreModule } from '@owl-app/crud-core'
-import { NestjsQueryTypeOrmModule } from '@owl-app/crud-nestjs'
-import { AppRequestContextService } from '@owl-app/lib-api-bulding-blocks/infrastructure/context';
+import { ConfigModule } from '@nestjs/config'
 
-import { IUserRepository } from './domain/repository/user-repository.interface'
-import { IJwtConfig } from './domain/config/jwt-config.interface'
+import { JwtStrategy } from '@owl-app/lib-api-bulding-blocks/passport/jwt.strategy'
 
-import { jwtConfigProvider } from './infrastructure/providers/jwt-config.provider';
-import { LocalStrategy } from './infrastructure/jwt/strategies/local.strategy'
-import { JwtStrategy } from './infrastructure/jwt/strategies/jwt.strategy'
-import { BcryptService } from './infrastructure/services/bcrypt.service'
-import { UserEntity } from './infrastructure/persistence/entity/user'
-import { UserService } from './infrastructure/services/crud.service'
-import { UserAssembler } from './infrastructure/assembler/user.assembler'
-import { UserRepository } from './infrastructure/persistence/repository/user.repository'
-import { jwtServiceProvider } from './infrastructure/providers/jwt-service.provider'
+import config, { JwtConfigProvider  } from '@owl-app/lib-api-bulding-blocks/config'
 
-import { UserCrudController } from './presentation/api/crud/crud.controller'
-import { LoginController } from './presentation/api/login/login.controller'
-import { GetMeController } from './presentation/api/get-me/get-me.controller'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
-    WinstonLoggerModule,
-    NestjsQueryCoreModule.forFeature({
-      imports: [NestjsQueryTypeOrmModule.forFeature([UserEntity])],
-      assemblers: [UserAssembler]
+    ConfigModule.forRoot({
+      isGlobal: true,
+      // this not work in nx
+      envFilePath: [`.env.${process.env.NODE_ENV}`, `.env`],
+      load: config,
     }),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
-        const config = configService.get<IJwtConfig>('jwt')
-
-        return {
-          secret: config?.secret,
-          signOptions: { expiresIn: '24h' }
-        }
-      },
-      inject: [ConfigService],
-    }),
-  ],
-  controllers: [
-    LoginController,
-    UserCrudController,
-    GetMeController
+    AuthModule
   ],
   providers: [
-    // auth
-    jwtConfigProvider,
-    jwtServiceProvider,
-    LocalStrategy,
-    JwtStrategy,
-    BcryptService,
-    // user
-    UserService,
-    UserRepository,
-    AppRequestContextService,
-    {
-      provide: IUserRepository,
-      useClass: UserRepository
-    }
+    JwtConfigProvider,
+    JwtStrategy
   ]
 })
 export class UserAccessModule {}

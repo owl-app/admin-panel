@@ -11,18 +11,11 @@ import { AppModule } from './app.module'
 import { WinstonLoggerModule, WINSTON_MODULE_NEST_PROVIDER } from '@owl-app/winston-logger-nestjs'
 import { DatabaseModule } from './database.module'
 import loggerFactory from './logger.factory'
-import config from '../config'
 
 @Module({
   imports: [
       AppModule,
       DatabaseModule,
-      ConfigModule.forRoot({
-          isGlobal: true,
-          // this not work in nx
-          envFilePath: [`.env.${process.env.NODE_ENV}`, `.env`],
-          load: config,
-      }),
       WinstonLoggerModule.forRootAsync({
           useFactory: loggerFactory,
           imports: [ConfigModule],
