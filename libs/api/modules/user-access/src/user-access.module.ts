@@ -6,6 +6,7 @@ import { JwtStrategy } from '@owl-app/lib-api-bulding-blocks/passport/jwt.strate
 import config, { JwtConfigProvider  } from '@owl-app/lib-api-bulding-blocks/config'
 
 import { AuthModule } from './auth/auth.module'
+import { UserModule } from './user/user.module'
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { AuthModule } from './auth/auth.module'
       envFilePath: [`.env.${process.env.NODE_ENV}`, `.env`],
       load: config,
     }),
-    AuthModule
+    AuthModule,
+    UserModule
   ],
   providers: [
     JwtConfigProvider,

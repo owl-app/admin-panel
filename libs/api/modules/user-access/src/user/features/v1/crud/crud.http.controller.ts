@@ -21,6 +21,7 @@ import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-v
 
 import { UserService } from './user.service'
 import { CreateUserRequest, UpdateUserDto, UserResponse, FilterUserDto, UserPaginatedResponseDto } from './dto'
+import { createUserValidations } from './crud.validation'
 
 @ApiTags('User')
 @Controller('users')
@@ -58,8 +59,12 @@ export class UserCrudController {
     })
   @Post()
   @UsePipes(new ValidationPipe())
-  async create(@Body() createUserDto: CreateUserRequest) {
-    return await this.service.createAsyncOne(createUserDto);
+  async create(@Body() createUserRequest: CreateUserRequest) {
+    await createUserValidations.validateAsync(createUserRequest, { abortEarly: false });
+
+    const createdUser = await this.service.createAsyncOne(createUserRequest);
+
+    return createdUser;
   }
 
 	@ApiOperation({ summary: 'Update user' })
