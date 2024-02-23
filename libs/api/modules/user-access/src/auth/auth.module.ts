@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import { CqrsModule } from '@nestjs/cqrs'
 import {TypeOrmModule} from '@nestjs/typeorm'
 import { JwtModule, JwtService } from '@nestjs/jwt'
 import { ConfigModule, ConfigService } from '@nestjs/config'
@@ -13,13 +14,14 @@ import { IUserRepository } from '../database/repository/user-repository.interfac
 import { UserRepository } from '../database/repository/user.repository'
 import { UserEntity } from '../database/entity/user.entity'
 
-import { LocalStrategy } from './passport/local.strategy'
 import { LoginController } from './features/login/login.http.controller'
 import { GetMeController } from './features/get-me/get-me.http.controller'
+import { LoginHandler } from './features/login/login.service'
 import JwtTokenService from './jwt-token.service'
 
 @Module({
   imports: [
+    CqrsModule,
     WinstonLoggerModule,
     TypeOrmModule.forFeature([UserEntity]),
     JwtModule.registerAsync({
@@ -40,7 +42,7 @@ import JwtTokenService from './jwt-token.service'
     GetMeController
   ],
   providers: [
-    LocalStrategy,
+    LoginHandler,
     AppRequestContextService,
     {
       inject: [ConfigService, IUserRepository, JwtService],

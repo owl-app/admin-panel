@@ -1,20 +1,13 @@
-import { Body, Controller, HttpCode, HttpStatus, Inject, Post, Request, UseGuards } from '@nestjs/common'
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common'
+import { CommandBus } from '@nestjs/cqrs'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { AuthGuard } from '@nestjs/passport'
 
-import { IUser } from '@owl-app/lib-contracts'
-import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface'
 import { Public } from '@owl-app/lib-api-bulding-blocks/passport/jwt.guard'
 
-import { User } from '../../../domain/model/user'
-
-import userMapper from '../../mapping'
-import { UserResponse } from '../../dto/user.response'
-
-import { loginValidation } from './validation'
-import type RequestWithUser from './request-with-user.interface'
 import { AuthResponse } from './dto/auth.response'
 import { AuthRequest } from './dto/auth.request'
+import { Login } from './login.service'
+
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -24,15 +17,11 @@ import { AuthRequest } from './dto/auth.request'
 })
 @ApiResponse({ status: 500, description: 'Internal error' })
 export class LoginController {
-  constructor(
-    @Inject(IJwtTokenService)
-    private readonly jwtTokenService: IJwtTokenService<IUser>,
-  ) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   @ApiOperation({ description: 'login' })
   @HttpCode(HttpStatus.OK)
   @ApiBody({ type: AuthRequest })
-  @UseGuards(AuthGuard('local'))
   @Public()
   @ApiResponse({
     status: HttpStatus.OK,
@@ -40,16 +29,9 @@ export class LoginController {
     type: AuthResponse,
   })
   @Post('/login')
-  async login(@Body() auth: AuthRequest, @Request() request: RequestWithUser): Promise<AuthResponse> {
-    const { user } = request;
+  async login(@Body() auth: AuthRequest): Promise<AuthResponse> {
+    const result = await this.commandBus.execute(new Login(auth));
 
-    const accessToken = await this.jwtTokenService.getJwtToken(user.email);
-    const refreshToken = await this.jwtTokenService.getJwtRefreshToken(user.email);
-
-    return {
-      user: userMapper.map<User, UserResponse>(user, new UserResponse()),
-      accessToken,
-      refreshToken
-    }
+    return result;
   }
 }
