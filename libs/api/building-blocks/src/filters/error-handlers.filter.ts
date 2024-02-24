@@ -10,12 +10,12 @@ import {
   Logger,
   NotFoundException,
   UnauthorizedException
-} from '@nestjs/common';
-import { Response } from 'express';
-import { ProblemDocument } from 'http-problem-details';
-import { ValidationError } from 'joi';
-import ApplicationException from '../types/exceptions/application.exception';
-import { serializeObject } from '../utils/serialization';
+} from '@nestjs/common'
+import { Response } from 'express'
+import { ProblemDocument } from 'http-problem-details'
+import { ValidationError } from 'joi'
+import { ApiErrorValidationResponse } from '../api/api-error-validation.response'
+import { serializeObject } from '../utils/serialization'
 
 @Catch()
 export class ErrorHandlersFilter implements ExceptionFilter {
@@ -23,26 +23,10 @@ export class ErrorHandlersFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    if (err instanceof ApplicationException) {
-      const problem = new ProblemDocument({
-        type: ApplicationException.name,
-        title: err.message,
-        detail: err.stack,
-        status: err.statusCode
-      });
-
-      response.status(HttpStatus.BAD_REQUEST).json(problem);
-
-      Logger.error(serializeObject(problem));
-
-      return;
-    }
-
     if (err instanceof BadRequestException) {
       const problem = new ProblemDocument({
         type: BadRequestException.name,
         title: err.message,
-        detail: err.stack,
         status: err.getStatus()
       });
 
@@ -54,7 +38,6 @@ export class ErrorHandlersFilter implements ExceptionFilter {
     }
 
     if (err instanceof UnauthorizedException) {
-      console.log(err)
       const problem = new ProblemDocument({
         type: UnauthorizedException.name,
         title: err.message,
@@ -71,7 +54,6 @@ export class ErrorHandlersFilter implements ExceptionFilter {
       const problem = new ProblemDocument({
         type: ForbiddenException.name,
         title: err.message,
-        detail: err.stack,
         status: err.getStatus()
       });
 
@@ -86,7 +68,6 @@ export class ErrorHandlersFilter implements ExceptionFilter {
       const problem = new ProblemDocument({
         type: NotFoundException.name,
         title: err.message,
-        detail: err.stack,
         status: err.getStatus()
       });
 
@@ -101,7 +82,6 @@ export class ErrorHandlersFilter implements ExceptionFilter {
       const problem = new ProblemDocument({
         type: ConflictException.name,
         title: err.message,
-        detail: err.stack,
         status: err.getStatus()
       });
 
@@ -116,7 +96,6 @@ export class ErrorHandlersFilter implements ExceptionFilter {
       const problem = new ProblemDocument({
         type: HttpException.name,
         title: err.message,
-        detail: err.stack,
         status: err.getStatus()
       });
 
@@ -142,7 +121,7 @@ export class ErrorHandlersFilter implements ExceptionFilter {
         status: HttpStatus.BAD_REQUEST
       });
 
-      response.status(HttpStatus.UNPROCESSABLE_ENTITY).json(errors);
+      response.status(HttpStatus.UNPROCESSABLE_ENTITY).json(new ApiErrorValidationResponse(errors));
 
       Logger.error(serializeObject(problem));
 
@@ -152,7 +131,6 @@ export class ErrorHandlersFilter implements ExceptionFilter {
     const problem = new ProblemDocument({
       type: 'INTERNAL_SERVER_ERROR',
       title: err.message,
-      detail: err.stack,
       status: err.statusCode || 500
     });
 

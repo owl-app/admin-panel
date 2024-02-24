@@ -48,22 +48,12 @@ export default class JwtTokenService implements IJwtTokenService<User> {
     return token;
   }
 
-  async validateUserForLocalStragtegy(email: string, pass: string): Promise<User|null> {
-    const user = await this.userRepository.getUserByEmail(email);
-
-    if (!user) {
-      return null;
+  async validateToken(pass: string, passwordHash: string): Promise<boolean> {
+    if (await bcrypt.compare(pass, passwordHash)) {
+      return true;
     }
 
-    const match = await bcrypt.compare(pass, user.passwordHash);
-
-    if (user && match) {
-      await this.updateLoginTime(user.email);
-      const { passwordHash, ...result } = user;
-      return result;
-    }
-
-    return null;
+    return false;
   }
 
   async validateUserForJWTStragtegy(email: string): Promise<User|null> {
@@ -89,10 +79,6 @@ export default class JwtTokenService implements IJwtTokenService<User> {
     }
 
     return null;
-  }
-
-  private async updateLoginTime(email: string): Promise<void> {
-    await this.userRepository.updateLastLogin(email);
   }
 
   private async setCurrentRefreshToken(refreshToken: string, email: string) {

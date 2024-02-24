@@ -1,7 +1,7 @@
 import { Controller, Get, HttpStatus, Inject, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { AppRequestContextService } from '@owl-app/lib-api-bulding-blocks/context/app-request-context.service';
+import { RequestContextService } from '@owl-app/lib-api-bulding-blocks/context/app-request-context';
 
 import { User } from '../../../domain/model/user'
 
@@ -18,8 +18,7 @@ import { UserWithPermissionResponse } from './dto/user-with-permission.response'
 export class GetMeController {
   constructor(
     @Inject(IUserRepository)
-    private readonly userRepository: IUserRepository,
-    private requestContextService: AppRequestContextService
+    private readonly userRepository: IUserRepository
   ) {}
 
   @ApiOperation({ description: 'login' })
@@ -35,7 +34,7 @@ export class GetMeController {
   @Get('/me')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getMe(): Promise<UserWithPermissionResponse> {
-    const user = await this.userRepository.findOneByIdString(this.requestContextService.currentRequestId);
+    const user = await this.userRepository.findOneByIdString(RequestContextService.getCurrentUserId());
 
     return {
       user: userMapper.map<User, UserResponse>(user, new UserResponse()),

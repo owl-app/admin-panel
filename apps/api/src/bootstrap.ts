@@ -12,7 +12,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config'
 import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-bulding-blocks/config'
 import { JwtAuthGuard } from '@owl-app/lib-api-bulding-blocks/passport/jwt.guard'
-import { ErrorHandlersFilter } from '@owl-app/lib-api-bulding-blocks/filters/error-handlers.filter'
 // import { HttpExceptionsFilter } from '../http';
 // import { EntitySubscriberInterface } from 'typeorm';
 // // import { IPluginConfig } from '@gauzy/common';
@@ -49,8 +48,6 @@ export async function bootstrap(
 
     const reflector = app.get(Reflector);
     app.useGlobalGuards(new JwtAuthGuard(reflector));
-
-    app.useGlobalFilters(new ErrorHandlersFilter());
 
     // // app.useLogger(app.get(SentryService));
     app.use(json({ limit: '10mb' }));
@@ -90,7 +87,6 @@ export async function bootstrap(
           operationsSorter: 'alpha',
           },
         });
-
     
     let { port, host } = configService.get<IConfigApp>(APP_CONFIG_NAME);
 

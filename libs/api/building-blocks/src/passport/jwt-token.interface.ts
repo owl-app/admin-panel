@@ -11,7 +11,7 @@ export interface IJwtTokenService<User> {
 
   getJwtRefreshToken(email: string): Promise<string>;
 
-  validateUserForLocalStragtegy(email: string, pass: string): Promise<User|null>;
+  validateToken(pass: string, passwordHash: string): Promise<boolean>;
 
   validateUserForJWTStragtegy(email: string): Promise<User|null>;
 

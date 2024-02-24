@@ -11,6 +11,8 @@ import { AppModule } from './app.module'
 import { WinstonLoggerModule, WINSTON_MODULE_NEST_PROVIDER } from '@owl-app/winston-logger-nestjs'
 import { DatabaseModule } from './database.module'
 import loggerFactory from './logger.factory'
+import { ErrorHandlersFilter } from '@owl-app/lib-api-bulding-blocks/filters/error-handlers.filter'
+import { APP_FILTER } from '@nestjs/core'
 
 @Module({
   imports: [
@@ -28,6 +30,12 @@ import loggerFactory from './logger.factory'
       }),
       // HealthIndicatorModule,
       // SharedModule
+  ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: ErrorHandlersFilter,
+    },
   ]
 })
 export class BootstrapModule implements NestModule, OnApplicationShutdown{

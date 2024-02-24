@@ -20,27 +20,28 @@ export class UserRepository extends Repository<User> implements IUserRepository 
 
   async findOneByIdString(id: string): Promise<IUser>
   {
-    const adminUserEntity = await this.findOne({
+    const user = await this.findOne({
       where: {
         id,
       },
     });
-    if (!adminUserEntity) {
+    if (!user) {
       return null;
     }
-    return adminUserEntity;
+
+    return user;
   }
 
   async getUserByEmail(email: string): Promise<IUser> {
-    const adminUserEntity = await this.findOne({
+    const user = await this.findOne({
       where: {
         email,
       },
     });
-    if (!adminUserEntity) {
+    if (!user) {
       return null;
     }
-    return adminUserEntity;
+    return user;
   }
 
   async updateRefreshToken(email: string, refreshToken: string): Promise<void> {
@@ -65,15 +66,15 @@ export class UserRepository extends Repository<User> implements IUserRepository 
     );
   }
 
-  private toUser(adminUserEntity: IUser): IUser {
-    const adminUser: IUser = new User();
+  private toUser(user: IUser): IUser {
+    const userDomain: IUser = new User();
 
-    adminUser.id = adminUserEntity.id;
-    adminUser.email = adminUserEntity.email;
-    adminUser.firstName = adminUserEntity.firstName;
-    adminUser.lastName = adminUserEntity.lastName;
-    adminUser.passwordHash = adminUserEntity.passwordHash;
+    userDomain.id = user.id;
+    userDomain.email = user.email;
+    userDomain.firstName = user.firstName;
+    userDomain.lastName = user.lastName;
+    userDomain.passwordHash = user.passwordHash;
 
-    return adminUser;
+    return userDomain;
   }
 }
