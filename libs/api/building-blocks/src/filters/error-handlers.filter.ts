@@ -1,107 +1,34 @@
 import {
   ArgumentsHost,
-  BadRequestException,
   Catch,
-  ConflictException,
   ExceptionFilter,
-  ForbiddenException,
   HttpException,
   HttpStatus,
-  Logger,
-  NotFoundException,
-  UnauthorizedException
+  Logger
 } from '@nestjs/common'
 import { Response } from 'express'
-import { ProblemDocument } from 'http-problem-details'
 import { ValidationError } from 'joi'
+
 import { ApiErrorValidationResponse } from '../api/api-error-validation.response'
 import { serializeObject } from '../utils/serialization'
+import { ApiErrorResponse } from '../api/api-error.response'
+import { RequestContextService } from '../context/app-request-context'
 
 @Catch()
 export class ErrorHandlersFilter implements ExceptionFilter {
-  public catch(err: any, host: ArgumentsHost): any {
+  public catch(err: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    if (err instanceof BadRequestException) {
-      const problem = new ProblemDocument({
-        type: BadRequestException.name,
-        title: err.message,
-        status: err.getStatus()
-      });
-
-      response.status(HttpStatus.BAD_REQUEST).json(problem);
-
-      Logger.error(serializeObject(problem));
-
-      return;
-    }
-
-    if (err instanceof UnauthorizedException) {
-      const problem = new ProblemDocument({
-        type: UnauthorizedException.name,
-        title: err.message,
-        status: err.getStatus()
-      });
-      response.status(HttpStatus.UNAUTHORIZED).json(problem);
-
-      Logger.error(serializeObject(problem));
-
-      return;
-    }
-
-    if (err instanceof ForbiddenException) {
-      const problem = new ProblemDocument({
-        type: ForbiddenException.name,
-        title: err.message,
-        status: err.getStatus()
-      });
-
-      response.status(HttpStatus.FORBIDDEN).json(problem);
-
-      Logger.error(serializeObject(problem));
-
-      return;
-    }
-
-    if (err instanceof NotFoundException) {
-      const problem = new ProblemDocument({
-        type: NotFoundException.name,
-        title: err.message,
-        status: err.getStatus()
-      });
-
-      response.status(HttpStatus.NOT_FOUND).json(problem);
-
-      Logger.error(serializeObject(problem));
-
-      return;
-    }
-
-    if (err instanceof ConflictException) {
-      const problem = new ProblemDocument({
-        type: ConflictException.name,
-        title: err.message,
-        status: err.getStatus()
-      });
-
-      response.status(HttpStatus.CONFLICT).json(problem);
-
-      Logger.error(serializeObject(problem));
-
-      return;
-    }
-
     if (err instanceof HttpException) {
-      const problem = new ProblemDocument({
-        type: HttpException.name,
-        title: err.message,
-        status: err.getStatus()
-      });
+      response.status(err.getStatus()).json(new ApiErrorResponse({
+        statusCode: err.getStatus(),
+        error: err.name,
+        message: err.message,
+        correlationId: RequestContextService.getRequestId(),
+      }));
 
-      response.status(HttpStatus.CONFLICT).json(problem);
-
-      Logger.error(serializeObject(problem));
+      Logger.error(serializeObject(err));
 
       return;
     }
@@ -114,29 +41,16 @@ export class ErrorHandlersFilter implements ExceptionFilter {
         };
       })
 
-      const problem = new ProblemDocument({
-        type: ValidationError.name,
-        title: err.message,
-        detail: err.stack,
-        status: HttpStatus.BAD_REQUEST
-      });
-
       response.status(HttpStatus.UNPROCESSABLE_ENTITY).json(new ApiErrorValidationResponse(errors));
 
-      Logger.error(serializeObject(problem));
+      Logger.error(serializeObject(err));
 
       return;
     }
 
-    const problem = new ProblemDocument({
-      type: 'INTERNAL_SERVER_ERROR',
-      title: err.message,
-      status: err.statusCode || 500
-    });
+    response.status(HttpStatus.INTERNAL_SERVER_ERROR).json();
 
-    response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(problem);
-
-    Logger.error(serializeObject(problem));
+    Logger.error(serializeObject(err));
 
     return;
   }

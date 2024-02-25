@@ -10,7 +10,6 @@ import {
   Param,
   HttpCode,
   Injectable,
-  Inject,
   UsePipes,
   ValidationPipe
 } from '@nestjs/common'
@@ -18,6 +17,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResp
 import { PaginatedRequest } from '@owl-app/crud-nestjs'
 
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
+import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
 
 import{ User } from '../../../../domain/model/user'
 import mapper from '../../../mapping'
@@ -37,15 +37,16 @@ export class UserCrudController {
   ) {}
 
 	@ApiOperation({ summary: 'Find user by id' })
-    @ApiResponse({
-      status: HttpStatus.OK,
-      description: 'Found one user record',
-      type: UserResponse,
-    })
-    @ApiResponse({
-      status: HttpStatus.NOT_FOUND,
-      description: 'User not found'
-    })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Found one user record',
+    type: UserResponse,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'User not found',
+    type: ApiErrorResponse
+  })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.service.getById(id);

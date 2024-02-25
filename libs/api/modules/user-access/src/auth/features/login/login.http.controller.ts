@@ -4,6 +4,7 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 import { Public } from '@owl-app/lib-api-bulding-blocks/passport/jwt.guard'
 import { ApiErrorValidationResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error-validation.response'
+import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
 
 import { InvalidAuthenticationError } from '../../../domain/auth.errors'
 
@@ -35,6 +36,7 @@ export class LoginController {
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: InvalidAuthenticationError.message,
+    type: ApiErrorResponse
   })
   @Post('/login')
   async login(@Body() auth: AuthRequest): Promise<AuthResponse> {
