@@ -6,8 +6,11 @@ import { NestjsQueryTypeOrmModule } from '@owl-app/crud-nestjs'
 import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
 
 import { UserEntity } from '../database/entity/user.entity'
+import { IUserRepository } from '../database/repository/user-repository.interface'
+import { UserRepository } from '../database/repository/user.repository'
 
 import { UserCrudController } from './features/v1/crud/crud.http.controller'
+import { AssignAccessController } from './features/v1/assing-access/assign-access.http.controller'
 import { UserAssembler } from './features/v1/crud/user.assembler'
 import { UserService } from './features/v1/crud/user.service'
 
@@ -20,10 +23,15 @@ import { UserService } from './features/v1/crud/user.service'
     })
   ],
   controllers: [
-    UserCrudController
+    UserCrudController,
+    AssignAccessController
   ],
   providers: [
-    UserService
+    UserService,
+    {
+      provide: IUserRepository,
+      useClass: UserRepository
+    }
   ]
 })
 export class UserModule {}

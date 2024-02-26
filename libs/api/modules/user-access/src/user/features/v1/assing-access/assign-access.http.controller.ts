@@ -1,18 +1,12 @@
 import {
   Controller,
   HttpStatus,
-  Get,
-  Post,
 	Put,
-  Delete,
   Body,
-  Query,
   Param,
   HttpCode,
   Injectable,
-  Inject,
-  UsePipes,
-  ValidationPipe
+  Inject
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 import { Manager } from '@owl-app/rbac-manager'
@@ -25,11 +19,11 @@ import { IUserRepository } from '../../../../database/repository/user-repository
 @Controller('users')
 @ApiBearerAuth()
 @Injectable()
-export class UserCrudController {
+export class AssignAccessController {
   constructor(
     @Inject(IUserRepository)
     private readonly userRepository: IUserRepository,
-    // @Inject('RBAC_MANAGER') readonly rbacManager: Manager
+    @Inject('RBAC_MANAGER') readonly rbacManager: Manager
   ) {}
 
 	@ApiOperation({ summary: 'Assign permission or roles to user' })
@@ -53,8 +47,8 @@ export class UserCrudController {
 	): Promise<void> {
     const { id } = await this.userRepository.findOneByIdString(userId);
 
-    // await Promise.all(items.map(async (item: string): Promise<void> => {
-    //     await this.rbacManager.assign(item, id);
-    // }));
+    await Promise.all(items.map(async (item: string): Promise<void> => {
+        await this.rbacManager.assign(item, id);
+    }));
   }
 }

@@ -26,4 +26,18 @@ export abstract class BaseRbacItemResponse implements IBaseRbacItemResponse {
   @ApiPropertyOptional({ type: () => String })
   @IsOptional()
   updatedAt: string | null = null;
+
+  constructor(
+    name: string,
+    description: string | null = null,
+    ruleName: string | null = null,
+    createdAt: string | null = null,
+    updatedAt: string | null = null,
+  ) {
+    this.name = name;
+    this.description = description;
+    this.ruleName = ruleName;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+  }
 }
