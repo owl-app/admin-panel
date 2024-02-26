@@ -1,6 +1,6 @@
 # rbac-storage-typeorm
 
-This library was generated with [Nx](https://nx.dev).
+Rbac storage TypeOrm.
 
 ## Building
 

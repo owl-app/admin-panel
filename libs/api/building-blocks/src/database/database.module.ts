@@ -1,7 +1,7 @@
 import { ConfigModule, ConfigService} from '@nestjs/config';
 import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
-import { DataSource, DataSourceOptions } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 @Global()
 @Module({
@@ -12,7 +12,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 			useFactory: async (configService: ConfigService) => {
 				return configService.get('db');
 			},
-			dataSourceFactory: async (options: DataSourceOptions) => {
+			dataSourceFactory: async (options) => {
         const dataSource = await new DataSource(options).initialize();
         return dataSource;
       }

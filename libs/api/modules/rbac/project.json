@@ -1,0 +1,24 @@
+{
+  "name": "@owl-app/lib-api-module-rbac",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/modules/rbac/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/libs/api/modules/rbac"],
+      "options": {
+        "commands": [
+          "npx rimraf dist/libs/api/modules/rbac",
+          "npx tsc -p libs/api/modules/rbac/tsconfig.build.json",
+          "npx copyfiles -f \"libs/api/modules/rbac/package.json\" \"libs/api/modules/rbac/README.md\" \"LICENSE\" dist/libs/api/modules/rbac"
+        ],
+        "cwd": ".",
+        "parallel": false
+      }
+    }
+  },
+  "tags": []
+}
+
+

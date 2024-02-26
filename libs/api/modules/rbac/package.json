@@ -1,0 +1,32 @@
+{
+  "name": "@owl-app/lib-api-module-rbac",
+  "main": "./dist/index.js",
+  "source": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "dependencies": {
+    "@nestjs/common": "^10.3.1"
+  },
+  "devDependencies": {
+    "eslint": "~8.48.0",
+    "eslint-plugin-import": "^2.29.1",
+    "jest": "^29.4.1",
+    "jest-environment-node": "^29.4.1",
+    "prettier": "^2.6.2",
+    "ts-jest": "^29.1.0",
+    "ts-node": "10.9.1",
+    "typescript": "~5.3.2"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^10.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0 <=20.x.x",
+    "npm": ">=6.0.0"
+  }
+}
+
+
+

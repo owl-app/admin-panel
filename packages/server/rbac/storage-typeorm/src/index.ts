@@ -1,1 +1,3 @@
-export * from './lib/rbac-storage-typeorm';
+export * from './config.interface'
+export * from './item-storage'
+export * from './providers'

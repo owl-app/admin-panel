@@ -15,6 +15,7 @@
       "@owl-app/crud-nestjs": ["packages/server/crud/nestjs/src/index.ts"],
       "@owl-app/lib-api-bulding-blocks/*": ["libs/api/building-blocks/src/*"],
       "@owl-app/lib-api-core": ["libs/api/core/src/index.ts"],
+      "@owl-app/lib-api-module-rbac/*": ["libs/api/modules/rbac/src/*"],
       "@owl-app/lib-api-module-user-access/*": [
         "libs/api/modules/user-access/src/*"
       ],

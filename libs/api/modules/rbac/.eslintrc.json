@@ -6,7 +6,7 @@
       "files": ["*.ts", "*.tsx"],
       "parserOptions": {
         "project": [
-          "packages/server/rbac/storage-typeorm/tsconfig.eslint.json"
+          "libs/api/modules/rbac/tsconfig.eslint.json"
         ]
       }
     }

@@ -1,13 +1,10 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 
-import { JwtStrategy } from '@owl-app/lib-api-bulding-blocks/passport/jwt.strategy'
-
-import config, { JwtConfigProvider  } from '@owl-app/lib-api-bulding-blocks/config'
+import config from '@owl-app/lib-api-bulding-blocks/config'
 import { DatabaseModule } from '@owl-app/lib-api-bulding-blocks/database/database.module'
 
-import { AuthModule } from './auth/auth.module'
-import { UserModule } from './user/user.module'
+import { RbacPermissionModule } from './permission/permission.module'
 
 @Module({
   imports: [
@@ -18,12 +15,7 @@ import { UserModule } from './user/user.module'
       envFilePath: [`.env.${process.env.NODE_ENV}`, `.env`],
       load: config,
     }),
-    AuthModule,
-    UserModule
-  ],
-  providers: [
-    JwtConfigProvider,
-    JwtStrategy
+    RbacPermissionModule
   ]
 })
-export class UserAccessModule {}
+export class RbacModule {}

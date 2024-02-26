@@ -1,23 +1,44 @@
 {
   "name": "@owl-app/rbac-storage-typeorm",
-  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/server/rbac/storage-typeorm/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/server/rbac/storage-typeorm"],
       "options": {
-        "outputPath": "dist/packages/server/rbac/storage-typeorm",
-        "main": "packages/server/rbac/storage-typeorm/src/index.ts",
-        "tsConfig": "packages/server/rbac/storage-typeorm/tsconfig.lib.json",
-        "assets": ["packages/server/rbac/storage-typeorm/*.md"]
+        "commands": [
+          "npx rimraf dist/packages/server/rbac/storage-typeorm",
+          "npx tsc -p packages/server/rbac/storage-typeorm/tsconfig.build.json",
+          "npx copyfiles -f \"packages/server/rbac/storage-typeorm/package.json\" \"packages/server/rbac/storage-typeorm/README.md\" \"LICENSE\" dist/packages/server/rbac/storage-typeorm"
+        ],
+        "cwd": ".",
+        "parallel": false
       }
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs @owl-app/rbac-storage-typeorm {args.ver} {args.tag}",
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npx copyfiles -f \"dist/packages/server/rbac/storage-typeorm/src/*\" dist/packages/server/rbac/storage-typeorm/dist",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npx rimraf dist/packages/server/rbac/storage-typeorm/src",
+            "forwardAllArgs": false
+          },
+          "node tools/scripts/publish.mjs @owl-app/registry-nestjs {args.ver} {args.tag}"
+        ],
+        "cwd": ".",
+        "parallel": false,
+        "packageDir": "{workspaceRoot}/dist/packages/server/rbac/storage-typeorm/"
+      },
       "dependsOn": ["build"]
     }
   },
   "tags": []
 }
+
+
