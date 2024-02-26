@@ -15,11 +15,11 @@ import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResp
 
 import { Manager, Permission } from '@owl-app/rbac-manager';
 
-import { mapperToResponse, mapperToPersistance } from '../../../mapping'
+import mapper from '../../../mapping'
 
-import { CreatePermissionRequest } from '../../../dto/permission/create-permission.request.dto';
-import { PermissionResponse } from '../../../dto/permission/permission.response.dto';
-import { UpdatePermissionRequest } from '../../../dto/permission/update-permission.request.dto';
+import { CreatePermissionRequest } from '../../../dto/permission/create-permission.request.dto'
+import { PermissionResponse } from '../../../dto/permission/permission.response.dto'
+import { UpdatePermissionRequest } from '../../../dto/permission/update-permission.request.dto'
 
 @ApiTags('Rbac Permission')
 @Controller('rbac/permissions')
@@ -27,9 +27,7 @@ import { UpdatePermissionRequest } from '../../../dto/permission/update-permissi
 @Injectable()
 export class PermissionCrudController {
 
-  constructor(@Inject('RBAC_MANAGER') readonly rbacManager: Manager) {
-
-  }
+  constructor(@Inject('RBAC_MANAGER') readonly rbacManager: Manager) {}
 
   @ApiOperation({ summary: 'All permissions' })
     @ApiResponse({
@@ -47,7 +45,7 @@ export class PermissionCrudController {
   async getAll(): Promise<PermissionResponse[]> {
     const permissions = await this.rbacManager.getAllPermissions();
     
-    return permissions.map((permission: Permission) => mapperToResponse.map<Permission, PermissionResponse>(permission, {} as PermissionResponse));
+    return permissions.map((permission: Permission) => mapper.toResponse(permission));
   }
 
 	@ApiOperation({ summary: 'Create new permission' })
@@ -63,12 +61,12 @@ export class PermissionCrudController {
   @Post()
   async createRole(@Body() createPermissionDto: CreatePermissionRequest) {
     const addedPermission = await this.rbacManager.addPermission(
-      mapperToPersistance.map<CreatePermissionRequest, Permission>(createPermissionDto, new Permission(
-        createPermissionDto.name,
-      )),
+      mapper.toPersistence(createPermissionDto),
     );
 
-    return mapperToResponse.map<Permission, PermissionResponse>(addedPermission, {} as PermissionResponse)
+    console.log(addedPermission)
+
+    return mapper.toResponse(addedPermission);
   }
 
 	@ApiOperation({ summary: 'Update permission' })
@@ -78,7 +76,7 @@ export class PermissionCrudController {
     })
     @ApiResponse({
       status: HttpStatus.NOT_FOUND,
-      description: 'Role not found'
+      description: 'Permission not found'
     })
     @ApiResponse({
       status: HttpStatus.BAD_REQUEST,
@@ -87,12 +85,12 @@ export class PermissionCrudController {
     })
     @HttpCode(HttpStatus.ACCEPTED)
 	@Put(':name')
-  async updateRole(@Param('name') name: string, @Body() updatePermissionDto: UpdatePermissionRequest) {
+  async updatePermission(@Param('name') name: string, @Body() updatePermissionDto: UpdatePermissionRequest) {
     const updatedPermission = await this.rbacManager.updatePermission(
-      name, mapperToPersistance.map<UpdatePermissionRequest, Permission>(updatePermissionDto, {} as Permission),
+      name, mapper.toPersistence(updatePermissionDto),
     );
 
-    return mapperToResponse.map<Permission, PermissionResponse>(updatedPermission, {} as PermissionResponse)
+    return mapper.toResponse(updatedPermission);
   }
 
   @ApiOperation({ summary: 'Delete permission' })

@@ -7,7 +7,7 @@ import { PermissionCrudController } from './features/v1/crud/crud.http.controlle
 
 @Module({
   imports: [
-    RbacTypeOrmModule.forFeature({})
+    RbacTypeOrmModule.forFeature()
   ],
   controllers: [
     PermissionCrudController
