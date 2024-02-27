@@ -1,9 +1,8 @@
-import { Injectable, ExecutionContext, SetMetadata } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+import { Injectable, ExecutionContext } from '@nestjs/common'
+import { Reflector } from '@nestjs/core'
 import { AuthGuard as PassportAuthGaurd } from '@nestjs/passport'
 
-export const PUBLIC_ROUTE_KEY = '_PUBLIC_ROUTE_';
-export const Public = () => SetMetadata(PUBLIC_ROUTE_KEY, true);
+import { isPublicRoute } from '../utils/route'
 
 @Injectable()
 export class JwtAuthGuard  extends PassportAuthGaurd('jwt') {
@@ -12,15 +11,10 @@ export class JwtAuthGuard  extends PassportAuthGaurd('jwt') {
   }
 
   override canActivate(context: ExecutionContext) {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(PUBLIC_ROUTE_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-
-    if (isPublic) {
-      return true;
+    if(!isPublicRoute(this.reflector, context)) {
+      return super.canActivate(context);
     }
 
-    return super.canActivate(context);
+    return true;
   }
 }

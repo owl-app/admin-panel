@@ -417,7 +417,7 @@ export class Manager implements IAccessCheckerInterface {
    * @return self
    */
   async updateRole(name: string, role: Role): Promise<Role> {
-    this.checkItemNameForUpdate(role, name);
+    await this.checkItemNameForUpdate(role, name);
 
     await this.itemsStorage.update(name, role);
     await this.assignmentsStorage.renameItem(name, role.name);
@@ -463,7 +463,7 @@ export class Manager implements IAccessCheckerInterface {
    * @return self
    */
   async updatePermission(name: string, permission: Permission): Promise<Permission> {
-    this.checkItemNameForUpdate(permission, name);
+    await this.checkItemNameForUpdate(permission, name);
 
     await this.itemsStorage.update(name, permission);
     await this.assignmentsStorage.renameItem(name, permission.name);
@@ -842,9 +842,6 @@ export class Manager implements IAccessCheckerInterface {
       return;
     }
 
-    throw new InvalidArgumentException(
-      `Unable to change the role or the permission name.
-          The name ${item.name} is already used by another role or permission.`
-    );
+    throw new InvalidArgumentException(`Unable to change the role or the permission name. The name ${item.name} is already used by another role or permission.`);
   }
 }
