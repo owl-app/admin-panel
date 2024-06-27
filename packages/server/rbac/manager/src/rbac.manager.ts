@@ -375,6 +375,7 @@ export class Manager implements IAccessCheckerInterface {
     const userAssignments = await this.assignmentsStorage.getAll();
 
     Object.keys(userAssignments).forEach(async (userId) => {
+      // eslint-disable-next-line array-callback-return
       roles.every((role: string): void => {
         if (role in userAssignments[userId]) {
           result.push(userId);
