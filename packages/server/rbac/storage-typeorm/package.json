@@ -8,7 +8,8 @@
   ],
   "dependencies": {
     "@owl-app/registry": "^0.0.1",
-    "moment": "^2.30.1"
+    "moment": "^2.30.1",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "tsconfig": "^0.0.1"

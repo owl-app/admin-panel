@@ -1,26 +1,8 @@
 import { ExistingServiceException } from "./exception/existing.service.exception";
 import { NonExistingServiceException } from "./exception/non-existing.service.exception";
+import type { Registry } from "./types";
 
-export interface IServiceRegistry<T>
-{
-    all(): Record<string, T>;
-
-    register(identifier: string, service: T): void;
-
-    /**
-     * @throws NonExistingServiceException
-     */
-    unregister(identifier: string): void;
-
-    has(identifier: string): boolean;
-
-    /**
-     * @throws NonExistingServiceException
-     */
-    get(identifier: string): T;
-}
-
-export class ServiceRegistry<T> implements IServiceRegistry<T>
+export class ServiceRegistry<T> implements Registry<T>
 {
     private services: Record<string, T> = {}
 

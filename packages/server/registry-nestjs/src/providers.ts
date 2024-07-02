@@ -4,12 +4,12 @@ import {
   OptionalFactoryDependency,
   Type,
 } from '@nestjs/common';
-import { ServiceRegistry, IServiceRegistry} from "@owl-app/registry";
+import { ServiceRegistry, Registry} from "@owl-app/registry";
 
 export function createServiceRegistryProvider<T>(
   nameService: string,
   services: Record<string, Type<T>> = {}
-): FactoryProvider<IServiceRegistry<T>> {
+): FactoryProvider<Registry<T>> {
   const servicesNames: Array<string> = [];
   const servicesInjections: Array<InjectionToken | OptionalFactoryDependency> = [];
 
@@ -20,7 +20,7 @@ export function createServiceRegistryProvider<T>(
 
   return {
     provide: nameService,
-    useFactory(...rules: Array<T>): IServiceRegistry<T> {
+    useFactory(...rules: Array<T>): Registry<T> {
       const serviceRegistry = new ServiceRegistry<T>('rbac_rules');
 
       rules.forEach((service, index) => {

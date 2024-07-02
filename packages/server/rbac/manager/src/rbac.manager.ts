@@ -1,4 +1,4 @@
-import { IServiceRegistry } from "@owl-app/registry";
+import { Registry } from "@owl-app/registry";
 import {
   isEmpty,
   isFunction,
@@ -42,7 +42,7 @@ export class Manager implements IAccessCheckerInterface {
   constructor(
     readonly itemsStorage: IItemsStorageInterface,
     readonly assignmentsStorage: IAssignmentsStorageInterface,
-    readonly serviceRegistryRules: IServiceRegistry<IRuleInterface>,
+    readonly serviceRegistryRules: Registry<IRuleInterface>,
     readonly enableDirectPermissions = false
   ) {}
 

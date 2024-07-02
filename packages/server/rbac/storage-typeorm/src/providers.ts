@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm'
 import { ConfigService } from '@nestjs/config'
 
 import { IRuleInterface, Manager } from '@owl-app/rbac-manager'
-import { IServiceRegistry } from '@owl-app/registry'
+import { Registry } from '@owl-app/registry'
 
 import { IRbacConfig, RBAC_CONFIG_NAME } from './config.interface'
 import { ItemStorage } from './item-storage'
@@ -31,7 +31,7 @@ export const createAssigmentsStorageProvider: FactoryProvider = {
 
 export const rbacManagerFactoryProvider: FactoryProvider = {
   provide: 'RBAC_MANAGER',
-  useFactory: (dataSource: DataSource, configService: ConfigService, serviceRegistryRules: IServiceRegistry<IRuleInterface>) => {
+  useFactory: (dataSource: DataSource, configService: ConfigService, serviceRegistryRules: Registry<IRuleInterface>) => {
     const { itemTableName = 'rbac_item', itemChildrenTableName = null, assigmentsTable = 'rbac_assigment' } = configService.get<IRbacConfig>(RBAC_CONFIG_NAME) ?? {},
           itemStorage = new ItemStorage(dataSource, itemTableName, itemChildrenTableName),
           assigmentsStorage = new AssignmentsStorage(dataSource, assigmentsTable);
