@@ -1,0 +1,24 @@
+{
+  "name": "@owl-app/lib-api-module-company",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/modules/company/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/libs/api/modules/company"],
+      "options": {
+        "commands": [
+          "npx rimraf dist/libs/api/modules/company",
+          "npx tsc -p libs/api/modules/company/tsconfig.build.json",
+          "npx copyfiles -f \"libs/api/modules/company/package.json\" \"libs/api/modules/company/README.md\" \"LICENSE\" dist/libs/api/modules/company"
+        ],
+        "cwd": ".",
+        "parallel": false
+      }
+    }
+  },
+  "tags": []
+}
+
+
