@@ -18,11 +18,7 @@ export class TenantRepository<Entity> extends Repository<Entity> {
     alias?: string,
     queryRunner?: QueryRunner
   ): SelectQueryBuilder<Entity> {
-    const qb = this.manager.createQueryBuilder<Entity>(
-      this.metadata.target as any,
-      alias || this.metadata.targetName,
-      queryRunner || this.queryRunner
-    );
+    const qb = super.createQueryBuilder(alias, queryRunner);
 
     console.log('createQueryBuilder', qb.alias);
 
