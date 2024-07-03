@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant/tenant-repository';
 
 import { IUser } from '@owl-app/lib-contracts';
 
@@ -9,13 +10,13 @@ import { User } from '../../domain/model/user';
 import { IUserRepository } from './user-repository.interface';
 
 @Injectable()
-export class UserRepository extends Repository<User> implements IUserRepository {
+export class UserRepository extends TenantRepository<User> implements IUserRepository {
 
   constructor(
     @InjectRepository(User)
     userEntityRepository: Repository<User>,
   ) {
-    super(userEntityRepository.target, userEntityRepository.manager, userEntityRepository.queryRunner);
+    super(userEntityRepository);
   }
 
   async findOneByIdString(id: string): Promise<IUser>

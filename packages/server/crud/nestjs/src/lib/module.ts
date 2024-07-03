@@ -1,19 +1,26 @@
 import { DynamicModule } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import type { DataSource } from 'typeorm'
-import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type'
+import type { DataSource} from 'typeorm'
 
-import { createTypeOrmQueryServiceProviders } from './providers'
+import { createTypeOrmQueryServiceProvider } from './providers'
+import type { NestjsQueryTypeOrmModuleEntitiesOpts } from './types'
 
 export class NestjsQueryTypeOrmModule {
-  static forFeature(entities: EntityClassOrSchema[], connection?: DataSource | string): DynamicModule {
-    const queryServiceProviders = createTypeOrmQueryServiceProviders(entities, connection)
-    const typeOrmModule = TypeOrmModule.forFeature(entities, connection)
+  static forFeature(entitiesOpts: NestjsQueryTypeOrmModuleEntitiesOpts[], connection?: DataSource | string): DynamicModule {
+    const entities = entitiesOpts.map((opt) => opt.entity);
+    const repositoriesProviders = entitiesOpts
+      .filter((opt) => opt?.repository?.obj && opt?.repository?.injectInProviders)
+      .map((opt) => opt.repository.obj);
+
+    const queryServiceProviders = entitiesOpts.map((opt) =>
+      createTypeOrmQueryServiceProvider(opt.entity, opt.repository, connection)
+    );
+    const typeOrmModule = TypeOrmModule.forFeature(entities, connection);
 
     return {
       imports: [typeOrmModule],
       module: NestjsQueryTypeOrmModule,
-      providers: [...queryServiceProviders],
+      providers: [...queryServiceProviders, ...repositoriesProviders],
       exports: [...queryServiceProviders, typeOrmModule]
     }
   }

@@ -5,21 +5,27 @@ import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-clas
 
 import { TypeOrmQueryService } from './services'
 import { getQueryServiceToken } from './decorators'
+import type { NestjsQueryTypeOrmModuleEntitiesRepositoryOpts } from './types'
 
-function createTypeOrmQueryServiceProvider<Entity>(
-  EntityClass: EntityClassOrSchema,
-  connection?: DataSource | string
+export function createTypeOrmQueryServiceProvider<Entity>(
+  entity: EntityClassOrSchema,
+  repository?: NestjsQueryTypeOrmModuleEntitiesRepositoryOpts,
+  connection?: DataSource | string,
 ): FactoryProvider {
+  const { obj: RepositoryObj , injectInProviders = false} = repository ?? {};
+
   return {
-    provide: getQueryServiceToken(EntityClass),
-    useFactory(repo: Repository<Entity>) {
-      return new TypeOrmQueryService(repo)
+    provide: getQueryServiceToken(entity),
+    useFactory(baseRepo: Repository<Entity>) {
+      if (RepositoryObj && !injectInProviders) {
+        return new TypeOrmQueryService(new RepositoryObj(baseRepo))
+      }
+
+      return new TypeOrmQueryService(baseRepo)
     },
-    inject: [getRepositoryToken(EntityClass, connection)]
+    inject: [
+      injectInProviders ? RepositoryObj : getRepositoryToken(entity, connection),
+    ]
   }
 }
 
-export const createTypeOrmQueryServiceProviders = (
-  entities: EntityClassOrSchema[],
-  connection?: DataSource | string
-): FactoryProvider[] => entities.map((entity) => createTypeOrmQueryServiceProvider(entity, connection))

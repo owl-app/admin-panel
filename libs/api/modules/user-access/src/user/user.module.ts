@@ -18,7 +18,14 @@ import { UserService } from './features/v1/crud/user.service'
   imports: [
     RbacTypeOrmModule.forFeature({}),
     NestjsQueryCoreModule.forFeature({
-      imports: [NestjsQueryTypeOrmModule.forFeature([UserEntity])],
+      imports: [NestjsQueryTypeOrmModule.forFeature([
+        {
+          entity: UserEntity,
+          repository: {
+            obj: UserRepository,
+          }
+        }
+      ])],
       assemblers: [UserAssembler]
     })
   ],

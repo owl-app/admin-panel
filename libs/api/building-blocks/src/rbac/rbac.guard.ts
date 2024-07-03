@@ -15,9 +15,6 @@ export class RbacGuard implements CanActivate {
     const controllerPath = this.reflector.get<string>(PATH_METADATA, context.getClass());
     const routeHandlerPath = this.reflector.get<string>(PATH_METADATA, context.getHandler());
 
-    console.log(controllerPath)
-    console.log(routeHandlerPath)
-
     if(!isPublicRoute(this.reflector, context)) {
       return true;
     }
