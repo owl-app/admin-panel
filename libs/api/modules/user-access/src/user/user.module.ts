@@ -3,7 +3,9 @@ import { Module } from '@nestjs/common'
 
 import { NestjsQueryCoreModule } from '@owl-app/crud-core'
 import { NestjsQueryTypeOrmModule } from '@owl-app/crud-nestjs'
+
 import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
+import { injectableRepositoryFactory } from '@owl-app/lib-api-bulding-blocks/tenant/injectable-repository-factory';
 
 import { UserEntity } from '../database/entity/user.entity'
 import { IUserRepository } from '../database/repository/user-repository.interface'
@@ -22,7 +24,8 @@ import { UserService } from './features/v1/crud/user.service'
         {
           entity: UserEntity,
           repository: {
-            obj: UserRepository,
+            obj: injectableRepositoryFactory(UserEntity),
+            injectInProviders: true
           }
         }
       ])],
