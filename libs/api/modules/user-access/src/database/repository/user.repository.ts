@@ -21,13 +21,14 @@ export class UserRepository extends TenantRepository<User> implements IUserRepos
 
   async findOneByIdString(id: string): Promise<IUser>
   {
-    const user = await this.findOne({
-      where: {
-        id,
-      },
-    });
-    if (!user) {
-      return null;
+    let user = null;
+
+    if(id) {
+      user = await this.findOne({
+        where: {
+          id,
+        },
+      });
     }
 
     return user;

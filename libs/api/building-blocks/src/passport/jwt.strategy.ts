@@ -1,14 +1,18 @@
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 
 import { JWT_CONFIG_PROVIDER, type IJwtConfig } from '../config/jwt'
+import { IJwtTokenPayload, IJwtTokenService } from './jwt-token.interface';
+import { IUser } from '@owl-app/lib-contracts';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(JWT_CONFIG_PROVIDER)
-    private jwtConfig: IJwtConfig
+    private jwtConfig: IJwtConfig,
+    @Inject(IJwtTokenService)
+    private jwtTokenService: IJwtTokenService<IUser>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -17,7 +21,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
-    return { userId: payload.sub, username: payload.username };
+  async validate(payload: IJwtTokenPayload): Promise<Partial<IUser>> {
+    const user = await this.jwtTokenService.validateUserForJWTStragtegy(payload.email);
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return { 
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    };
   }
 }

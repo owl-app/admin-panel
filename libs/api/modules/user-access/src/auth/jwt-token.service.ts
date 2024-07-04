@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { type IJwtConfig } from '@owl-app/lib-api-bulding-blocks/config/jwt';
-import { IJwtTokenService, IJwtServicePayload } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
+import { IJwtTokenService, IJwtTokenPayload } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
 
 import { User } from '../domain/model/user'
 import { IUserRepository } from '../database/repository/user-repository.interface';
@@ -21,7 +21,7 @@ export default class JwtTokenService implements IJwtTokenService<User> {
     return decode;
   }
 
-  createToken(payload: IJwtServicePayload, secret: string, expiresIn: string): string {
+  createToken(payload: IJwtTokenPayload, secret: string, expiresIn: string): string {
     return this.jwtService.sign(payload, {
       secret,
       expiresIn,
@@ -29,7 +29,7 @@ export default class JwtTokenService implements IJwtTokenService<User> {
   }
 
   async getJwtToken(email: string): Promise<string> {
-    const payload: IJwtServicePayload = { email };
+    const payload: IJwtTokenPayload = { email };
     const secret = this.jwtConfig?.secret;
     const expiresIn = `${this.jwtConfig.expiration_time}s`;
     const token = this.createToken(payload, secret, expiresIn);
@@ -38,7 +38,7 @@ export default class JwtTokenService implements IJwtTokenService<User> {
   }
 
   async getJwtRefreshToken(email: string): Promise<string> {
-    const payload: IJwtServicePayload = { email };
+    const payload: IJwtTokenPayload = { email };
     const secret = this.jwtConfig.refresh_token_secret;
     const expiresIn = `${this.jwtConfig.refresh_token_expiration_time}s`;
     const token = this.createToken(payload, secret, expiresIn);

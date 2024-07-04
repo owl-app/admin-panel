@@ -20,10 +20,6 @@ import { UserModule } from './user/user.module'
     }),
     AuthModule,
     UserModule
-  ],
-  providers: [
-    JwtConfigProvider,
-    JwtStrategy
   ]
 })
 export class UserAccessModule {}

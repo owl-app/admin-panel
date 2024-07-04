@@ -1,11 +1,11 @@
-export interface IJwtServicePayload {
+export interface IJwtTokenPayload {
   email: string;
 }
 
 export interface IJwtTokenService<User> {
   checkToken(token: string): Promise<any>;
 
-  createToken(payload: IJwtServicePayload, secret: string, expiresIn: string): string;
+  createToken(payload: IJwtTokenPayload, secret: string, expiresIn: string): string;
 
   getJwtToken(email: string): Promise<string>;
 
