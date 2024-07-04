@@ -96,7 +96,9 @@ export class TypeOrmQueryService<Entity>
       qb.withDeleted()
     }
 
-    return await qb.getManyAndCount();
+    const resultPromise = await qb.getManyAndCount();
+
+    return resultPromise;
   }
 
   public async aggregate(
