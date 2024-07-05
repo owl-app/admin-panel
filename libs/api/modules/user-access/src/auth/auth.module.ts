@@ -8,6 +8,7 @@ import { WinstonLoggerModule } from '@owl-app/winston-logger-nestjs'
 
 import { IJwtConfig, JWT_CONFIG_NAME, JwtConfigProvider } from '@owl-app/lib-api-bulding-blocks/config/jwt'
 import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface'
+import { FilterRegistryTenantModule } from '@owl-app/lib-api-bulding-blocks/tenant/filter-registry-tenant.module'
 
 import { IUserRepository } from '../database/repository/user-repository.interface'
 import { UserRepository } from '../database/repository/user.repository'
@@ -36,6 +37,7 @@ import JwtTokenService from './jwt-token.service'
       },
       inject: [ConfigService],
     }),
+    FilterRegistryTenantModule
   ],
   controllers: [
     LoginController,

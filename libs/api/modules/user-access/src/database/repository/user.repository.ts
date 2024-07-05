@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant/tenant-repository';
 
 import { IUser } from '@owl-app/lib-contracts';
+import { Registry } from '@owl-app/registry';
+import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant/tenant.repository';
+import { TenantFilter } from '@owl-app/lib-api-bulding-blocks/tenant/filters/tenant-filter';
+import { FILTER_REGISTRY_TENANT } from '@owl-app/lib-api-bulding-blocks/constants';
 
 import { User } from '../../domain/model/user';
 
@@ -15,8 +18,10 @@ export class UserRepository extends TenantRepository<User> implements IUserRepos
   constructor(
     @InjectRepository(User)
     userEntityRepository: Repository<User>,
+    @Inject(FILTER_REGISTRY_TENANT)
+    filters: Registry<TenantFilter>,
   ) {
-    super(userEntityRepository);
+    super(userEntityRepository, filters);
   }
 
   async findOneByIdString(id: string): Promise<IUser>

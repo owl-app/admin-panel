@@ -21,7 +21,7 @@ export function createServiceRegistryProvider<T>(
   return {
     provide: nameService,
     useFactory(...rules: Array<T>): Registry<T> {
-      const serviceRegistry = new ServiceRegistry<T>('rbac_rules');
+      const serviceRegistry = new ServiceRegistry<T>(nameService);
 
       rules.forEach((service, index) => {
         serviceRegistry.register(servicesNames[index], service);

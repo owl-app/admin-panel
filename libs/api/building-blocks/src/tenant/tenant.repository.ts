@@ -1,3 +1,4 @@
+import { Registry } from '@owl-app/registry';
 import {
   DeepPartial,
   QueryRunner,
@@ -5,11 +6,13 @@ import {
   SaveOptions,
   SelectQueryBuilder,
 } from 'typeorm';
+import { TenantFilter } from './filters/tenant-filter';
 
 export class TenantRepository<Entity> extends Repository<Entity> {
 
   constructor(
     repo: Repository<Entity>,
+    private readonly filters: Registry<TenantFilter>,
   ) {
     super(repo.target, repo.manager, repo.queryRunner);
   }
@@ -20,7 +23,9 @@ export class TenantRepository<Entity> extends Repository<Entity> {
   ): SelectQueryBuilder<Entity> {
     const qb = super.createQueryBuilder(alias, queryRunner);
 
-    console.log('createQueryBuilder', qb.alias);
+    console.log('createQueryBuilder', this.filters);
+
+    // qb.andWhere(`${qb.alias}.email = :tenantId`, { tenantId: 'test' });
 
     // qb.andWhere(`${qb.alias}.company_id = :tenantId`, {tenantId : '1'});
 
@@ -70,6 +75,7 @@ export class TenantRepository<Entity> extends Repository<Entity> {
     entityOrEntities: T | T[],
     options?: SaveOptions
   ): Promise<T | T[]> {
+    // (entityOrEntities as any).email = 'test';
     return this.manager.save<Entity, T>(
       this.metadata.target as any,
       entityOrEntities as any,

@@ -16,8 +16,8 @@ export class RegistryServiceModule {
     const serviceRegistry = createServiceRegistryProvider<T>(name, services);
     const servicesProviders: Array<Type<T>> = [];
 
-    Object.values(services).forEach((rule: Type<T>) => {
-      servicesProviders.push(rule)
+    Object.values(services).forEach((service: Type<T>) => {
+      servicesProviders.push(service)
     })
 
     return {

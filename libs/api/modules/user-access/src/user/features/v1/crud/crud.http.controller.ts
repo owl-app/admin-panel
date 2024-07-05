@@ -63,7 +63,7 @@ export class UserCrudController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Post()
-  @UsePipes(new ValidationPipe())
+  // @UsePipes(new ValidationPipe())
   async create(@Body() createUserRequest: CreateUserRequest) {
     await createUserValidation.validateAsync(createUserRequest, { abortEarly: false });
 

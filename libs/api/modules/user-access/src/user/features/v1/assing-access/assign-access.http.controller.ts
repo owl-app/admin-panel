@@ -14,6 +14,7 @@ import { Manager } from '@owl-app/rbac-manager'
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
 
 import { IUserRepository } from '../../../../database/repository/user-repository.interface'
+import { UserService } from '../crud/user.service'
 
 @ApiTags('User')
 @Controller('users')
@@ -21,8 +22,7 @@ import { IUserRepository } from '../../../../database/repository/user-repository
 @Injectable()
 export class AssignAccessController {
   constructor(
-    @Inject(IUserRepository)
-    private readonly userRepository: IUserRepository,
+    readonly service: UserService,
     @Inject('RBAC_MANAGER') readonly rbacManager: Manager
   ) {}
 
@@ -45,7 +45,7 @@ export class AssignAccessController {
 		@Param('id', UUIDValidationPipe) userId: string,
     @Body() items: Array<string>
 	): Promise<void> {
-    const { id } = await this.userRepository.findOneByIdString(userId);
+    const { id } = await this.service.findById(userId);
 
     await Promise.all(items.map(async (item: string): Promise<void> => {
         await this.rbacManager.assign(item, id);

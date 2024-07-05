@@ -5,11 +5,10 @@ import { NestjsQueryCoreModule } from '@owl-app/crud-core'
 import { NestjsQueryTypeOrmModule } from '@owl-app/crud-nestjs'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
-import { injectableRepositoryFactory } from '@owl-app/lib-api-bulding-blocks/tenant/injectable-repository-factory';
+import { injectableRepositoryFactory } from '@owl-app/lib-api-bulding-blocks/tenant/injectable-tenant-repository.factory';
+import { FilterRegistryTenantModule } from '@owl-app/lib-api-bulding-blocks/tenant/filter-registry-tenant.module'
 
 import { UserEntity } from '../database/entity/user.entity'
-import { IUserRepository } from '../database/repository/user-repository.interface'
-import { UserRepository } from '../database/repository/user.repository'
 
 import { UserCrudController } from './features/v1/crud/crud.http.controller'
 import { AssignAccessController } from './features/v1/assing-access/assign-access.http.controller'
@@ -20,15 +19,20 @@ import { UserService } from './features/v1/crud/user.service'
   imports: [
     RbacTypeOrmModule.forFeature({}),
     NestjsQueryCoreModule.forFeature({
-      imports: [NestjsQueryTypeOrmModule.forFeature([
-        {
-          entity: UserEntity,
-          repository: {
-            obj: injectableRepositoryFactory(UserEntity),
-            injectInProviders: true
-          }
-        }
-      ])],
+      imports: [
+        NestjsQueryTypeOrmModule.forFeature({
+          imports: [FilterRegistryTenantModule],
+          entities: [
+            {
+              entity: UserEntity,
+              repository: {
+                obj: injectableRepositoryFactory(UserEntity),
+                injectInProviders: true
+              }
+            }
+          ]
+        }),
+      ],
       assemblers: [UserAssembler]
     })
   ],
@@ -37,11 +41,7 @@ import { UserService } from './features/v1/crud/user.service'
     AssignAccessController
   ],
   providers: [
-    UserService,
-    {
-      provide: IUserRepository,
-      useClass: UserRepository
-    }
+    UserService
   ]
 })
 export class UserModule {}

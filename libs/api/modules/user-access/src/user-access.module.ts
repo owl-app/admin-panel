@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 
-import { JwtStrategy } from '@owl-app/lib-api-bulding-blocks/passport/jwt.strategy'
-
-import config, { JwtConfigProvider  } from '@owl-app/lib-api-bulding-blocks/config'
+import config from '@owl-app/lib-api-bulding-blocks/config'
 import { DatabaseModule } from '@owl-app/lib-api-bulding-blocks/database/database.module'
 
 import { AuthModule } from './auth/auth.module'
