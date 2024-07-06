@@ -25,7 +25,7 @@ export function createServiceRegistryProvider<T>(
 
       rules.forEach((service, index) => {
         serviceRegistry.register(servicesNames[index], service);
-    });
+      });
 
       return serviceRegistry;
     },

@@ -6,7 +6,7 @@ import { type IJwtConfig } from '@owl-app/lib-api-bulding-blocks/config/jwt';
 import { IJwtTokenService, IJwtTokenPayload } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
 
 import { User } from '../domain/model/user'
-import { IUserRepository } from '../database/repository/user-repository.interface';
+import type { IUserRepository } from '../database/repository/user-repository.interface';
 
 @Injectable()
 export default class JwtTokenService implements IJwtTokenService<User> {

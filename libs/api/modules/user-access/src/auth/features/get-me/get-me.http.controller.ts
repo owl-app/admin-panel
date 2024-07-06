@@ -1,11 +1,12 @@
-import { Controller, Get, HttpStatus, Inject, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RequestContextService } from '@owl-app/lib-api-bulding-blocks/context/app-request-context';
+import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/common/tenant-typeorm.decorators';
 
 import { User } from '../../../domain/model/user'
 
-import { IUserRepository } from '../../../database/repository/user-repository.interface';
+import {type  IUserRepository } from '../../../database/repository/user-repository.interface';
 
 import userMapper from '../../mapping'
 import { UserResponse } from '../../dto/user.response'
@@ -17,7 +18,7 @@ import { UserWithPermissionResponse } from './dto/user-with-permission.response'
 @ApiBearerAuth()
 export class GetMeController {
   constructor(
-    @Inject(IUserRepository)
+    @InjectTenantRepository(User)
     private readonly userRepository: IUserRepository
   ) {}
 

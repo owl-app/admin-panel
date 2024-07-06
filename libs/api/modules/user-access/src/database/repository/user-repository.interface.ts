@@ -9,5 +9,3 @@ export interface IUserRepository {
 
   updateRefreshToken(username: string, refreshToken: string): Promise<void>;
 }
-
-export const IUserRepository = Symbol('IUserRepository');

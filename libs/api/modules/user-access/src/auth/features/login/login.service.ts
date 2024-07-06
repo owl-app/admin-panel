@@ -2,11 +2,12 @@ import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
+import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/common/tenant-typeorm.decorators';
 
 import { User } from '../../../domain/model/user';
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 
-import { IUserRepository } from '../../../database/repository/user-repository.interface';
+import type { IUserRepository } from '../../../database/repository/user-repository.interface';
 
 import { UserResponse } from '../../dto/user.response';
 import userMapper from '../../mapping';
@@ -29,7 +30,7 @@ export class LoginHandler implements ICommandHandler<Login> {
   constructor(
     @Inject(IJwtTokenService)
     private readonly jwtTokenService: IJwtTokenService<User>,
-    @Inject(IUserRepository)
+    @InjectTenantRepository(User)
     private readonly userRepository: IUserRepository
   ) {}
 

@@ -11,14 +11,13 @@ export interface NestjsQueryCoreModuleOpts {
   connection?: DataSource | string
 }
 
-export interface NestjsQueryTypeOrmModuleEntitiesRepositoryOpts {
-  obj: Class<Repository<ObjectLiteral>>,
-  injectInProviders?: boolean
-}
-
 export interface NestjsQueryTypeOrmModuleEntitiesOpts {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  imports?: Array<Class<any> | DynamicModule | Promise<DynamicModule> | ForwardReference>
   entity: EntityClassOrSchema,
   repository?: NestjsQueryTypeOrmModuleEntitiesRepositoryOpts
+}
+
+export interface NestjsQueryTypeOrmModuleEntitiesRepositoryOpts {
+  obj: Class<Repository<ObjectLiteral>> | Function | string,
+  injectInProviders?: boolean
 }

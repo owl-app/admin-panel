@@ -1,6 +1,8 @@
 import { Registry } from '@owl-app/registry';
 import {
   DeepPartial,
+  EntityManager,
+  EntityTarget,
   QueryRunner,
   Repository,
   SaveOptions,
@@ -11,10 +13,12 @@ import { TenantFilter } from './filters/tenant-filter';
 export class TenantRepository<Entity> extends Repository<Entity> {
 
   constructor(
-    repo: Repository<Entity>,
-    private readonly filters: Registry<TenantFilter>,
+    target: EntityTarget<Entity>,
+    manager: EntityManager,
+    queryRunner?: QueryRunner,
+    readonly filters?: Registry<TenantFilter>,
   ) {
-    super(repo.target, repo.manager, repo.queryRunner);
+    super(target, manager, queryRunner);
   }
 
   override createQueryBuilder(

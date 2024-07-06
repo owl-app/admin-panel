@@ -8,9 +8,10 @@ import { WinstonLoggerModule } from '@owl-app/winston-logger-nestjs'
 
 import { IJwtConfig, JWT_CONFIG_NAME, JwtConfigProvider } from '@owl-app/lib-api-bulding-blocks/config/jwt'
 import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface'
-import { FilterRegistryTenantModule } from '@owl-app/lib-api-bulding-blocks/tenant/filter-registry-tenant.module'
+import { TenantTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant-typeorm.module'
+import { getTenantRepositoryToken } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/common/tenant-typeorm.utils'
 
-import { IUserRepository } from '../database/repository/user-repository.interface'
+import type { IUserRepository } from '../database/repository/user-repository.interface'
 import { UserRepository } from '../database/repository/user.repository'
 import { UserEntity } from '../database/entity/user.entity'
 
@@ -18,6 +19,7 @@ import { LoginController } from './features/login/login.http.controller'
 import { GetMeController } from './features/get-me/get-me.http.controller'
 import { LoginHandler } from './features/login/login.service'
 import JwtTokenService from './jwt-token.service'
+import { User } from '../domain/model/user'
 
 
 @Module({
@@ -25,6 +27,14 @@ import JwtTokenService from './jwt-token.service'
     CqrsModule,
     WinstonLoggerModule,
     TypeOrmModule.forFeature([UserEntity]),
+    TenantTypeOrmModule.forFeature({
+      entities: [
+        {
+          entity: UserEntity,
+          repository: UserRepository
+        }
+      ]
+    }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
@@ -37,7 +47,6 @@ import JwtTokenService from './jwt-token.service'
       },
       inject: [ConfigService],
     }),
-    FilterRegistryTenantModule
   ],
   controllers: [
     LoginController,
@@ -48,11 +57,7 @@ import JwtTokenService from './jwt-token.service'
     JwtStrategy,
     LoginHandler,
     {
-      provide: IUserRepository,
-      useClass: UserRepository
-    },
-    {
-      inject: [ConfigService, IUserRepository, JwtService],
+      inject: [ConfigService, getTenantRepositoryToken(User), JwtService],
       provide: IJwtTokenService,
       useFactory: (
         config: ConfigService,

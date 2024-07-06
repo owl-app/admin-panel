@@ -1,27 +1,22 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
+import { EntityManager, EntityTarget, QueryRunner } from 'typeorm';
 import { IUser } from '@owl-app/lib-contracts';
 import { Registry } from '@owl-app/registry';
-import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant/tenant.repository';
-import { TenantFilter } from '@owl-app/lib-api-bulding-blocks/tenant/filters/tenant-filter';
-import { FILTER_REGISTRY_TENANT } from '@owl-app/lib-api-bulding-blocks/constants';
+import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant.repository';
+import { TenantFilter } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/filters/tenant-filter';
 
 import { User } from '../../domain/model/user';
 
 import { IUserRepository } from './user-repository.interface';
 
-@Injectable()
 export class UserRepository extends TenantRepository<User> implements IUserRepository {
 
   constructor(
-    @InjectRepository(User)
-    userEntityRepository: Repository<User>,
-    @Inject(FILTER_REGISTRY_TENANT)
-    filters: Registry<TenantFilter>,
+    target: EntityTarget<User>,
+    manager: EntityManager,
+    queryRunner?: QueryRunner,
+    readonly filters?: Registry<TenantFilter>,
   ) {
-    super(userEntityRepository, filters);
+    super(target, manager, queryRunner, filters);
   }
 
   async findOneByIdString(id: string): Promise<IUser>
@@ -62,26 +57,14 @@ export class UserRepository extends TenantRepository<User> implements IUserRepos
     );
   }
 
-  async updateLastLogin(username: string): Promise<void> {
+  async updateLastLogin(email: string): Promise<void> {
     await this.update(
       {
-        username,
+        email,
       },
       {
         lastLogin: () => 'CURRENT_TIMESTAMP'
       },
     );
-  }
-
-  private toUser(user: IUser): IUser {
-    const userDomain: IUser = new User();
-
-    userDomain.id = user.id;
-    userDomain.email = user.email;
-    userDomain.firstName = user.firstName;
-    userDomain.lastName = user.lastName;
-    userDomain.passwordHash = user.passwordHash;
-
-    return userDomain;
   }
 }
