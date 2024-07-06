@@ -9,7 +9,7 @@ import { WinstonLoggerModule } from '@owl-app/winston-logger-nestjs'
 import { IJwtConfig, JWT_CONFIG_NAME, JwtConfigProvider } from '@owl-app/lib-api-bulding-blocks/config/jwt'
 import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface'
 import { TenantTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant-typeorm.module'
-import { getTenantRepositoryToken } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/common/tenant-typeorm.utils'
+import { getTenantRepositoryToken } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.utils'
 
 import type { IUserRepository } from '../database/repository/user-repository.interface'
 import { UserRepository } from '../database/repository/user.repository'
@@ -22,16 +22,16 @@ import JwtTokenService from './jwt-token.service'
 import { User } from '../domain/model/user'
 
 
+
 @Module({
   imports: [
     CqrsModule,
     WinstonLoggerModule,
-    TypeOrmModule.forFeature([UserEntity]),
     TenantTypeOrmModule.forFeature({
       entities: [
         {
           entity: UserEntity,
-          repository: UserRepository
+          repository: UserRepository,
         }
       ]
     }),

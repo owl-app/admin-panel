@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
-import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/common/tenant-typeorm.decorators';
+import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
 
 import { User } from '../../../domain/model/user';
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';

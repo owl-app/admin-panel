@@ -2,7 +2,7 @@ import { Controller, Get, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/c
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RequestContextService } from '@owl-app/lib-api-bulding-blocks/context/app-request-context';
-import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/common/tenant-typeorm.decorators';
+import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
 
 import { User } from '../../../domain/model/user'
 

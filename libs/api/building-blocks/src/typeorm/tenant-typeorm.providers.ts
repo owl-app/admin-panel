@@ -1,22 +1,17 @@
-import { Provider } from '@nestjs/common';
 import { DataSource, DataSourceOptions, getMetadataArgsStorage } from 'typeorm';
 import { getDataSourceToken } from '@nestjs/typeorm';
+import { Provider } from '@nestjs/common';
 
-import { Registry } from '@owl-app/registry';
-
-import { TenantRepository } from './tenant.repository';
-import { TenantTypeOrmEntitesOpts } from './types';
+import { TypeOrmEntitesOpts } from './types';
 import { getTenantRepositoryToken } from './common/tenant-typeorm.utils';
-import { FILTER_REGISTRY_TENANT } from './constants';
-import { TenantFilter } from './filters/tenant-filter';
 
 export function createTypeOrmProviders(
-  entities?: TenantTypeOrmEntitesOpts[],
+  entities?: TypeOrmEntitesOpts[],
   dataSource?: DataSource | DataSourceOptions | string,
 ): Provider[] {
-  return (entities || []).map(({entity, repository = null}) => ({
+  return (entities || []).map(({entity, repository = null, inject = null}) => ({
     provide: getTenantRepositoryToken(entity, dataSource),
-    useFactory: (dataSource: DataSource, filterRegistry: Registry<TenantFilter>) => {
+    useFactory: (dataSource: DataSource, ...injectArgs) => {
       const entityMetadata = dataSource.entityMetadatas.find((meta) => meta.target === entity)
       const isTreeEntity = typeof entityMetadata?.treeType !== 'undefined'
 
@@ -26,11 +21,9 @@ export function createTypeOrmProviders(
           ? dataSource.getMongoRepository(entity)
           : dataSource.getRepository(entity)
 
-      return repository 
-        ? new repository(baseRepo.target, baseRepo.manager, baseRepo.queryRunner, filterRegistry) 
-        : new TenantRepository(baseRepo.target, baseRepo.manager, baseRepo.queryRunner, filterRegistry)
+      return new repository(baseRepo.target, baseRepo.manager, baseRepo.queryRunner, ...injectArgs);
     },
-    inject: [getDataSourceToken(dataSource), FILTER_REGISTRY_TENANT],
+    inject: [getDataSourceToken(dataSource), ...inject ?? []],
     /**
      * Extra property to workaround dynamic modules serialisation issue
      * that occurs when "TypeOrm#forFeature()" method is called with the same number

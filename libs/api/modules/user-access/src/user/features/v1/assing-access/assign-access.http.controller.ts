@@ -12,7 +12,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiAcceptedResponse, ApiBearerAuth 
 import { Manager } from '@owl-app/rbac-manager'
 
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
-import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/common/tenant-typeorm.decorators'
+import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators'
 
 import type { IUserRepository } from '../../../../database/repository/user-repository.interface'
 import { User } from '../../../../domain/model/user'
