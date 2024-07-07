@@ -2,9 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
 import { IsOptional } from "class-validator"
 
 import type { IBaseRbacItemResponse } from '@owl-app/lib-contracts'
-import { TypesItem } from "@owl-app/rbac-manager"
-
-
 
 export abstract class BaseRbacItemResponse implements IBaseRbacItemResponse {
 

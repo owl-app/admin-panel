@@ -1,29 +1,34 @@
+
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 
-import { JwtStrategy } from '@owl-app/lib-api-bulding-blocks/passport/jwt.strategy'
+import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
+import { CrudTenantTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/crud-tenant-typeorm.module'
+import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant.repository'
 
-import config, { JwtConfigProvider  } from '@owl-app/lib-api-bulding-blocks/config'
-import { DatabaseModule } from '@owl-app/lib-api-bulding-blocks/database/database.module'
+import { CompanyEntity } from './database/entity/company.entity'
 
-import { AuthModule } from './auth/auth.module'
-import { UserModule } from './user/user.module'
+import { CompanyCrudController } from './company/features/v1/crud/crud.http.controller'
+import { CompanyAssembler } from './company/features/v1/crud/company.assembler'
+import { CompanyService } from './company/features/v1/crud/company.service'
 
 @Module({
   imports: [
-    DatabaseModule,
-    ConfigModule.forRoot({
-      isGlobal: true,
-      // this not work in nx
-      envFilePath: [`.env.${process.env.NODE_ENV}`, `.env`],
-      load: config,
-    }),
-    AuthModule,
-    UserModule
+    RbacTypeOrmModule.forFeature({}),
+    CrudTenantTypeOrmModule.forFeature({
+      entities: [
+        {
+          entity: CompanyEntity,
+          repository: TenantRepository
+        }
+      ],
+      assemblers: [CompanyAssembler]
+    })
+  ],
+  controllers: [
+    CompanyCrudController,
   ],
   providers: [
-    JwtConfigProvider,
-    JwtStrategy
+    CompanyService
   ]
 })
-export class UserAccessModule {}
+export class CompanyModule {}
