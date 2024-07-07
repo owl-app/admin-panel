@@ -22,13 +22,14 @@ export class NestjsQueryTypeOrmModule {
     const queryServiceProviders = opts.entities.map((opt) =>
       createTypeOrmQueryServiceProvider(opt.entity, opt.repository, opts.connection)
     );
-    const typeOrmModule = TypeOrmModule.forFeature(entities, opts.connection);
+
+    const typeOrmModule = opts.typeOrmModule ?? TypeOrmModule.forFeature(entities, opts.connection);
 
     return {
       imports: [typeOrmModule, ...opts.imports ?? []],
       module: NestjsQueryTypeOrmModule,
       providers: [...queryServiceProviders, ...repositoriesProviders],
-      exports: [...queryServiceProviders, typeOrmModule, ...opts.imports ?? []]
+      exports: [...queryServiceProviders, typeOrmModule]
     }
   }
 }

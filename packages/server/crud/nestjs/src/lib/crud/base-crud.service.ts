@@ -51,9 +51,6 @@ export const BaseCrudService =
     @Inject(ConfigService)
     readonly configService: ConfigService;
 
-    @InjectRepository(entityClass)
-    readonly repository: Repository<Entity>
-
     abstract queryWithCount(query: Query<DTO>, opts?: QueryOptions):  Promise<[DTO[], number]>;
 
     async paginated(

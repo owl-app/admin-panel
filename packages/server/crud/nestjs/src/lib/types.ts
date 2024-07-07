@@ -6,8 +6,9 @@ import { Class } from "@owl-app/crud-core"
 
 export interface NestjsQueryCoreModuleOpts {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  imports?: Array<Class<any> | DynamicModule | Promise<DynamicModule> | ForwardReference>
   entities: NestjsQueryTypeOrmModuleEntitiesOpts[],
+  imports?: Array<Class<any> | DynamicModule | Promise<DynamicModule> | ForwardReference>
+  typeOrmModule?: DynamicModule,
   connection?: DataSource | string
 }
 
