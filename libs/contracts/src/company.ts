@@ -1,6 +1,11 @@
+import { IUser } from "./user";
+
 export interface ICompany {
 	id: string;
+	
 	name: string;
+
+	users?: IUser[]
 }
 
 // export interface IUserRequest {

@@ -2,6 +2,8 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform, TransformFnParams } from "class-transformer";
 import { IsOptional } from "class-validator";
 
+import { IUser } from "@owl-app/lib-contracts";
+
 // import { IUserResponse } from "@owl-app/lib-contracts";
 
 export class CompanyResponse {
@@ -19,5 +21,9 @@ export class CompanyResponse {
     @ApiPropertyOptional({ type: () => String })
     @IsOptional()
     lastName?: string;
+
+    @ApiPropertyOptional({ type: () => String })
+    @IsOptional()
+    users: IUser[];
 
 }

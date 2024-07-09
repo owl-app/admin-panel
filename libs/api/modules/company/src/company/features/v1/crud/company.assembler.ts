@@ -16,6 +16,9 @@ export class CompanyAssembler extends ClassTransformerAsyncAssembler<
   async convertAsyncToCreateEntity(dto: CreateCompanyRequest): Promise<DeepPartial<Company>> {
     const model = new Company();
 
+    model.name = dto.name;
+    model.users = dto.users;
+
     return model;
   }
 
