@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: '@owl-app/lib-api-bulding-blocks',
+  displayName: '@owl-app/lib-api-building-blocks',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   transform: {

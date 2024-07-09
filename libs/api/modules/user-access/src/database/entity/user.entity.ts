@@ -58,7 +58,7 @@ export const UserEntity = new EntitySchema<User>({
   relations: {
     companies: {
       type: 'many-to-many',
-      target: 'Company',
+      target: 'CompanyModel',
       joinTable: {
         name: 'user_company',
         joinColumn: {

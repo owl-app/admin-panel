@@ -5,14 +5,16 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/libs/api/core"],
       "options": {
-        "outputPath": "dist/libs/api/core",
-        "tsConfig": "libs/api/core/tsconfig.lib.json",
-        "packageJson": "libs/api/core/package.json",
-        "main": "libs/api/core/src/index.ts",
-        "assets": ["libs/api/core/*.md"]
+        "commands": [
+          "npx rimraf dist/libs/api/core",
+          "npx tsc -p libs/api/core/tsconfig.build.json",
+          "npx copyfiles -f \"libs/api/core/package.json\" \"libs/api/core/README.md\" \"LICENSE\" dist/libs/api/core"
+        ],
+        "cwd": ".",
+        "parallel": false
       }
     }
   },

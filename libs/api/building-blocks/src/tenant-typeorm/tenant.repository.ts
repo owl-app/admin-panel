@@ -79,6 +79,7 @@ export class TenantRepository<Entity> extends Repository<Entity> {
     entityOrEntities: T | T[],
     options?: SaveOptions
   ): Promise<T | T[]> {
+    console.log('save');
     // (entityOrEntities as any).email = 'test';
     return this.manager.save<Entity, T>(
       this.metadata.target as any,

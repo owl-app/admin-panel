@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { ICompany, IUser, IUserRequest } from "@owl-app/lib-contracts";
+import { IUser, IUserRequest } from "@owl-app/lib-contracts";
 
 import { CreateUserRequest } from "@owl-app/lib-api-module-user-access/user/features/v1/crud/dto/create-user.request";
 

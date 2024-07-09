@@ -1,8 +1,8 @@
-import { ICompany } from "./company";
+import { Company } from "./company";
 
 export interface IUser {
 	id: string;
-	companies: ICompany[]
+	companies: Company[]
 	email: string;
 	username?: string;
 	firstName?: string;

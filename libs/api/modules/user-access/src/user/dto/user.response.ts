@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform, TransformFnParams } from "class-transformer";
 import { IsOptional } from "class-validator";
 
-import { ICompany, IUserResponse } from "@owl-app/lib-contracts";
+import { Company, IUserResponse } from "@owl-app/lib-contracts";
 
 export class UserResponse implements IUserResponse {
 
@@ -22,5 +22,5 @@ export class UserResponse implements IUserResponse {
 
     @ApiPropertyOptional({ type: () => Array })
     @IsOptional()
-    companies: ICompany[];
+    companies: Company[];
 }

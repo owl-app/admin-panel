@@ -1,10 +1,14 @@
 import { EntitySchema } from 'typeorm';
 
-import { Company } from '../../domain/model/company';
+import type { Company, IUser } from '@owl-app/lib-contracts'
 
-export const CompanyEntity = new EntitySchema<Company>({
-  target: Company,
-  name: 'Company',
+import { CompanyModel } from '../../domain/model/company';
+
+import { User } from '@owl-app/lib-api-module-user-access/domain/model/user';
+
+export const CompanyEntity = new EntitySchema<CompanyModel>({
+  target: CompanyModel,
+  name: 'CompanyModel',
   tableName: 'company',
   columns: {
     id: {

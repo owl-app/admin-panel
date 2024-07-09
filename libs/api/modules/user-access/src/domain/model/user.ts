@@ -1,9 +1,9 @@
-import { ICompany, IUser } from '@owl-app/lib-contracts';
+import { Company, IUser } from '@owl-app/lib-contracts';
 
 export class User implements IUser {
 	id: string;
 
-	companies: ICompany[]
+	companies: Company[]
 
 	email: string;
 

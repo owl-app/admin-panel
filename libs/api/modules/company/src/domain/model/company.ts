@@ -1,6 +1,6 @@
-import { ICompany, IUser } from '@owl-app/lib-contracts';
+import type { Company, IUser } from '@owl-app/lib-contracts';
 
-export class Company implements ICompany {
+export class CompanyModel implements Company {
 	id: string;
 
 	name: string;

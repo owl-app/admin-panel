@@ -17,7 +17,7 @@ import { PaginatedRequest } from '@owl-app/crud-nestjs'
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
 import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
 
-import{ Company } from '../../../../domain/model/company'
+import{ CompanyModel } from '../../../../domain/model/company'
 import mapper from '../../../mapping'
 import { CompanyResponse } from '../../../dto/company.response'
 
@@ -67,7 +67,7 @@ export class CompanyCrudController {
 
     const createdCompany = await this.service.createAsyncOne(createCompanyRequest);
 
-    return mapper.map<Company, CompanyResponse>(createdCompany, new CompanyResponse());
+    return mapper.map<CompanyModel, CompanyResponse>(createdCompany, new CompanyResponse());
   }
 
 	@ApiOperation({ summary: 'Update Company' })
@@ -93,7 +93,7 @@ export class CompanyCrudController {
 
     const updatedCompany = await this.service.updateOne(id, updateCompanyDto);
 
-		return  mapper.map<Company, CompanyResponse>(updatedCompany, new CompanyResponse());
+		return  mapper.map<CompanyModel, CompanyResponse>(updatedCompany, new CompanyResponse());
 	}
 
   @ApiOperation({ summary: 'Find all companies by filters using pagination' })

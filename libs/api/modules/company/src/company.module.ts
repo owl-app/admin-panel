@@ -8,7 +8,7 @@ import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm
 import { CompanyEntity } from './database/entity/company.entity'
 
 import { CompanyCrudController } from './company/features/v1/crud/crud.http.controller'
-import { CompanyAssembler } from './company/features/v1/crud/company.assembler'
+import { CompanyModelAssembler } from './company/features/v1/crud/company.assembler'
 import { CompanyService } from './company/features/v1/crud/company.service'
 
 @Module({
@@ -21,7 +21,7 @@ import { CompanyService } from './company/features/v1/crud/company.service'
           repository: TenantRepository
         }
       ],
-      assemblers: [CompanyAssembler]
+      assemblers: [CompanyModelAssembler]
     })
   ],
   controllers: [
