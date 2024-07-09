@@ -10,6 +10,8 @@ import {
   Param,
   HttpCode,
   Injectable,
+  ClassSerializerInterceptor,
+  UseInterceptors,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 import { PaginatedRequest } from '@owl-app/crud-nestjs'
@@ -17,8 +19,6 @@ import { PaginatedRequest } from '@owl-app/crud-nestjs'
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
 import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
 
-import{ CompanyModel } from '../../../../domain/model/company'
-import mapper from '../../../mapping'
 import { CompanyResponse } from '../../../dto/company.response'
 
 import { CompanyService } from './company.service'
@@ -28,6 +28,7 @@ import { createCompanyValidation } from './validation'
 @ApiTags('Company')
 @Controller('companies')
 @ApiBearerAuth()
+@UseInterceptors(ClassSerializerInterceptor)
 @Injectable()
 export class CompanyCrudController {
   constructor(
@@ -46,8 +47,8 @@ export class CompanyCrudController {
     type: ApiErrorResponse
   })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.service.getById(id);
+  async findOne(@Param('id') id: string) {
+    return this.service.findById(id, { relations: [{ name: 'users', query: {}}]});
   }
 
   @ApiOperation({ summary: 'Create new company' })
@@ -67,7 +68,7 @@ export class CompanyCrudController {
 
     const createdCompany = await this.service.createAsyncOne(createCompanyRequest);
 
-    return mapper.map<CompanyModel, CompanyResponse>(createdCompany, new CompanyResponse());
+    return createdCompany;
   }
 
 	@ApiOperation({ summary: 'Update Company' })
@@ -93,7 +94,7 @@ export class CompanyCrudController {
 
     const updatedCompany = await this.service.updateOne(id, updateCompanyDto);
 
-		return  mapper.map<CompanyModel, CompanyResponse>(updatedCompany, new CompanyResponse());
+		return updatedCompany;
 	}
 
   @ApiOperation({ summary: 'Find all companies by filters using pagination' })

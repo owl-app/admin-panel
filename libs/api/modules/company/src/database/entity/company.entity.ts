@@ -4,6 +4,8 @@ import type { Company, IUser } from '@owl-app/lib-contracts'
 
 import { CompanyModel } from '../../domain/model/company';
 
+import {UserEntity} from '@owl-app/lib-api-module-user-access/database/entity/user.entity';
+
 import { User } from '@owl-app/lib-api-module-user-access/domain/model/user';
 
 export const CompanyEntity = new EntitySchema<CompanyModel>({
@@ -23,7 +25,7 @@ export const CompanyEntity = new EntitySchema<CompanyModel>({
   relations: {
     users: {
         type: 'many-to-many',
-        target: 'User',
+        target: UserEntity,
         joinTable: {
           name: 'user_company',
           joinColumn: {

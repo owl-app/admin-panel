@@ -5,5 +5,5 @@ export type Company = {
 	
 	name: string;
 
-	users?: IUser[]
+	users: IUser[]
 }

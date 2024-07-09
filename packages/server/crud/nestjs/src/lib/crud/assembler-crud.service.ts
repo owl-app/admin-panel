@@ -11,7 +11,7 @@ import { BaseCrudService } from './base-crud.service';
 type DefaultDeepPartial<Cls, T> = unknown extends Cls ? DeepPartial<T> : Cls;
 
 export interface IAssemblerCRUDService<Entity, DTO>
-  extends QueryService<Entity> {
+  extends QueryService<DTO, DeepPartial<DTO>, DeepPartial<DTO>> {
   paginated(
     filter: Filter<Entity>,
     paginationQuery: PaginatedRequest

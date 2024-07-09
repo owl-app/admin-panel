@@ -6,7 +6,6 @@ import { isEmpty } from '@owl-app/utils'
 
 import { CompanyModel } from '../../../../domain/model/company'
 import { CompanyResponse } from '../../../dto/company.response'
-import mapper from '../../../mapping'
 
 import { CompanyModelAssembler } from './company.assembler'
 import { CreateCompanyRequest, FilterCompanyDto } from './dto'
@@ -57,7 +56,7 @@ export class CompanyService extends AssemblerAsyncCrudService(
 
     return {
         ...result,
-        items: result.items.map((company) => mapper.map<CompanyModel, CompanyResponse>(company, new CompanyResponse()))
+        items: result.items,
     }
   }
 }
