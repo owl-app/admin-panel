@@ -4,7 +4,7 @@ import { PaginatedRequest, AssemblerAsyncCrudService, Pagination } from '@owl-ap
 import { InjectQueryService, QueryService } from '@owl-app/crud-core';
 import { isEmpty } from '@owl-app/utils'
 
-import { User } from '../../../../domain/model/user'
+import { UserEntity } from '../../../../domain/entity/user.entity'
 import { UserResponse } from '../../../dto/user.response'
 import mapper from '../../../mapping'
 
@@ -13,13 +13,13 @@ import { CreateUserRequest, FilterUserDto } from './dto'
 
 @Injectable()
 export class UserService extends AssemblerAsyncCrudService(
-  User,
+  UserEntity,
   UserResponse,
   CreateUserRequest
 ) {
   constructor(
     readonly assembler: UserAssembler,
-    @InjectQueryService(User) readonly service: QueryService<User>
+    @InjectQueryService(UserEntity) readonly service: QueryService<UserEntity>
   ) {
     super(assembler, service);
   }
@@ -57,7 +57,7 @@ export class UserService extends AssemblerAsyncCrudService(
 
     return {
         ...result,
-        items: result.items.map((user) => mapper.map<User, UserResponse>(user, new UserResponse()))
+        items: result.items.map((user) => mapper.map<UserEntity, UserResponse>(user, new UserResponse()))
     }
   }
 }

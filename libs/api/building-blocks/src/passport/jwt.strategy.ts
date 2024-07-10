@@ -4,7 +4,7 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 
 import { JWT_CONFIG_PROVIDER, type IJwtConfig } from '../config/jwt'
 import { IJwtTokenPayload, IJwtTokenService } from './jwt-token.interface';
-import { IUser } from '@owl-app/lib-contracts';
+import { User } from '@owl-app/lib-contracts';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -12,7 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     @Inject(JWT_CONFIG_PROVIDER)
     private jwtConfig: IJwtConfig,
     @Inject(IJwtTokenService)
-    private jwtTokenService: IJwtTokenService<IUser>,
+    private jwtTokenService: IJwtTokenService<User>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -21,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: IJwtTokenPayload): Promise<Partial<IUser>> {
+  async validate(payload: IJwtTokenPayload): Promise<Partial<User>> {
     const user = await this.jwtTokenService.validateUserForJWTStragtegy(payload.email);
 
     if (!user) {

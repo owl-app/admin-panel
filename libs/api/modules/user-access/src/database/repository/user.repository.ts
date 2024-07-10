@@ -1,17 +1,17 @@
 import { EntityManager, EntityTarget, QueryRunner } from 'typeorm';
-import { IUser } from '@owl-app/lib-contracts';
+import { User } from '@owl-app/lib-contracts';
 import { Registry } from '@owl-app/registry';
 import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant.repository';
 import { TenantFilter } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/filters/tenant-filter';
 
-import { User } from '../../domain/model/user';
+import { UserEntity } from '../../domain/entity/user.entity';
 
 import { IUserRepository } from './user-repository.interface';
 
-export class UserRepository extends TenantRepository<User> implements IUserRepository {
+export class UserRepository extends TenantRepository<UserEntity> implements IUserRepository {
 
   constructor(
-    target: EntityTarget<User>,
+    target: EntityTarget<UserEntity>,
     manager: EntityManager,
     queryRunner?: QueryRunner,
     readonly filters?: Registry<TenantFilter>,
@@ -19,7 +19,7 @@ export class UserRepository extends TenantRepository<User> implements IUserRepos
     super(target, manager, queryRunner, filters);
   }
 
-  async findOneByIdString(id: string): Promise<IUser>
+  async findOneByIdString(id: string): Promise<User>
   {
     let user = null;
 
@@ -34,7 +34,7 @@ export class UserRepository extends TenantRepository<User> implements IUserRepos
     return user;
   }
 
-  async getUserByEmail(email: string): Promise<IUser> {
+  async getUserByEmail(email: string): Promise<User> {
     const user = await this.findOne({
       where: {
         email,

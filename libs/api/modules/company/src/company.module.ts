@@ -5,7 +5,7 @@ import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typ
 import { CrudTenantTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/crud-tenant-typeorm.module'
 import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant.repository'
 
-import { CompanyEntity } from './database/entity/company.entity'
+import { CompanyEntitySchema } from './database/entity-schema/company.entity-schema'
 
 import { CompanyCrudController } from './company/features/v1/crud/crud.http.controller'
 import { CompanyModelAssembler } from './company/features/v1/crud/company.assembler'
@@ -17,7 +17,7 @@ import { CompanyService } from './company/features/v1/crud/company.service'
     CrudTenantTypeOrmModule.forFeature({
       entities: [
         {
-          entity: CompanyEntity,
+          entity: CompanyEntitySchema,
           repository: TenantRepository
         }
       ],

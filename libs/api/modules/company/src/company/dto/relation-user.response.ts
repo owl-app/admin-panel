@@ -2,11 +2,9 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform, TransformFnParams } from "class-transformer";
 import { IsOptional } from "class-validator";
 
-import { IUser } from "@owl-app/lib-contracts";
+import { User } from "@owl-app/lib-contracts";
 
-// import { IUserResponse } from "@owl-app/lib-contracts";
-
-export class RelationUserResponse {
+export class RelationUserResponse implements Partial<User> {
 
     @ApiProperty({ type: () => String })
     id: string;

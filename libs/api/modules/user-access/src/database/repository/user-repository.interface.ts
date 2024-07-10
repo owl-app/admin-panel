@@ -1,9 +1,9 @@
-import { IUser } from "@owl-app/lib-contracts";
+import { User } from "@owl-app/lib-contracts";
 
 export interface IUserRepository {
-  findOneByIdString(id: string): Promise<IUser>;
+  findOneByIdString(id: string): Promise<User>;
 
-  getUserByEmail(email: string): Promise<IUser>;
+  getUserByEmail(email: string): Promise<User>;
 
   updateLastLogin(username: string): Promise<void>;
 

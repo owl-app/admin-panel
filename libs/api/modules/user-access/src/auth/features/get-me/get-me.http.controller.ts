@@ -4,7 +4,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { RequestContextService } from '@owl-app/lib-api-bulding-blocks/context/app-request-context';
 import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
 
-import { User } from '../../../domain/model/user'
+import { UserEntity } from '../../../domain/entity/user.entity'
 
 import {type  IUserRepository } from '../../../database/repository/user-repository.interface';
 
@@ -18,7 +18,7 @@ import { UserWithPermissionResponse } from './dto/user-with-permission.response'
 @ApiBearerAuth()
 export class GetMeController {
   constructor(
-    @InjectTenantRepository(User)
+    @InjectTenantRepository(UserEntity)
     private readonly userRepository: IUserRepository
   ) {}
 
@@ -38,7 +38,7 @@ export class GetMeController {
     const user = await this.userRepository.findOneByIdString(RequestContextService.getCurrentUserId());
 
     return {
-      user: userMapper.map<User, UserResponse>(user, new UserResponse()),
+      user: userMapper.map<UserEntity, UserResponse>(user, new UserResponse()),
     };
   }
 }

@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform, TransformFnParams, Type } from "class-transformer";
 import { IsOptional } from "class-validator";
 
-import { IUser } from "@owl-app/lib-contracts";
+import { User } from "@owl-app/lib-contracts";
 import { RelationUserResponse } from "./relation-user.response";
 
 // import { IUserResponse } from "@owl-app/lib-contracts";

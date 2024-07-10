@@ -1,16 +1,10 @@
 import { EntitySchema } from 'typeorm';
 
-import type { Company, IUser } from '@owl-app/lib-contracts'
+import { CompanyEntity } from '../../domain/entity/company.entity';
 
-import { CompanyModel } from '../../domain/model/company';
-
-import {UserEntity} from '@owl-app/lib-api-module-user-access/database/entity/user.entity';
-
-import { User } from '@owl-app/lib-api-module-user-access/domain/model/user';
-
-export const CompanyEntity = new EntitySchema<CompanyModel>({
-  target: CompanyModel,
-  name: 'CompanyModel',
+export const CompanyEntitySchema = new EntitySchema<CompanyEntity>({
+  target: CompanyEntity,
+  name: 'CompanyEntity',
   tableName: 'company',
   columns: {
     id: {
@@ -25,7 +19,7 @@ export const CompanyEntity = new EntitySchema<CompanyModel>({
   relations: {
     users: {
         type: 'many-to-many',
-        target: UserEntity,
+        target: 'UserEntity',
         joinTable: {
           name: 'user_company',
           joinColumn: {

@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common'
 import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
 import { CrudTenantTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/crud-tenant-typeorm.module'
 
-import { UserEntity } from '../database/entity/user.entity'
+import { UserEntitySchema } from '../database/entity-schema/user.entity-schema'
 import { UserRepository } from '../database/repository/user.repository'
 
 import { UserCrudController } from './features/v1/crud/crud.http.controller'
@@ -18,7 +18,7 @@ import { UserService } from './features/v1/crud/user.service'
     CrudTenantTypeOrmModule.forFeature({
       entities: [
         {
-          entity: UserEntity,
+          entity: UserEntitySchema,
           repository: UserRepository
         }
       ],

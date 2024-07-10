@@ -1,9 +1,9 @@
 import { TypeMapper } from 'ts-mapper'
 
-import { IUser } from '@owl-app/lib-contracts';
+import { User } from '@owl-app/lib-contracts';
 
 import { CompanyResponse } from './dto/company.response'
-import { CompanyModel } from '../domain/model/company';
+import { CompanyEntity } from '../domain/entity/company.entity';
 import { RelationUserResponse } from './dto/relation-user.response';
 
 export class MapperUser extends TypeMapper {
@@ -13,7 +13,7 @@ export class MapperUser extends TypeMapper {
   }
 
   private config(): void {
-    this.createMap<IUser, RelationUserResponse>()
+    this.createMap<User, RelationUserResponse>()
       .map(
         (src) => src.id,
         (dest) => dest.id
@@ -38,7 +38,7 @@ export class MapperCompany extends TypeMapper {
   }
 
   private config(): void {
-    this.createMap<CompanyModel, CompanyResponse>()
+    this.createMap<CompanyEntity, CompanyResponse>()
       .map(
         (src) => src.id,
         (dest) => dest.id

@@ -1,6 +1,7 @@
-import { IUser } from './user';
+import { User } from './user';
+
 export type IAuthResponse = {
-	user: IUser;
+	user: User;
 	accessToken: string;
 	refreshToken: string;
 }

@@ -1,9 +1,9 @@
 import { RequestContext } from "@owl-app/request-context-nestjs"
-import { IUser } from "@owl-app/lib-contracts"
+import { User } from "@owl-app/lib-contracts"
 
 export class AppRequestContext extends RequestContext {
   requestId: string;
-  user: IUser
+  user: User
 }
 
 export class RequestContextService {
@@ -16,13 +16,13 @@ export class RequestContextService {
     return this.getContext().requestId;
   }
 
-  static getCurrentUser(): IUser | null {
+  static getCurrentUser(): User | null {
     const requestContext = this.getContext();
     return (requestContext && requestContext.user) || null;
   }
 
   static getCurrentUserId(): string|null {
-    const user: IUser|null = RequestContextService.getCurrentUser();
+    const user: User|null = RequestContextService.getCurrentUser();
     if (user) {
       return user.id;
     }

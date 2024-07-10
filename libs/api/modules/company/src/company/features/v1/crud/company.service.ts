@@ -4,7 +4,7 @@ import { PaginatedRequest, AssemblerAsyncCrudService, Pagination } from '@owl-ap
 import { InjectQueryService, QueryService } from '@owl-app/crud-core';
 import { isEmpty } from '@owl-app/utils'
 
-import { CompanyModel } from '../../../../domain/model/company'
+import { CompanyEntity } from '../../../../domain/entity/company.entity'
 import { CompanyResponse } from '../../../dto/company.response'
 
 import { CompanyModelAssembler } from './company.assembler'
@@ -12,13 +12,13 @@ import { CreateCompanyRequest, FilterCompanyDto } from './dto'
 
 @Injectable()
 export class CompanyService extends AssemblerAsyncCrudService(
-  CompanyModel,
+  CompanyEntity,
   CompanyResponse,
   CreateCompanyRequest
 ) {
   constructor(
     readonly assembler: CompanyModelAssembler,
-    @InjectQueryService(CompanyModel) readonly service: QueryService<CompanyModel>
+    @InjectQueryService(CompanyEntity) readonly service: QueryService<CompanyEntity>
   ) {
     super(assembler, service);
   }

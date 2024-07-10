@@ -1,9 +1,7 @@
-import { IUser } from "./user";
+import { User } from './user';
 
 export type Company = {
-	id: string;
-	
-	name: string;
-
-	users: IUser[]
+  id: string;
+  name: string;
+  users: User[];
 }

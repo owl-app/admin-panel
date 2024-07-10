@@ -19,7 +19,7 @@ import { PaginatedRequest } from '@owl-app/crud-nestjs'
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
 import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
 
-import{ User } from '../../../../domain/model/user'
+import{ UserEntity } from '../../../../domain/entity/user.entity'
 import mapper from '../../../mapping'
 import { UserResponse } from '../../../dto/user.response'
 
@@ -69,7 +69,7 @@ export class UserCrudController {
 
     const createdUser = await this.service.createAsyncOne(createUserRequest);
 
-    return mapper.map<User, UserResponse>(createdUser, new UserResponse());
+    return mapper.map<UserEntity, UserResponse>(createdUser, new UserResponse());
   }
 
 	@ApiOperation({ summary: 'Update user' })
@@ -95,7 +95,7 @@ export class UserCrudController {
 
     const updatedUser = await this.service.updateOne(id, updateUserDto);
 
-		return  mapper.map<User, UserResponse>(updatedUser, new UserResponse());
+		return  mapper.map<UserEntity, UserResponse>(updatedUser, new UserResponse());
 	}
 
   @ApiOperation({ summary: 'Find all users by filters using pagination' })

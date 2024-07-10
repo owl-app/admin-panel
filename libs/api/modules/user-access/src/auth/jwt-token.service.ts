@@ -5,11 +5,11 @@ import * as bcrypt from 'bcrypt';
 import { type IJwtConfig } from '@owl-app/lib-api-bulding-blocks/config/jwt';
 import { IJwtTokenService, IJwtTokenPayload } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
 
-import { User } from '../domain/model/user'
+import { UserEntity } from '../domain/entity/user.entity'
 import type { IUserRepository } from '../database/repository/user-repository.interface';
 
 @Injectable()
-export default class JwtTokenService implements IJwtTokenService<User> {
+export default class JwtTokenService implements IJwtTokenService<UserEntity> {
   constructor( 
     private readonly jwtConfig: IJwtConfig,
     private readonly userRepository: IUserRepository,
@@ -56,7 +56,7 @@ export default class JwtTokenService implements IJwtTokenService<User> {
     return false;
   }
 
-  async validateUserForJWTStragtegy(email: string): Promise<User|null> {
+  async validateUserForJWTStragtegy(email: string): Promise<UserEntity|null> {
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) {
       return null;
@@ -64,7 +64,7 @@ export default class JwtTokenService implements IJwtTokenService<User> {
     return user;
   }
 
-  async getUserIfRefreshTokenMatches(refreshToken: string, email: string): Promise<User|null> {
+  async getUserIfRefreshTokenMatches(refreshToken: string, email: string): Promise<UserEntity|null> {
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) {
       return null;

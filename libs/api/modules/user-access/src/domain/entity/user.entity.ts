@@ -1,6 +1,6 @@
-import { Company, IUser } from '@owl-app/lib-contracts';
+import { Company, User } from '@owl-app/lib-contracts';
 
-export class User implements IUser {
+export class UserEntity implements User {
 	id: string;
 
 	companies: Company[]

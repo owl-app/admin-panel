@@ -4,7 +4,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
 import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
 
-import { User } from '../../../domain/model/user';
+import { UserEntity } from '../../../domain/entity/user.entity';
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 
 import type { IUserRepository } from '../../../database/repository/user-repository.interface';
@@ -29,8 +29,8 @@ export class Login {
 export class LoginHandler implements ICommandHandler<Login> {
   constructor(
     @Inject(IJwtTokenService)
-    private readonly jwtTokenService: IJwtTokenService<User>,
-    @InjectTenantRepository(User)
+    private readonly jwtTokenService: IJwtTokenService<UserEntity>,
+    @InjectTenantRepository(UserEntity)
     private readonly userRepository: IUserRepository
   ) {}
 
@@ -50,7 +50,7 @@ export class LoginHandler implements ICommandHandler<Login> {
     const refreshToken = await this.jwtTokenService.getJwtRefreshToken(command.email);
 
     return {
-      user: userMapper.map<User, UserResponse>(user, new UserResponse()),
+      user: userMapper.map<UserEntity, UserResponse>(user, new UserResponse()),
       accessToken,
       refreshToken,
     };

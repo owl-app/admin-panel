@@ -1,6 +1,6 @@
 import { Company } from "./company";
 
-export interface IUser {
+export interface User {
 	id: string;
 	companies: Company[]
 	email: string;
@@ -15,7 +15,7 @@ export interface IUser {
 }
 
 export interface IUserRegistrationInput {
-	user: IUser;
+	user: User;
 	password?: string;
 	confirmPassword?: string;
 	originalUrl?: string;
@@ -31,7 +31,7 @@ export interface IUserLoginRequest {
 }
 
 export interface IUserWithPermission {
-	user: IUser
+	user: User
 }
 
 export interface IUserRequest {

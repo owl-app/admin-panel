@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IUser, IUserRequest } from "@owl-app/lib-contracts";
 
+import { User, IUserRequest } from "@owl-app/lib-contracts";
 import { CreateUserRequest } from "@owl-app/lib-api-module-user-access/user/features/v1/crud/dto/create-user.request";
 
 export class CreateCompanyRequest{
@@ -12,6 +12,6 @@ export class CreateCompanyRequest{
         description: 'Array of Child Conversations.',
         type: [CreateUserRequest],
     })
-    users: IUser[];
+    users: User[];
 
 }

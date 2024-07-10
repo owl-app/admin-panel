@@ -1,10 +1,10 @@
 import { EntitySchema } from 'typeorm';
 
-import { User } from '../../domain/model/user';
+import { UserEntity } from '../../domain/entity/user.entity';
 
-export const UserEntity = new EntitySchema<User>({
-  target: User,
-  name: 'User',
+export const UserEntitySchema = new EntitySchema<UserEntity>({
+  target: UserEntity,
+  name: 'UserEntity',
   tableName: 'user',
   columns: {
     id: {
@@ -58,7 +58,7 @@ export const UserEntity = new EntitySchema<User>({
   relations: {
     companies: {
       type: 'many-to-many',
-      target: 'CompanyModel',
+      target: 'CompanyEntity',
       joinTable: {
         name: 'user_company',
         joinColumn: {

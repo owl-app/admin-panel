@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
 import { CqrsModule } from '@nestjs/cqrs'
-import {TypeOrmModule} from '@nestjs/typeorm'
 import { JwtModule, JwtService } from '@nestjs/jwt'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+
 import { JwtStrategy } from '@owl-app/lib-api-bulding-blocks/passport/jwt.strategy'
 import { WinstonLoggerModule } from '@owl-app/winston-logger-nestjs'
 
@@ -13,13 +13,13 @@ import { getTenantRepositoryToken } from '@owl-app/lib-api-bulding-blocks/typeor
 
 import type { IUserRepository } from '../database/repository/user-repository.interface'
 import { UserRepository } from '../database/repository/user.repository'
-import { UserEntity } from '../database/entity/user.entity'
+import { UserEntitySchema } from '../database/entity-schema/user.entity-schema'
+import { UserEntity } from '../domain/entity/user.entity'
 
 import { LoginController } from './features/login/login.http.controller'
 import { GetMeController } from './features/get-me/get-me.http.controller'
 import { LoginHandler } from './features/login/login.service'
 import JwtTokenService from './jwt-token.service'
-import { User } from '../domain/model/user'
 
 
 
@@ -30,7 +30,7 @@ import { User } from '../domain/model/user'
     TenantTypeOrmModule.forFeature({
       entities: [
         {
-          entity: UserEntity,
+          entity: UserEntitySchema,
           repository: UserRepository,
         }
       ]
@@ -57,7 +57,7 @@ import { User } from '../domain/model/user'
     JwtStrategy,
     LoginHandler,
     {
-      inject: [ConfigService, getTenantRepositoryToken(User), JwtService],
+      inject: [ConfigService, getTenantRepositoryToken(UserEntity), JwtService],
       provide: IJwtTokenService,
       useFactory: (
         config: ConfigService,
