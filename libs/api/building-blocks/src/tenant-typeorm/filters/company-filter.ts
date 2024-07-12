@@ -1,18 +1,24 @@
-import { ObjectLiteral, SelectQueryBuilder } from "typeorm";
+import { EntityMetadata, SelectQueryBuilder } from "typeorm";
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { TenantFilter } from './tenant-filter';
 
 @Injectable()
-export class CompanyFilter implements TenantFilter
+export class CompanyFilter<Entity> implements TenantFilter<Entity>
 {
   constructor(readonly configService: ConfigService) {
 
   }
 
-  execute(queryBuilder: SelectQueryBuilder<ObjectLiteral>): void
+  supports(metadata: EntityMetadata): boolean
   {
-    console.log(this.configService)
+    return !!metadata
+      .relations.find(r => r.type === 'CompanyEntity' && r.propertyName === 'companies');
+  }
+
+  execute(queryBuilder: SelectQueryBuilder<Entity>): void
+  {
+    console.log('execute')
   }
 }

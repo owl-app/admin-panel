@@ -6,7 +6,7 @@
     "sourceMap": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es2017",
     "module": "esnext",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,

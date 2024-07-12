@@ -1,6 +1,8 @@
-import { ObjectLiteral, SelectQueryBuilder } from "typeorm";
+import { EntityMetadata, SelectQueryBuilder } from "typeorm";
 
-export interface TenantFilter
+export interface TenantFilter<Entity>
 {
-    execute(queryBuilder: SelectQueryBuilder<ObjectLiteral>): void;
+    supports(metadata: EntityMetadata): boolean
+
+    execute(queryBuilder: SelectQueryBuilder<Entity>): void;
 }

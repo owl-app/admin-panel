@@ -1,6 +1,7 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { DynamicModule, Module } from '@nestjs/common';
 
+import { CompanyAware } from '@owl-app/lib-contracts';
 import { RegistryServiceModule } from '@owl-app/registry-nestjs';
 
 import { TypeOrmOpts } from '../typeorm/types';
@@ -8,7 +9,6 @@ import { DEFAULT_DATA_SOURCE_NAME } from '../typeorm/constants';
 import { TypeOrmModule } from '../typeorm/typeorm.module';
 
 import { FILTER_REGISTRY_TENANT } from './constants';
-import { TenantFilter } from './filters/tenant-filter';
 import { CompanyFilter } from './filters/company-filter';
 
 @Module({})
@@ -32,10 +32,10 @@ export class TenantTypeOrmModule {
       opts, 
       entities: optsWithFilterRegistry, 
       imports: [
-        RegistryServiceModule.forFeature<TenantFilter>({
+        RegistryServiceModule.forFeature({
           name: FILTER_REGISTRY_TENANT,
           services: {
-            company: CompanyFilter
+            company: CompanyFilter<CompanyAware>
           }
         })
       ]

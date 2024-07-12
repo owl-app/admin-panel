@@ -14,7 +14,7 @@ export class UserRepository extends TenantRepository<UserEntity> implements IUse
     target: EntityTarget<UserEntity>,
     manager: EntityManager,
     queryRunner?: QueryRunner,
-    readonly filters?: Registry<TenantFilter>,
+    readonly filters?: Registry<TenantFilter<UserEntity>>,
   ) {
     super(target, manager, queryRunner, filters);
   }

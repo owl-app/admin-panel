@@ -2,6 +2,7 @@ import { Registry } from '@owl-app/registry';
 import {
   DeepPartial,
   EntityManager,
+  EntitySchema,
   EntityTarget,
   QueryRunner,
   Repository,
@@ -16,7 +17,7 @@ export class TenantRepository<Entity> extends Repository<Entity> {
     target: EntityTarget<Entity>,
     manager: EntityManager,
     queryRunner?: QueryRunner,
-    readonly filters?: Registry<TenantFilter>,
+    readonly filters?: Registry<TenantFilter<Entity>>,
   ) {
     super(target, manager, queryRunner);
   }
@@ -27,8 +28,17 @@ export class TenantRepository<Entity> extends Repository<Entity> {
   ): SelectQueryBuilder<Entity> {
     const qb = super.createQueryBuilder(alias, queryRunner);
 
-    console.log('createQueryBuilder', this.filters);
+    const filters = this.filters?.all();
 
+    if (filters) {
+      Object.entries(filters).forEach((filter) => {
+        if (filter[1].supports(this.metadata)) {
+          console.log('yes')
+          filter[1].execute(qb);
+        } 
+        
+      })
+    }
     // qb.andWhere(`${qb.alias}.email = :tenantId`, { tenantId: 'test' });
 
     // qb.andWhere(`${qb.alias}.company_id = :tenantId`, {tenantId : '1'});

@@ -71,3 +71,8 @@ export function isJsObject(object: any) {
 export function isNumeric(val: any): boolean {
   return !(val instanceof Array) && (val - parseFloat(val) + 1) >= 0;
 }
+
+export function instanceOf <T>(value: any, fieldName: string): value is T {
+  return fieldName in value;
+}
+  

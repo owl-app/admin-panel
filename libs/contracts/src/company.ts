@@ -5,3 +5,7 @@ export type Company = {
   name: string;
   users: User[];
 }
+
+export type CompanyAware = {
+  companies: Company[];
+}

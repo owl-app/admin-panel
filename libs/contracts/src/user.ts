@@ -1,8 +1,7 @@
-import { Company } from "./company";
+import { CompanyAware } from "./company";
 
-export interface User {
+export interface User extends CompanyAware {
 	id: string;
-	companies: Company[]
 	email: string;
 	username?: string;
 	firstName?: string;
