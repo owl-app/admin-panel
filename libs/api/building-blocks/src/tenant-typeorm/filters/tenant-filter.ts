@@ -4,5 +4,5 @@ export interface TenantFilter<Entity>
 {
     supports(metadata: EntityMetadata): boolean
 
-    execute(queryBuilder: SelectQueryBuilder<Entity>): void;
+    execute(qb: SelectQueryBuilder<Entity>): void;
 }

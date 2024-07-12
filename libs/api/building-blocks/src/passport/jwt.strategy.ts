@@ -2,9 +2,10 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 
+import { AuthUserData, User } from '@owl-app/lib-contracts';
+
 import { JWT_CONFIG_PROVIDER, type IJwtConfig } from '../config/jwt'
 import { IJwtTokenPayload, IJwtTokenService } from './jwt-token.interface';
-import { User } from '@owl-app/lib-contracts';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -21,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: IJwtTokenPayload): Promise<Partial<User>> {
+  async validate(payload: IJwtTokenPayload): Promise<Partial<AuthUserData>> {
     const user = await this.jwtTokenService.validateUserForJWTStragtegy(payload.email);
 
     if (!user) {
@@ -32,6 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       id: user.id,
       username: user.username,
       email: user.email,
+      companies: user.companies.map(company => company.id),
     };
   }
 }

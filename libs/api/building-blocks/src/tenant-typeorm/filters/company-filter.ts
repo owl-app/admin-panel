@@ -2,6 +2,9 @@ import { EntityMetadata, SelectQueryBuilder } from "typeorm";
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { RequestContextService } from "../../context/app-request-context";
+
+import { COMPANY_ENTITY } from "../../entity-tokens";
 import { TenantFilter } from './tenant-filter';
 
 @Injectable()
@@ -14,11 +17,13 @@ export class CompanyFilter<Entity> implements TenantFilter<Entity>
   supports(metadata: EntityMetadata): boolean
   {
     return !!metadata
-      .relations.find(r => r.type === 'CompanyEntity' && r.propertyName === 'companies');
+      .relations.find(r => r.type === COMPANY_ENTITY && r.propertyName === 'companies');
   }
 
-  execute(queryBuilder: SelectQueryBuilder<Entity>): void
+  execute(qb: SelectQueryBuilder<Entity>): void
   {
-    console.log('execute')
+    qb
+      .leftJoin(`${qb.alias}.companies`, 'company')
+      .where('company.id IN (:ids)', { ids: RequestContextService.getCurrentUser().companies })
   }
 }

@@ -47,8 +47,8 @@ export class CompanyCrudController {
     type: ApiErrorResponse
   })
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.service.findById(id, { relations: [{ name: 'users', query: {}}]});
+  findOne(@Param('id') id: string): Promise<CompanyResponse> {
+    return this.service.getById(id, { relations: [{ name: 'users', query: {}}]});
   }
 
   @ApiOperation({ summary: 'Create new company' })

@@ -1,10 +1,12 @@
 import { EntitySchema } from 'typeorm';
 
+import { USER_ENTITY, COMPANY_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
+
 import { CompanyEntity } from '../../domain/entity/company.entity';
 
 export const CompanyEntitySchema = new EntitySchema<CompanyEntity>({
   target: CompanyEntity,
-  name: 'CompanyEntity',
+  name: COMPANY_ENTITY,
   tableName: 'company',
   columns: {
     id: {
@@ -19,7 +21,7 @@ export const CompanyEntitySchema = new EntitySchema<CompanyEntity>({
   relations: {
     users: {
         type: 'many-to-many',
-        target: 'UserEntity',
+        target: USER_ENTITY,
         joinTable: {
           name: 'user_company',
           joinColumn: {

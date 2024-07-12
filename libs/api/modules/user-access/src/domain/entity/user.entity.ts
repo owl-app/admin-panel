@@ -1,25 +1,25 @@
 import { Company, User } from '@owl-app/lib-contracts';
 
 export class UserEntity implements User {
-	id: string;
+  id: string;
 
-	companies: Company[]
+  companies: Company[];
 
-	email: string;
+  email: string;
 
-	username?: string;
+  username?: string;
 
-	firstName?: string;
+  firstName?: string;
 
-	lastName?: string;
+  lastName?: string;
 
-	phoneNumber?: string;
+  phoneNumber?: string;
 
-	passwordHash?: string;
+  passwordHash?: string;
 
-	isActive?: boolean;
+  isActive?: boolean;
 
-	hashRefreshToken?: string;
+  hashRefreshToken?: string;
 
-	lastLogin?: Date;
+  lastLogin?: Date;
 }

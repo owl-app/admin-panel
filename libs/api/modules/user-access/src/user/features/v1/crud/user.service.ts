@@ -32,19 +32,19 @@ export class UserService extends AssemblerAsyncCrudService(
 
     if (!isEmpty(filters.email)) {
       availableFilters.push({
-        email: { like: '%' + filters.email + '%' },
+        email: { like: `%${filters.email}%` },
       });
     }
 
     if (!isEmpty(filters.firstName)) {
       availableFilters.push({
-        firstName: { like: '%' + filters.firstName + '%' },
+        firstName: { like: `%${filters.firstName}%` },
       });
     }
 
     if (!isEmpty(filters.lastName)) {
       availableFilters.push({
-        lastName: { like: '%' + filters.lastName + '%' },
+        lastName: { like: `%${filters.lastName}%` },
       });
     }
 

@@ -39,6 +39,14 @@ export class UserRepository extends TenantRepository<UserEntity> implements IUse
       where: {
         email,
       },
+      select: {
+        companies: {
+          id: true,
+        }
+      },
+      relations: {
+        companies: true,
+      },
     });
     if (!user) {
       return null;

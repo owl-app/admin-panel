@@ -33,15 +33,11 @@ export class TenantRepository<Entity> extends Repository<Entity> {
     if (filters) {
       Object.entries(filters).forEach((filter) => {
         if (filter[1].supports(this.metadata)) {
-          console.log('yes')
           filter[1].execute(qb);
         } 
         
       })
     }
-    // qb.andWhere(`${qb.alias}.email = :tenantId`, { tenantId: 'test' });
-
-    // qb.andWhere(`${qb.alias}.company_id = :tenantId`, {tenantId : '1'});
 
     return qb;
   }
@@ -89,8 +85,6 @@ export class TenantRepository<Entity> extends Repository<Entity> {
     entityOrEntities: T | T[],
     options?: SaveOptions
   ): Promise<T | T[]> {
-    console.log('save');
-    // (entityOrEntities as any).email = 'test';
     return this.manager.save<Entity, T>(
       this.metadata.target as any,
       entityOrEntities as any,
