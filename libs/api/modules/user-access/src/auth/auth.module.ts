@@ -10,6 +10,7 @@ import { IJwtConfig, JWT_CONFIG_NAME, JwtConfigProvider } from '@owl-app/lib-api
 import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface'
 import { TenantTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant-typeorm.module'
 import { getTenantRepositoryToken } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.utils'
+import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
 
 import type { IUserRepository } from '../database/repository/user-repository.interface'
 import { UserRepository } from '../database/repository/user.repository'
@@ -21,12 +22,11 @@ import { GetMeController } from './features/get-me/get-me.http.controller'
 import { LoginHandler } from './features/login/login.service'
 import JwtTokenService from './jwt-token.service'
 
-
-
 @Module({
   imports: [
     CqrsModule,
     WinstonLoggerModule,
+    RbacTypeOrmModule.forFeature({}),
     TenantTypeOrmModule.forFeature({
       entities: [
         {

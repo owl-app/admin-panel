@@ -5,7 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import { RequestContextService } from "../../context/app-request-context";
 
 import { COMPANY_ENTITY } from "../../entity-tokens";
-import { TenantFilter } from './tenant-filter';
+import { TenantFilter } from './tenant.filter';
+import { RolesEnum } from "@owl-app/lib-contracts";
 
 @Injectable()
 export class CompanyFilter<Entity> implements TenantFilter<Entity>
@@ -17,7 +18,8 @@ export class CompanyFilter<Entity> implements TenantFilter<Entity>
   supports(metadata: EntityMetadata): boolean
   {
     return !!metadata
-      .relations.find(r => r.type === COMPANY_ENTITY && r.propertyName === 'companies');
+      .relations.find(r => r.type === COMPANY_ENTITY && r.propertyName === 'companies') &&
+      RequestContextService.getCurrentUser().roles.includes(RolesEnum.ROLE_ADMIN_COMPANY);
   }
 
   execute(qb: SelectQueryBuilder<Entity>): void

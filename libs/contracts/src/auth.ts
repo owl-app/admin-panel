@@ -1,3 +1,4 @@
+import { IRoleResponse } from './rbac';
 import { User } from './user';
 
 export type AuthUserData = {
@@ -5,6 +6,7 @@ export type AuthUserData = {
 	username: string
 	email: string,
 	companies: string[],
+	roles: string[]
 }
 
 export type IAuthResponse = {

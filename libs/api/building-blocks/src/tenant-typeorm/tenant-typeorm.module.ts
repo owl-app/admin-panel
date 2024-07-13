@@ -8,8 +8,9 @@ import { TypeOrmOpts } from '../typeorm/types';
 import { DEFAULT_DATA_SOURCE_NAME } from '../typeorm/constants';
 import { TypeOrmModule } from '../typeorm/typeorm.module';
 
-import { FILTER_REGISTRY_TENANT } from './constants';
-import { CompanyFilter } from './filters/company-filter';
+import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from './constants';
+import { CompanyFilter } from './filters/company.filter';
+import { CompanySetter } from './setters/company.setter';
 
 @Module({})
 export class TenantTypeOrmModule {
@@ -36,6 +37,12 @@ export class TenantTypeOrmModule {
           name: FILTER_REGISTRY_TENANT,
           services: {
             company: CompanyFilter<CompanyAware>
+          }
+        }),
+        RegistryServiceModule.forFeature({
+          name: SETTER_REGISTRY_TENANT,
+          services: {
+            company: CompanySetter<CompanyAware>
           }
         })
       ]

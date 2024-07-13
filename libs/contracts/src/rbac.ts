@@ -26,14 +26,9 @@ export interface ICreateRoleRequest extends IBaseRbacItemRequest{}
 export interface IUpdateRoleRequest extends IBaseRbacItemRequest{}
 
 export enum RolesEnum {
-  SUPER_ADMIN = 'SUPER_ADMIN',
-  ADMIN = 'ADMIN',
-  DATA_ENTRY = 'DATA_ENTRY',
-  EMPLOYEE = 'EMPLOYEE',
-  CANDIDATE = 'CANDIDATE',
-  MANAGER = 'MANAGER',
-  VIEWER = 'VIEWER',
-  INTERVIEWER = 'INTERVIEWER'
+  ROLE_ADMIN_SYSTEM = 'ROLE_ADMIN_SYSTEM',
+  ROLE_ADMIN_COMPANY = 'ROLE_ADMIN_COMPANY',
+  ROLE_USER = 'ROLE_USER',
 }
 
 export enum PermissionsEnum {

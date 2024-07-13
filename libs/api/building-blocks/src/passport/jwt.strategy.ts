@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport'
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 
 import { AuthUserData, User } from '@owl-app/lib-contracts';
+import { Manager } from '@owl-app/rbac-manager';
 
 import { JWT_CONFIG_PROVIDER, type IJwtConfig } from '../config/jwt'
 import { IJwtTokenPayload, IJwtTokenService } from './jwt-token.interface';
@@ -14,6 +15,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private jwtConfig: IJwtConfig,
     @Inject(IJwtTokenService)
     private jwtTokenService: IJwtTokenService<User>,
+    @Inject('RBAC_MANAGER')
+    readonly rbacManager: Manager
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -34,6 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       username: user.username,
       email: user.email,
       companies: user.companies.map(company => company.id),
+      roles: (await this.rbacManager.getRolesByUserId(user.id)).map(role => role.name)
     };
   }
 }

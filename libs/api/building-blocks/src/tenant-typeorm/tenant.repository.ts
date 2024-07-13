@@ -9,7 +9,7 @@ import {
   SaveOptions,
   SelectQueryBuilder,
 } from 'typeorm';
-import { TenantFilter } from './filters/tenant-filter';
+import { TenantFilter } from './filters/tenant.filter';
 
 export class TenantRepository<Entity> extends Repository<Entity> {
 

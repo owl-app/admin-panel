@@ -270,18 +270,15 @@ export class Manager implements IAccessCheckerInterface {
     const assigments: Record<string, Assignment> =
         await this.assignmentsStorage.getByUserId(parsedUserId)
     const roles = this.getDefaultRoles();
+    const resultRoles: Array<Promise<Role>> = [];
 
     Object.keys(assigments).forEach(async (name) => {
-      const role: Role | null = await this.itemsStorage.getRole(
+      resultRoles.push(this.itemsStorage.getRole(
         assigments[name].itemName
-      );
-
-      if (role !== null) {
-        roles.push(role);
-      }
+      ))
     })
 
-    return roles;
+    return [...roles, ...await Promise.all(resultRoles)];
   }
 
   /**

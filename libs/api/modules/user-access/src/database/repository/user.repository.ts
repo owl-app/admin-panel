@@ -2,7 +2,7 @@ import { EntityManager, EntityTarget, QueryRunner } from 'typeorm';
 import { User } from '@owl-app/lib-contracts';
 import { Registry } from '@owl-app/registry';
 import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant.repository';
-import { TenantFilter } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/filters/tenant-filter';
+import { TenantFilter } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/filters/tenant.filter';
 
 import { UserEntity } from '../../domain/entity/user.entity';
 
