@@ -11,16 +11,15 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "paths": {
+      "@owl-app/client": ["libs/api/modules/client/src/index.ts"],
       "@owl-app/crud-core": ["packages/server/crud/core/src/index.ts"],
       "@owl-app/crud-nestjs": ["packages/server/crud/nestjs/src/index.ts"],
       "@owl-app/lib-api-bulding-blocks/*": ["libs/api/building-blocks/src/*"],
       "@owl-app/lib-api-core": ["libs/api/core/src/index.ts"],
+      "@owl-app/lib-api-module-company/*": ["libs/api/modules/company/src/*"],
       "@owl-app/lib-api-module-rbac/*": ["libs/api/modules/rbac/src/*"],
       "@owl-app/lib-api-module-user-access/*": [
         "libs/api/modules/user-access/src/*"
-      ],
-      "@owl-app/lib-api-module-company/*": [
-        "libs/api/modules/company/src/*"
       ],
       "@owl-app/lib-contracts": ["libs/contracts/src/index.ts"],
       "@owl-app/rbac-manager": ["packages/server/rbac/manager/src/index.ts"],
