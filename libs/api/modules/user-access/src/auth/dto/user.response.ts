@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
 
 import { IUserResponse } from "@owl-app/lib-contracts";
 
-export class UserResponse implements IUserResponse {
+export class UserResponseAuth implements IUserResponse {
 
     @ApiProperty({ type: () => String })
     email: string;

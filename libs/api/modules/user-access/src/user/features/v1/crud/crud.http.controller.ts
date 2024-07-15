@@ -67,13 +67,13 @@ export class UserCrudController {
   async create(@Body() createUserRequest: CreateUserRequest) {
     await createUserValidation.validateAsync(createUserRequest, { abortEarly: false });
 
-    // const createdUser = await this.service.createAsyncOne(createUserRequest);
+    const createdUser = await this.service.createWithRelations(createUserRequest, {
+      company: [createUserRequest.companyId]
+    });
 
-    const user = new UserEntity();
+    console.log(createdUser)
 
-    const relations = this.service.queryService.addNewRelations(user, 'company', ['bdd73110-805f-4192-a33d-e0571773dba5']);
-
-    return mapper.map<UserEntity, UserResponse>(user, new UserResponse());
+    return createdUser
   }
 
 	@ApiOperation({ summary: 'Update user' })
@@ -99,7 +99,7 @@ export class UserCrudController {
 
     const updatedUser = await this.service.updateOne(id, updateUserDto);
 
-		return  mapper.map<UserEntity, UserResponse>(updatedUser, new UserResponse());
+		return  updatedUser
 	}
 
   @ApiOperation({ summary: 'Find all users by filters using pagination' })

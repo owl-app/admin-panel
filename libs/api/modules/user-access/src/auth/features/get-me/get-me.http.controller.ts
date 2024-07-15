@@ -9,7 +9,7 @@ import { UserEntity } from '../../../domain/entity/user.entity'
 import {type  IUserRepository } from '../../../database/repository/user-repository.interface';
 
 import userMapper from '../../mapping'
-import { UserResponse } from '../../dto/user.response'
+import { UserResponseAuth } from '../../dto/user.response'
 
 import { UserWithPermissionResponse } from './dto/user-with-permission.response';
 
@@ -38,7 +38,7 @@ export class GetMeController {
     const user = await this.userRepository.findOneByIdString(RequestContextService.getCurrentUserId());
 
     return {
-      user: userMapper.map<UserEntity, UserResponse>(user, new UserResponse()),
+      user: userMapper.map<UserEntity, UserResponseAuth>(user, new UserResponseAuth()),
     };
   }
 }

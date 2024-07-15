@@ -9,7 +9,7 @@ import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 
 import type { IUserRepository } from '../../../database/repository/user-repository.interface';
 
-import { UserResponse } from '../../dto/user.response';
+import { UserResponseAuth } from '../../dto/user.response';
 import userMapper from '../../mapping';
 
 import { loginValidation } from './validation';
@@ -50,7 +50,7 @@ export class LoginHandler implements ICommandHandler<Login> {
     const refreshToken = await this.jwtTokenService.getJwtRefreshToken(command.email);
 
     return {
-      user: userMapper.map<UserEntity, UserResponse>(user, new UserResponse()),
+      user: userMapper.map<UserEntity, UserResponseAuth>(user, new UserResponseAuth()),
       accessToken,
       refreshToken,
     };

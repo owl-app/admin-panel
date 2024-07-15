@@ -35,6 +35,8 @@ export class UserAssembler extends ClassTransformerAsyncAssembler<
 
   convertToDTO(user: UserEntity): UserResponse
   {
+    console.log('user')
+    console.log(user)
     return mapper.map<UserEntity, UserResponse>(user, new UserResponse());
   }
 }

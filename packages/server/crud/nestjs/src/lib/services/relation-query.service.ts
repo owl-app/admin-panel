@@ -10,7 +10,7 @@ import {
   Query
 } from '@owl-app/crud-core'
 import omit from 'lodash.omit'
-import { RelationQueryBuilder as TypeOrmRelationQueryBuilder, Repository } from 'typeorm'
+import { RelationQueryBuilder as TypeOrmRelationQueryBuilder, Repository, DeepPartial } from 'typeorm'
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata'
 
 import { AggregateBuilder, EntityIndexRelation, FilterQueryBuilder, RelationQueryBuilder } from '../query'
@@ -197,7 +197,7 @@ export abstract class RelationQueryService<Entity> {
     return relationEntity ? assembler.convertToDTO(relationEntity) : undefined
   }
 
-  public async addNewRelations<Relation>(
+  public async assignRelations<Relation>(
     entity: Entity,
     relationName: string,
     relationIds: (string | number)[],
@@ -208,8 +208,17 @@ export abstract class RelationQueryService<Entity> {
     if (!this.foundAllRelations(relationIds, relations)) {
       throw new Error(`Unable to find all ${relationName} to add to ${this.EntityClass.name}`)
     }
-    await this.createTypeormRelationQueryBuilder(entity, relationName).add(relationIds)
-    return entity
+
+    const relationMetadata = this.getRelationMeta(relationName)
+    let assignedRelations: DeepPartial<Relation>|DeepPartial<Relation>[] = []
+
+    if(relationMetadata.isManyToMany || relationMetadata.isOneToMany) {
+      assignedRelations = relations
+    } else {
+      assignedRelations = relations.shift()
+    }
+
+    return {...entity, ...{ [relationName]: assignedRelations }}
   }
 
   /**

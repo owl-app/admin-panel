@@ -65,6 +65,6 @@ export const UserEntitySchema = new EntitySchema<UserEntity>({
         name: 'company_id',
       },
       inverseSide: 'users'
-    }
+    },
   },
 });

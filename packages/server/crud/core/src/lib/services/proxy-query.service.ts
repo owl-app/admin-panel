@@ -21,6 +21,16 @@ import { QueryService } from './query.service'
 export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> implements QueryService<DTO, C, U> {
   constructor(readonly proxied: QueryService<DTO, C, U>) {}
 
+
+  assignRelations<Relation>(
+    entity: DTO,
+    id: string | number,
+    relationIds: (string | number)[],
+    opts?: ModifyRelationOptions<DTO, Relation>
+  ): Promise<DTO> {
+    return this.proxied.assignRelations(entity, id, relationIds, opts)
+  }
+
   addRelations<Relation>(
     relationName: string,
     id: string | number,
@@ -178,6 +188,13 @@ export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> 
 
   createOne(item: C): Promise<DTO> {
     return this.proxied.createOne(item)
+  }
+
+  createWithRelations(
+    item: C,
+    relations: Record<string, (string | number)[]>,
+  ): Promise<DTO> {
+    return this.proxied.createWithRelations(item, relations)
   }
 
   async deleteMany(filter: Filter<DTO>): Promise<DeleteManyResponse> {

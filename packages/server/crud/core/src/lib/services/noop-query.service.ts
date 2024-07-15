@@ -33,6 +33,23 @@ export class NoOpQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> i
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor() {}
 
+  assignRelations<Relation>(
+    entity: DTO,
+    id: string | number,
+    relationIds: (string | number)[],
+    opts?: ModifyRelationOptions<DTO, Relation>
+  ): Promise<DTO> {
+    return Promise.reject(new NotImplementedException('addRelations is not implemented'))
+  }
+
+  createWithRelations(
+    item: C,
+    relations: Record<string, (string | number)[]>,
+  ): Promise<DTO> {
+    return Promise.reject(new NotImplementedException('createWithRelations is not implemented'))
+  }
+
+
   addRelations<Relation>(
     relationName: string,
     id: string | number,

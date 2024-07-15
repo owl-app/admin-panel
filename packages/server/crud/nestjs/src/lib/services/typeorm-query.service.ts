@@ -188,6 +188,25 @@ export class TypeOrmQueryService<Entity>
     return this.repo.save(entity)
   }
 
+  public async createWithRelations(
+    record: DeepPartial<Entity>,
+    relations: Record<string, (string | number)[]>,
+  ): Promise<Entity> {
+    const entity = await this.ensureIsEntityAndDoesNotExist(record)
+    const resultRelations: Array<Promise<Entity>> = []
+    
+    Object.entries(relations).forEach(async ([name, ids]) => {
+      resultRelations.push(this.assignRelations(entity, name, ids))
+    })
+
+    const entityWithRelations = (await Promise.all(resultRelations))
+      .reduce((base, extended) => ({ ...base, ...extended }))
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return this.repo.save(entityWithRelations)
+  }
+
   /**
    * Create multiple entities.
    *

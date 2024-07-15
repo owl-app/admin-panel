@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { UserResponse } from '../../../dto/user.response'
+import { UserResponseAuth } from '../../../dto/user.response'
 
 export class UserWithPermissionResponse {
 
-  @ApiProperty({ type: () => UserResponse })
-  user: UserResponse;
+  @ApiProperty({ type: () => UserResponseAuth })
+  user: UserResponseAuth;
 
 }

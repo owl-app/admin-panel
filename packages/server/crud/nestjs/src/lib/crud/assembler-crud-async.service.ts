@@ -18,10 +18,16 @@ export interface IAssemblerAsyncQueryService<
   U = C
 > extends QueryService<DTO, C, U> {
   createAsyncOne(item: C): Promise<DTO>;
+
   updateAsyncOne(
     id: string | number,
     update: U,
     opts?: UpdateOneOptions<DTO>
+  ): Promise<DTO>;
+
+  createAsyncWithRelations(
+    item: C,
+    relations: Record<string, (string | number)[]>,
   ): Promise<DTO>;
 }
 
@@ -50,6 +56,14 @@ export class CustomAssemblerQueryServicey<DTO, Entity, C, CE, U, UE>
     return this.assembler.convertAsyncToDTO(
       this.queryService.updateOne(id, u, this.convertFilterable(opts))
     );
+  }
+
+  async createAsyncWithRelations(
+    item: C,
+    relations: Record<string, (string | number)[]>,
+  ): Promise<DTO> {
+    const c = await this.assembler.convertAsyncToCreateEntity(item);
+    return this.assembler.convertAsyncToDTO(this.queryService.createWithRelations(c, relations))
   }
 }
 
