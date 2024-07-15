@@ -67,7 +67,7 @@ export type EntityIndexRelation<Relation> = Relation & {
  * Class that will convert a Query into a `typeorm` Query Builder.
  */
 export class RelationQueryBuilder<Entity, Relation> {
-  readonly filterQueryBuilder: FilterQueryBuilder<Relation>
+  filterQueryBuilder: FilterQueryBuilder<Relation>
 
   readonly relationRepo: Repository<Relation>
 
@@ -82,9 +82,9 @@ export class RelationQueryBuilder<Entity, Relation> {
    */
   private existingAlias: Alias
 
-  constructor(readonly repo: Repository<Entity>, readonly relation: string) {
+  constructor(readonly repo: Repository<Entity>, readonly relation: string, filterQueryBuilder?: FilterQueryBuilder<Relation>) {
     this.relationRepo = this.repo.manager.getRepository<Relation>(this.relationMeta.from)
-    this.filterQueryBuilder = new FilterQueryBuilder<Relation>(this.relationRepo)
+    this.filterQueryBuilder = filterQueryBuilder ?? new FilterQueryBuilder<Relation>(this.relationRepo)
     this.paramCount = 0
   }
 

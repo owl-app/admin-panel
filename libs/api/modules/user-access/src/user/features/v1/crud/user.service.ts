@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { PaginatedRequest, AssemblerAsyncCrudService, Pagination } from '@owl-app/crud-nestjs'
+import { PaginatedRequest, AssemblerAsyncCrudService, Pagination, TypeOrmQueryService } from '@owl-app/crud-nestjs'
 import { InjectQueryService, QueryService } from '@owl-app/crud-core';
 import { isEmpty } from '@owl-app/utils'
 
@@ -19,9 +19,9 @@ export class UserService extends AssemblerAsyncCrudService(
 ) {
   constructor(
     readonly assembler: UserAssembler,
-    @InjectQueryService(UserEntity) readonly service: QueryService<UserEntity>
+    @InjectQueryService(UserEntity) public readonly queryService: QueryService<UserEntity> & TypeOrmQueryService<UserEntity>
   ) {
-    super(assembler, service);
+    super(assembler, queryService);
   }
 
   async search(

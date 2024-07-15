@@ -197,6 +197,21 @@ export abstract class RelationQueryService<Entity> {
     return relationEntity ? assembler.convertToDTO(relationEntity) : undefined
   }
 
+  public async addNewRelations<Relation>(
+    entity: Entity,
+    relationName: string,
+    relationIds: (string | number)[],
+    opts?: ModifyRelationOptions<Entity, Relation>
+  ): Promise<Entity> {
+    const relations = await this.getRelations(relationName, relationIds, opts?.relationFilter)
+
+    if (!this.foundAllRelations(relationIds, relations)) {
+      throw new Error(`Unable to find all ${relationName} to add to ${this.EntityClass.name}`)
+    }
+    await this.createTypeormRelationQueryBuilder(entity, relationName).add(relationIds)
+    return entity
+  }
+
   /**
    * Add a single relation.
    * @param id - The id of the entity to add the relation to.

@@ -6,10 +6,10 @@ import { Class } from '@owl-app/crud-core';
 import { isObject } from '@owl-app/utils'
 
 import { createTypeOrmQueryServiceProvider } from './providers'
-import type { NestjsQueryCoreModuleOpts } from './types'
+import type { NestjsQueryTypeOrmModuleOpts } from './types'
 
 export class NestjsQueryTypeOrmModule {
-  static forFeature(opts: NestjsQueryCoreModuleOpts): DynamicModule {
+  static forFeature(opts: NestjsQueryTypeOrmModuleOpts): DynamicModule {
     const entities = opts.entities.map((opt) => opt.entity);
     const repositoriesProviders = opts.entities
       .filter((opt) => 
@@ -20,7 +20,7 @@ export class NestjsQueryTypeOrmModule {
       .map((opt) => opt.repository.obj) as unknown as Class<Repository<ObjectLiteral>>[];
 
     const queryServiceProviders = opts.entities.map((opt) =>
-      createTypeOrmQueryServiceProvider(opt.entity, opt.repository, opts.connection)
+      createTypeOrmQueryServiceProvider(opt.entity, opt.repository, opts.connection, opts.queryService)
     );
 
     const typeOrmModule = opts.typeOrmModule ?? TypeOrmModule.forFeature(entities, opts.connection);

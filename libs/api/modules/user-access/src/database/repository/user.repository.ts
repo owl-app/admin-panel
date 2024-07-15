@@ -1,25 +1,11 @@
-import { EntityManager, EntityTarget, QueryRunner } from 'typeorm';
+import { EntityManager, EntityTarget, QueryRunner, Repository } from 'typeorm';
 import { User } from '@owl-app/lib-contracts';
-import { Registry } from '@owl-app/registry';
-import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant.repository';
-import { TenantFilter } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/filters/tenant.filter';
-import { TenantSetter } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/setters/tenant.setter';
 
 import { UserEntity } from '../../domain/entity/user.entity';
 
 import { IUserRepository } from './user-repository.interface';
 
-export class UserRepository extends TenantRepository<UserEntity> implements IUserRepository {
-
-  constructor(
-    target: EntityTarget<UserEntity>,
-    manager: EntityManager,
-    queryRunner?: QueryRunner,
-    readonly filters?: Registry<TenantFilter<UserEntity>>,
-    readonly setters?: Registry<TenantSetter<UserEntity>>,
-  ) {
-    super(target, manager, queryRunner, filters);
-  }
+export class UserRepository extends Repository<UserEntity> implements IUserRepository {
 
   async findOneByIdString(id: string): Promise<User>
   {

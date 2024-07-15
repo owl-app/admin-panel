@@ -8,6 +8,7 @@ import {
 import { IAssemblerCRUDService } from './assembler-crud.service';
 import { BaseCrudService } from './base-crud.service';
 import { AsyncAssembler } from './async.assembler';
+import { TypeOrmQueryService } from '../services';
 
 type DefaultDeepPartial<Cls, T> = unknown extends Cls ? DeepPartial<T> : Cls;
 
@@ -30,7 +31,7 @@ export class CustomAssemblerQueryServicey<DTO, Entity, C, CE, U, UE>
 {
   constructor(
     readonly assembler: AsyncAssembler<DTO, Entity, C, CE, U, UE>,
-    readonly queryService: QueryService<Entity, CE, UE>
+    public queryService: QueryService<Entity, CE, UE> & TypeOrmQueryService<Entity>
   ) {
     super(assembler, queryService);
   }

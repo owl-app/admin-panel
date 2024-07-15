@@ -10,7 +10,7 @@ import { COMPANY_ENTITY } from "../../entity-tokens";
 import { TenantFilter } from './tenant.filter';
 
 @Injectable()
-export class CompanyFilter<Entity extends CompanyAware> implements TenantFilter<Entity>
+export class CompanyRelationFilter<Entity extends CompanyAware> implements TenantFilter<Entity>
 {
   constructor(readonly configService: ConfigService) {
 
@@ -18,14 +18,15 @@ export class CompanyFilter<Entity extends CompanyAware> implements TenantFilter<
 
   supports(metadata: EntityMetadata): boolean
   {
-    return metadata.name === COMPANY_ENTITY
-    // return metadata.target === COMPANY_ENTITY &&
-    //   RequestContextService.getCurrentUser().roles.includes(RolesEnum.ROLE_ADMIN_COMPANY);
+    return !!metadata
+      .relations.find(r => r.type === COMPANY_ENTITY && r.propertyName === 'company') &&
+      RequestContextService.getCurrentUser().roles.includes(RolesEnum.ROLE_ADMIN_COMPANY);
   }
 
   execute(qb: SelectQueryBuilder<Entity>): void
   {
     qb
-      .andWhere('id = :id', { id: RequestContextService.getCurrentUser().company.id })
+      .leftJoin(`${qb.alias}.company`, 'company')
+      .where('company.id = :id', { id: RequestContextService.getCurrentUser().company.id })
   }
 }

@@ -67,9 +67,13 @@ export class UserCrudController {
   async create(@Body() createUserRequest: CreateUserRequest) {
     await createUserValidation.validateAsync(createUserRequest, { abortEarly: false });
 
-    const createdUser = await this.service.createAsyncOne(createUserRequest);
+    // const createdUser = await this.service.createAsyncOne(createUserRequest);
 
-    return mapper.map<UserEntity, UserResponse>(createdUser, new UserResponse());
+    const user = new UserEntity();
+
+    const relations = this.service.queryService.addNewRelations(user, 'company', ['bdd73110-805f-4192-a33d-e0571773dba5']);
+
+    return mapper.map<UserEntity, UserResponse>(user, new UserResponse());
   }
 
 	@ApiOperation({ summary: 'Update user' })
