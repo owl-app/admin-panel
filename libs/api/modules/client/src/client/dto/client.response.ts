@@ -1,17 +1,20 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Transform, TransformFnParams } from "class-transformer";
+import { Transform, TransformFnParams, Type } from "class-transformer";
 import { IsOptional } from "class-validator";
 
-import { Company, IUserResponse } from "@owl-app/lib-contracts";
+import { User } from "@owl-app/lib-contracts";
+import { RelationUserResponse } from "./relation-user.response";
 
-export class UserResponse implements IUserResponse {
+// import { IUserResponse } from "@owl-app/lib-contracts";
+
+export class ClientResponse {
 
     @ApiProperty({ type: () => String })
     id: string;
 
     @ApiProperty({ type: () => String })
     @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
-    email: string;
+    name: string;
 
     @ApiPropertyOptional({ type: () => String })
     firstName?: string;
@@ -20,7 +23,4 @@ export class UserResponse implements IUserResponse {
     @IsOptional()
     lastName?: string;
 
-    @ApiPropertyOptional({ type: () => Array })
-    @IsOptional()
-    company: Company;
 }

@@ -2,14 +2,15 @@ import { EntityMetadata, SelectQueryBuilder } from "typeorm";
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { CompanyAware, RolesEnum } from "@owl-app/lib-contracts";
+
 import { RequestContextService } from "../../context/app-request-context";
 
 import { COMPANY_ENTITY } from "../../entity-tokens";
 import { TenantFilter } from './tenant.filter';
-import { RolesEnum } from "@owl-app/lib-contracts";
 
 @Injectable()
-export class CompanyFilter<Entity> implements TenantFilter<Entity>
+export class CompanyFilter<Entity extends CompanyAware> implements TenantFilter<Entity>
 {
   constructor(readonly configService: ConfigService) {
 
@@ -18,14 +19,14 @@ export class CompanyFilter<Entity> implements TenantFilter<Entity>
   supports(metadata: EntityMetadata): boolean
   {
     return !!metadata
-      .relations.find(r => r.type === COMPANY_ENTITY && r.propertyName === 'companies') &&
+      .relations.find(r => r.type === COMPANY_ENTITY && r.propertyName === 'company') &&
       RequestContextService.getCurrentUser().roles.includes(RolesEnum.ROLE_ADMIN_COMPANY);
   }
 
   execute(qb: SelectQueryBuilder<Entity>): void
   {
     qb
-      .leftJoin(`${qb.alias}.companies`, 'company')
-      .where('company.id IN (:ids)', { ids: RequestContextService.getCurrentUser().companies })
+      .leftJoin(`${qb.alias}.company`, 'company')
+      .where('company.id = :id', { id: RequestContextService.getCurrentUser().company.id })
   }
 }

@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IUserRequest } from "@owl-app/lib-contracts";
 
-export class CreateUserRequest implements IUserRequest{
+export class UserRequest implements IUserRequest{
 
     @ApiProperty({ type: () => String })
     email: string;
@@ -17,7 +17,4 @@ export class CreateUserRequest implements IUserRequest{
 
     @ApiPropertyOptional({ type: () => String })
     readonly phoneNumber?: string;
-
-    @ApiPropertyOptional({ type: () => String })
-    readonly companyId: string;
 }

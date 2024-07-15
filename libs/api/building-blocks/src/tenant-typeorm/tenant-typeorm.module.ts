@@ -25,7 +25,7 @@ export class TenantTypeOrmModule {
     const optsWithFilterRegistry = opts.entities.map((entity) => {
       return {
         ...entity,
-        inject: [FILTER_REGISTRY_TENANT]
+        inject: [FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT]
       }
     });
 

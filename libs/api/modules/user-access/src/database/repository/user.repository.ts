@@ -3,6 +3,7 @@ import { User } from '@owl-app/lib-contracts';
 import { Registry } from '@owl-app/registry';
 import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant.repository';
 import { TenantFilter } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/filters/tenant.filter';
+import { TenantSetter } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/setters/tenant.setter';
 
 import { UserEntity } from '../../domain/entity/user.entity';
 
@@ -15,6 +16,7 @@ export class UserRepository extends TenantRepository<UserEntity> implements IUse
     manager: EntityManager,
     queryRunner?: QueryRunner,
     readonly filters?: Registry<TenantFilter<UserEntity>>,
+    readonly setters?: Registry<TenantSetter<UserEntity>>,
   ) {
     super(target, manager, queryRunner, filters);
   }
@@ -40,12 +42,12 @@ export class UserRepository extends TenantRepository<UserEntity> implements IUse
         email,
       },
       select: {
-        companies: {
+        company: {
           id: true,
         }
       },
       relations: {
-        companies: true,
+        company: true,
       },
     });
     if (!user) {

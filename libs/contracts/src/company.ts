@@ -7,5 +7,5 @@ export type Company = {
 }
 
 export type CompanyAware = {
-  companies: Company[];
+  company: Company;
 }

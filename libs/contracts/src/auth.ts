@@ -1,11 +1,11 @@
-import { IRoleResponse } from './rbac';
+import { Company } from './company';
 import { User } from './user';
 
 export type AuthUserData = {
 	id: string,
 	username: string
 	email: string,
-	companies: string[],
+	company: Company,
 	roles: string[]
 }
 

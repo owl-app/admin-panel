@@ -20,7 +20,7 @@ export class CompanyModelAssembler extends ClassTransformerAsyncAssembler<
     const model = new CompanyEntity();
 
     model.name = dto.name;
-    model.users = dto.users;
+    // model.users = dto.users;
 
     return model;
   }
@@ -29,9 +29,9 @@ export class CompanyModelAssembler extends ClassTransformerAsyncAssembler<
   {
     const responseCompany = mapperCompany.map<CompanyEntity, CompanyResponse>(company, new CompanyResponse());
 
-    if(company.users) {
-      responseCompany.users = company.users.map((user) => mapperUser.map<User, RelationUserResponse>(user, new RelationUserResponse()));
-    }
+    // if(company.users) {
+    //   responseCompany.users = company.users.map((user) => mapperUser.map<User, RelationUserResponse>(user, new RelationUserResponse()));
+    // }
 
     return responseCompany
   }
@@ -41,9 +41,9 @@ export class CompanyModelAssembler extends ClassTransformerAsyncAssembler<
     const response = await company;
     const responseCompany = mapperCompany.map<CompanyEntity, CompanyResponse>(response, new CompanyResponse());
 
-    if(response.users) {
-      responseCompany.users = response.users.map((user) => mapperUser.map<User, RelationUserResponse>(user, new RelationUserResponse()));
-    }
+    // if(response.users) {
+    //   responseCompany.users = response.users.map((user) => mapperUser.map<User, RelationUserResponse>(user, new RelationUserResponse()));
+    // }
 
     return responseCompany
   }

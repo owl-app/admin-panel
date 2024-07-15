@@ -20,19 +20,10 @@ export const CompanyEntitySchema = new EntitySchema<CompanyEntity>({
   },
   relations: {
     users: {
-        type: 'many-to-many',
-        target: USER_ENTITY,
-        joinTable: {
-          name: 'user_company',
-          joinColumn: {
-            name: 'company_id',
-          },
-          inverseJoinColumn: {
-            name: 'user_id'
-          },
-        },
-        inverseSide: 'companies',
-        cascade: true,
-      },
+      type: 'one-to-many',
+      target: USER_ENTITY,
+      cascade: true,
+      inverseSide: 'company'
+    },
   },
 });

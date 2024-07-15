@@ -1,20 +1,24 @@
 {
-  "name": "client",
-  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "name": "@owl-app/lib-api-module-client",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api/modules/client/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/libs/api/modules/client"],
       "options": {
-        "outputPath": "dist/libs/api/modules/client",
-        "tsConfig": "libs/api/modules/client/tsconfig.lib.json",
-        "packageJson": "libs/api/modules/client/package.json",
-        "main": "libs/api/modules/client/src/index.ts",
-        "assets": ["libs/api/modules/client/*.md"]
+        "commands": [
+          "npx rimraf dist/libs/api/modules/client",
+          "npx tsc -p libs/api/modules/client/tsconfig.build.json",
+          "npx copyfiles -f \"libs/api/modules/client/package.json\" \"libs/api/modules/client/README.md\" \"LICENSE\" dist/libs/api/modules/client"
+        ],
+        "cwd": ".",
+        "parallel": false
       }
     }
   },
   "tags": []
 }
+
+

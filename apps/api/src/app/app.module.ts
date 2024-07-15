@@ -1,27 +1,18 @@
 import { Module } from '@nestjs/common'
 
-import { RbacModule } from '@owl-app/lib-api-module-rbac/rbac.module'
-// import { rbacManagerFactoryProvider } from '@owl-app/rbac-storage-typeorm';
 import { UserAccessModule } from '@owl-app/lib-api-module-user-access/user-access.module'
-
 import { CompanyModule } from '@owl-app/lib-api-module-company/company.module'
-
+import { ClientModule } from '@owl-app/lib-api-module-client/client.module'
 import { RequestContextModule } from "@owl-app/request-context-nestjs"
+import { RbacModule } from '@owl-app/lib-api-module-rbac/rbac.module'
 
 @Module({
   imports: [
     UserAccessModule,
     CompanyModule,
+    ClientModule,
     RbacModule,
     RequestContextModule,
-    
-    // RbacModule.forFeature({
-    //     imports: [
-    //       TypeOrmModule,
-    //     ],
-    //     rbacManagerProvider: rbacManagerFactoryProvider
-    //   }
-    // ),
   ],
   exports: [
     // RbacModule

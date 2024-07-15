@@ -58,20 +58,13 @@ export const UserEntitySchema = new EntitySchema<UserEntity>({
     },
   },
   relations: {
-    companies: {
-      type: 'many-to-many',
+    company: {
+      type: 'many-to-one',
       target: COMPANY_ENTITY,
-      joinTable: {
-        name: 'user_company',
-        joinColumn: {
-          name: 'user_id',
-          referencedColumnName: "id"
-        },
-        inverseJoinColumn: {
-          name: 'company_id'
-        },
+      joinColumn: {
+        name: 'company_id',
       },
-      inverseSide: 'users',
-    },
+      inverseSide: 'users'
+    }
   },
 });

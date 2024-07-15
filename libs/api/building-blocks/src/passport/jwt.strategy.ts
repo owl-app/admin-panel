@@ -36,7 +36,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       id: user.id,
       username: user.username,
       email: user.email,
-      companies: user.companies.map(company => company.id),
+      company: user.company,
       roles: (await this.rbacManager.getRolesByUserId(user.id)).map(role => role.name)
     };
   }

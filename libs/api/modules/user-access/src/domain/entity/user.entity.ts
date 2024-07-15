@@ -3,7 +3,7 @@ import { Company, User } from '@owl-app/lib-contracts';
 export class UserEntity implements User {
   id: string;
 
-  companies: Company[];
+  company: Company;
 
   email: string;
 

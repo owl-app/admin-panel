@@ -1,8 +1,8 @@
-import { EntityMetadata, SelectQueryBuilder } from "typeorm";
+import { DeepPartial, EntityMetadata } from "typeorm";
 
 export interface TenantSetter<Entity>
 {
-    supports(metadata: EntityMetadata): boolean
+    supports(metadata: EntityMetadata): boolean;
 
-    execute(qb: SelectQueryBuilder<Entity>): void;
+    execute<T extends DeepPartial<Entity>>(entityOrEntities: T | T[],): void
 }

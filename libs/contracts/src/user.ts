@@ -46,4 +46,5 @@ export interface IUserResponse {
 	email: string;
 	firstName?: string;
 	lastName?: string;
+	companyId?: string;
 }

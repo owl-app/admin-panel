@@ -142,6 +142,13 @@ export interface QueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> {
     opts?: FindRelationOptions<Relation>
   ): Promise<Relation | undefined>
 
+  findRelation<Relation>(
+    RelationClass: Class<Relation> | string,
+    relationName: string,
+    dto: DTO,
+    opts?: FindRelationOptions<Relation>
+  ): Promise<Relation | undefined>
+
   /**
    * Finds a single relation for each DTO passed in.
    *

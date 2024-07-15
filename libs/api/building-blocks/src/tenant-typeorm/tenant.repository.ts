@@ -2,7 +2,6 @@ import { Registry } from '@owl-app/registry';
 import {
   DeepPartial,
   EntityManager,
-  EntitySchema,
   EntityTarget,
   QueryRunner,
   Repository,
@@ -10,6 +9,7 @@ import {
   SelectQueryBuilder,
 } from 'typeorm';
 import { TenantFilter } from './filters/tenant.filter';
+import { TenantSetter } from './setters/tenant.setter';
 
 export class TenantRepository<Entity> extends Repository<Entity> {
 
@@ -18,6 +18,7 @@ export class TenantRepository<Entity> extends Repository<Entity> {
     manager: EntityManager,
     queryRunner?: QueryRunner,
     readonly filters?: Registry<TenantFilter<Entity>>,
+    readonly setters?: Registry<TenantSetter<Entity>>,
   ) {
     super(target, manager, queryRunner);
   }
@@ -85,8 +86,17 @@ export class TenantRepository<Entity> extends Repository<Entity> {
     entityOrEntities: T | T[],
     options?: SaveOptions
   ): Promise<T | T[]> {
-    return this.manager.save<Entity, T>(
-      this.metadata.target as any,
+    const setters = this.setters?.all();
+
+    if (setters) {
+      Object.entries(setters).forEach((filter) => {
+        if (filter[1].supports(this.metadata)) {
+          filter[1].execute(entityOrEntities);
+        } 
+      })
+    }
+
+    return super.save(
       entityOrEntities as any,
       options
     );
