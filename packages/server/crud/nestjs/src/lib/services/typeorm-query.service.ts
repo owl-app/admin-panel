@@ -193,19 +193,14 @@ export class TypeOrmQueryService<Entity>
     relations: Record<string, (string | number)[]>,
   ): Promise<Entity> {
     const entity = await this.ensureIsEntityAndDoesNotExist(record)
-    const resultRelations: Promise<Entity>[] = []
-    let entityWithRelations: Entity | undefined;
-
+    const resultRelations: Array<Promise<Entity>> = []
+    
     Object.entries(relations).forEach(async ([name, ids]) => {
       resultRelations.push(this.assignRelations(entity, name, ids))
     })
 
-    try {
-      entityWithRelations = (await Promise.all(resultRelations))
-        .reduce((base, extended) => ({ ...base, ...extended }))
-    } catch (e) {
-      throw new NotFoundException(e)
-    }
+    const entityWithRelations = (await Promise.all(resultRelations))
+      .reduce((base, extended) => ({ ...base, ...extended }))
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

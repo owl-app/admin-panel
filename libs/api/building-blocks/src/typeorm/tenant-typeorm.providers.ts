@@ -21,7 +21,11 @@ export function createTypeOrmProviders(
           ? dataSource.getMongoRepository(entity)
           : dataSource.getRepository(entity)
 
-      return new repository(baseRepo.target, baseRepo.manager, baseRepo.queryRunner, ...injectArgs);
+      if(repository !== null) {
+        return new repository(baseRepo.target, baseRepo.manager, baseRepo.queryRunner, ...injectArgs);
+      }
+
+      return baseRepo;
     },
     inject: [getDataSourceToken(dataSource), ...inject ?? []],
     /**

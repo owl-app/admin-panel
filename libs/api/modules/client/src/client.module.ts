@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
 import { CrudTenantTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/crud-tenant-typeorm.module'
-import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant.repository'
 
 import { ClientEntitySchema } from './database/entity-schema/client.entity-schema'
 
@@ -17,8 +16,7 @@ import { ClientService } from './client/features/v1/crud/client.service'
     CrudTenantTypeOrmModule.forFeature({
       entities: [
         {
-          entity: ClientEntitySchema,
-          repository: TenantRepository
+          entity: ClientEntitySchema
         }
       ],
       assemblers: [ClientModelAssembler]

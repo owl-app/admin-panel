@@ -6,7 +6,7 @@ import { Class } from "@owl-app/crud-core"
 
 export interface TypeOrmEntitesOpts {
   entity: EntityClassOrSchema,
-  repository: Class<Repository<ObjectLiteral>>,
+  repository?: Class<Repository<ObjectLiteral>>,
   inject?: Array<InjectionToken | OptionalFactoryDependency>;
 }
 

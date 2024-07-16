@@ -34,6 +34,8 @@ export class ClientModelAssembler extends ClassTransformerAsyncAssembler<
   {
     const response = await client;
 
-    return response
+    const responseClient = mapperClient.map<ClientEntity, ClientResponse>(response, new ClientResponse());
+
+    return responseClient
   }
 }

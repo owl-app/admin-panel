@@ -16,7 +16,7 @@ export function createTypeOrmQueryServiceProvider<Entity>(
   connection?: DataSource | string,
   queryService?: NestjsQueryTypeOrmModuleQueryServiceOpts,
 ): FactoryProvider {
-  const { obj: RepositoryObj , injectInProviders = false} = repository ?? {};
+  const { obj: RepositoryObj, injectInProviders = false} = repository ?? {};
 
   const { classService = TypeOrmQueryService, inject = [], opts = {}} = queryService ?? {};
 
