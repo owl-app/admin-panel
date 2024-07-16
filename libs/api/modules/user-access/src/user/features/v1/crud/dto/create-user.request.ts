@@ -3,7 +3,7 @@ import { IUserRequest } from "@owl-app/lib-contracts";
 
 export class CreateUserRequest implements IUserRequest{
 
-    @ApiProperty({ type: () => String })
+    @ApiProperty({ type: () => String, example: 'test@fajny.pl'})
     email: string;
 
     @ApiProperty({ type: () => String })

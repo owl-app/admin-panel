@@ -19,6 +19,18 @@ export class Mapper extends TypeMapper {
         (src) => src.email,
         (dest) => dest.email
       )
+      .map(
+        (src) => src.firstName,
+        (dest) => dest.firstName
+      )
+      .map(
+        (src) => src.lastName,
+        (dest) => dest.lastName
+      )
+      .map(
+        (src) => src.phoneNumber,
+        (dest) => dest.phoneNumber
+      )
   }
 }
 

@@ -18,6 +18,7 @@ import { RequestContextService } from '../context/app-request-context'
 export class ErrorHandlersFilter implements ExceptionFilter {
   public catch(err: unknown, host: ArgumentsHost): void {
     console.log(err)
+    console.log('jest error')
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
@@ -49,7 +50,7 @@ export class ErrorHandlersFilter implements ExceptionFilter {
       return;
     }
 
-    response.status(HttpStatus.INTERNAL_SERVER_ERROR).json();
+    response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({});
 
     Logger.error(serializeObject(err));
 

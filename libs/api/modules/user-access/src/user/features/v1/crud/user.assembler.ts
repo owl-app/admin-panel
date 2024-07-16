@@ -23,20 +23,20 @@ export class UserAssembler extends ClassTransformerAsyncAssembler<
 
   async convertAsyncToCreateEntity(dto: CreateUserRequest): Promise<DeepPartial<UserEntity>> {
     const model = new UserEntity();
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { password_bcrypt_salt_rounds } = this.configService.get<IConfigApp>(APP_CONFIG_NAME);
 
     model.passwordHash = await bcrypt.hash(dto.password, password_bcrypt_salt_rounds);
     model.firstName = dto.firstName;
     model.lastName = dto.lastName;
     model.email = dto.email;
+    model.phoneNumber = dto.phoneNumber;
 
     return model;
   }
 
   convertToDTO(user: UserEntity): UserResponse
   {
-    console.log('user')
-    console.log(user)
     return mapper.map<UserEntity, UserResponse>(user, new UserResponse());
   }
 }

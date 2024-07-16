@@ -206,7 +206,7 @@ export abstract class RelationQueryService<Entity> {
     const relations = await this.getRelations(relationName, relationIds, opts?.relationFilter)
 
     if (!this.foundAllRelations(relationIds, relations)) {
-      throw new Error(`Unable to find all ${relationName} to add to ${this.EntityClass.name}`)
+      throw new Error(`Unable to find ${relationName}`)
     }
 
     const relationMetadata = this.getRelationMeta(relationName)
