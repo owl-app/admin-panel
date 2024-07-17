@@ -20,3 +20,4 @@ export * from './sort-field.interface';
 export * from './update-many-response.interface';
 export * from './update-one-options.interface';
 export * from './with-deleted.interface';
+export * from './query-paginated-options.interface'
