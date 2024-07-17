@@ -1,23 +1,10 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IUserRequest } from "@owl-app/lib-contracts";
+import { ApiPropertyOptional, PartialType } from "@nestjs/swagger";
 
-export class CreateUserRequest implements IUserRequest{
+import { UserDto } from "../../../../dto/user.dto";
 
-    @ApiProperty({ type: () => String, example: 'test@fajny.pl'})
-    email: string;
-
-    @ApiProperty({ type: () => String })
-    password?: string;
-
-    @ApiPropertyOptional({ type: () => String })
-    readonly firstName?: string;
-
-    @ApiPropertyOptional({ type: () => String })
-    readonly lastName?: string;
-
-    @ApiPropertyOptional({ type: () => String })
-    readonly phoneNumber?: string;
+export class CreateUserRequest extends PartialType(UserDto) {
 
     @ApiPropertyOptional({ type: () => String })
     readonly companyId: string;
+
 }

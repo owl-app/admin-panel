@@ -19,12 +19,10 @@ import { PaginatedRequest } from '@owl-app/crud-nestjs'
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
 import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
 
-import{ UserEntity } from '../../../../domain/entity/user.entity'
-import mapper from '../../../mapping'
-import { UserResponse } from '../../../dto/user.response'
+import { UserDto } from '../../../dto/user.dto'
 
 import { UserService } from './user.service'
-import { CreateUserRequest, UpdateUserDto, FilterUserDto, UserPaginatedResponseDto } from './dto'
+import { CreateUserRequest, UpdateUserRequest, FilterUserDto, UserPaginatedResponse } from './dto'
 import { createUserValidation } from './validation'
 
 @ApiTags('User')
@@ -40,7 +38,7 @@ export class UserCrudController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Found one user record',
-    type: UserResponse,
+    type: UserDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -55,7 +53,7 @@ export class UserCrudController {
   @ApiOperation({ summary: 'Create new user' })
     @ApiCreatedResponse({
       description: 'The user has been successfully created.',
-      type: UserResponse,
+      type: UserDto,
     })
     @ApiResponse({
       status: HttpStatus.BAD_REQUEST,
@@ -67,11 +65,13 @@ export class UserCrudController {
   async create(@Body() createUserRequest: CreateUserRequest) {
     await createUserValidation.validateAsync(createUserRequest, { abortEarly: false });
 
-    const createdUser = await this.service.createWithRelations(createUserRequest, {
-      company: [createUserRequest.companyId]
-    });
+    const createdUser = await this.service.createOne(createUserRequest);
 
-    console.log(createdUser)
+    // const createdUser = await this.service.createWithRelations(createUserRequest, {
+    //   company: [createUserRequest.companyId]
+    // });
+
+    // console.log(createdUser)
 
     return createdUser
   }
@@ -79,7 +79,7 @@ export class UserCrudController {
 	@ApiOperation({ summary: 'Update user' })
     @ApiAcceptedResponse({
       description: 'User has been successfully updated.',
-      type: UserResponse,
+      type: UserDto,
     })
     @ApiResponse({
       status: HttpStatus.NOT_FOUND,
@@ -94,10 +94,10 @@ export class UserCrudController {
 	@Put(':id')
 	async update(
 		@Param('id', UUIDValidationPipe) id: string,
-		@Body() updateUserDto: UpdateUserDto,
-	): Promise<UserResponse> {
+		@Body() updateUserRequest: UpdateUserRequest,
+	): Promise<UserDto> {
 
-    const updatedUser = await this.service.updateOne(id, updateUserDto);
+    const updatedUser = await this.service.updateOne(id, updateUserRequest);
 
 		return  updatedUser
 	}
@@ -106,7 +106,7 @@ export class UserCrudController {
     @ApiResponse({
       status: HttpStatus.OK,
       description: 'Found records.',
-      type: UserPaginatedResponseDto,
+      type: UserPaginatedResponse,
     })
     @ApiResponse({
       status: HttpStatus.BAD_REQUEST,
@@ -117,10 +117,10 @@ export class UserCrudController {
   async paginated(
     @Query() filters: FilterUserDto,
     @Query() pagination: PaginatedRequest
-  ): Promise<UserPaginatedResponseDto> {
+  ): Promise<UserPaginatedResponse> {
     const paginated = await this.service.search(filters, pagination);
 
-    return new UserPaginatedResponseDto(paginated);
+    return new UserPaginatedResponse(paginated);
   }
 
   @ApiOperation({ summary: 'Delete user' })

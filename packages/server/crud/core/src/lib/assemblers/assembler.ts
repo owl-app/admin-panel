@@ -44,13 +44,13 @@ export interface Assembler<
    * Convert a create dto input to the equivalent create entity type
    * @param createDTO
    */
-  convertToCreateEntity(createDTO: CreateDTO): CreateEntity
+  convertToCreateEntity(createDTO: CreateDTO): CreateEntity | Promise<CreateEntity>
 
   /**
    * Convert a update dto input to the equivalent update entity type
    * @param createDTO
    */
-  convertToUpdateEntity(createDTO: UpdateDTO): UpdateEntity
+  convertToUpdateEntity(createDTO: UpdateDTO): UpdateEntity | Promise<UpdateEntity>
 
   /**
    * Convert an array of entities to a an of DTOs
@@ -98,7 +98,7 @@ export interface Assembler<
    * Convert an array of create DTOs to an array of create entities
    * @param createDtos
    */
-  convertToCreateEntities(createDtos: CreateDTO[]): CreateEntity[]
+  convertToCreateEntities(createDtos: CreateDTO[]): Array<CreateEntity | Promise<CreateEntity>>
 }
 
 const assemblerReflector = new ValueReflector(ASSEMBLER_CLASSES_KEY)

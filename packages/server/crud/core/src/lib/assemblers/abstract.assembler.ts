@@ -44,9 +44,9 @@ export abstract class AbstractAssembler<DTO, Entity, C = DeepPartial<DTO>, CE = 
 
   abstract convertAggregateResponse(aggregate: AggregateResponse<Entity>): AggregateResponse<DTO>
 
-  abstract convertToCreateEntity(create: C): CE
+  abstract convertToCreateEntity(create: C): CE | Promise<CE>
 
-  abstract convertToUpdateEntity(update: U): UE
+  abstract convertToUpdateEntity(update: U): UE | Promise<UE>
 
   convertToDTOs(entities: Entity[]): DTO[] {
     return entities.map((e) => this.convertToDTO(e))
@@ -56,7 +56,7 @@ export abstract class AbstractAssembler<DTO, Entity, C = DeepPartial<DTO>, CE = 
     return dtos.map((dto) => this.convertToEntity(dto))
   }
 
-  convertToCreateEntities(createDtos: C[]): CE[] {
+  convertToCreateEntities(createDtos: C[]): (CE | Promise<CE>)[] {
     return createDtos.map((c) => this.convertToCreateEntity(c))
   }
 

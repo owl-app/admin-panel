@@ -34,7 +34,7 @@ export interface IUserWithPermission {
 }
 
 export interface IUserRequest {
-	email: string;
+	email?: string;
 	password?: string;
 	firstName?: string;
 	lastName?: string;

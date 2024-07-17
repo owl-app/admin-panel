@@ -1,22 +1,17 @@
 import { Injectable } from '@nestjs/common'
 
 import { PaginatedRequest, AssemblerAsyncCrudService, Pagination, TypeOrmQueryService } from '@owl-app/crud-nestjs'
-import { InjectQueryService, QueryService } from '@owl-app/crud-core';
+import { AssemblerQueryService, InjectQueryService, QueryService } from '@owl-app/crud-core';
 import { isEmpty } from '@owl-app/utils'
 
 import { UserEntity } from '../../../../domain/entity/user.entity'
-import { UserResponse } from '../../../dto/user.response'
-import mapper from '../../../mapping'
+import { UserDto } from '../../../dto/user.dto'
 
 import { UserAssembler } from './user.assembler'
-import { CreateUserRequest, FilterUserDto } from './dto'
+import { FilterUserDto } from './dto'
 
 @Injectable()
-export class UserService extends AssemblerAsyncCrudService(
-  UserEntity,
-  UserResponse,
-  CreateUserRequest
-) {
+export class UserService extends AssemblerQueryService<UserDto, UserEntity> {
   constructor(
     readonly assembler: UserAssembler,
     @InjectQueryService(UserEntity) public readonly queryService: QueryService<UserEntity> & TypeOrmQueryService<UserEntity>
@@ -27,7 +22,7 @@ export class UserService extends AssemblerAsyncCrudService(
   async search(
     filters: FilterUserDto,
     pagination: PaginatedRequest
-  ): Promise<Pagination<UserResponse>> {
+  ): Promise<Pagination<UserDto>> {
     const availableFilters = [];
 
     if (!isEmpty(filters.email)) {
@@ -48,16 +43,19 @@ export class UserService extends AssemblerAsyncCrudService(
       });
     }
 
-    const result = await this.paginated(
-      {
-        or: availableFilters,
-      },
-      pagination
-    );
+    // const result = await this.paginated(
+    //   {
+    //     or: availableFilters,
+    //   },
+    //   pagination
+    // );
 
     return {
-        ...result,
-        items: result.items.map((user) => mapper.map<UserEntity, UserResponse>(user, new UserResponse()))
+        metadata: {
+          total: 0
+        },
+        items: []
+        // items: result.items.map((user) => mapper.map<UserEntity, UserDto>(user, new UserDto()))
     }
   }
 }

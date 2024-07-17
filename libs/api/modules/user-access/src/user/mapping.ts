@@ -1,6 +1,6 @@
 import { TypeMapper } from 'ts-mapper'
 
-import { UserResponse } from './dto/user.response'
+import { UserDto } from './dto/user.dto'
 import { UserEntity } from '../domain/entity/user.entity';
 
 export class Mapper extends TypeMapper {
@@ -10,7 +10,7 @@ export class Mapper extends TypeMapper {
   }
 
   private config(): void {
-    this.createMap<UserEntity, UserResponse>()
+    this.createMap<UserEntity, UserDto>()
       .map(
         (src) => src.id,
         (dest) => dest.id

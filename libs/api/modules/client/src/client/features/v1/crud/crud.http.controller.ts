@@ -66,7 +66,7 @@ export class ClientCrudController {
   async create(@Body() createClientRequest: CreateClientRequest) {
     await createClientValidation.validateAsync(createClientRequest, { abortEarly: false });
 
-    const createdClient = await this.service.createAsyncOne(createClientRequest);
+    const createdClient = await this.service.createOne(createClientRequest);
 
     return createdClient;
   }

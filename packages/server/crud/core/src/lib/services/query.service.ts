@@ -270,7 +270,7 @@ export interface QueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> {
    * @param items - the records to create.
    * @returns a created records.
    */
-  createMany(items: C[]): Promise<DTO[]>
+  createMany(items: (C | Promise<C>)[]): Promise<DTO[]>
 
   /**
    * Creates a single record with relations

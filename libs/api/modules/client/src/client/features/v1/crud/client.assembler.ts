@@ -1,6 +1,6 @@
 import { User } from '@owl-app/lib-contracts'
 import { ClassTransformerAsyncAssembler } from '@owl-app/crud-nestjs'
-import { Assembler, DeepPartial } from '@owl-app/crud-core'
+import { Assembler, ClassTransformerAssembler, DeepPartial } from '@owl-app/crud-core'
 
 import { ClientEntity } from '../../../../domain/entity/client.entity'
 import { ClientResponse } from '../../../dto/client.response'
@@ -9,16 +9,23 @@ import { mapperClient } from '../../../mapping'
 import { CreateClientRequest, UpdateClientDto } from './dto'
 
 
-@Assembler(ClientResponse, ClientEntity)
-export class ClientModelAssembler extends ClassTransformerAsyncAssembler<
-  ClientResponse,
-  ClientEntity,
-  CreateClientRequest|UpdateClientDto
+@Assembler(CreateClientRequest, ClientEntity)
+export class ClientModelAssembler extends ClassTransformerAssembler<
+  CreateClientRequest,
+  ClientEntity
 > {
-  async convertAsyncToCreateEntity(dto: CreateClientRequest): Promise<DeepPartial<ClientEntity>> {
+  async convertAsyncToCreateEntity(dto: UpdateClientDto&CreateClientRequest): Promise<DeepPartial<ClientEntity>> {
     const model = new ClientEntity();
 
     model.name = dto.name;
+
+    return model;
+  }
+
+  convertToCreateEntity(dto: DeepPartial<UpdateClientDto>): DeepPartial<ClientEntity> | Promise<DeepPartial<ClientEntity>> {
+    const model = new ClientEntity();
+
+    model.name = 'LALALA';
 
     return model;
   }
