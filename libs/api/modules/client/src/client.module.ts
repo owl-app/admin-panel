@@ -8,7 +8,7 @@ import { ClientEntitySchema } from './database/entity-schema/client.entity-schem
 
 import { ClientCrudController } from './client/features/v1/crud/crud.http.controller'
 import { ClientModelAssembler } from './client/features/v1/crud/client.assembler'
-import { ClientService } from './client/features/v1/crud/client.service'
+import { ListFilterBuilder } from './client/features/v1/crud/list-filter.builder'
 
 @Module({
   imports: [
@@ -16,17 +16,15 @@ import { ClientService } from './client/features/v1/crud/client.service'
     CrudTenantTypeOrmModule.forFeature({
       entities: [
         {
-          entity: ClientEntitySchema
+          entity: ClientEntitySchema,
+          dataProviderFilterBuilder: ListFilterBuilder
         }
       ],
       assemblers: [ClientModelAssembler]
-    })
+    }),
   ],
   controllers: [
     ClientCrudController,
   ],
-  providers: [
-    ClientService
-  ]
 })
 export class ClientModule {}

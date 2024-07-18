@@ -2,7 +2,6 @@ import { Inject } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import * as bcrypt from 'bcrypt'
 
-import { ClassTransformerAsyncAssembler } from '@owl-app/crud-nestjs'
 import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-bulding-blocks/config'
 import { Assembler, ClassTransformerAssembler, DeepPartial } from '@owl-app/crud-core'
 

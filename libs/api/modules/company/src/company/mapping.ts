@@ -20,7 +20,7 @@ export class MapperUser extends TypeMapper {
       )
       .map(
         (src) => src.firstName,
-        (dest) => dest.name
+        (dest) => dest.firstName
       )
       .map(
         (src) => src.lastName,

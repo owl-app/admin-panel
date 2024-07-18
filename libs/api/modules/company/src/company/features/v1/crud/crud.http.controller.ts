@@ -10,29 +10,32 @@ import {
   Param,
   HttpCode,
   Injectable,
-  ClassSerializerInterceptor,
-  UseInterceptors,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
-import { PaginatedRequest } from '@owl-app/crud-nestjs'
 
+import { InjectQueryService, QueryService } from '@owl-app/crud-core'
+import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
+import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
+import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
 import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
+import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
 
 import { CompanyResponse } from '../../../dto/company.response'
+import { CompanyEntity } from '../../../../domain/entity/company.entity'
 
-import { CompanyService } from './company.service'
 import { CreateCompanyRequest, UpdateCompanyDto, FilterCompanyDto, CompanyPaginatedResponseDto } from './dto'
 import { createCompanyValidation } from './validation'
+
 
 @ApiTags('Company')
 @Controller('companies')
 @ApiBearerAuth()
-@UseInterceptors(ClassSerializerInterceptor)
 @Injectable()
 export class CompanyCrudController {
   constructor(
-    readonly service: CompanyService
+    @InjectQueryService(CompanyEntity) readonly service: QueryService<CompanyEntity>,
+    @InjectPaginatedQueryService(CompanyEntity) readonly paginatedService: DataProvider<Paginated<CompanyEntity>, FilterCompanyDto>
   ) {}
 
 	@ApiOperation({ summary: 'Find company by id' })
@@ -62,11 +65,10 @@ export class CompanyCrudController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Post()
-  // @UsePipes(new ValidationPipe())
   async create(@Body() createCompanyRequest: CreateCompanyRequest) {
     await createCompanyValidation.validateAsync(createCompanyRequest, { abortEarly: false });
 
-    const createdCompany = await this.service.createAsyncOne(createCompanyRequest);
+    const createdCompany = await this.service.createOne(createCompanyRequest);
 
     return createdCompany;
   }
@@ -111,9 +113,9 @@ export class CompanyCrudController {
   @Get()
   async paginated(
     @Query() filters: FilterCompanyDto,
-    @Query() pagination: PaginatedRequest
+    @Query() pagination: PaginatedQuery
   ): Promise<CompanyPaginatedResponseDto> {
-    const paginated = await this.service.search(filters, pagination);
+    const paginated = await this.paginatedService.getData(filters, pagination);
 
     return new CompanyPaginatedResponseDto(paginated);
   }

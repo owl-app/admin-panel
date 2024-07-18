@@ -1,3 +1,3 @@
 export interface QueryPaginatedOptions {
-  limit?: number
+  default_limit?: number
 }

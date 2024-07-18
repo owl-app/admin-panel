@@ -18,9 +18,8 @@ export class CompanyFilter<Entity extends CompanyAware> implements TenantFilter<
 
   supports(metadata: EntityMetadata): boolean
   {
-    return metadata.name === COMPANY_ENTITY
-    // return metadata.target === COMPANY_ENTITY &&
-    //   RequestContextService.getCurrentUser().roles.includes(RolesEnum.ROLE_ADMIN_COMPANY);
+    return metadata.name === COMPANY_ENTITY && 
+      RequestContextService.getCurrentUser().roles.includes(RolesEnum.ROLE_ADMIN_COMPANY);
   }
 
   execute(qb: SelectQueryBuilder<Entity>): void

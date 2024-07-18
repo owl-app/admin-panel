@@ -15,6 +15,7 @@ export class NestjsQueryCoreModule {
   static forFeature(opts: NestjsQueryCoreModuleOpts): DynamicModule {
     const { imports = [], assemblers = [] } = opts
     const assemblerServiceProviders = createServices(assemblers)
+
     return {
       module: NestjsQueryCoreModule,
       imports: [...imports],

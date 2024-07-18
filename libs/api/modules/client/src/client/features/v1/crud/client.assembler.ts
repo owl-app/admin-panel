@@ -1,5 +1,4 @@
 import { User } from '@owl-app/lib-contracts'
-import { ClassTransformerAsyncAssembler } from '@owl-app/crud-nestjs'
 import { Assembler, ClassTransformerAssembler, DeepPartial } from '@owl-app/crud-core'
 
 import { ClientEntity } from '../../../../domain/entity/client.entity'
@@ -30,18 +29,18 @@ export class ClientModelAssembler extends ClassTransformerAssembler<
     return model;
   }
 
-  convertToDTO(client: ClientEntity): ClientResponse
+  convertToDTO(client: ClientEntity): CreateClientRequest
   {
-    const responseClient = mapperClient.map<ClientEntity, ClientResponse>(client, new ClientResponse());
+    const responseClient = mapperClient.map<ClientEntity, CreateClientRequest>(client, new CreateClientRequest());
 
     return responseClient
   }
 
-  async convertAsyncToDTO(client: Promise<ClientEntity>): Promise<ClientResponse>
+  async convertAsyncToDTO(client: Promise<ClientEntity>): Promise<CreateClientRequest>
   {
     const response = await client;
 
-    const responseClient = mapperClient.map<ClientEntity, ClientResponse>(response, new ClientResponse());
+    const responseClient = mapperClient.map<ClientEntity, CreateClientRequest>(response, new CreateClientRequest());
 
     return responseClient
   }

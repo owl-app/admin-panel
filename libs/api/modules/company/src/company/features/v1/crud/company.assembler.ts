@@ -1,6 +1,4 @@
-import { User } from '@owl-app/lib-contracts'
-import { ClassTransformerAsyncAssembler } from '@owl-app/crud-nestjs'
-import { Assembler, DeepPartial } from '@owl-app/crud-core'
+import { Assembler, DeepPartial, ClassTransformerAssembler } from '@owl-app/crud-core'
 
 import { CompanyEntity } from '../../../../domain/entity/company.entity'
 import { CompanyResponse } from '../../../dto/company.response'
@@ -10,11 +8,10 @@ import { CreateCompanyRequest, UpdateCompanyDto } from './dto'
 import { RelationUserResponse } from '../../../dto/relation-user.response'
 
 
-@Assembler(CompanyResponse, CompanyEntity)
-export class CompanyModelAssembler extends ClassTransformerAsyncAssembler<
-  CompanyResponse,
-  CompanyEntity,
-  CreateCompanyRequest|UpdateCompanyDto
+@Assembler(CreateCompanyRequest, CompanyEntity)
+export class CompanyModelAssembler extends ClassTransformerAssembler<
+  CreateCompanyRequest,
+  CompanyEntity
 > {
   async convertAsyncToCreateEntity(dto: CreateCompanyRequest): Promise<DeepPartial<CompanyEntity>> {
     const model = new CompanyEntity();

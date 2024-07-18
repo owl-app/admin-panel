@@ -9,10 +9,6 @@ export class RelationUserResponse implements Partial<User> {
     @ApiProperty({ type: () => String })
     id: string;
 
-    @ApiProperty({ type: () => String })
-    @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
-    name: string;
-
     @ApiPropertyOptional({ type: () => String })
     firstName?: string;
   

@@ -18,7 +18,6 @@ import { RequestContextService } from '../context/app-request-context'
 export class ErrorHandlersFilter implements ExceptionFilter {
   public catch(err: unknown, host: ArgumentsHost): void {
     console.log(err)
-    console.log('jest error')
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 

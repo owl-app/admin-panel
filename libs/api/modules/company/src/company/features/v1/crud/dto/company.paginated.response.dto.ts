@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PaginatedResponse } from '@owl-app/crud-nestjs'
+import { PaginatedResponse } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.response';
 
 import { CompanyResponse } from '../../../../dto/company.response';
 

@@ -10,18 +10,20 @@ import {
   Param,
   HttpCode,
   Injectable,
-  UsePipes,
-  ValidationPipe
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
-import { PaginatedRequest } from '@owl-app/crud-nestjs'
 
+import { InjectQueryService, QueryService } from '@owl-app/crud-core'
+import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
+import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
+import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
 import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
+import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
 
+import { UserEntity } from '../../../../domain/entity/user.entity'
 import { UserDto } from '../../../dto/user.dto'
 
-import { UserService } from './user.service'
 import { CreateUserRequest, UpdateUserRequest, FilterUserDto, UserPaginatedResponse } from './dto'
 import { createUserValidation } from './validation'
 
@@ -31,7 +33,8 @@ import { createUserValidation } from './validation'
 @Injectable()
 export class UserCrudController {
   constructor(
-    readonly service: UserService
+    @InjectQueryService(UserEntity) readonly service: QueryService<UserEntity>,
+    @InjectPaginatedQueryService(UserEntity) readonly paginatedService: DataProvider<Paginated<UserEntity>, FilterUserDto>
   ) {}
 
 	@ApiOperation({ summary: 'Find user by id' })
@@ -61,7 +64,6 @@ export class UserCrudController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Post()
-  // @UsePipes(new ValidationPipe())
   async create(@Body() createUserRequest: CreateUserRequest) {
     await createUserValidation.validateAsync(createUserRequest, { abortEarly: false });
 
@@ -116,9 +118,9 @@ export class UserCrudController {
   @Get()
   async paginated(
     @Query() filters: FilterUserDto,
-    @Query() pagination: PaginatedRequest
+    @Query() pagination: PaginatedQuery
   ): Promise<UserPaginatedResponse> {
-    const paginated = await this.service.search(filters, pagination);
+    const paginated = await this.paginatedService.getData(filters, pagination);
 
     return new UserPaginatedResponse(paginated);
   }

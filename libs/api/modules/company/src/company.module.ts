@@ -9,7 +9,7 @@ import { CompanyEntitySchema } from './database/entity-schema/company.entity-sch
 
 import { CompanyCrudController } from './company/features/v1/crud/crud.http.controller'
 import { CompanyModelAssembler } from './company/features/v1/crud/company.assembler'
-import { CompanyService } from './company/features/v1/crud/company.service'
+import { ListFilterBuilder } from './company/features/v1/crud/list-filter.builder'
 
 @Module({
   imports: [
@@ -18,7 +18,8 @@ import { CompanyService } from './company/features/v1/crud/company.service'
       entities: [
         {
           entity: CompanyEntitySchema,
-          repository: TenantRepository
+          repository: TenantRepository,
+          dataProviderFilterBuilder: ListFilterBuilder
         }
       ],
       assemblers: [CompanyModelAssembler]
@@ -27,8 +28,5 @@ import { CompanyService } from './company/features/v1/crud/company.service'
   controllers: [
     CompanyCrudController,
   ],
-  providers: [
-    CompanyService
-  ]
 })
 export class CompanyModule {}

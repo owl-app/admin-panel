@@ -10,15 +10,5 @@ export class FilterClientDto {
     @ApiPropertyOptional({ type: () => String })
     @IsOptional()
     @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
-    readonly email?: string;
-
-    @ApiPropertyOptional({ type: () => String })
-    @IsOptional()
-    @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
-    readonly firstName?: string;
-
-    @ApiProperty({ type: () => String })
-    @ApiPropertyOptional()
-    @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
-    readonly lastName?: string;
+    readonly name?: string;
 }

@@ -10,17 +10,10 @@ import { RelationUserResponse } from "./relation-user.response";
 export class ClientResponse {
 
     @ApiProperty({ type: () => String })
-    id: string;
+    id?: string;
 
     @ApiProperty({ type: () => String })
     @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
-    name: string;
-
-    @ApiPropertyOptional({ type: () => String })
-    firstName?: string;
-  
-    @ApiPropertyOptional({ type: () => String })
-    @IsOptional()
-    lastName?: string;
+    name?: string;
 
 }

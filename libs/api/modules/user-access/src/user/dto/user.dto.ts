@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
 
-import { Company, IUserRequest } from "@owl-app/lib-contracts";
+import type { Company, IUserRequest } from "@owl-app/lib-contracts";
 
 export class UserDto implements IUserRequest{
 
