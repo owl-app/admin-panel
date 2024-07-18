@@ -17,6 +17,12 @@ export const CompanyEntitySchema = new EntitySchema<CompanyEntity>({
     name: {
       type: String,
     },
+    email: {
+      type: String,
+    },
+    address: {
+      type: String,
+    },
   },
   relations: {
     users: {

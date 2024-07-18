@@ -5,5 +5,11 @@ export class ClientEntity implements Client {
 
   name: string;
 
+  email: string;
+
+  address: string;
+
+  description: string;
+
   company: Company;
 }

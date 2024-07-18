@@ -5,5 +5,9 @@ export class CompanyEntity implements Company {
 
   name: string;
 
+  email: string;
+  
+  address: string;
+  
   users: User[];
 }
