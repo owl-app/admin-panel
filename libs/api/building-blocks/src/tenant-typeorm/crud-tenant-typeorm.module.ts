@@ -1,8 +1,8 @@
-import { DataSource, DataSourceOptions } from 'typeorm';
+import { DataSource, DataSourceOptions, ObjectLiteral } from 'typeorm';
 import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { CompanyAware } from '@owl-app/lib-contracts';
+import { CompanyAware, TenantAware } from '@owl-app/lib-contracts';
 import { RegistryServiceModule } from '@owl-app/registry-nestjs';
 import { Assembler, Class, Filter, NestjsQueryCoreModule } from '@owl-app/crud-core';
 import { NestjsQueryTypeOrmModule } from '@owl-app/crud-nestjs'
@@ -20,6 +20,8 @@ import { CompanyFilter } from './filters/company.filter';
 import { FilterBuilder } from '../data-provider/filter.builder';
 import { createPaginatedQueryServiceProvider } from '../data-provider/query/providers';
 import { PaginationConfigProvider } from '../config/pagination';
+import { TenantRelationFilter } from './filters/tenant-relation.filter';
+import { TenantFilter } from './filters/tenant.filter';
 
 export interface NestjsQueryCoreModuleOpts {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,11 +67,12 @@ export class CrudTenantTypeOrmModule {
           imports: [
             NestjsQueryTypeOrmModule.forFeature({
               imports: [
-                RegistryServiceModule.forFeature({
+                RegistryServiceModule.forFeature<TenantFilter<ObjectLiteral>>({
                   name: FILTER_REGISTRY_TENANT,
                   services: {
-                    companyRelation: CompanyRelationFilter<CompanyAware>,
-                    company: CompanyFilter<CompanyAware> 
+                    // companyRelation: CompanyRelationFilter<CompanyAware>,
+                    // company: CompanyFilter<CompanyAware>,
+                    tenant: TenantRelationFilter<TenantAware>
                   }
                 }),
                 RegistryServiceModule.forFeature({

@@ -1,4 +1,5 @@
 import { Company } from './company';
+import { Tenant } from './tenant';
 import { User } from './user';
 
 export type AuthUserData = {
@@ -6,6 +7,7 @@ export type AuthUserData = {
 	username: string
 	email: string,
 	company: Company,
+	tenant: Tenant,
 	roles: string[]
 }
 

@@ -1,9 +1,11 @@
-import { Company, User } from '@owl-app/lib-contracts';
+import { Company, Tenant, User } from '@owl-app/lib-contracts';
 
 export class UserEntity implements User {
   id: string;
 
   company: Company;
+
+  tenant: Tenant;
 
   email: string;
 

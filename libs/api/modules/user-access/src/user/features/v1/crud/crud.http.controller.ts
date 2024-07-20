@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
-import { InjectQueryService, QueryService } from '@owl-app/crud-core'
+import { InjectAssemblerQueryService, QueryService } from '@owl-app/crud-core'
 import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
 import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
 import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
@@ -26,6 +26,7 @@ import { UserDto } from '../../../dto/user.dto'
 
 import { CreateUserRequest, UpdateUserRequest, FilterUserDto, UserPaginatedResponse } from './dto'
 import { createUserValidation } from './validation'
+import { UserAssembler } from './user.assembler'
 
 @ApiTags('User')
 @Controller('users')
@@ -33,7 +34,7 @@ import { createUserValidation } from './validation'
 @Injectable()
 export class UserCrudController {
   constructor(
-    @InjectQueryService(UserEntity) readonly service: QueryService<UserEntity>,
+    @InjectAssemblerQueryService(UserAssembler) readonly service: QueryService<UserEntity>,
     @InjectPaginatedQueryService(UserEntity) readonly paginatedService: DataProvider<Paginated<UserEntity>, FilterUserDto>
   ) {}
 

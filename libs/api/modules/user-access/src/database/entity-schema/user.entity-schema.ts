@@ -1,6 +1,6 @@
 import { EntitySchema } from 'typeorm';
 
-import { USER_ENTITY, COMPANY_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
+import { USER_ENTITY, COMPANY_ENTITY, TENANT_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
 
 import { UserEntity } from '../../domain/entity/user.entity';
 
@@ -63,6 +63,14 @@ export const UserEntitySchema = new EntitySchema<UserEntity>({
       target: COMPANY_ENTITY,
       joinColumn: {
         name: 'company_id',
+      },
+      inverseSide: 'users'
+    },
+    tenant: {
+      type: 'many-to-one',
+      target: TENANT_ENTITY,
+      joinColumn: {
+        name: 'tenant_id',
       },
       inverseSide: 'users'
     },

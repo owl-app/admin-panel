@@ -6,6 +6,7 @@ import { DatabaseModule } from '@owl-app/lib-api-bulding-blocks/database/databas
 
 import { AuthModule } from './auth/auth.module'
 import { UserModule } from './user/user.module'
+import { TenantModule } from './tenant/tenant.module'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserModule } from './user/user.module'
       load: config,
     }),
     AuthModule,
+    TenantModule,
     UserModule
   ]
 })

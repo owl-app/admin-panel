@@ -1,7 +1,9 @@
 import { CompanyAware } from "./company";
+import { Tenant } from "./tenant";
 
 export interface User extends CompanyAware {
 	id: string;
+	tenant: Tenant;
 	email: string;
 	username?: string;
 	firstName?: string;

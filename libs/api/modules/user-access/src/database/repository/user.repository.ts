@@ -33,7 +33,7 @@ export class UserRepository extends Repository<UserEntity> implements IUserRepos
         }
       },
       relations: {
-        company: true,
+        tenant: true,
       },
     });
     if (!user) {
