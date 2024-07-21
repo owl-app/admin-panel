@@ -63,4 +63,8 @@ export class UserRepository extends Repository<UserEntity> implements IUserRepos
       },
     );
   }
+
+  async register(user: User): Promise<void> {
+    await this.save(user);
+  }
 }

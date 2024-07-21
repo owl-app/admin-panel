@@ -8,4 +8,6 @@ export interface IUserRepository {
   updateLastLogin(username: string): Promise<void>;
 
   updateRefreshToken(username: string, refreshToken: string): Promise<void>;
+
+  register(user: User): Promise<void>;
 }

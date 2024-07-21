@@ -1,56 +1,34 @@
-import {
-  Controller,
-  HttpStatus,
-	Put,
-  Body,
-  Param,
-  HttpCode,
-  Injectable,
-  Inject
-} from '@nestjs/common'
-import { ApiTags, ApiOperation, ApiResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
-import { Manager } from '@owl-app/rbac-manager'
+import { Body, Controller, HttpCode, HttpStatus, Post, Res } from '@nestjs/common'
+import { CommandBus } from '@nestjs/cqrs'
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
-import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
-import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators'
+import { Public } from '@owl-app/lib-api-bulding-blocks/metadata/route'
+import { ApiErrorValidationResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error-validation.response'
 
-import type { IUserRepository } from '../../../../database/repository/user-repository.interface'
-import { UserEntity } from '../../../../domain/entity/user.entity'
+import { RegistrationCommand } from './registration.service'
+import { RegistrationRequest } from './dto/registration.request'
 
+@Controller('')
 @ApiTags('User')
-@Controller('users')
-@ApiBearerAuth()
-@Injectable()
-export class AssignAccessController {
-  constructor(
-    @InjectTenantRepository(UserEntity)
-    private readonly userRepository: IUserRepository,
-    @Inject('RBAC_MANAGER') readonly rbacManager: Manager
-  ) {}
+@ApiResponse({ status: 500, description: 'Internal error' })
+export class RegistrationController {
+  constructor(private readonly commandBus: CommandBus) {}
 
-	@ApiOperation({ summary: 'Assign permission or roles to user' })
-    @ApiAcceptedResponse({
-      description: 'Role or permission has been successfully updated.'
-    })
-    @ApiResponse({
-      status: HttpStatus.NOT_FOUND,
-      description: 'User not found'
-    })
-    @ApiResponse({
-      status: HttpStatus.BAD_REQUEST,
-      description:
-        'Invalid input, The response body may contain clues as to what went wrong'
-    })
-    @HttpCode(HttpStatus.ACCEPTED)
-	@Put('/assign-access/:id')
-	async assignAccess(
-		@Param('id', UUIDValidationPipe) userId: string,
-    @Body() items: Array<string>
-	): Promise<void> {
-    const { id } = await this.userRepository.findOneByIdString(userId);
-
-    await Promise.all(items.map(async (item: string): Promise<void> => {
-        await this.rbacManager.assign(item, id);
-    }));
+  @ApiOperation({ description: 'registration' })
+  @HttpCode(HttpStatus.CREATED)
+  @ApiBody({ type: RegistrationRequest })
+  @Public()
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The user has been successfully register.',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNPROCESSABLE_ENTITY,
+    description: 'Validation errors.',
+    type: ApiErrorValidationResponse
+  })
+  @Post('/registration')
+  async login(@Body() registration: RegistrationRequest): Promise<void> {
+    await this.commandBus.execute(new RegistrationCommand(registration));
   }
 }

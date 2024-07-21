@@ -69,10 +69,10 @@ export const UserEntitySchema = new EntitySchema<UserEntity>({
     tenant: {
       type: 'many-to-one',
       target: TENANT_ENTITY,
+      cascade: true,
       joinColumn: {
         name: 'tenant_id',
       },
-      inverseSide: 'users'
     },
   },
 });
