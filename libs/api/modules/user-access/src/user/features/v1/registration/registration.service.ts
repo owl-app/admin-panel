@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
+import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
 
 import { UserEntity } from '../../../../domain/entity/user.entity';
 import type { IUserRepository } from '../../../../database/repository/user-repository.interface';
@@ -20,7 +20,7 @@ export class RegistrationCommand {
 @CommandHandler(RegistrationCommand)
 export class RegistrationHandler implements ICommandHandler<RegistrationCommand> {
   constructor(
-    @InjectTenantRepository(UserEntity)
+    @InjectRepository(UserEntity)
     private readonly userRepository: IUserRepository
   ) {}
 

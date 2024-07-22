@@ -5,7 +5,7 @@ import {
   EntitySchema,
   Repository,
 } from 'typeorm';
-import { getDataSourcePrefix } from '@nestjs/typeorm';
+import { getCustomRepositoryToken, getDataSourcePrefix } from '@nestjs/typeorm';
 import { Type } from '@nestjs/common';
 import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
 
@@ -17,7 +17,7 @@ import { DEFAULT_DATA_SOURCE_NAME } from '../constants';
  * @param {string} [dataSource='default'] DataSource name
  * @returns {string} The Entity | Repository injection token
  */
-export function getTenantRepositoryToken(
+export function getRepositoryToken(
   entity: EntityClassOrSchema,
   dataSource:
     | DataSource
@@ -42,21 +42,9 @@ export function getTenantRepositoryToken(
   if (entity instanceof EntitySchema) {
     return `${dataSourcePrefix}${
       entity.options.target ? entity.options.target.name : entity.options.name
-    }TenantRepository`;
+    }CustomRepository`;
   }
-  return `${dataSourcePrefix}${entity.name}TenantRepository`;
-}
-
-/**
- * This function generates an injection token for an Entity or Repository
- * @param {Function} This parameter can either be an Entity or Repository
- * @returns {string} The Repository injection token
- */
-export function getCustomRepositoryToken(repository: Function): string {
-  // if (repository === null || repository === undefined) {
-  //   throw new CircularDependencyException('@InjectRepository()');
-  // }
-  return repository.name;
+  return `${dataSourcePrefix}${entity.name}CustomRepository`;
 }
 
 

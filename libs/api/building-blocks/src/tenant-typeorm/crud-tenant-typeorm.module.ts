@@ -9,7 +9,7 @@ import { NestjsQueryTypeOrmModule } from '@owl-app/crud-nestjs'
 
 import { TypeOrmEntitesOpts } from '../typeorm/types';
 import { DEFAULT_DATA_SOURCE_NAME } from '../typeorm/constants';
-import { getTenantRepositoryToken } from '../typeorm/common/tenant-typeorm.utils';
+import { getRepositoryToken } from '../typeorm/common/tenant-typeorm.utils';
 
 import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from './constants';
 import { TenantTypeOrmModule } from './tenant-typeorm.module';
@@ -47,7 +47,7 @@ export class CrudTenantTypeOrmModule {
       return {
         entity: opt.entity,
         repository: {
-          obj: getTenantRepositoryToken(opt.entity),
+          obj: getRepositoryToken(opt.entity),
           injectInProviders: true
         }
       }

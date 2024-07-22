@@ -3,14 +3,14 @@ import { getDataSourceToken } from '@nestjs/typeorm';
 import { Provider } from '@nestjs/common';
 
 import { TypeOrmEntitesOpts } from './types';
-import { getTenantRepositoryToken } from './common/tenant-typeorm.utils';
+import { getRepositoryToken } from './common/tenant-typeorm.utils';
 
 export function createTypeOrmProviders(
   entities?: TypeOrmEntitesOpts[],
   dataSource?: DataSource | DataSourceOptions | string,
 ): Provider[] {
   return (entities || []).map(({entity, repository = null, inject = null}) => ({
-    provide: getTenantRepositoryToken(entity, dataSource),
+    provide: getRepositoryToken(entity, dataSource),
     useFactory: (dataSource: DataSource, ...injectArgs) => {
       const entityMetadata = dataSource.entityMetadatas.find((meta) => meta.target === entity)
       const isTreeEntity = typeof entityMetadata?.treeType !== 'undefined'

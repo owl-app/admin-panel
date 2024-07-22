@@ -4,11 +4,11 @@ import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-clas
 import { DEFAULT_DATA_SOURCE_NAME } from '../constants';
 
 import {
-  getTenantRepositoryToken,
+  getRepositoryToken,
 } from './tenant-typeorm.utils';
 
-export const InjectTenantRepository = (
+export const InjectRepository = (
   entity: EntityClassOrSchema,
   dataSource: string = DEFAULT_DATA_SOURCE_NAME,
-): ReturnType<typeof Inject> => Inject(getTenantRepositoryToken(entity, dataSource));
+): ReturnType<typeof Inject> => Inject(getRepositoryToken(entity, dataSource));
 

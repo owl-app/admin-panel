@@ -2,7 +2,7 @@ import { Controller, Get, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/c
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RequestContextService } from '@owl-app/lib-api-bulding-blocks/context/app-request-context';
-import { InjectTenantRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
+import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
 
 import { UserEntity } from '../../../domain/entity/user.entity'
 
@@ -18,7 +18,7 @@ import { UserWithPermissionResponse } from './dto/user-with-permission.response'
 @ApiBearerAuth()
 export class GetMeController {
   constructor(
-    @InjectTenantRepository(UserEntity)
+    @InjectRepository(UserEntity)
     private readonly userRepository: IUserRepository
   ) {}
 
