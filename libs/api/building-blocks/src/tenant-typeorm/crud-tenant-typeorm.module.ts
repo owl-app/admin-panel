@@ -22,6 +22,7 @@ import { createPaginatedQueryServiceProvider } from '../data-provider/query/prov
 import { PaginationConfigProvider } from '../config/pagination';
 import { TenantRelationFilter } from './filters/tenant-relation.filter';
 import { TenantFilter } from './filters/tenant.filter';
+import { TypeOrmModule } from '../typeorm/typeorm.module';
 
 export interface NestjsQueryCoreModuleOpts {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,7 +87,7 @@ export class CrudTenantTypeOrmModule {
                 classService: TenantTypeOrmQueryService,
                 inject: [FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT]
               },
-              typeOrmModule: TenantTypeOrmModule.forFeature(opts, dataSource),
+              typeOrmModule: TypeOrmModule.forFeature({ entities: opts.entities }, dataSource),
               entities
             }),
           ],
