@@ -9,7 +9,8 @@
   "dependencies": {
     "@owl-app/request-context-nestjs": "^0.0.1",
     "@nestjs/common": "^10.0.0",
-    "joi": "^17.12.2"
+    "joi": "^17.12.2",
+    "@nestjs/event-emitter": "^2.0.4"
   },
   "devDependencies": {
     "tsconfig": "^0.0.1",

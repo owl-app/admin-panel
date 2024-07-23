@@ -23,12 +23,15 @@ type DomainEventMetadata = {
 export type DomainEventProps<T> = Omit<T, 'id' | 'metadata'> & {
   id?: string;
   metadata?: DomainEventMetadata;
+  eventName?: string;
 };
 
-export abstract class DomainEvent {
-  public readonly id: string;
+export class DomainEvent {
+  public readonly id?: string;
 
-  public readonly metadata: DomainEventMetadata;
+  public readonly metadata?: DomainEventMetadata;
+
+  public readonly eventName?: string;
 
   constructor(props: DomainEventProps<unknown>) {
     if (Guard.isEmpty(props)) {
@@ -37,6 +40,7 @@ export abstract class DomainEvent {
       );
     }
     this.id = props.id;
+    this.eventName = props.eventName;
     this.metadata = {
       correlationId:
         props?.metadata?.correlationId || RequestContextService.getRequestId(),

@@ -61,6 +61,16 @@ export class TypeOrmQueryService<Entity>
     this.useSoftDelete = opts?.useSoftDelete ?? false
   }
 
+  public get EntityClassName(): string {
+    const entityClass = this.EntityClass
+
+    if(entityClass instanceof EntitySchema) {
+      return entityClass.options.name;
+    }
+
+    return entityClass.name
+  }
+
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public get EntityClass(): Class<Entity> {
     return this.repo.target as Class<Entity>

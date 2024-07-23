@@ -8,6 +8,7 @@ import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm
 import { TenantEntitySchema } from '../database/entity-schema/tenant.entity-schema'
 
 import { CreateTenantWhenUserIsRegisteredDomainEventHandler } from './event-handlers/create-tenant-when-user-is-registered.domain-event-handler'
+import { CreateTenantWhenUserIsCreatedDomainEventHandler } from './event-handlers/create-tenant-when-user-is-created.domain-event-handler'
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { CreateTenantWhenUserIsRegisteredDomainEventHandler } from './event-hand
 
   ],
   providers: [
-    CreateTenantWhenUserIsRegisteredDomainEventHandler
+    CreateTenantWhenUserIsRegisteredDomainEventHandler,
+    CreateTenantWhenUserIsCreatedDomainEventHandler
   ]
 })
 export class TenantModule {}

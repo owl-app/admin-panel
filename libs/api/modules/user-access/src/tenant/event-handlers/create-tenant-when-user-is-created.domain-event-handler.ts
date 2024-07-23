@@ -1,24 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
+import { User } from '@owl-app/lib-contracts';
+
+import { DomainEvent } from '@owl-app/lib-api-bulding-blocks/event/domain-event.base';
 import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
 import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant.repository';
 
-import { UserRegisteredDomainEvent } from '../../domain/events/user-registered.domain-event'
 import { TenantEntity } from '../../domain/entity/tenant.entity';
 
 @Injectable()
-export class CreateTenantWhenUserIsRegisteredDomainEventHandler {
+export class CreateTenantWhenUserIsCreatedDomainEventHandler {
   constructor(
     @InjectRepository(TenantEntity)
     private readonly tenantRepository: TenantRepository<TenantEntity>
   ) {}
 
   // Handle a Domain Event by performing changes to other aggregates (inside the same Domain).
-  // supressErrors to true because we need reject transaction
-  @OnEvent(UserRegisteredDomainEvent.name, { async: true, promisify: true, suppressErrors: false })
-  async handle(event: UserRegisteredDomainEvent): Promise<any> {
-    const tenant = new TenantEntity({ name: event.email, users: [{ id: event.id }] });
+  @OnEvent('USER_ENTITY_CREATED', { async: true, promisify: true, suppressErrors: false})
+  async handle(event: DomainEvent & User): Promise<any> {
+    const tenant = new TenantEntity({ name: event.lastName, users: [{ id: event.id }] });
 
     await this.tenantRepository.save(tenant);
   }

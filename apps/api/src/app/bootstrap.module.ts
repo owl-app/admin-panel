@@ -29,7 +29,9 @@ import { ErrorHandlersFilter } from '@owl-app/lib-api-bulding-blocks/filters/err
           imports: [ConfigModule],
           inject: [ConfigService],
       }),
-      EventEmitterModule.forRoot(),
+      EventEmitterModule.forRoot({
+        ignoreErrors: true,
+      }),
   ],
   providers: [
     {

@@ -16,7 +16,7 @@ export default class BaseEntity implements Timestampable {
       return this._domainEvents;
     }
   
-    protected addEvent(domainEvent: DomainEvent): void {
+    public addEvent(domainEvent: DomainEvent): void {
       this._domainEvents.push(domainEvent);
     }
   
@@ -30,7 +30,7 @@ export default class BaseEntity implements Timestampable {
     ): Promise<void> {
       await Promise.all(
         this.domainEvents.map(async (event) => {
-          return eventEmitter.emitAsync(event.constructor.name, Object.assign(event, { id }));
+          return await eventEmitter.emitAsync(event.eventName ?? event.constructor.name, Object.assign(event, { id }));
         }),
       );
       this.clearEvents();
