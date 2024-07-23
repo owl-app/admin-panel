@@ -9,7 +9,7 @@ import { RelationUserResponse } from '../../../dto/relation-user.response'
 
 
 @Assembler(CreateCompanyRequest, CompanyEntity)
-export class CompanyModelAssembler extends ClassTransformerAssembler<
+export class CompanyAssembler extends ClassTransformerAssembler<
   CreateCompanyRequest,
   CompanyEntity
 > {

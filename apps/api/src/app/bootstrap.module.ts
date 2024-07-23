@@ -6,12 +6,15 @@ import {
   NestModule,
   OnApplicationShutdown
 } from '@nestjs/common'
+import { APP_FILTER } from '@nestjs/core'
 import { ConfigModule, ConfigService} from '@nestjs/config'
-import { AppModule } from './app.module'
+import { EventEmitterModule } from '@nestjs/event-emitter'
+
 import { WinstonLoggerModule, WINSTON_MODULE_NEST_PROVIDER } from '@owl-app/winston-logger-nestjs'
+
+import { AppModule } from './app.module'
 import loggerFactory from './logger.factory'
 import { ErrorHandlersFilter } from '@owl-app/lib-api-bulding-blocks/filters/error-handlers.filter'
-import { APP_FILTER } from '@nestjs/core'
 
 @Module({
   imports: [
@@ -26,8 +29,7 @@ import { APP_FILTER } from '@nestjs/core'
           imports: [ConfigModule],
           inject: [ConfigService],
       }),
-      // HealthIndicatorModule,
-      // SharedModule
+      EventEmitterModule.forRoot(),
   ],
   providers: [
     {

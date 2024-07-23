@@ -12,26 +12,29 @@ import { DEFAULT_DATA_SOURCE_NAME } from '../typeorm/constants';
 import { getRepositoryToken } from '../typeorm/common/tenant-typeorm.utils';
 
 import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from './constants';
-import { TenantTypeOrmModule } from './tenant-typeorm.module';
-import { CompanyRelationFilter } from './filters/company-relation.filter';
 import { CompanySetter } from './setters/company.setter';
 import { TenantTypeOrmQueryService } from './services/tenant-typeorm-query.service';
-import { CompanyFilter } from './filters/company.filter';
 import { FilterBuilder } from '../data-provider/filter.builder';
 import { createPaginatedQueryServiceProvider } from '../data-provider/query/providers';
 import { PaginationConfigProvider } from '../config/pagination';
 import { TenantRelationFilter } from './filters/tenant-relation.filter';
 import { TenantFilter } from './filters/tenant.filter';
 import { TypeOrmModule } from '../typeorm/typeorm.module';
+import { TenantRelationSetter } from './setters/tenant-relation.setter';
+import { TenantSetter } from './setters/tenant.setter';
 
 export interface NestjsQueryCoreModuleOpts {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  assemblers?: Class<Assembler<any, any, any, any, any, any>>[]
   entities: NestjsQueryCoreEntitiesOpts[]
 }
 
 export interface NestjsQueryCoreEntitiesOpts extends TypeOrmEntitesOpts {
-  dataProviderFilterBuilder?: Class<FilterBuilder<Filter<EntityClassOrSchema>, any>>
+  dataProvider?: NestjsQueryCoreDataProviderOpts
+  assembler?: Class<Assembler<any, any, any, any, any, any>>
+}
+
+export interface NestjsQueryCoreDataProviderOpts {
+  filterBuilder?: Class<FilterBuilder<Filter<EntityClassOrSchema>, any>>
+  
 }
 
 @Module({})
@@ -44,6 +47,14 @@ export class CrudTenantTypeOrmModule {
       | string = DEFAULT_DATA_SOURCE_NAME,
   ): DynamicModule {
 
+    const assemblers = opts.entities.reduce((assemblers, opt) => {
+      if(opt.assembler) {
+        assemblers.push(opt.assembler);
+      }
+
+      return assemblers;
+    }, []);
+
     const entities = opts.entities.map((opt) => {
       return {
         entity: opt.entity,
@@ -55,8 +66,12 @@ export class CrudTenantTypeOrmModule {
     });
 
     const dataProviders = opts.entities.reduce((dataProviders, opt) => {
-      if(opt.dataProviderFilterBuilder) {
-        dataProviders.push(createPaginatedQueryServiceProvider(opt.entity, opt.dataProviderFilterBuilder));
+      if(opt.dataProvider) {
+        dataProviders.push(createPaginatedQueryServiceProvider(
+          opt.entity,
+          opt.dataProvider.filterBuilder,
+          opt.assembler
+        ));
       }
 
       return dataProviders;
@@ -71,15 +86,14 @@ export class CrudTenantTypeOrmModule {
                 RegistryServiceModule.forFeature<TenantFilter<ObjectLiteral>>({
                   name: FILTER_REGISTRY_TENANT,
                   services: {
-                    // companyRelation: CompanyRelationFilter<CompanyAware>,
-                    // company: CompanyFilter<CompanyAware>,
                     tenant: TenantRelationFilter<TenantAware>
                   }
                 }),
-                RegistryServiceModule.forFeature({
+                RegistryServiceModule.forFeature<TenantSetter<ObjectLiteral>>({
                   name: SETTER_REGISTRY_TENANT,
                   services: {
-                    company: CompanySetter<CompanyAware>
+                    company: CompanySetter<CompanyAware>,
+                    tenant: TenantRelationSetter<TenantAware>
                   }
                 })
               ],
@@ -91,7 +105,7 @@ export class CrudTenantTypeOrmModule {
               entities
             }),
           ],
-          assemblers: [...opts.assemblers ?? []],
+          assemblers: [...assemblers ?? []],
         }),
       ],
       module: CrudTenantTypeOrmModule,

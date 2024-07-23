@@ -7,6 +7,8 @@ import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm
 
 import { TenantEntitySchema } from '../database/entity-schema/tenant.entity-schema'
 
+import { CreateTenantWhenUserIsRegisteredDomainEventHandler } from './event-handlers/create-tenant-when-user-is-registered.domain-event-handler'
+
 @Module({
   imports: [
     WinstonLoggerModule,
@@ -23,7 +25,7 @@ import { TenantEntitySchema } from '../database/entity-schema/tenant.entity-sche
 
   ],
   providers: [
-
+    CreateTenantWhenUserIsRegisteredDomainEventHandler
   ]
 })
 export class TenantModule {}

@@ -13,6 +13,7 @@ import { CompanyRelationFilter } from './filters/company-relation.filter';
 import { CompanySetter } from './setters/company.setter';
 import { TenantRelationFilter } from './filters/tenant-relation.filter';
 import { TenantFilter } from './filters/tenant.filter';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Module({})
 export class TenantTypeOrmModule {
@@ -47,7 +48,8 @@ export class TenantTypeOrmModule {
           services: {
             company: CompanySetter<CompanyAware>
           }
-        })
+        }),
+        EventEmitter2
       ]
     });
 

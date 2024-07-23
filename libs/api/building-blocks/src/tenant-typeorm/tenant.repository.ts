@@ -4,14 +4,16 @@ import {
   EntityManager,
   EntityTarget,
   QueryRunner,
-  Repository,
   SaveOptions,
   SelectQueryBuilder,
 } from 'typeorm';
 import { TenantFilter } from './filters/tenant.filter';
 import { TenantSetter } from './setters/tenant.setter';
+import { BaseRepository } from '../database/repository/base.repository';
+import BaseEntity from '../database/entity/base.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
-export class TenantRepository<Entity> extends Repository<Entity> {
+export class TenantRepository<Entity extends BaseEntity> extends BaseRepository<Entity> {
 
   constructor(
     target: EntityTarget<Entity>,
@@ -19,8 +21,9 @@ export class TenantRepository<Entity> extends Repository<Entity> {
     queryRunner?: QueryRunner,
     readonly filters?: Registry<TenantFilter<Entity>>,
     readonly setters?: Registry<TenantSetter<Entity>>,
+    readonly eventEmitter?: EventEmitter2
   ) {
-    super(target, manager, queryRunner);
+    super(target, manager, queryRunner, eventEmitter);
   }
 
   override createQueryBuilder(

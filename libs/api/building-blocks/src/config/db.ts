@@ -8,5 +8,7 @@ export default registerAs('db', () => ({
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     synchronize: true,
+    logger: 'advanced-console',
+    logging: true,
     autoLoadEntities: true
 }))

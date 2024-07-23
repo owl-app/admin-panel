@@ -9,7 +9,7 @@ export {
   DefaultAssembler
 } from './lib/assemblers'
 export * from './lib/common'
-export { getQueryServiceToken, InjectAssemblerQueryService, InjectQueryService } from './lib/decorators'
+export { getQueryServiceToken, getAssemblerQueryServiceToken, InjectAssemblerQueryService, InjectQueryService } from './lib/decorators'
 export {
   applyFilter,
   applyPaging,

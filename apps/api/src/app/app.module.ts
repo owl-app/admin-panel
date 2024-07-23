@@ -16,6 +16,6 @@ import { RbacModule } from '@owl-app/lib-api-module-rbac/rbac.module'
   ],
   exports: [
     // RbacModule
-  ]
+  ],
 })
 export class AppModule {}

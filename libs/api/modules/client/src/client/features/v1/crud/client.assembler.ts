@@ -9,7 +9,7 @@ import { CreateClientRequest, UpdateClientDto } from './dto'
 
 
 @Assembler(CreateClientRequest, ClientEntity)
-export class ClientModelAssembler extends ClassTransformerAssembler<
+export class ClientAssembler extends ClassTransformerAssembler<
   CreateClientRequest,
   ClientEntity
 > {

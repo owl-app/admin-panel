@@ -1,7 +1,7 @@
 import { FactoryProvider } from "@nestjs/common";
 import { EntityClassOrSchema } from "@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type";
 
-import { Class, Filter, QueryService } from "@owl-app/crud-core";
+import { Assembler, Class, Filter, getAssemblerQueryServiceToken, QueryService } from "@owl-app/crud-core";
 import { getQueryServiceToken } from "@owl-app/crud-nestjs";
 
 import { FilterBuilder } from "../filter.builder";
@@ -12,6 +12,7 @@ import { getPaginatedQueryServiceToken } from "./decorators/helpers";
 export function createPaginatedQueryServiceProvider<Entity>(
   entity: EntityClassOrSchema,
   filterBuilder: Class<FilterBuilder<Filter<Entity>, any>>,
+  assembler?: Class<Assembler<any, any, any, any, any, any>>
 ): FactoryProvider {
   return {
     provide: getPaginatedQueryServiceToken(entity),
@@ -23,7 +24,7 @@ export function createPaginatedQueryServiceProvider<Entity>(
       );
     },
     inject: [
-      getQueryServiceToken(entity),
+      !assembler ? getQueryServiceToken(entity) : getAssemblerQueryServiceToken(assembler),
       PAGINATION_CONFIG_PROVIDER
     ]
   }

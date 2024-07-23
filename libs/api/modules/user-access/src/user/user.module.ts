@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common'
 import { CqrsModule } from '@nestjs/cqrs'
-import { TypeOrmModule } from '@nestjs/typeorm'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
 import { CrudTenantTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/crud-tenant-typeorm.module'
 
 import { UserEntitySchema } from '../database/entity-schema/user.entity-schema'
-import { TenantEntitySchema } from '../database/entity-schema/tenant.entity-schema'
 import { UserRepository } from '../database/repository/user.repository'
 
 import { UserCrudController } from './features/v1/crud/crud.http.controller'
@@ -20,16 +19,18 @@ import { RegistrationHandler } from './features/v1/registration/registration.ser
   imports: [
     CqrsModule,
     RbacTypeOrmModule.forFeature({}),
-    TypeOrmModule.forFeature([TenantEntitySchema]),
     CrudTenantTypeOrmModule.forFeature({
       entities: [
         {
           entity: UserEntitySchema,
           repository: UserRepository,
-          dataProviderFilterBuilder: ListFilterBuilder
+          inject: [EventEmitter2],
+          dataProvider: {
+            filterBuilder: ListFilterBuilder,
+          },
+          assembler: UserAssembler
         }
       ],
-      assemblers: [UserAssembler]
     })
   ],
   controllers: [

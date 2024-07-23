@@ -6,7 +6,6 @@ import { Pagination } from "../../pagination/pagination";
 
 import type { DataProvider } from "../data.provider";
 import { FilterBuilder } from "../filter.builder";
-import { DeepPartial } from "typeorm";
 
 export class PaginatedDataProvider<Entity, FiltersData> implements DataProvider<Pagination<Entity>, FiltersData> {
 

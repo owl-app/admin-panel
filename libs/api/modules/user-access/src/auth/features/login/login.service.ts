@@ -1,6 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
+import { User } from '@owl-app/lib-contracts';
 import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
 import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
 
@@ -50,7 +51,7 @@ export class LoginHandler implements ICommandHandler<Login> {
     const refreshToken = await this.jwtTokenService.getJwtRefreshToken(command.email);
 
     return {
-      user: userMapper.map<UserEntity, UserResponseAuth>(user, new UserResponseAuth()),
+      user: userMapper.map<User, UserResponseAuth>(user, new UserResponseAuth()),
       accessToken,
       refreshToken,
     };

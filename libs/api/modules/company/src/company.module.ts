@@ -8,7 +8,7 @@ import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm
 import { CompanyEntitySchema } from './database/entity-schema/company.entity-schema'
 
 import { CompanyCrudController } from './company/features/v1/crud/crud.http.controller'
-import { CompanyModelAssembler } from './company/features/v1/crud/company.assembler'
+import { CompanyAssembler } from './company/features/v1/crud/company.assembler'
 import { ListFilterBuilder } from './company/features/v1/crud/list-filter.builder'
 
 @Module({
@@ -19,10 +19,12 @@ import { ListFilterBuilder } from './company/features/v1/crud/list-filter.builde
         {
           entity: CompanyEntitySchema,
           repository: TenantRepository,
-          dataProviderFilterBuilder: ListFilterBuilder
+          dataProvider: {
+            filterBuilder: ListFilterBuilder,
+          },
+          assembler: CompanyAssembler
         }
       ],
-      assemblers: [CompanyModelAssembler]
     })
   ],
   controllers: [

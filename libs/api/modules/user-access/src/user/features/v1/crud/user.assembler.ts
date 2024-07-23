@@ -38,4 +38,8 @@ export class UserAssembler extends ClassTransformerAssembler<
     const createdUser = await user;
     return mapper.map<UserEntity, UserDto>(createdUser, new UserDto());
   }
+
+  convertToDTO(user: UserEntity): UserDto {
+    return mapper.map<UserEntity, UserDto>(user, new UserDto());
+  }
 }

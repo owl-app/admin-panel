@@ -1,6 +1,7 @@
 import { EntitySchema } from 'typeorm';
 
 import { USER_ENTITY, COMPANY_ENTITY, TENANT_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
+import { TimestampableSchemaPart } from '@owl-app/lib-api-bulding-blocks/database/entity-schema/timestampable.schemat';
 
 import { UserEntity } from '../../domain/entity/user.entity';
 
@@ -56,6 +57,7 @@ export const UserEntitySchema = new EntitySchema<UserEntity>({
       name: 'last_login',
       nullable: true,
     },
+    ...TimestampableSchemaPart
   },
   relations: {
     company: {
@@ -69,7 +71,7 @@ export const UserEntitySchema = new EntitySchema<UserEntity>({
     tenant: {
       type: 'many-to-one',
       target: TENANT_ENTITY,
-      cascade: true,
+      // cascade: true,
       joinColumn: {
         name: 'tenant_id',
       },

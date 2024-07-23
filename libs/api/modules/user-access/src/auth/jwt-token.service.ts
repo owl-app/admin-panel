@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
+import { User } from '@owl-app/lib-contracts';
 import { type IJwtConfig } from '@owl-app/lib-api-bulding-blocks/config/jwt';
 import { IJwtTokenService, IJwtTokenPayload } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
 
-import { UserEntity } from '../domain/entity/user.entity'
 import type { IUserRepository } from '../database/repository/user-repository.interface';
 
 @Injectable()
-export default class JwtTokenService implements IJwtTokenService<UserEntity> {
+export default class JwtTokenService implements IJwtTokenService<User> {
   constructor( 
     private readonly jwtConfig: IJwtConfig,
     private readonly userRepository: IUserRepository,
@@ -56,7 +56,7 @@ export default class JwtTokenService implements IJwtTokenService<UserEntity> {
     return false;
   }
 
-  async validateUserForJWTStragtegy(email: string): Promise<UserEntity|null> {
+  async validateUserForJWTStragtegy(email: string): Promise<User|null> {
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) {
       return null;
@@ -64,7 +64,7 @@ export default class JwtTokenService implements IJwtTokenService<UserEntity> {
     return user;
   }
 
-  async getUserIfRefreshTokenMatches(refreshToken: string, email: string): Promise<UserEntity|null> {
+  async getUserIfRefreshTokenMatches(refreshToken: string, email: string): Promise<User|null> {
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) {
       return null;

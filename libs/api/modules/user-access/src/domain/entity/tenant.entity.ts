@@ -6,5 +6,10 @@ export class TenantEntity extends BaseEntity implements Tenant {
 
   name: string;
 
-  users: User[];
+  users: Partial<User>[];
+
+  constructor(partial?: Partial<TenantEntity>) {
+    super();
+    Object.assign(this, partial);
+}
 }

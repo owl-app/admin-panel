@@ -1,6 +1,7 @@
 import { Controller, Get, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { User } from '@owl-app/lib-contracts';
 import { RequestContextService } from '@owl-app/lib-api-bulding-blocks/context/app-request-context';
 import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
 
@@ -38,7 +39,7 @@ export class GetMeController {
     const user = await this.userRepository.findOneByIdString(RequestContextService.getCurrentUserId());
 
     return {
-      user: userMapper.map<UserEntity, UserResponseAuth>(user, new UserResponseAuth()),
+      user: userMapper.map<User, UserResponseAuth>(user, new UserResponseAuth()),
     };
   }
 }

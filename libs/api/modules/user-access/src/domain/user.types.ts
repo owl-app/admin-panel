@@ -1,5 +1,5 @@
 export interface RegisterUserProps {
-  email?: string;
-  password?: string;
+  email: string;
+  passwordHash: string;
   phoneNumber?: string;
 }

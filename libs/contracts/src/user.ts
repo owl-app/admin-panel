@@ -1,7 +1,8 @@
 import { CompanyAware } from "./company";
 import { Tenant } from "./tenant";
+import { Timestampable } from "./timestampable";
 
-export interface User extends CompanyAware {
+export interface User extends CompanyAware, Timestampable {
 	id: string;
 	tenant: Tenant;
 	email: string;

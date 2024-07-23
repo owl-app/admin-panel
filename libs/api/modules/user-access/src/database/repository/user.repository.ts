@@ -1,11 +1,12 @@
-import { EntityManager, EntityTarget, QueryRunner, Repository } from 'typeorm';
 import { User } from '@owl-app/lib-contracts';
+
+import { BaseRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/base.repository';
 
 import { UserEntity } from '../../domain/entity/user.entity';
 
 import { IUserRepository } from './user-repository.interface';
 
-export class UserRepository extends Repository<UserEntity> implements IUserRepository {
+export class UserRepository extends BaseRepository <UserEntity> implements IUserRepository {
 
   async findOneByIdString(id: string): Promise<User>
   {
@@ -65,6 +66,6 @@ export class UserRepository extends Repository<UserEntity> implements IUserRepos
   }
 
   async register(user: User): Promise<void> {
-    await this.save(user);
+    await this.transaction(async () => this.save(user));
   }
 }

@@ -7,7 +7,7 @@ import { CrudTenantTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/tenant-
 import { ClientEntitySchema } from './database/entity-schema/client.entity-schema'
 
 import { ClientCrudController } from './client/features/v1/crud/crud.http.controller'
-import { ClientModelAssembler } from './client/features/v1/crud/client.assembler'
+import { ClientAssembler } from './client/features/v1/crud/client.assembler'
 import { ListFilterBuilder } from './client/features/v1/crud/list-filter.builder'
 
 @Module({
@@ -17,10 +17,12 @@ import { ListFilterBuilder } from './client/features/v1/crud/list-filter.builder
       entities: [
         {
           entity: ClientEntitySchema,
-          dataProviderFilterBuilder: ListFilterBuilder
+          dataProvider: {
+            filterBuilder: ListFilterBuilder,
+          },
+          assembler: ClientAssembler
         }
       ],
-      assemblers: [ClientModelAssembler]
     }),
   ],
   controllers: [

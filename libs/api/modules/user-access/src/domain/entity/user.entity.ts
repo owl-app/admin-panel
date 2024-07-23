@@ -1,8 +1,12 @@
 import { Company, Tenant, User } from '@owl-app/lib-contracts';
-import { RegisterUserProps } from '../user.types';
-import { TenantEntity } from './tenant.entity';
 
-export class UserEntity implements User {
+import BaseEntity from '@owl-app/lib-api-bulding-blocks/database/entity/base.entity';
+
+import { UserRegisteredDomainEvent } from '../events/user-registered.domain-event';
+
+import { RegisterUserProps } from '../user.types';
+
+export class UserEntity extends BaseEntity implements User {
   id: string;
 
   company: Company;
@@ -30,21 +34,12 @@ export class UserEntity implements User {
   static register(registerProps: RegisterUserProps): UserEntity {
     const user = new UserEntity();
     Object.assign(user, registerProps);
-    /* adding "UserCreated" Domain Event that will be published
-    eventually so an event handler somewhere may receive it and do an
-    appropriate action. Multiple events can be added if needed. */
-    // user.addEvent(
-    //   new UserCreatedDomainEvent({
-    //     aggregateId: id,
-    //     email: props.email,
-    //     ...props.address.unpack(),
-    //   }),
-    // );
 
-    const tenant = new TenantEntity();
-    tenant.name = registerProps.email;
-
-    user.tenant = tenant;
+    user.addEvent(
+      new UserRegisteredDomainEvent({
+        email: registerProps.email,
+      }),
+    );
 
     return user;
   }

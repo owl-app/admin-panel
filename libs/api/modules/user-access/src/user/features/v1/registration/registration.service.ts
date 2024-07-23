@@ -1,5 +1,9 @@
+import * as bcrypt from 'bcrypt'
+import { Inject } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
+import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-bulding-blocks/config';
 import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
 
 import { UserEntity } from '../../../../domain/entity/user.entity';
@@ -21,13 +25,19 @@ export class RegistrationCommand {
 export class RegistrationHandler implements ICommandHandler<RegistrationCommand> {
   constructor(
     @InjectRepository(UserEntity)
-    private readonly userRepository: IUserRepository
+    readonly userRepository: IUserRepository,
+    @Inject(ConfigService)
+    readonly configService: ConfigService
   ) {}
 
   async execute(command: RegistrationCommand): Promise<void> {
     await registrationValidation.validateAsync(command, { abortEarly: false });
 
-    const user = UserEntity.register(command);
+    const { password_bcrypt_salt_rounds } = this.configService.get<IConfigApp>(APP_CONFIG_NAME);
+    const user = UserEntity.register({
+      ...command,
+      passwordHash: await bcrypt.hash(command.password, password_bcrypt_salt_rounds)
+    });
 
     await this.userRepository.register(user);
   }

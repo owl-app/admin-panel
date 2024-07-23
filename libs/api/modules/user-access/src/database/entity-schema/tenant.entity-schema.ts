@@ -24,6 +24,7 @@ export const TenantEntitySchema = new EntitySchema<TenantEntity>({
     users: {
       type: 'one-to-many',
       target: USER_ENTITY,
+      cascade: true,
       inverseSide: 'tenant'
     },
   },
