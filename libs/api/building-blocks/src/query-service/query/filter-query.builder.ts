@@ -2,15 +2,15 @@ import { SelectQueryBuilder } from 'typeorm'
 import {
   Query,
 } from '@owl-app/crud-core'
-import { FilterQueryBuilder } from '@owl-app/crud-nestjs'
+import { FilterQueryBuilder as BaseFilterQueryBuilder } from '@owl-app/crud-nestjs'
 import { Registry } from '@owl-app/registry';
 
-import { TenantFilter } from '../filters/tenant.filter';
+import { FilterQuery } from '../../registry/interfaces/filter-query';
 
-export class TenantFilterQueryBuilder<Entity> extends FilterQueryBuilder<Entity>
+export class FilterQueryBuilder<Entity> extends BaseFilterQueryBuilder<Entity>
 {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(readonly repo: any, readonly filters?: Registry<TenantFilter<Entity>>,) {
+  constructor(readonly repo: any, readonly filters?: Registry<FilterQuery<Entity>>,) {
     super(repo)
   }
 

@@ -1,6 +1,6 @@
 import { EntityMetadata, SelectQueryBuilder } from "typeorm";
 
-export interface TenantFilter<Entity>
+export interface FilterQuery<Entity>
 {
     supports(metadata: EntityMetadata): boolean;
 

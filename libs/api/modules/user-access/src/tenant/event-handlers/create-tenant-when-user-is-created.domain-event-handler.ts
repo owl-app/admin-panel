@@ -5,15 +5,16 @@ import { User } from '@owl-app/lib-contracts';
 
 import { DomainEvent } from '@owl-app/lib-api-bulding-blocks/event/domain-event.base';
 import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
-import { TenantRepository } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant.repository';
+import { InjectableRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/injectable.repository';
 
 import { TenantEntity } from '../../domain/entity/tenant.entity';
+
 
 @Injectable()
 export class CreateTenantWhenUserIsCreatedDomainEventHandler {
   constructor(
     @InjectRepository(TenantEntity)
-    private readonly tenantRepository: TenantRepository<TenantEntity>
+    private readonly tenantRepository: InjectableRepository<TenantEntity>
   ) {}
 
   // Handle a Domain Event by performing changes to other aggregates (inside the same Domain).

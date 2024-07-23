@@ -1,6 +1,6 @@
 import { DeepPartial, EntityMetadata } from "typeorm";
 
-export interface TenantSetter<Entity>
+export interface EntitySetter<Entity>
 {
     supports(metadata: EntityMetadata): boolean;
 

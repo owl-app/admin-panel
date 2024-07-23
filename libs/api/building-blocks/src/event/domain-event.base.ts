@@ -20,7 +20,7 @@ type DomainEventMetadata = {
   readonly userId?: string;
 };
 
-export type DomainEventProps<T> = Omit<T, 'id' | 'metadata'> & {
+export type DomainEventProps<T> = Omit<T, 'id' | 'metadata' | 'eventName'> & {
   id?: string;
   metadata?: DomainEventMetadata;
   eventName?: string;
@@ -40,7 +40,7 @@ export class DomainEvent {
       );
     }
     this.id = props.id;
-    this.eventName = props.eventName;
+    this.eventName = props.eventName ?? null;
     this.metadata = {
       correlationId:
         props?.metadata?.correlationId || RequestContextService.getRequestId(),

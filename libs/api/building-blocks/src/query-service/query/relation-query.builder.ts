@@ -2,20 +2,21 @@
 import { Repository, SelectQueryBuilder } from 'typeorm'
 
 import { Query } from '@owl-app/crud-core'
-import { RelationQueryBuilder } from '@owl-app/crud-nestjs'
+import { RelationQueryBuilder as BaseRelationqueryBuilder } from '@owl-app/crud-nestjs'
 import { Registry } from '@owl-app/registry'
 
-import { TenantFilterQueryBuilder } from './tenant-filter-query.builder'
-import { TenantFilter } from '../filters/tenant.filter'
+import { FilterQuery } from '../../registry/interfaces/filter-query'
 
-export class TenantRelationQueryBuilder<Entity, Relation> extends RelationQueryBuilder<Entity, Relation> {
+import { FilterQueryBuilder } from './filter-query.builder'
+
+export class RelationQueryBuilder<Entity, Relation> extends BaseRelationqueryBuilder<Entity, Relation> {
   constructor(
     readonly repo: Repository<Entity>,
     readonly relation: string,
-    readonly filters?: Registry<TenantFilter<Relation>>,
+    readonly filters?: Registry<FilterQuery<Relation>>,
   ) {
     super(repo, relation)
-    const filterQueryBuilder = new TenantFilterQueryBuilder<Relation>(this.relationRepo, filters);
+    const filterQueryBuilder = new FilterQueryBuilder<Relation>(this.relationRepo, filters);
     this.filterQueryBuilder = filterQueryBuilder;
   }
 

@@ -7,10 +7,10 @@ import { RolesEnum, TenantAware } from "@owl-app/lib-contracts";
 import { RequestContextService } from "../../context/app-request-context";
 
 import { TENANT_ENTITY } from "../../entity-tokens";
-import { TenantSetter } from './tenant.setter';
+import { EntitySetter } from "../../registry/interfaces/entity-setter";
 
 @Injectable()
-export class TenantRelationSetter<Entity extends TenantAware> implements TenantSetter<Entity>
+export class TenantRelationSetter<Entity extends TenantAware> implements EntitySetter<Entity>
 {
   constructor(readonly configService: ConfigService) {
 

@@ -11,17 +11,19 @@ import { TypeOrmEntitesOpts } from '../typeorm/types';
 import { DEFAULT_DATA_SOURCE_NAME } from '../typeorm/constants';
 import { getRepositoryToken } from '../typeorm/common/tenant-typeorm.utils';
 
-import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from './constants';
-import { CompanySetter } from './setters/company.setter';
-import { TenantTypeOrmQueryService } from './services/tenant-typeorm-query.service';
+import { AppTypeOrmQueryService } from '../query-service/app-typeorm-query.service';
 import { FilterBuilder } from '../data-provider/filter.builder';
 import { createPaginatedQueryServiceProvider } from '../data-provider/query/providers';
 import { PaginationConfigProvider } from '../config/pagination';
-import { TenantRelationFilter } from './filters/tenant-relation.filter';
-import { TenantFilter } from './filters/tenant.filter';
+import { FilterQuery } from '../registry/interfaces/filter-query';
+import { EntitySetter } from '../registry/interfaces/entity-setter';
 import { TypeOrmModule } from '../typeorm/typeorm.module';
+
+import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from './constants';
+import { CompanySetter } from './setters/company.setter';
+import { TenantRelationFilter } from './filters/tenant-relation.filter';
 import { TenantRelationSetter } from './setters/tenant-relation.setter';
-import { TenantSetter } from './setters/tenant.setter';
+
 
 export interface NestjsQueryCoreModuleOpts {
   entities: NestjsQueryCoreEntitiesOpts[]
@@ -83,13 +85,13 @@ export class CrudTenantTypeOrmModule {
           imports: [
             NestjsQueryTypeOrmModule.forFeature({
               imports: [
-                RegistryServiceModule.forFeature<TenantFilter<ObjectLiteral>>({
+                RegistryServiceModule.forFeature<FilterQuery<ObjectLiteral>>({
                   name: FILTER_REGISTRY_TENANT,
                   services: {
                     tenant: TenantRelationFilter<TenantAware>
                   }
                 }),
-                RegistryServiceModule.forFeature<TenantSetter<ObjectLiteral>>({
+                RegistryServiceModule.forFeature<EntitySetter<ObjectLiteral>>({
                   name: SETTER_REGISTRY_TENANT,
                   services: {
                     company: CompanySetter<CompanyAware>,
@@ -98,7 +100,7 @@ export class CrudTenantTypeOrmModule {
                 })
               ],
               queryService: {
-                classService: TenantTypeOrmQueryService,
+                classService: AppTypeOrmQueryService,
                 inject: [FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT]
               },
               typeOrmModule: TypeOrmModule.forFeature({ entities: opts.entities }, dataSource),

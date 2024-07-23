@@ -7,10 +7,10 @@ import { CompanyAware, RolesEnum } from "@owl-app/lib-contracts";
 import { RequestContextService } from "../../context/app-request-context";
 
 import { COMPANY_ENTITY } from "../../entity-tokens";
-import { TenantSetter } from './tenant.setter';
+import { EntitySetter } from "../../registry/interfaces/entity-setter";
 
 @Injectable()
-export class CompanySetter<Entity extends CompanyAware> implements TenantSetter<Entity>
+export class CompanySetter<Entity extends CompanyAware> implements EntitySetter<Entity>
 {
   constructor(readonly configService: ConfigService) {
 

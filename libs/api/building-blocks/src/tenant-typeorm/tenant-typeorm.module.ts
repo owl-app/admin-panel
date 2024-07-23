@@ -12,7 +12,7 @@ import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from './constants';
 import { CompanyRelationFilter } from './filters/company-relation.filter';
 import { CompanySetter } from './setters/company.setter';
 import { TenantRelationFilter } from './filters/tenant-relation.filter';
-import { TenantFilter } from './filters/tenant.filter';
+import { FilterQuery } from '../registry/interfaces/filter-query';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Module({})
@@ -25,7 +25,7 @@ export class TenantTypeOrmModule {
       | string = DEFAULT_DATA_SOURCE_NAME,
   ): DynamicModule {
 
-    const optsWithFilterRegistry = opts.entities.map((entity) => {
+    const optsWithRegistries = opts.entities.map((entity) => {
       return {
         ...entity,
         inject: [FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT]
@@ -34,9 +34,9 @@ export class TenantTypeOrmModule {
 
     const newOptions = Object.assign({
       opts, 
-      entities: optsWithFilterRegistry, 
+      entities: optsWithRegistries, 
       imports: [
-        RegistryServiceModule.forFeature<TenantFilter<ObjectLiteral>>({
+        RegistryServiceModule.forFeature<FilterQuery<ObjectLiteral>>({
           name: FILTER_REGISTRY_TENANT,
           services: {
             // company: CompanyRelationFilter<CompanyAware>,

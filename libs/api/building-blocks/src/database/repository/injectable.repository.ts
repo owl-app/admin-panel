@@ -1,4 +1,4 @@
-import { Registry } from '@owl-app/registry';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   DeepPartial,
   EntityManager,
@@ -7,20 +7,23 @@ import {
   SaveOptions,
   SelectQueryBuilder,
 } from 'typeorm';
-import { TenantFilter } from './filters/tenant.filter';
-import { TenantSetter } from './setters/tenant.setter';
-import { BaseRepository } from '../database/repository/base.repository';
-import BaseEntity from '../database/entity/base.entity';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 
-export class TenantRepository<Entity extends BaseEntity> extends BaseRepository<Entity> {
+import { Registry } from '@owl-app/registry';
+
+import { FilterQuery } from '../../registry/interfaces/filter-query';
+import { EntitySetter } from '../../registry/interfaces/entity-setter';
+
+import { BaseRepository } from './base.repository';
+import BaseEntity from '../entity/base.entity';
+
+export class InjectableRepository<Entity extends BaseEntity> extends BaseRepository<Entity> {
 
   constructor(
     target: EntityTarget<Entity>,
     manager: EntityManager,
     queryRunner?: QueryRunner,
-    readonly filters?: Registry<TenantFilter<Entity>>,
-    readonly setters?: Registry<TenantSetter<Entity>>,
+    readonly filters?: Registry<FilterQuery<Entity>>,
+    readonly setters?: Registry<EntitySetter<Entity>>,
     readonly eventEmitter?: EventEmitter2
   ) {
     super(target, manager, queryRunner, eventEmitter);

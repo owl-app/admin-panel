@@ -7,10 +7,10 @@ import { CompanyAware, RolesEnum } from "@owl-app/lib-contracts";
 import { RequestContextService } from "../../context/app-request-context";
 
 import { COMPANY_ENTITY } from "../../entity-tokens";
-import { TenantFilter } from './tenant.filter';
+import { FilterQuery } from "../../registry/interfaces/filter-query";
 
 @Injectable()
-export class CompanyFilter<Entity extends CompanyAware> implements TenantFilter<Entity>
+export class CompanyFilter<Entity extends CompanyAware> implements FilterQuery<Entity>
 {
   constructor(readonly configService: ConfigService) {
 
