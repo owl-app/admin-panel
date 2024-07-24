@@ -8,7 +8,7 @@ import { TypeOrmOpts } from '../typeorm/types';
 import { DEFAULT_DATA_SOURCE_NAME } from '../typeorm/constants';
 import { TypeOrmModule } from '../typeorm/typeorm.module';
 
-import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from './constants';
+import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from '../registry/constants';
 import { CompanyRelationFilter } from './filters/company-relation.filter';
 import { CompanySetter } from './setters/company.setter';
 import { TenantRelationFilter } from './filters/tenant-relation.filter';

@@ -12,6 +12,8 @@ import { FilterQuery } from '../registry/interfaces/filter-query'
 import { RelationQueryBuilder } from './query/relation-query.builder'
 import BaseEntity from '../database/entity/base.entity'
 import { EntitySetter } from '../registry/interfaces/entity-setter'
+import { TransactionalRepository } from '../database/repository/transactional.repository'
+import DomainEventableEntity from '../database/entity/domain-eventable.entity'
 
 
 export interface AppTypeOrmQueryServiceOpts<Entity> extends TypeOrmQueryServiceOpts<Entity> {
@@ -41,11 +43,36 @@ export class AppTypeOrmQueryService<Entity extends BaseEntity> extends TypeOrmQu
     this.useTransaction = opts?.useTransaction ?? true
   }
 
-  public getRelationQueryBuilder<Relation>(name: string): RelationQueryBuilder<Entity, Relation> {
+  public getRelationQueryBuilder<Relation>(name: string): RelationQueryBuilder<Entity, Relation>
+  {
     return new RelationQueryBuilder(this.repo, name, this.filters as unknown as Registry<FilterQuery<Relation>>)
   }
 
-  public override async createOne(record: DeepPartial<Entity>): Promise<Entity> {
+  public override async createOne(record: DeepPartial<Entity>): Promise<Entity> 
+  {
+    this.injectSetters(record)
+
+    const entity = await this.ensureIsEntityAndDoesNotExist(record) as Entity
+
+    if(record instanceof DomainEventableEntity) {
+      this.createEvent(this.events.EVENT_CREATED, entity)
+    }
+
+    if (this.useTransaction) {
+      if (this.repo instanceof TransactionalRepository) {
+        return await this.repo.transaction(async () => this.repo.save(entity))
+      }
+
+      throw new Error('Repository should extend by TransactionalRepository');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return super.createOne(record)
+  }
+
+  private injectSetters(record: DeepPartial<Entity>): void
+  {
     const setters = this.setters?.all();
 
     if (setters) {
@@ -55,41 +82,16 @@ export class AppTypeOrmQueryService<Entity extends BaseEntity> extends TypeOrmQu
         }
       })
     }
-
-    const entity = await this.ensureIsEntityAndDoesNotExist(record) as Entity
-
-    if(record instanceof BaseEntity) {
-      this.copyOriginalEvents(entity, record)
-      this.createEvent(this.events.EVENT_CREATED, entity)
-    }
-
-    if (this.useTransaction && this.repo instanceof BaseRepository) {
-      return await this.repo.transaction(async () => this.repo.save(entity))
-    }
-
-    // if (this.repo instanceof BaseRepository) {
-    //   return await this.repo.transaction(async () => this.repo.save(entity))
-    // }
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return super.createOne(record)
   }
 
-  private createEvent(name: string, entity: Entity): DomainEvent {
+  private createEvent(name: string, entity: Entity): DomainEvent
+  {
     const eventName = `${convertToSnakeCase(this.EntityClassName)}_${name}`;
     const event = new DomainEvent({eventName})
 
     Object.assign(event, entity)
-
     entity.addEvent(event)
 
     return event
-  }
-
-  private copyOriginalEvents(entity: Entity, record: BaseEntity): void {
-      record?.domainEvents.map((event) => {
-        entity.addEvent(event);
-      })
   }
 }

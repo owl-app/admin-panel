@@ -401,7 +401,7 @@ export class TypeOrmQueryService<Entity>
 
   async ensureIsEntityAndDoesNotExist(entity: DeepPartial<Entity>): Promise<Entity> {
     if (
-      (this.EntityClass instanceof EntitySchema && this.EntityClass.options.name != entity.constructor.name) || 
+      (this.EntityClass instanceof EntitySchema && this.EntityClass.options.name !== entity.constructor.name) || 
       !(!(this.EntityClass instanceof EntitySchema) && entity instanceof this.EntityClass)
     ) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

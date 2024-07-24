@@ -3,15 +3,16 @@ import {
   EntityManager,
   EntityTarget,
   QueryRunner,
-  Repository,
   SaveOptions,
 } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { RequestContextService } from '../../context/app-request-context';
 import BaseEntity from '../entity/base.entity';
 
-export class BaseRepository<Entity extends BaseEntity> extends Repository<Entity> {
+import { TransactionalRepository } from './transactional.repository';
+
+export class BaseRepository<Entity extends BaseEntity> extends TransactionalRepository<Entity>
+{
 
   constructor(
     target: EntityTarget<Entity>,
@@ -21,6 +22,43 @@ export class BaseRepository<Entity extends BaseEntity> extends Repository<Entity
   ) {
     super(target, manager, queryRunner);
   }
+
+  /**
+   * Creates a new entity instance.
+   */
+  create(): Entity
+
+  /**
+   * Creates new entities and copies all entity properties from given objects into their new entities.
+   * Note that it copies only properties that are present in entity schema.
+   */
+  create(entityLikeArray: DeepPartial<Entity>[]): Entity[]
+
+  /**
+   * Creates a new entity instance and copies all entity properties from this object into a new entity.
+   * Note that it copies only properties that are present in entity schema.
+   */
+  create(entityLike: DeepPartial<Entity>): Entity
+
+  /**
+   * Creates a new entity instance or instances.
+   * Can copy properties from the given object into new entities.
+   */
+  create(
+      plainEntityLikeOrPlainEntityLikes?:
+          | DeepPartial<Entity>
+          | DeepPartial<Entity>[],
+  ): Entity | Entity[] {
+      const newEntity: Entity | Entity[] = this.manager.create(
+          this.metadata.target as any,
+          plainEntityLikeOrPlainEntityLikes as any,
+      )
+
+      this.copyOriginalEvents(newEntity, plainEntityLikeOrPlainEntityLikes)
+
+      return newEntity;
+  }
+
 
   /**
    * Saves all given entities in the database.
@@ -80,34 +118,20 @@ export class BaseRepository<Entity extends BaseEntity> extends Repository<Entity
     return savedEntity;
   }
 
-  /**
-   * start a global transaction to save
-   * results of all event handlers in one operation
-   */
-  public async transaction<T>(handler: () => Promise<T>): Promise<T> {
-    return await this.getManager().transaction(async (connection) => {
-      if (!RequestContextService.getTransactionConnection()) {
-        RequestContextService.setTransactionConnection(connection);
-      }
+  private copyOriginalEvents(entity: Entity | Entity[], record: DeepPartial<Entity> | DeepPartial<Entity>[]): void
+  {
+    function copy(entity: Entity, record: Entity ) {
+      record.domainEvents.map((event) => {
+        entity.addEvent(event);
+      })
+    }
 
-      try {
-        const result = await handler();
-
-        return result;
-      } finally {
-        RequestContextService.cleanTransactionConnection();
-      }
-    });
-  }
-
-  /**
- * Get database manager.
- * If global request transaction is started,
- * returns a transaction manager.
- */
-  protected getManager(): EntityManager {
-    return (
-      RequestContextService.getContext().transactionManager ?? this.manager
-    );
+    if(Array.isArray(entity)) {
+      entity.map((entity, index) => {
+        copy(entity, Array(record as Entity)[index]);
+      })
+    } else {
+      copy(entity, record as Entity);
+    }
   }
 }

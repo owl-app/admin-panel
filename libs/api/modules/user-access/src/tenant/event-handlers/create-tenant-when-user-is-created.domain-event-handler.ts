@@ -20,7 +20,7 @@ export class CreateTenantWhenUserIsCreatedDomainEventHandler {
   // Handle a Domain Event by performing changes to other aggregates (inside the same Domain).
   @OnEvent('USER_ENTITY_CREATED', { async: true, promisify: true, suppressErrors: false})
   async handle(event: DomainEvent & User): Promise<any> {
-    const tenant = new TenantEntity({ name: event.lastName, users: [{ id: event.id }] });
+    const tenant = new TenantEntity({ users: [{ id: event.id }] });
 
     await this.tenantRepository.save(tenant);
   }

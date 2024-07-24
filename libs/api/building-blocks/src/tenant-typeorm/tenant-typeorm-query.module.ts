@@ -19,30 +19,30 @@ import { FilterQuery } from '../registry/interfaces/filter-query';
 import { EntitySetter } from '../registry/interfaces/entity-setter';
 import { TypeOrmModule } from '../typeorm/typeorm.module';
 
-import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from './constants';
+import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from '../registry/constants';
 import { CompanySetter } from './setters/company.setter';
 import { TenantRelationFilter } from './filters/tenant-relation.filter';
 import { TenantRelationSetter } from './setters/tenant-relation.setter';
 
 
-export interface NestjsQueryCoreModuleOpts {
-  entities: NestjsQueryCoreEntitiesOpts[]
+export interface TenantTypeOrmQueryModuleOpts {
+  entities: TenantTypeOrmQueryEntitiesOpts[]
 }
 
-export interface NestjsQueryCoreEntitiesOpts extends TypeOrmEntitesOpts {
-  dataProvider?: NestjsQueryCoreDataProviderOpts
+export interface TenantTypeOrmQueryEntitiesOpts extends TypeOrmEntitesOpts {
+  dataProvider?: TenantTypeOrmQueryProviderOpts
   assembler?: Class<Assembler<any, any, any, any, any, any>>
 }
 
-export interface NestjsQueryCoreDataProviderOpts {
+export interface TenantTypeOrmQueryProviderOpts {
   filterBuilder?: Class<FilterBuilder<Filter<EntityClassOrSchema>, any>>
   
 }
 
 @Module({})
-export class CrudTenantTypeOrmModule {
+export class TenantTypeOrmQueryModule {
   static forFeature(
-    opts: NestjsQueryCoreModuleOpts,
+    opts: TenantTypeOrmQueryModuleOpts,
     dataSource:
       | DataSource
       | DataSourceOptions
@@ -110,7 +110,7 @@ export class CrudTenantTypeOrmModule {
           assemblers: [...assemblers ?? []],
         }),
       ],
-      module: CrudTenantTypeOrmModule,
+      module: TenantTypeOrmQueryModule,
       providers: [PaginationConfigProvider, ...dataProviders ?? []],
       exports: [NestjsQueryCoreModule, ...dataProviders ?? []],
     };
