@@ -12,9 +12,12 @@
     "@nestjs/platform-express": "^10.0.2",
     "@nestjs/swagger": "^7.3.0",
     "@nestjs/typeorm": "^10.0.2",
+    "@vuestic/tailwind": "^0.1.5",
+    "@vueuse/core": "^10.11.0",
     "axios": "^1.6.0",
     "bcrypt": "^5.1.1",
     "change-case-all": "^2.1.0",
+    "chart.js": "^4.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cross-env": "^7.0.3",
@@ -32,15 +35,20 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "pinia": "^2.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
+    "tailwindcss": "^3.4.7",
     "ts-mapper": "^1.2.4",
     "tslib": "^2.3.0",
     "typeorm": "^0.3.20",
     "util": "^0.12.5",
     "uuid": "^10.0.0",
     "vue": "^3.3.4",
+    "vue-chartjs": "^5.3.1",
+    "vue-i18n": "^9.13.1",
     "vue-router": "^4.2.4",
+    "vuestic-ui": "^1.9.12",
     "winston": "^3.11.0",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.2",
@@ -79,6 +87,7 @@
     "@vue/eslint-config-prettier": "7.1.0",
     "@vue/eslint-config-typescript": "^11.0.3",
     "@vue/test-utils": "^2.4.1",
+    "autoprefixer": "^10.4.19",
     "copyfiles": "^2.4.1",
     "cypress": "^13.13.0",
     "eslint": "~8.48.0",
@@ -93,6 +102,7 @@
     "jsdom": "~22.1.0",
     "nodemon": "^3.0.3",
     "nx": "19.5.3",
+    "postcss": "^8.4.40",
     "prettier": "^2.6.2",
     "rimraf": "^5.0.5",
     "sass": "1.62.1",
@@ -101,6 +111,7 @@
     "typescript": "5.3.3",
     "verdaccio": "^5.0.4",
     "vite": "^5.3.5",
+    "vite-plugin-dts": "~3.8.1",
     "vitest": "^1.3.1",
     "vue-tsc": "^2.0.0",
     "webpack-cli": "^5.1.4"
@@ -129,6 +140,12 @@
     ],
     "@owl-app/lib-api-module-user-access/*": [
       "libs/api/modules/user-access/src/*"
+    ],
+    "@owl-app/lib-app-core": [
+      "libs/app/core/src/index.ts"
+    ],
+    "@owl-app/lib-app-module-auth": [
+      "libs/app/modules/auth/src/index.ts"
     ],
     "@owl-app/lib-contracts": [
       "libs/contracts/src/index.ts"
@@ -199,601 +216,437 @@
   "fileMap": {
     "nonProjectFiles": [],
     "projectFileMap": {
-      "@owl-app/registry": [
+      "@owl-app/crud-core": [
         {
-          "file": "packages/common/registry/.eslintrc.json",
-          "hash": "8872291363485620765"
+          "file": "packages/server/crud/core/.eslintrc.json",
+          "hash": "3063330170967941476"
         },
         {
-          "file": "packages/common/registry/README.md",
-          "hash": "4044370980334221932"
+          "file": "packages/server/crud/core/README.md",
+          "hash": "759319640953945857"
         },
         {
-          "file": "packages/common/registry/jest.config.ts",
-          "hash": "3693282161765748019"
+          "file": "packages/server/crud/core/jest.config.ts",
+          "hash": "2067963392025304529"
         },
         {
-          "file": "packages/common/registry/package.json",
-          "hash": "17902228395365086364",
+          "file": "packages/server/crud/core/package.json",
+          "hash": "8510387210283239732",
           "deps": [
-            "tsconfig"
-          ]
-        },
-        {
-          "file": "packages/common/registry/project.json",
-          "hash": "13075155548568370458"
-        },
-        {
-          "file": "packages/common/registry/src/exception/existing.service.exception.ts",
-          "hash": "16133248410533134480"
-        },
-        {
-          "file": "packages/common/registry/src/exception/non-existing.service.exception.ts",
-          "hash": "17889394316823547001"
-        },
-        {
-          "file": "packages/common/registry/src/index.ts",
-          "hash": "10591029301182472649"
-        },
-        {
-          "file": "packages/common/registry/src/service.registry.ts",
-          "hash": "9836601839202272708"
-        },
-        {
-          "file": "packages/common/registry/src/types.ts",
-          "hash": "2399730524262365408"
-        },
-        {
-          "file": "packages/common/registry/tsconfig.build.json",
-          "hash": "6744454704368603071"
-        },
-        {
-          "file": "packages/common/registry/tsconfig.eslint.json",
-          "hash": "15196146931688462923"
-        },
-        {
-          "file": "packages/common/registry/tsconfig.json",
-          "hash": "4892539202843831180"
-        },
-        {
-          "file": "packages/common/registry/tsconfig.spec.json",
-          "hash": "9110660443763673899"
-        }
-      ],
-      "@owl-app/rbac-manager": [
-        {
-          "file": "packages/server/rbac/manager/.eslintrc.json",
-          "hash": "6882485833346702900"
-        },
-        {
-          "file": "packages/server/rbac/manager/README.md",
-          "hash": "8846848538542108216"
-        },
-        {
-          "file": "packages/server/rbac/manager/jest.config.ts",
-          "hash": "4964387704955019526"
-        },
-        {
-          "file": "packages/server/rbac/manager/package.json",
-          "hash": "15292312485356785927",
-          "deps": [
+            "npm:@nestjs/typeorm",
             "tsconfig",
-            "@owl-app/registry"
+            "npm:@nestjs/common"
           ]
         },
         {
-          "file": "packages/server/rbac/manager/project.json",
-          "hash": "4926567653912812175"
+          "file": "packages/server/crud/core/project.json",
+          "hash": "11687554316424555053"
         },
         {
-          "file": "packages/server/rbac/manager/src/access-checker.interface.ts",
-          "hash": "8909918555155308910"
+          "file": "packages/server/crud/core/src/__tests__/assemblers/abstract.assembler.spec.ts",
+          "hash": "14226527015536901808"
         },
         {
-          "file": "packages/server/rbac/manager/src/exceptions/base.exception.ts",
-          "hash": "12936480112453716188",
+          "file": "packages/server/crud/core/src/__tests__/assemblers/assembler.deserializer.spec.ts",
+          "hash": "14248783226869975938"
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/assemblers/assembler.factory.spec.ts",
+          "hash": "8001684636677766995"
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/assemblers/assembler.serializer.spec.ts",
+          "hash": "6250020875804793663"
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/assemblers/class-transformer.assembler.spec.ts",
+          "hash": "6624782973907491117",
+          "deps": [
+            "npm:class-transformer"
+          ]
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/assemblers/default.assembler.spec.ts",
+          "hash": "5424522095296427314",
+          "deps": [
+            "npm:class-transformer"
+          ]
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/decorators/assembler.decorator.spec.ts",
+          "hash": "2769605901124974395"
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/decorators/inject-assembler-query-service.decorator.spec.ts",
+          "hash": "6994248645227264082",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/testing"
+          ]
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/decorators/inject-query-service.decorator.spec.ts",
+          "hash": "4305208039022072829",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/testing"
+          ]
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/helpers.spec.ts",
+          "hash": "6054754655555246460"
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/interfaces/sort-field.interface.spec.ts",
+          "hash": "16252514686923432129"
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/services/assembler-query.service.spec.ts",
+          "hash": "9690336515170911593"
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/services/noop-query.service.spec.ts",
+          "hash": "17900595452246661595"
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/services/proxy-query.service.spec.ts",
+          "hash": "1728378179182290139"
+        },
+        {
+          "file": "packages/server/crud/core/src/__tests__/services/relation-query.service.spec.ts",
+          "hash": "8075381885561602300"
+        },
+        {
+          "file": "packages/server/crud/core/src/index.ts",
+          "hash": "522392045105342743"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/assemblers/abstract.assembler.ts",
+          "hash": "8720386421735994720"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/assemblers/assembler.deserializer.ts",
+          "hash": "18421464741204454320"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/assemblers/assembler.factory.ts",
+          "hash": "6526279397244677823"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/assemblers/assembler.serializer.ts",
+          "hash": "3392835269084406864"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/assemblers/assembler.ts",
+          "hash": "5321420541925635734"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/assemblers/class-transformer.assembler.ts",
+          "hash": "5263551443031323047",
+          "deps": [
+            "npm:class-transformer"
+          ]
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/assemblers/constants.ts",
+          "hash": "5274005765934306275"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/assemblers/default.assembler.ts",
+          "hash": "4010012121232183358"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/assemblers/index.ts",
+          "hash": "6212375287120193188"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/common/class.type.ts",
+          "hash": "12055041967566296934"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/common/class.utils.ts",
+          "hash": "6420588613716030056"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/common/deep-partial.type.ts",
+          "hash": "4567412678665672042"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/common/index.ts",
+          "hash": "18302681768367766463"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/common/misc.utils.ts",
+          "hash": "7401176929230904365"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/common/reflect.utils.ts",
+          "hash": "4516300847363404867",
+          "deps": [
+            "npm:reflect-metadata"
+          ]
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/decorators/helpers.ts",
+          "hash": "8839909645330762493"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/decorators/index.ts",
+          "hash": "15943344140954728909"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/decorators/inject-assembler-query-service.decorator.ts",
+          "hash": "2968680768958403637",
           "deps": [
             "npm:@nestjs/common"
           ]
         },
         {
-          "file": "packages/server/rbac/manager/src/exceptions/default-role-not-found.exception.ts",
-          "hash": "13215169955279498721"
-        },
-        {
-          "file": "packages/server/rbac/manager/src/exceptions/index.ts",
-          "hash": "12336871034675333841"
-        },
-        {
-          "file": "packages/server/rbac/manager/src/exceptions/invalid-argument.exception.ts",
-          "hash": "1238158693785905058"
-        },
-        {
-          "file": "packages/server/rbac/manager/src/exceptions/item-alredy-exists.exception.ts",
-          "hash": "6148292534475881124"
-        },
-        {
-          "file": "packages/server/rbac/manager/src/exceptions/runtime.exception.ts",
-          "hash": "11034265829173672657"
-        },
-        {
-          "file": "packages/server/rbac/manager/src/index.ts",
-          "hash": "15453342439348658657"
-        },
-        {
-          "file": "packages/server/rbac/manager/src/rbac.manager.ts",
-          "hash": "2707296515829906078",
+          "file": "packages/server/crud/core/src/lib/decorators/inject-query-service.decorator.ts",
+          "hash": "14762170929333094833",
           "deps": [
-            "@owl-app/registry",
-            "@owl-app/utils"
+            "npm:@nestjs/common"
           ]
         },
         {
-          "file": "packages/server/rbac/manager/src/storage/assigments-storage.interface.ts",
-          "hash": "11555516339708926443"
+          "file": "packages/server/crud/core/src/lib/helpers/aggregate.helpers.ts",
+          "hash": "9062666482912219168"
         },
         {
-          "file": "packages/server/rbac/manager/src/storage/index.ts",
-          "hash": "1719713829154820748"
+          "file": "packages/server/crud/core/src/lib/helpers/comparison.builder.ts",
+          "hash": "15017345626598945849"
         },
         {
-          "file": "packages/server/rbac/manager/src/storage/item-storage.interface.ts",
-          "hash": "15810480433619834572"
+          "file": "packages/server/crud/core/src/lib/helpers/filter.builder.ts",
+          "hash": "11378845382098398128"
         },
         {
-          "file": "packages/server/rbac/manager/src/types/assignment.ts",
-          "hash": "8823300677089097968"
+          "file": "packages/server/crud/core/src/lib/helpers/filter.helpers.ts",
+          "hash": "8667673366496773657"
         },
         {
-          "file": "packages/server/rbac/manager/src/types/base.item.ts",
-          "hash": "10783751605085624587"
+          "file": "packages/server/crud/core/src/lib/helpers/index.ts",
+          "hash": "7741824069076746654"
         },
         {
-          "file": "packages/server/rbac/manager/src/types/helper.types.ts",
-          "hash": "17539434658422837145"
+          "file": "packages/server/crud/core/src/lib/helpers/page.builder.ts",
+          "hash": "12140160024302360832"
         },
         {
-          "file": "packages/server/rbac/manager/src/types/index.ts",
-          "hash": "5419508254838690675"
-        },
-        {
-          "file": "packages/server/rbac/manager/src/types/permission.ts",
-          "hash": "4484051893843988349"
-        },
-        {
-          "file": "packages/server/rbac/manager/src/types/role.ts",
-          "hash": "15387629815150241991"
-        },
-        {
-          "file": "packages/server/rbac/manager/src/types/rule.interface.ts",
-          "hash": "4281733925467525198"
-        },
-        {
-          "file": "packages/server/rbac/manager/tsconfig.build.json",
-          "hash": "17681090815214374294"
-        },
-        {
-          "file": "packages/server/rbac/manager/tsconfig.eslint.json",
-          "hash": "15196146931688462923"
-        },
-        {
-          "file": "packages/server/rbac/manager/tsconfig.json",
-          "hash": "13030685839065866577"
-        },
-        {
-          "file": "packages/server/rbac/manager/tsconfig.spec.json",
-          "hash": "12676338339107966475"
-        }
-      ],
-      "@owl-app/rbac-storage-typeorm": [
-        {
-          "file": "packages/server/rbac/storage-typeorm/.eslintrc.json",
-          "hash": "12996282223587253656"
-        },
-        {
-          "file": "packages/server/rbac/storage-typeorm/README.md",
-          "hash": "223873535941962302"
-        },
-        {
-          "file": "packages/server/rbac/storage-typeorm/jest.config.ts",
-          "hash": "5020003708457245480"
-        },
-        {
-          "file": "packages/server/rbac/storage-typeorm/package.json",
-          "hash": "10224799387283692226",
+          "file": "packages/server/crud/core/src/lib/helpers/query.helpers.ts",
+          "hash": "6342494830363836968",
           "deps": [
-            "tsconfig",
-            "@owl-app/registry",
-            "npm:moment",
-            "npm:typeorm"
+            "npm:lodash.merge"
           ]
         },
         {
-          "file": "packages/server/rbac/storage-typeorm/project.json",
-          "hash": "15711789312392295788"
+          "file": "packages/server/crud/core/src/lib/helpers/sort.builder.ts",
+          "hash": "8215460700137728379"
         },
         {
-          "file": "packages/server/rbac/storage-typeorm/src/assigments-storage.ts",
-          "hash": "14535466064509921217",
+          "file": "packages/server/crud/core/src/lib/helpers/types.ts",
+          "hash": "2051984809310024903"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/aggregate-options.interface.ts",
+          "hash": "8425910300059501261"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/aggregate-query.interface.ts",
+          "hash": "17095125221228393049"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/aggregate-response.interface.ts",
+          "hash": "17267810552727195848"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/count-options.interface.ts",
+          "hash": "16747173829004081986"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/delete-many-options.interface.ts",
+          "hash": "6840335514175185588"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/delete-many-response.interface.ts",
+          "hash": "12609211020646475569"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/delete-one-options.interface.ts",
+          "hash": "6839819373439264292"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/filter-field-comparison.interface.ts",
+          "hash": "8577135731812998074"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/filter.interface.ts",
+          "hash": "8442930248990277103"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/filterable.interface.ts",
+          "hash": "3789301942162642860"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/find-by-id-options.interface.ts",
+          "hash": "18303336451649665015"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/find-relation-options.interface.ts",
+          "hash": "11556002765288796148"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/get-by-id-options.interface.ts",
+          "hash": "9839162735756749543"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/index.ts",
+          "hash": "15388928032726977046"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/modify-relation-options.interface.ts",
+          "hash": "10107721209515474738"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/paging.interface.ts",
+          "hash": "15465906503965838890"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/query-options.interface.ts",
+          "hash": "18439133612057582518"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/query-paginated-options.interface.ts",
+          "hash": "17729974421066819143"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/query.inteface.ts",
+          "hash": "8624337896789008621"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/select-relation.interface.ts",
+          "hash": "10735073284134043865"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/sort-field.interface.ts",
+          "hash": "4122560847388696353"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/update-many-response.interface.ts",
+          "hash": "16090166180764257739"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/update-one-options.interface.ts",
+          "hash": "10934313630069145556"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/interfaces/with-deleted.interface.ts",
+          "hash": "13470997392012665188"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/module.ts",
+          "hash": "13905445645992140551",
           "deps": [
-            "npm:typeorm",
-            "npm:moment",
-            "@owl-app/rbac-manager",
-            "@owl-app/utils"
+            "npm:@nestjs/common"
           ]
         },
         {
-          "file": "packages/server/rbac/storage-typeorm/src/base.storage.ts",
-          "hash": "10503321290241560043",
+          "file": "packages/server/crud/core/src/lib/providers.ts",
+          "hash": "15868627639633908727",
           "deps": [
-            "npm:typeorm"
+            "npm:@nestjs/common"
           ]
         },
         {
-          "file": "packages/server/rbac/storage-typeorm/src/config.interface.ts",
-          "hash": "5692563319412950619"
+          "file": "packages/server/crud/core/src/lib/services/assembler-query.service.ts",
+          "hash": "5946447067198971658"
         },
         {
-          "file": "packages/server/rbac/storage-typeorm/src/index.ts",
-          "hash": "3530378087314557390"
+          "file": "packages/server/crud/core/src/lib/services/index.ts",
+          "hash": "3590930421780517466"
         },
         {
-          "file": "packages/server/rbac/storage-typeorm/src/item-storage.ts",
-          "hash": "7114486623472572238",
+          "file": "packages/server/crud/core/src/lib/services/noop-query.service.ts",
+          "hash": "12847199533145966595",
           "deps": [
-            "npm:typeorm",
-            "npm:moment",
-            "@owl-app/rbac-manager",
-            "@owl-app/utils"
+            "npm:@nestjs/common"
           ]
         },
         {
-          "file": "packages/server/rbac/storage-typeorm/src/providers.ts",
-          "hash": "11513328511352043196",
+          "file": "packages/server/crud/core/src/lib/services/proxy-query.service.ts",
+          "hash": "14105835574406628715"
+        },
+        {
+          "file": "packages/server/crud/core/src/lib/services/query.service.ts",
+          "hash": "11521617865718924335",
           "deps": [
-            "npm:@nestjs/common",
-            "npm:typeorm",
-            "npm:@nestjs/config",
-            "@owl-app/rbac-manager",
-            "@owl-app/registry"
+            "npm:@nestjs/common"
           ]
         },
         {
-          "file": "packages/server/rbac/storage-typeorm/tsconfig.build.json",
-          "hash": "17681090815214374294"
+          "file": "packages/server/crud/core/src/lib/services/relation-query.service.ts",
+          "hash": "13448047929853820010"
         },
         {
-          "file": "packages/server/rbac/storage-typeorm/tsconfig.eslint.json",
-          "hash": "15196146931688462923"
-        },
-        {
-          "file": "packages/server/rbac/storage-typeorm/tsconfig.json",
-          "hash": "13030685839065866577"
-        },
-        {
-          "file": "packages/server/rbac/storage-typeorm/tsconfig.spec.json",
-          "hash": "12676338339107966475"
-        }
-      ],
-      "api-e2e": [
-        {
-          "file": "apps/api-e2e/.eslintrc.json",
-          "hash": "942885824144343268"
-        },
-        {
-          "file": "apps/api-e2e/jest.config.ts",
-          "hash": "5451374175158945661"
-        },
-        {
-          "file": "apps/api-e2e/project.json",
-          "hash": "8268224624778693884"
-        },
-        {
-          "file": "apps/api-e2e/src/api/api.spec.ts",
-          "hash": "110394728024017389",
-          "deps": [
-            "npm:axios"
-          ]
-        },
-        {
-          "file": "apps/api-e2e/src/support/global-setup.ts",
-          "hash": "2568409276037275290"
-        },
-        {
-          "file": "apps/api-e2e/src/support/global-teardown.ts",
-          "hash": "5275447082211835490"
-        },
-        {
-          "file": "apps/api-e2e/src/support/test-setup.ts",
-          "hash": "10984585515912236441",
-          "deps": [
-            "npm:axios"
-          ]
-        },
-        {
-          "file": "apps/api-e2e/tsconfig.json",
-          "hash": "15443990093475294480"
-        },
-        {
-          "file": "apps/api-e2e/tsconfig.spec.json",
-          "hash": "14954872453723519891"
-        }
-      ],
-      "@owl-app/lib-api-module-rbac": [
-        {
-          "file": "libs/api/modules/rbac/.eslintrc.json",
-          "hash": "4486578587756280717"
-        },
-        {
-          "file": "libs/api/modules/rbac/README.md",
-          "hash": "280488757454237822"
-        },
-        {
-          "file": "libs/api/modules/rbac/jest.config.ts",
-          "hash": "14112305302065851486"
-        },
-        {
-          "file": "libs/api/modules/rbac/package.json",
-          "hash": "1567126351184703995",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:eslint",
-            "npm:eslint-plugin-import",
-            "npm:jest",
-            "npm:jest-environment-node",
-            "npm:prettier",
-            "npm:ts-jest",
-            "npm:ts-node",
-            "npm:typescript"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/project.json",
-          "hash": "11162421529845537107"
-        },
-        {
-          "file": "libs/api/modules/rbac/src/common/dto/base/base-item.request.dto.ts",
-          "hash": "7565978242404160076",
-          "deps": [
-            "npm:@nestjs/swagger",
-            "npm:class-validator",
-            "npm:class-transformer"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/common/dto/base/base-item.response.dto.ts",
-          "hash": "7017737120603246517",
-          "deps": [
-            "npm:@nestjs/swagger",
-            "npm:class-validator",
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/common/mapping.ts",
-          "hash": "9605748547276020792",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:moment",
-            "@owl-app/rbac-manager",
-            "@owl-app/lib-api-building-blocks"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/permission/dto/create-permission.request.dto.ts",
-          "hash": "17042709094124895549",
-          "deps": [
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/permission/dto/permission.response.dto.ts",
-          "hash": "5386483927484855166",
-          "deps": [
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/permission/dto/update-permission.request.dto.ts",
-          "hash": "341438188434353027",
-          "deps": [
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/permission/features/v1/crud/crud.http.controller.ts",
-          "hash": "5766553023970143518",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/swagger",
-            "@owl-app/rbac-manager",
-            "@owl-app/lib-api-building-blocks"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/permission/features/v1/crud/validation.ts",
-          "hash": "9147811421835097118",
-          "deps": [
-            "npm:joi"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/permission/mapping.ts",
-          "hash": "18260437093126761936",
-          "deps": [
-            "@owl-app/rbac-manager"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/permission/permission.module.ts",
-          "hash": "8791631857451579151",
-          "deps": [
-            "npm:@nestjs/common",
-            "@owl-app/lib-api-building-blocks"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/rbac.module.ts",
-          "hash": "12935070234383403139",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/config",
-            "@owl-app/lib-api-building-blocks"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/role/dto/create-role.request.dto.ts",
-          "hash": "6204986224954853618",
-          "deps": [
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/role/dto/role.response.dto.ts",
-          "hash": "6862215415744489409",
-          "deps": [
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/role/dto/update-role.request.dto.ts",
-          "hash": "6599194109550430672",
-          "deps": [
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/role/features/v1/assign/assign.http.controller.ts",
-          "hash": "1952277717072608785",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/swagger",
-            "@owl-app/rbac-manager"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/role/features/v1/crud/crud.http.controller.ts",
-          "hash": "2341390772298099703",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/swagger",
-            "@owl-app/rbac-manager"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/role/features/v1/revoke/revoke.http.controller.ts",
-          "hash": "3358690472220943218",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/swagger",
-            "@owl-app/rbac-manager"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/role/mapping.ts",
-          "hash": "15430780166639403831",
-          "deps": [
-            "@owl-app/rbac-manager"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/src/role/role.module.ts",
-          "hash": "2840449332799881818",
-          "deps": [
-            "npm:@nestjs/common",
-            "@owl-app/lib-api-building-blocks"
-          ]
-        },
-        {
-          "file": "libs/api/modules/rbac/tsconfig.build.json",
+          "file": "packages/server/crud/core/tsconfig.build.json",
           "hash": "10025342396868717345"
         },
         {
-          "file": "libs/api/modules/rbac/tsconfig.eslint.json",
+          "file": "packages/server/crud/core/tsconfig.eslint.json",
           "hash": "15196146931688462923"
         },
         {
-          "file": "libs/api/modules/rbac/tsconfig.json",
+          "file": "packages/server/crud/core/tsconfig.json",
           "hash": "13030685839065866577"
         },
         {
-          "file": "libs/api/modules/rbac/tsconfig.spec.json",
+          "file": "packages/server/crud/core/tsconfig.spec.json",
           "hash": "12676338339107966475"
         }
       ],
-      "app": [
+      "@owl-app/lib-app-core": [
         {
-          "file": "apps/app/.eslintrc.json",
-          "hash": "3129093581658583478"
+          "file": "libs/app/core/.eslintrc.json",
+          "hash": "18029286842864761038"
         },
         {
-          "file": "apps/app/index.html",
-          "hash": "5137308773785423043"
+          "file": "libs/app/core/README.md",
+          "hash": "6866178606058557712"
         },
         {
-          "file": "apps/app/project.json",
-          "hash": "5724034783949882650"
+          "file": "libs/app/core/package.json",
+          "hash": "2273018798730143206"
         },
         {
-          "file": "apps/app/src/app/App.spec.ts",
-          "hash": "7701660899841771399",
-          "deps": [
-            "npm:vitest",
-            "npm:@vue/test-utils"
-          ]
+          "file": "libs/app/core/project.json",
+          "hash": "5141031410227484543"
         },
         {
-          "file": "apps/app/src/app/App.vue",
-          "hash": "17099627230403628050",
-          "deps": [
-            "npm:vue-router"
-          ]
+          "file": "libs/app/core/src/index.ts",
+          "hash": "3244421341483603138"
         },
         {
-          "file": "apps/app/src/app/NxWelcome.vue",
-          "hash": "2285624048492173299"
-        },
-        {
-          "file": "apps/app/src/main.ts",
-          "hash": "7538004235580788219",
+          "file": "libs/app/core/src/vue-shims.d.ts",
+          "hash": "1350740973621485859",
           "deps": [
             "npm:vue"
           ]
         },
         {
-          "file": "apps/app/src/router/index.ts",
-          "hash": "16358152312871850972",
-          "deps": [
-            "npm:vue-router"
-          ]
+          "file": "libs/app/core/tsconfig.json",
+          "hash": "10497290610068540472"
         },
         {
-          "file": "apps/app/src/styles.scss",
-          "hash": "97131783897646283"
+          "file": "libs/app/core/tsconfig.lib.json",
+          "hash": "7173602238919161478"
         },
         {
-          "file": "apps/app/src/views/AboutView.vue",
-          "hash": "16824834101219002222"
+          "file": "libs/app/core/tsconfig.spec.json",
+          "hash": "6227144360273957678"
         },
         {
-          "file": "apps/app/src/views/HomeView.vue",
-          "hash": "2335542400067197414"
-        },
-        {
-          "file": "apps/app/tsconfig.app.json",
-          "hash": "3738736504077772611"
-        },
-        {
-          "file": "apps/app/tsconfig.json",
-          "hash": "13900371577176747673"
-        },
-        {
-          "file": "apps/app/tsconfig.spec.json",
-          "hash": "15943385144407153049"
-        },
-        {
-          "file": "apps/app/vite.config.ts",
-          "hash": "4220635516678689279",
+          "file": "libs/app/core/vite.config.ts",
+          "hash": "931785052928530096",
           "deps": [
             "npm:vite",
             "npm:@vitejs/plugin-vue",
@@ -801,353 +654,22 @@
           ]
         }
       ],
-      "@owl-app/registry-nestjs": [
+      "eslint-config-custom": [
         {
-          "file": "packages/server/registry-nestjs/.eslintrc.json",
-          "hash": "10697306387547501912"
+          "file": "packages/common/config/eslint-config-custom/base.json",
+          "hash": "14561093527936143769"
         },
         {
-          "file": "packages/server/registry-nestjs/README.md",
-          "hash": "301815283893231193"
+          "file": "packages/common/config/eslint-config-custom/front.json",
+          "hash": "3244421341483603138"
         },
         {
-          "file": "packages/server/registry-nestjs/jest.config.ts",
-          "hash": "2233117375341450081"
+          "file": "packages/common/config/eslint-config-custom/package.json",
+          "hash": "299925222110801236"
         },
         {
-          "file": "packages/server/registry-nestjs/package.json",
-          "hash": "2158819907680928258",
-          "deps": [
-            "tsconfig",
-            "@owl-app/registry",
-            "npm:@nestjs/common",
-            "npm:@nestjs/config"
-          ]
-        },
-        {
-          "file": "packages/server/registry-nestjs/project.json",
-          "hash": "14959740608144243333"
-        },
-        {
-          "file": "packages/server/registry-nestjs/src/index.ts",
-          "hash": "7179537126851733140"
-        },
-        {
-          "file": "packages/server/registry-nestjs/src/providers.ts",
-          "hash": "3693927887072780256",
-          "deps": [
-            "npm:@nestjs/common",
-            "@owl-app/registry"
-          ]
-        },
-        {
-          "file": "packages/server/registry-nestjs/src/registry-service.module.ts",
-          "hash": "14708543438624201243",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/config"
-          ]
-        },
-        {
-          "file": "packages/server/registry-nestjs/tsconfig.build.json",
-          "hash": "5385967946201121905"
-        },
-        {
-          "file": "packages/server/registry-nestjs/tsconfig.eslint.json",
-          "hash": "15196146931688462923"
-        },
-        {
-          "file": "packages/server/registry-nestjs/tsconfig.json",
-          "hash": "4892539202843831180"
-        },
-        {
-          "file": "packages/server/registry-nestjs/tsconfig.spec.json",
-          "hash": "9110660443763673899"
-        }
-      ],
-      "@owl-app/winston-logger-nestjs": [
-        {
-          "file": "packages/server/logger/winston-nestjs/.eslintrc.json",
-          "hash": "5432134649201576264"
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/README.md",
-          "hash": "1048929961018058943"
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/jest.config.ts",
-          "hash": "8164310436837426609"
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/package.json",
-          "hash": "13553848864216081221",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:winston",
-            "npm:@nestjs/core",
-            "npm:@nestjs/platform-express",
-            "npm:@nestjs/testing",
-            "npm:@types/jest",
-            "npm:@typescript-eslint/eslint-plugin",
-            "npm:@typescript-eslint/parser",
-            "npm:eslint",
-            "npm:jest",
-            "npm:reflect-metadata",
-            "npm:rimraf",
-            "npm:rxjs",
-            "npm:source-map-support",
-            "npm:ts-jest",
-            "npm:ts-node",
-            "npm:typescript",
-            "npm:fast-safe-stringify",
-            "npm:logform",
-            "npm:util"
-          ]
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/project.json",
-          "hash": "6264059515203746570"
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/src/constants.ts",
-          "hash": "12630920911042519968"
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/src/index.ts",
-          "hash": "14642484412230461755"
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/src/interfaces.ts",
-          "hash": "14962955970960821825",
-          "deps": [
-            "npm:winston",
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/src/logger.ts",
-          "hash": "15978794383282769751",
-          "deps": [
-            "npm:winston",
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/src/utilities.ts",
-          "hash": "12349934731141328843",
-          "deps": [
-            "npm:logform",
-            "npm:winston",
-            "npm:fast-safe-stringify"
-          ]
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/src/winston-logger.module.ts",
-          "hash": "7261847708613618868",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/src/winston-logger.providers.ts",
-          "hash": "5431760491822727297",
-          "deps": [
-            "npm:winston",
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/tsconfig.build.json",
-          "hash": "10025342396868717345"
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/tsconfig.eslint.json",
-          "hash": "15196146931688462923"
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/tsconfig.json",
-          "hash": "13030685839065866577"
-        },
-        {
-          "file": "packages/server/logger/winston-nestjs/tsconfig.spec.json",
-          "hash": "12676338339107966475"
-        }
-      ],
-      "@owl-app/lib-api-module-company": [
-        {
-          "file": "libs/api/modules/company/.eslintrc.json",
-          "hash": "10711720245846001503"
-        },
-        {
-          "file": "libs/api/modules/company/README.md",
-          "hash": "1467085406167489337"
-        },
-        {
-          "file": "libs/api/modules/company/jest.config.ts",
-          "hash": "13893019032677482148"
-        },
-        {
-          "file": "libs/api/modules/company/package.json",
-          "hash": "97164894519969415",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:eslint",
-            "npm:eslint-plugin-import",
-            "npm:jest",
-            "npm:jest-environment-node",
-            "npm:prettier",
-            "npm:ts-jest",
-            "npm:ts-node",
-            "npm:typescript"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/project.json",
-          "hash": "439213434920251794"
-        },
-        {
-          "file": "libs/api/modules/company/src/company.module.ts",
-          "hash": "10910314214853005081",
-          "deps": [
-            "npm:@nestjs/common",
-            "@owl-app/lib-api-building-blocks"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/company/dto/company.response.ts",
-          "hash": "15755769084923653838",
-          "deps": [
-            "npm:@nestjs/swagger",
-            "npm:class-transformer",
-            "npm:class-validator",
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/company/dto/relation-user.response.ts",
-          "hash": "14429824075142576444",
-          "deps": [
-            "npm:@nestjs/swagger",
-            "npm:class-transformer",
-            "npm:class-validator",
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/company/features/v1/crud/company.assembler.ts",
-          "hash": "8484377620031129698",
-          "deps": [
-            "@owl-app/crud-core"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/company/features/v1/crud/crud.http.controller.ts",
-          "hash": "7517519548137082781",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/swagger",
-            "@owl-app/crud-core",
-            "@owl-app/lib-api-building-blocks"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/company/features/v1/crud/dto/company.paginated.response.dto.ts",
-          "hash": "621541061712382918",
-          "deps": [
-            "npm:@nestjs/swagger",
-            "@owl-app/lib-api-building-blocks"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/company/features/v1/crud/dto/create-company.request.ts",
-          "hash": "11485576389346008840",
-          "deps": [
-            "npm:@nestjs/swagger"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/company/features/v1/crud/dto/filter-companies.dto.ts",
-          "hash": "377095318395543319",
-          "deps": [
-            "npm:@nestjs/swagger",
-            "npm:class-validator",
-            "npm:class-transformer"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/company/features/v1/crud/dto/index.ts",
-          "hash": "14601994579150254344"
-        },
-        {
-          "file": "libs/api/modules/company/src/company/features/v1/crud/dto/update-company.dto.ts",
-          "hash": "9892603476026576614",
-          "deps": [
-            "npm:@nestjs/swagger"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/company/features/v1/crud/dto/user.request.ts",
-          "hash": "8564306292484695759",
-          "deps": [
-            "npm:@nestjs/swagger",
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/company/features/v1/crud/list-filter.builder.ts",
-          "hash": "516886830755732722",
-          "deps": [
-            "@owl-app/lib-contracts",
-            "@owl-app/crud-core",
-            "@owl-app/utils",
-            "@owl-app/lib-api-building-blocks"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/company/features/v1/crud/validation.ts",
-          "hash": "73724445453208501",
-          "deps": [
-            "npm:joi"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/company/mapping.ts",
-          "hash": "13643350764137251371",
-          "deps": [
-            "npm:ts-mapper",
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/database/entity-schema/company.entity-schema.ts",
-          "hash": "15439243258525636786",
-          "deps": [
-            "npm:typeorm",
-            "@owl-app/lib-api-building-blocks"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/src/domain/entity/company.entity.ts",
-          "hash": "12119834692583471109",
-          "deps": [
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/company/tsconfig.build.json",
-          "hash": "10025342396868717345"
-        },
-        {
-          "file": "libs/api/modules/company/tsconfig.eslint.json",
-          "hash": "15196146931688462923"
-        },
-        {
-          "file": "libs/api/modules/company/tsconfig.json",
-          "hash": "13030685839065866577"
-        },
-        {
-          "file": "libs/api/modules/company/tsconfig.spec.json",
-          "hash": "12676338339107966475"
+          "file": "packages/common/config/eslint-config-custom/server.json",
+          "hash": "13320669691793355326"
         }
       ],
       "@owl-app/admin-panel": [
@@ -1227,7 +749,7 @@
         },
         {
           "file": "package.json",
-          "hash": "5819575933915879515",
+          "hash": "9698662033220725638",
           "deps": [
             "npm:@nestjs/schematics",
             "npm:@nestjs/testing",
@@ -1266,6 +788,7 @@
             "npm:@vue/eslint-config-prettier",
             "npm:@vue/eslint-config-typescript",
             "npm:@vue/test-utils",
+            "npm:autoprefixer",
             "npm:copyfiles",
             "npm:cypress",
             "npm:eslint",
@@ -1280,6 +803,7 @@
             "npm:jsdom",
             "npm:nodemon",
             "npm:nx",
+            "npm:postcss",
             "npm:prettier",
             "npm:rimraf",
             "npm:sass",
@@ -1288,6 +812,7 @@
             "npm:typescript",
             "npm:verdaccio",
             "npm:vite",
+            "npm:vite-plugin-dts",
             "npm:vitest",
             "npm:vue-tsc",
             "npm:webpack-cli",
@@ -1301,9 +826,12 @@
             "npm:@nestjs/platform-express",
             "npm:@nestjs/swagger",
             "npm:@nestjs/typeorm",
+            "npm:@vuestic/tailwind",
+            "npm:@vueuse/core",
             "npm:axios",
             "npm:bcrypt",
             "npm:change-case-all",
+            "npm:chart.js",
             "npm:class-transformer",
             "npm:class-validator",
             "npm:cross-env",
@@ -1321,15 +849,20 @@
             "npm:passport",
             "npm:passport-jwt",
             "npm:passport-local",
+            "npm:pinia",
             "npm:reflect-metadata",
             "npm:rxjs",
+            "npm:tailwindcss",
             "npm:ts-mapper",
             "npm:tslib",
             "npm:typeorm",
             "npm:util",
             "npm:uuid",
             "npm:vue",
+            "npm:vue-chartjs",
+            "npm:vue-i18n",
             "npm:vue-router",
+            "npm:vuestic-ui",
             "npm:winston"
           ]
         },
@@ -1346,7 +879,7 @@
         },
         {
           "file": "tsconfig.base.json",
-          "hash": "5679339015887508590"
+          "hash": "2689855522073870226"
         },
         {
           "file": "vitest.workspace.ts",
@@ -1354,24 +887,124 @@
         },
         {
           "file": "yarn.lock",
-          "hash": "9089984000138526547"
+          "hash": "301008473065884249"
         }
       ],
-      "tsconfig": [
+      "@owl-app/utils": [
         {
-          "file": "packages/common/config/tsconfig/front.json",
-          "hash": "3087963990809624833"
+          "file": "packages/common/utils/.eslintrc.json",
+          "hash": "13478468318368950917"
         },
         {
-          "file": "packages/common/config/tsconfig/package.json",
-          "hash": "6353504725875432030",
+          "file": "packages/common/utils/README.md",
+          "hash": "531815416388632844"
+        },
+        {
+          "file": "packages/common/utils/jest.config.ts",
+          "hash": "9303061114434556"
+        },
+        {
+          "file": "packages/common/utils/package.json",
+          "hash": "526763885289098124",
           "deps": [
-            "npm:@tsconfig/node18"
+            "tsconfig"
           ]
         },
         {
-          "file": "packages/common/config/tsconfig/server.json",
-          "hash": "8223390013009977724"
+          "file": "packages/common/utils/project.json",
+          "hash": "6582274797018031186"
+        },
+        {
+          "file": "packages/common/utils/src/check-types.ts",
+          "hash": "3833127074389660188"
+        },
+        {
+          "file": "packages/common/utils/src/index.ts",
+          "hash": "4907367434440536234"
+        },
+        {
+          "file": "packages/common/utils/src/string-format.ts",
+          "hash": "15130418667896514784"
+        },
+        {
+          "file": "packages/common/utils/tsconfig.build.json",
+          "hash": "242974400701953826"
+        },
+        {
+          "file": "packages/common/utils/tsconfig.eslint.json",
+          "hash": "15196146931688462923"
+        },
+        {
+          "file": "packages/common/utils/tsconfig.json",
+          "hash": "4892539202843831180"
+        },
+        {
+          "file": "packages/common/utils/tsconfig.spec.json",
+          "hash": "9110660443763673899"
+        }
+      ],
+      "@owl-app/registry-nestjs": [
+        {
+          "file": "packages/server/registry-nestjs/.eslintrc.json",
+          "hash": "10697306387547501912"
+        },
+        {
+          "file": "packages/server/registry-nestjs/README.md",
+          "hash": "301815283893231193"
+        },
+        {
+          "file": "packages/server/registry-nestjs/jest.config.ts",
+          "hash": "2233117375341450081"
+        },
+        {
+          "file": "packages/server/registry-nestjs/package.json",
+          "hash": "2158819907680928258",
+          "deps": [
+            "tsconfig",
+            "@owl-app/registry",
+            "npm:@nestjs/common",
+            "npm:@nestjs/config"
+          ]
+        },
+        {
+          "file": "packages/server/registry-nestjs/project.json",
+          "hash": "14959740608144243333"
+        },
+        {
+          "file": "packages/server/registry-nestjs/src/index.ts",
+          "hash": "7179537126851733140"
+        },
+        {
+          "file": "packages/server/registry-nestjs/src/providers.ts",
+          "hash": "3693927887072780256",
+          "deps": [
+            "npm:@nestjs/common",
+            "@owl-app/registry"
+          ]
+        },
+        {
+          "file": "packages/server/registry-nestjs/src/registry-service.module.ts",
+          "hash": "14708543438624201243",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/config"
+          ]
+        },
+        {
+          "file": "packages/server/registry-nestjs/tsconfig.build.json",
+          "hash": "5385967946201121905"
+        },
+        {
+          "file": "packages/server/registry-nestjs/tsconfig.eslint.json",
+          "hash": "15196146931688462923"
+        },
+        {
+          "file": "packages/server/registry-nestjs/tsconfig.json",
+          "hash": "4892539202843831180"
+        },
+        {
+          "file": "packages/server/registry-nestjs/tsconfig.spec.json",
+          "hash": "9110660443763673899"
         }
       ],
       "@owl-app/lib-api-module-user-access": [
@@ -1792,135 +1425,53 @@
           "hash": "12676338339107966475"
         }
       ],
-      "app-e2e": [
+      "@owl-app/lib-api-core": [
         {
-          "file": "apps/app-e2e/.eslintrc.json",
-          "hash": "12390454705546139987"
+          "file": "libs/api/core/.eslintrc.json",
+          "hash": "13516886871263344164"
         },
         {
-          "file": "apps/app-e2e/cypress.config.ts",
-          "hash": "5647144546356622609",
+          "file": "libs/api/core/README.md",
+          "hash": "11688184297370297683"
+        },
+        {
+          "file": "libs/api/core/jest.config.ts",
+          "hash": "6603176349849320600"
+        },
+        {
+          "file": "libs/api/core/package.json",
+          "hash": "6679284479443327697",
           "deps": [
-            "npm:@nx/cypress",
-            "npm:cypress"
-          ]
-        },
-        {
-          "file": "apps/app-e2e/project.json",
-          "hash": "12408727333375921155"
-        },
-        {
-          "file": "apps/app-e2e/src/e2e/app.cy.ts",
-          "hash": "10381000721242105215"
-        },
-        {
-          "file": "apps/app-e2e/src/fixtures/example.json",
-          "hash": "11785586596216172004"
-        },
-        {
-          "file": "apps/app-e2e/src/support/app.po.ts",
-          "hash": "11157016311132186162"
-        },
-        {
-          "file": "apps/app-e2e/src/support/commands.ts",
-          "hash": "5397443931564808659"
-        },
-        {
-          "file": "apps/app-e2e/src/support/e2e.ts",
-          "hash": "1054106023200826784"
-        },
-        {
-          "file": "apps/app-e2e/tsconfig.json",
-          "hash": "10740392072068377465"
-        }
-      ],
-      "api": [
-        {
-          "file": "apps/api/.eslintrc.json",
-          "hash": "942885824144343268"
-        },
-        {
-          "file": "apps/api/jest.config.ts",
-          "hash": "9483968714649439783"
-        },
-        {
-          "file": "apps/api/project.json",
-          "hash": "16684524555101709024"
-        },
-        {
-          "file": "apps/api/src/app/app.module.ts",
-          "hash": "5891747594059326925",
-          "deps": [
-            "npm:@nestjs/common",
-            "@owl-app/lib-api-module-user-access",
-            "@owl-app/lib-api-module-company",
-            "@owl-app/lib-api-module-client",
+            "tsconfig",
+            "npm:@types/joi",
             "@owl-app/request-context-nestjs",
-            "@owl-app/lib-api-module-rbac"
-          ]
-        },
-        {
-          "file": "apps/api/src/app/bootstrap.module.ts",
-          "hash": "10742729829666792111",
-          "deps": [
             "npm:@nestjs/common",
-            "npm:@nestjs/core",
-            "npm:@nestjs/config",
-            "npm:@nestjs/event-emitter",
-            "@owl-app/winston-logger-nestjs",
-            "@owl-app/lib-api-building-blocks"
+            "npm:joi"
           ]
         },
         {
-          "file": "apps/api/src/app/logger.factory.ts",
-          "hash": "9358944841370839992",
-          "deps": [
-            "npm:@nestjs/config",
-            "npm:winston",
-            "@owl-app/winston-logger-nestjs"
-          ]
+          "file": "libs/api/core/project.json",
+          "hash": "418008401203254502"
         },
         {
-          "file": "apps/api/src/assets/.gitkeep",
-          "hash": "3244421341483603138"
+          "file": "libs/api/core/src/core.module.ts",
+          "hash": "317852564472787183"
         },
         {
-          "file": "apps/api/src/bootstrap.ts",
-          "hash": "16513805040858489464",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/core",
-            "npm:@nestjs/platform-express",
-            "npm:express-session",
-            "npm:chalk",
-            "npm:express",
-            "npm:@nestjs/swagger",
-            "npm:@nestjs/config",
-            "@owl-app/lib-api-building-blocks"
-          ]
+          "file": "libs/api/core/tsconfig.build.json",
+          "hash": "7628489007228586587"
         },
         {
-          "file": "apps/api/src/main.ts",
-          "hash": "5392474022168191091"
+          "file": "libs/api/core/tsconfig.eslint.json",
+          "hash": "15196146931688462923"
         },
         {
-          "file": "apps/api/tsconfig.app.json",
-          "hash": "11476114445969461903"
+          "file": "libs/api/core/tsconfig.json",
+          "hash": "4892539202843831180"
         },
         {
-          "file": "apps/api/tsconfig.json",
-          "hash": "15226462306149404515"
-        },
-        {
-          "file": "apps/api/tsconfig.spec.json",
-          "hash": "11550347367511341917"
-        },
-        {
-          "file": "apps/api/webpack.config.js",
-          "hash": "10830236645376184640",
-          "deps": [
-            "npm:@nx/webpack"
-          ]
+          "file": "libs/api/core/tsconfig.spec.json",
+          "hash": "9110660443763673899"
         }
       ],
       "@owl-app/lib-api-building-blocks": [
@@ -2470,736 +2021,183 @@
           "hash": "9110660443763673899"
         }
       ],
-      "@owl-app/lib-api-module-client": [
+      "@owl-app/rbac-storage-typeorm": [
         {
-          "file": "libs/api/modules/client/.eslintrc.json",
-          "hash": "10305500608070025002"
+          "file": "packages/server/rbac/storage-typeorm/.eslintrc.json",
+          "hash": "12996282223587253656"
         },
         {
-          "file": "libs/api/modules/client/README.md",
-          "hash": "14635170774560501767"
+          "file": "packages/server/rbac/storage-typeorm/README.md",
+          "hash": "223873535941962302"
         },
         {
-          "file": "libs/api/modules/client/jest.config.ts",
-          "hash": "13923804909963199374"
+          "file": "packages/server/rbac/storage-typeorm/jest.config.ts",
+          "hash": "5020003708457245480"
         },
         {
-          "file": "libs/api/modules/client/package.json",
-          "hash": "1952493601603287156",
+          "file": "packages/server/rbac/storage-typeorm/package.json",
+          "hash": "10224799387283692226",
           "deps": [
-            "npm:@nestjs/common",
-            "npm:eslint",
-            "npm:eslint-plugin-import",
-            "npm:jest",
-            "npm:jest-environment-node",
-            "npm:prettier",
-            "npm:ts-jest",
-            "npm:ts-node",
-            "npm:typescript",
-            "npm:@nestjs/swagger"
+            "tsconfig",
+            "@owl-app/registry",
+            "npm:moment",
+            "npm:typeorm"
           ]
         },
         {
-          "file": "libs/api/modules/client/project.json",
-          "hash": "4281188007776076194"
+          "file": "packages/server/rbac/storage-typeorm/project.json",
+          "hash": "15711789312392295788"
         },
         {
-          "file": "libs/api/modules/client/src/client.module.ts",
-          "hash": "13841674113100389359",
+          "file": "packages/server/rbac/storage-typeorm/src/assigments-storage.ts",
+          "hash": "14535466064509921217",
           "deps": [
-            "npm:@nestjs/common",
-            "@owl-app/lib-api-building-blocks"
-          ]
-        },
-        {
-          "file": "libs/api/modules/client/src/client/dto/client.response.ts",
-          "hash": "123881253916728376",
-          "deps": [
-            "npm:@nestjs/swagger",
-            "npm:class-transformer",
-            "npm:class-validator",
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/client/src/client/dto/relation-user.response.ts",
-          "hash": "18174413598310799304",
-          "deps": [
-            "npm:@nestjs/swagger",
-            "npm:class-transformer",
-            "npm:class-validator",
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/client/src/client/features/v1/crud/client.assembler.ts",
-          "hash": "8512103821792744444",
-          "deps": [
-            "@owl-app/lib-contracts",
-            "@owl-app/crud-core"
-          ]
-        },
-        {
-          "file": "libs/api/modules/client/src/client/features/v1/crud/crud.http.controller.ts",
-          "hash": "7225356604984905073",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/swagger",
-            "@owl-app/lib-api-building-blocks",
-            "@owl-app/crud-core"
-          ]
-        },
-        {
-          "file": "libs/api/modules/client/src/client/features/v1/crud/dto/client.paginated.response.dto.ts",
-          "hash": "4603162884494897604",
-          "deps": [
-            "npm:@nestjs/swagger",
-            "@owl-app/lib-api-building-blocks"
-          ]
-        },
-        {
-          "file": "libs/api/modules/client/src/client/features/v1/crud/dto/create-client.request.ts",
-          "hash": "1165645495687429256",
-          "deps": [
-            "npm:@nestjs/swagger"
-          ]
-        },
-        {
-          "file": "libs/api/modules/client/src/client/features/v1/crud/dto/filter-client.dto.ts",
-          "hash": "15625168464040918318",
-          "deps": [
-            "npm:@nestjs/swagger",
-            "npm:class-validator",
-            "npm:class-transformer"
-          ]
-        },
-        {
-          "file": "libs/api/modules/client/src/client/features/v1/crud/dto/index.ts",
-          "hash": "175831411514600127"
-        },
-        {
-          "file": "libs/api/modules/client/src/client/features/v1/crud/dto/update-client.dto.ts",
-          "hash": "13233082969607944915",
-          "deps": [
-            "npm:@nestjs/swagger"
-          ]
-        },
-        {
-          "file": "libs/api/modules/client/src/client/features/v1/crud/dto/user.request.ts",
-          "hash": "8564306292484695759",
-          "deps": [
-            "npm:@nestjs/swagger",
-            "@owl-app/lib-contracts"
-          ]
-        },
-        {
-          "file": "libs/api/modules/client/src/client/features/v1/crud/list-filter.builder.ts",
-          "hash": "3961165157057632342",
-          "deps": [
-            "@owl-app/lib-contracts",
-            "@owl-app/lib-api-building-blocks",
-            "@owl-app/crud-core",
+            "npm:typeorm",
+            "npm:moment",
+            "@owl-app/rbac-manager",
             "@owl-app/utils"
           ]
         },
         {
-          "file": "libs/api/modules/client/src/client/features/v1/crud/validation.ts",
-          "hash": "15707482560218512196",
+          "file": "packages/server/rbac/storage-typeorm/src/base.storage.ts",
+          "hash": "10503321290241560043",
           "deps": [
-            "npm:joi"
+            "npm:typeorm"
           ]
         },
         {
-          "file": "libs/api/modules/client/src/client/mapping.ts",
-          "hash": "14952211883178882678",
-          "deps": [
-            "npm:ts-mapper"
-          ]
+          "file": "packages/server/rbac/storage-typeorm/src/config.interface.ts",
+          "hash": "5692563319412950619"
         },
         {
-          "file": "libs/api/modules/client/src/database/entity-schema/client.entity-schema.ts",
-          "hash": "17989309801306680403",
+          "file": "packages/server/rbac/storage-typeorm/src/index.ts",
+          "hash": "3530378087314557390"
+        },
+        {
+          "file": "packages/server/rbac/storage-typeorm/src/item-storage.ts",
+          "hash": "7114486623472572238",
           "deps": [
             "npm:typeorm",
+            "npm:moment",
+            "@owl-app/rbac-manager",
+            "@owl-app/utils"
+          ]
+        },
+        {
+          "file": "packages/server/rbac/storage-typeorm/src/providers.ts",
+          "hash": "11513328511352043196",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:typeorm",
+            "npm:@nestjs/config",
+            "@owl-app/rbac-manager",
+            "@owl-app/registry"
+          ]
+        },
+        {
+          "file": "packages/server/rbac/storage-typeorm/tsconfig.build.json",
+          "hash": "17681090815214374294"
+        },
+        {
+          "file": "packages/server/rbac/storage-typeorm/tsconfig.eslint.json",
+          "hash": "15196146931688462923"
+        },
+        {
+          "file": "packages/server/rbac/storage-typeorm/tsconfig.json",
+          "hash": "13030685839065866577"
+        },
+        {
+          "file": "packages/server/rbac/storage-typeorm/tsconfig.spec.json",
+          "hash": "12676338339107966475"
+        }
+      ],
+      "api": [
+        {
+          "file": "apps/api/.eslintrc.json",
+          "hash": "942885824144343268"
+        },
+        {
+          "file": "apps/api/jest.config.ts",
+          "hash": "9483968714649439783"
+        },
+        {
+          "file": "apps/api/project.json",
+          "hash": "16684524555101709024"
+        },
+        {
+          "file": "apps/api/src/app/app.module.ts",
+          "hash": "5891747594059326925",
+          "deps": [
+            "npm:@nestjs/common",
+            "@owl-app/lib-api-module-user-access",
+            "@owl-app/lib-api-module-company",
+            "@owl-app/lib-api-module-client",
+            "@owl-app/request-context-nestjs",
+            "@owl-app/lib-api-module-rbac"
+          ]
+        },
+        {
+          "file": "apps/api/src/app/bootstrap.module.ts",
+          "hash": "10742729829666792111",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/core",
+            "npm:@nestjs/config",
+            "npm:@nestjs/event-emitter",
+            "@owl-app/winston-logger-nestjs",
             "@owl-app/lib-api-building-blocks"
           ]
         },
         {
-          "file": "libs/api/modules/client/src/domain/entity/client.entity.ts",
-          "hash": "15577693036884170161",
+          "file": "apps/api/src/app/logger.factory.ts",
+          "hash": "9358944841370839992",
           "deps": [
-            "@owl-app/lib-contracts"
+            "npm:@nestjs/config",
+            "npm:winston",
+            "@owl-app/winston-logger-nestjs"
           ]
         },
         {
-          "file": "libs/api/modules/client/tsconfig.build.json",
-          "hash": "10025342396868717345"
+          "file": "apps/api/src/assets/.gitkeep",
+          "hash": "3244421341483603138"
         },
         {
-          "file": "libs/api/modules/client/tsconfig.eslint.json",
-          "hash": "15196146931688462923"
-        },
-        {
-          "file": "libs/api/modules/client/tsconfig.json",
-          "hash": "13030685839065866577"
-        },
-        {
-          "file": "libs/api/modules/client/tsconfig.spec.json",
-          "hash": "7790607875696834052"
-        }
-      ],
-      "@owl-app/utils": [
-        {
-          "file": "packages/common/utils/.eslintrc.json",
-          "hash": "13478468318368950917"
-        },
-        {
-          "file": "packages/common/utils/README.md",
-          "hash": "531815416388632844"
-        },
-        {
-          "file": "packages/common/utils/jest.config.ts",
-          "hash": "9303061114434556"
-        },
-        {
-          "file": "packages/common/utils/package.json",
-          "hash": "526763885289098124",
-          "deps": [
-            "tsconfig"
-          ]
-        },
-        {
-          "file": "packages/common/utils/project.json",
-          "hash": "6582274797018031186"
-        },
-        {
-          "file": "packages/common/utils/src/check-types.ts",
-          "hash": "3833127074389660188"
-        },
-        {
-          "file": "packages/common/utils/src/index.ts",
-          "hash": "4907367434440536234"
-        },
-        {
-          "file": "packages/common/utils/src/string-format.ts",
-          "hash": "15130418667896514784"
-        },
-        {
-          "file": "packages/common/utils/tsconfig.build.json",
-          "hash": "242974400701953826"
-        },
-        {
-          "file": "packages/common/utils/tsconfig.eslint.json",
-          "hash": "15196146931688462923"
-        },
-        {
-          "file": "packages/common/utils/tsconfig.json",
-          "hash": "4892539202843831180"
-        },
-        {
-          "file": "packages/common/utils/tsconfig.spec.json",
-          "hash": "9110660443763673899"
-        }
-      ],
-      "@owl-app/request-context-nestjs": [
-        {
-          "file": "packages/server/http/request-context-nestjs/.eslintrc.json",
-          "hash": "11056782139993298370"
-        },
-        {
-          "file": "packages/server/http/request-context-nestjs/README.md",
-          "hash": "14775022887121394775"
-        },
-        {
-          "file": "packages/server/http/request-context-nestjs/jest.config.ts",
-          "hash": "16570446344683420882"
-        },
-        {
-          "file": "packages/server/http/request-context-nestjs/package.json",
-          "hash": "6201397549387074384",
-          "deps": [
-            "tsconfig",
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/http/request-context-nestjs/project.json",
-          "hash": "4477692709719801038"
-        },
-        {
-          "file": "packages/server/http/request-context-nestjs/src/index.ts",
-          "hash": "18173697863139907766"
-        },
-        {
-          "file": "packages/server/http/request-context-nestjs/src/request-context.middleware.ts",
-          "hash": "17182380323587594602",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/http/request-context-nestjs/src/request-context.model.ts",
-          "hash": "17719698259028017838"
-        },
-        {
-          "file": "packages/server/http/request-context-nestjs/src/request-context.module.ts",
-          "hash": "2549023395758522496",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/http/request-context-nestjs/tsconfig.build.json",
-          "hash": "10025342396868717345"
-        },
-        {
-          "file": "packages/server/http/request-context-nestjs/tsconfig.eslint.json",
-          "hash": "15196146931688462923"
-        },
-        {
-          "file": "packages/server/http/request-context-nestjs/tsconfig.json",
-          "hash": "13030685839065866577"
-        },
-        {
-          "file": "packages/server/http/request-context-nestjs/tsconfig.spec.json",
-          "hash": "12676338339107966475"
-        }
-      ],
-      "@owl-app/lib-api-core": [
-        {
-          "file": "libs/api/core/.eslintrc.json",
-          "hash": "13516886871263344164"
-        },
-        {
-          "file": "libs/api/core/README.md",
-          "hash": "11688184297370297683"
-        },
-        {
-          "file": "libs/api/core/jest.config.ts",
-          "hash": "6603176349849320600"
-        },
-        {
-          "file": "libs/api/core/package.json",
-          "hash": "6679284479443327697",
-          "deps": [
-            "tsconfig",
-            "npm:@types/joi",
-            "@owl-app/request-context-nestjs",
-            "npm:@nestjs/common",
-            "npm:joi"
-          ]
-        },
-        {
-          "file": "libs/api/core/project.json",
-          "hash": "418008401203254502"
-        },
-        {
-          "file": "libs/api/core/src/core.module.ts",
-          "hash": "317852564472787183"
-        },
-        {
-          "file": "libs/api/core/tsconfig.build.json",
-          "hash": "7628489007228586587"
-        },
-        {
-          "file": "libs/api/core/tsconfig.eslint.json",
-          "hash": "15196146931688462923"
-        },
-        {
-          "file": "libs/api/core/tsconfig.json",
-          "hash": "4892539202843831180"
-        },
-        {
-          "file": "libs/api/core/tsconfig.spec.json",
-          "hash": "9110660443763673899"
-        }
-      ],
-      "@owl-app/crud-core": [
-        {
-          "file": "packages/server/crud/core/.eslintrc.json",
-          "hash": "3063330170967941476"
-        },
-        {
-          "file": "packages/server/crud/core/README.md",
-          "hash": "759319640953945857"
-        },
-        {
-          "file": "packages/server/crud/core/jest.config.ts",
-          "hash": "2067963392025304529"
-        },
-        {
-          "file": "packages/server/crud/core/package.json",
-          "hash": "8510387210283239732",
-          "deps": [
-            "npm:@nestjs/typeorm",
-            "tsconfig",
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/crud/core/project.json",
-          "hash": "11687554316424555053"
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/assemblers/abstract.assembler.spec.ts",
-          "hash": "14226527015536901808"
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/assemblers/assembler.deserializer.spec.ts",
-          "hash": "14248783226869975938"
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/assemblers/assembler.factory.spec.ts",
-          "hash": "8001684636677766995"
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/assemblers/assembler.serializer.spec.ts",
-          "hash": "6250020875804793663"
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/assemblers/class-transformer.assembler.spec.ts",
-          "hash": "6624782973907491117",
-          "deps": [
-            "npm:class-transformer"
-          ]
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/assemblers/default.assembler.spec.ts",
-          "hash": "5424522095296427314",
-          "deps": [
-            "npm:class-transformer"
-          ]
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/decorators/assembler.decorator.spec.ts",
-          "hash": "2769605901124974395"
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/decorators/inject-assembler-query-service.decorator.spec.ts",
-          "hash": "6994248645227264082",
+          "file": "apps/api/src/bootstrap.ts",
+          "hash": "16513805040858489464",
           "deps": [
             "npm:@nestjs/common",
-            "npm:@nestjs/testing"
+            "npm:@nestjs/core",
+            "npm:@nestjs/platform-express",
+            "npm:express-session",
+            "npm:chalk",
+            "npm:express",
+            "npm:@nestjs/swagger",
+            "npm:@nestjs/config",
+            "@owl-app/lib-api-building-blocks"
           ]
         },
         {
-          "file": "packages/server/crud/core/src/__tests__/decorators/inject-query-service.decorator.spec.ts",
-          "hash": "4305208039022072829",
+          "file": "apps/api/src/main.ts",
+          "hash": "5392474022168191091"
+        },
+        {
+          "file": "apps/api/tsconfig.app.json",
+          "hash": "11476114445969461903"
+        },
+        {
+          "file": "apps/api/tsconfig.json",
+          "hash": "15226462306149404515"
+        },
+        {
+          "file": "apps/api/tsconfig.spec.json",
+          "hash": "11550347367511341917"
+        },
+        {
+          "file": "apps/api/webpack.config.js",
+          "hash": "10830236645376184640",
           "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/testing"
+            "npm:@nx/webpack"
           ]
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/helpers.spec.ts",
-          "hash": "6054754655555246460"
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/interfaces/sort-field.interface.spec.ts",
-          "hash": "16252514686923432129"
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/services/assembler-query.service.spec.ts",
-          "hash": "9690336515170911593"
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/services/noop-query.service.spec.ts",
-          "hash": "17900595452246661595"
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/services/proxy-query.service.spec.ts",
-          "hash": "1728378179182290139"
-        },
-        {
-          "file": "packages/server/crud/core/src/__tests__/services/relation-query.service.spec.ts",
-          "hash": "8075381885561602300"
-        },
-        {
-          "file": "packages/server/crud/core/src/index.ts",
-          "hash": "522392045105342743"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/assemblers/abstract.assembler.ts",
-          "hash": "8720386421735994720"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/assemblers/assembler.deserializer.ts",
-          "hash": "18421464741204454320"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/assemblers/assembler.factory.ts",
-          "hash": "6526279397244677823"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/assemblers/assembler.serializer.ts",
-          "hash": "3392835269084406864"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/assemblers/assembler.ts",
-          "hash": "5321420541925635734"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/assemblers/class-transformer.assembler.ts",
-          "hash": "5263551443031323047",
-          "deps": [
-            "npm:class-transformer"
-          ]
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/assemblers/constants.ts",
-          "hash": "5274005765934306275"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/assemblers/default.assembler.ts",
-          "hash": "4010012121232183358"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/assemblers/index.ts",
-          "hash": "6212375287120193188"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/common/class.type.ts",
-          "hash": "12055041967566296934"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/common/class.utils.ts",
-          "hash": "6420588613716030056"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/common/deep-partial.type.ts",
-          "hash": "4567412678665672042"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/common/index.ts",
-          "hash": "18302681768367766463"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/common/misc.utils.ts",
-          "hash": "7401176929230904365"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/common/reflect.utils.ts",
-          "hash": "4516300847363404867",
-          "deps": [
-            "npm:reflect-metadata"
-          ]
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/decorators/helpers.ts",
-          "hash": "8839909645330762493"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/decorators/index.ts",
-          "hash": "15943344140954728909"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/decorators/inject-assembler-query-service.decorator.ts",
-          "hash": "2968680768958403637",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/decorators/inject-query-service.decorator.ts",
-          "hash": "14762170929333094833",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/helpers/aggregate.helpers.ts",
-          "hash": "9062666482912219168"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/helpers/comparison.builder.ts",
-          "hash": "15017345626598945849"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/helpers/filter.builder.ts",
-          "hash": "11378845382098398128"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/helpers/filter.helpers.ts",
-          "hash": "8667673366496773657"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/helpers/index.ts",
-          "hash": "7741824069076746654"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/helpers/page.builder.ts",
-          "hash": "12140160024302360832"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/helpers/query.helpers.ts",
-          "hash": "6342494830363836968",
-          "deps": [
-            "npm:lodash.merge"
-          ]
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/helpers/sort.builder.ts",
-          "hash": "8215460700137728379"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/helpers/types.ts",
-          "hash": "2051984809310024903"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/aggregate-options.interface.ts",
-          "hash": "8425910300059501261"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/aggregate-query.interface.ts",
-          "hash": "17095125221228393049"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/aggregate-response.interface.ts",
-          "hash": "17267810552727195848"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/count-options.interface.ts",
-          "hash": "16747173829004081986"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/delete-many-options.interface.ts",
-          "hash": "6840335514175185588"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/delete-many-response.interface.ts",
-          "hash": "12609211020646475569"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/delete-one-options.interface.ts",
-          "hash": "6839819373439264292"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/filter-field-comparison.interface.ts",
-          "hash": "8577135731812998074"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/filter.interface.ts",
-          "hash": "8442930248990277103"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/filterable.interface.ts",
-          "hash": "3789301942162642860"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/find-by-id-options.interface.ts",
-          "hash": "18303336451649665015"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/find-relation-options.interface.ts",
-          "hash": "11556002765288796148"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/get-by-id-options.interface.ts",
-          "hash": "9839162735756749543"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/index.ts",
-          "hash": "15388928032726977046"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/modify-relation-options.interface.ts",
-          "hash": "10107721209515474738"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/paging.interface.ts",
-          "hash": "15465906503965838890"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/query-options.interface.ts",
-          "hash": "18439133612057582518"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/query-paginated-options.interface.ts",
-          "hash": "17729974421066819143"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/query.inteface.ts",
-          "hash": "8624337896789008621"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/select-relation.interface.ts",
-          "hash": "10735073284134043865"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/sort-field.interface.ts",
-          "hash": "4122560847388696353"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/update-many-response.interface.ts",
-          "hash": "16090166180764257739"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/update-one-options.interface.ts",
-          "hash": "10934313630069145556"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/interfaces/with-deleted.interface.ts",
-          "hash": "13470997392012665188"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/module.ts",
-          "hash": "13905445645992140551",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/providers.ts",
-          "hash": "15868627639633908727",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/services/assembler-query.service.ts",
-          "hash": "5946447067198971658"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/services/index.ts",
-          "hash": "3590930421780517466"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/services/noop-query.service.ts",
-          "hash": "12847199533145966595",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/services/proxy-query.service.ts",
-          "hash": "14105835574406628715"
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/services/query.service.ts",
-          "hash": "11521617865718924335",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "packages/server/crud/core/src/lib/services/relation-query.service.ts",
-          "hash": "13448047929853820010"
-        },
-        {
-          "file": "packages/server/crud/core/tsconfig.build.json",
-          "hash": "10025342396868717345"
-        },
-        {
-          "file": "packages/server/crud/core/tsconfig.eslint.json",
-          "hash": "15196146931688462923"
-        },
-        {
-          "file": "packages/server/crud/core/tsconfig.json",
-          "hash": "13030685839065866577"
-        },
-        {
-          "file": "packages/server/crud/core/tsconfig.spec.json",
-          "hash": "12676338339107966475"
         }
       ],
       "@owl-app/crud-nestjs": [
@@ -3528,6 +2526,1173 @@
           "hash": "12676338339107966475"
         }
       ],
+      "app": [
+        {
+          "file": "apps/app/.eslintrc.json",
+          "hash": "3129093581658583478"
+        },
+        {
+          "file": "apps/app/index.html",
+          "hash": "1518656687480675102"
+        },
+        {
+          "file": "apps/app/postcss.config.js",
+          "hash": "1579725330904862112"
+        },
+        {
+          "file": "apps/app/project.json",
+          "hash": "5724034783949882650"
+        },
+        {
+          "file": "apps/app/src/App.vue",
+          "hash": "10791367496178067444"
+        },
+        {
+          "file": "apps/app/src/components/NotFoundImage.vue",
+          "hash": "17925711699729477638"
+        },
+        {
+          "file": "apps/app/src/components/VuesticLogo.stories.ts",
+          "hash": "4406945432305876469"
+        },
+        {
+          "file": "apps/app/src/components/VuesticLogo.vue",
+          "hash": "7617816021739142745",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/app-layout-navigation/AppLayoutNavigation.vue",
+          "hash": "16039902028566823076",
+          "deps": [
+            "npm:vue",
+            "npm:vue-router",
+            "npm:vue-i18n",
+            "npm:vuestic-ui",
+            "npm:pinia"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconCleanCode.vue",
+          "hash": "8453046642863590900"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconColor.vue",
+          "hash": "10777979069304747783"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconFaster.vue",
+          "hash": "15393710167554891769"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconFree.vue",
+          "hash": "6360942999828639128"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconFresh.vue",
+          "hash": "12522974940623555232"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconGitHub.vue",
+          "hash": "5961721690886987912"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconHideSidebar.vue",
+          "hash": "10489151588478442564"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconMenu.vue",
+          "hash": "5387588847036646139"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconMenuCollapsed.vue",
+          "hash": "4832641612793597681"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconMessage.vue",
+          "hash": "8808000151902624830"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconNotification.vue",
+          "hash": "1071480274439158610"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconResponsive.vue",
+          "hash": "8368870621266356608"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconRich.vue",
+          "hash": "13259789990950688384"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconSlower.vue",
+          "hash": "16470298572143935336"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconVue.vue",
+          "hash": "16896701162809122364"
+        },
+        {
+          "file": "apps/app/src/components/icons/VaIconVuestic.vue",
+          "hash": "3881592209739889605"
+        },
+        {
+          "file": "apps/app/src/components/navbar/AppNavbar.vue",
+          "hash": "10521082817272697594",
+          "deps": [
+            "npm:pinia"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/navbar/components/AppNavbarActions.vue",
+          "hash": "15952290955536885402",
+          "deps": [
+            "npm:vue-i18n"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/navbar/components/GitHubButton.vue",
+          "hash": "10461439362711330084"
+        },
+        {
+          "file": "apps/app/src/components/navbar/components/dropdowns/NotificationDropdown.vue",
+          "hash": "5082884315617766267",
+          "deps": [
+            "npm:vue",
+            "npm:vue-i18n"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/navbar/components/dropdowns/ProfileDropdown.vue",
+          "hash": "7335178410973847802",
+          "deps": [
+            "npm:vue",
+            "npm:vue-i18n",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/sidebar/AppSidebar.vue",
+          "hash": "15667676703207864520",
+          "deps": [
+            "npm:vue",
+            "npm:vue-router",
+            "npm:vue-i18n",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/sidebar/NavigationRoutes.ts",
+          "hash": "12342138845015805258"
+        },
+        {
+          "file": "apps/app/src/components/typography/Typography.stories.ts",
+          "hash": "6223309653834646747"
+        },
+        {
+          "file": "apps/app/src/components/typography/Typography.vue",
+          "hash": "2822229518286814410",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/va-charts/VaChart.vue",
+          "hash": "13520221150660743016",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/va-charts/chart-types/BarChart.vue",
+          "hash": "17693922210812633071",
+          "deps": [
+            "npm:vue-chartjs",
+            "npm:chart.js"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/va-charts/chart-types/BubbleChart.vue",
+          "hash": "418857481031556499",
+          "deps": [
+            "npm:vue-chartjs",
+            "npm:chart.js"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/va-charts/chart-types/DoughnutChart.vue",
+          "hash": "2885334908836818916",
+          "deps": [
+            "npm:vue-chartjs",
+            "npm:chart.js"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/va-charts/chart-types/HorizontalBarChart.vue",
+          "hash": "17519620142236330694",
+          "deps": [
+            "npm:vue-chartjs",
+            "npm:chart.js"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/va-charts/chart-types/LineChart.vue",
+          "hash": "2553413939328102210",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/va-charts/chart-types/Map.vue",
+          "hash": "14145007315095719373",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/va-charts/chart-types/PieChart.vue",
+          "hash": "18281342371831324356",
+          "deps": [
+            "npm:vue-chartjs",
+            "npm:chart.js"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/va-charts/external-tooltip.ts",
+          "hash": "12385562269094443609",
+          "deps": [
+            "npm:@floating-ui/dom"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/va-charts/vaChartConfigs.js",
+          "hash": "17849680147067445865",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/va-medium-editor/VaMediumEditor.vue",
+          "hash": "13367443456430873821",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/components/va-medium-editor/_variables.scss",
+          "hash": "3972567967149120362"
+        },
+        {
+          "file": "apps/app/src/components/va-timeline-item.vue",
+          "hash": "13272012420712976244"
+        },
+        {
+          "file": "apps/app/src/data/CountriesList.ts",
+          "hash": "4081352375617553225"
+        },
+        {
+          "file": "apps/app/src/data/charts/barChartData.ts",
+          "hash": "15222271376964764394"
+        },
+        {
+          "file": "apps/app/src/data/charts/bubbleChartData.ts",
+          "hash": "8529178723048463706"
+        },
+        {
+          "file": "apps/app/src/data/charts/composables/useChartColors.ts",
+          "hash": "9251847002250777230",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/data/charts/composables/useChartData.ts",
+          "hash": "10839137805844570332",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/data/charts/doughnutChartData.ts",
+          "hash": "8181644365557933880"
+        },
+        {
+          "file": "apps/app/src/data/charts/horizontalBarChartData.ts",
+          "hash": "10729584278325086630"
+        },
+        {
+          "file": "apps/app/src/data/charts/index.ts",
+          "hash": "14042881784842252751"
+        },
+        {
+          "file": "apps/app/src/data/charts/lineChartData.ts",
+          "hash": "18069467955592396751"
+        },
+        {
+          "file": "apps/app/src/data/charts/pieChartData.ts",
+          "hash": "17211797847291897601"
+        },
+        {
+          "file": "apps/app/src/data/charts/revenueChartData.ts",
+          "hash": "6496025436868273806"
+        },
+        {
+          "file": "apps/app/src/data/geo.json",
+          "hash": "7638973915782163482"
+        },
+        {
+          "file": "apps/app/src/data/pages/projects-db.json",
+          "hash": "86969030944525822"
+        },
+        {
+          "file": "apps/app/src/data/pages/projects.ts",
+          "hash": "4175818358590940948"
+        },
+        {
+          "file": "apps/app/src/data/pages/users-db.json",
+          "hash": "8827272947339564844"
+        },
+        {
+          "file": "apps/app/src/data/pages/users.ts",
+          "hash": "459433751618813083"
+        },
+        {
+          "file": "apps/app/src/data/types.ts",
+          "hash": "5499472731759355714",
+          "deps": [
+            "npm:chart.js"
+          ]
+        },
+        {
+          "file": "apps/app/src/data/users.json",
+          "hash": "5382889026644533471"
+        },
+        {
+          "file": "apps/app/src/i18n/index.ts",
+          "hash": "15702620088577016924",
+          "deps": [
+            "npm:vue-i18n"
+          ]
+        },
+        {
+          "file": "apps/app/src/i18n/locales/br.json",
+          "hash": "9786004694101445942"
+        },
+        {
+          "file": "apps/app/src/i18n/locales/cn.json",
+          "hash": "8574200643677455692"
+        },
+        {
+          "file": "apps/app/src/i18n/locales/es.json",
+          "hash": "15882736788031655534"
+        },
+        {
+          "file": "apps/app/src/i18n/locales/gb.json",
+          "hash": "2398447590930482381"
+        },
+        {
+          "file": "apps/app/src/i18n/locales/ir.json",
+          "hash": "14190258154201991377"
+        },
+        {
+          "file": "apps/app/src/layouts/AppLayout.vue",
+          "hash": "5890610148536139457",
+          "deps": [
+            "npm:vue",
+            "npm:pinia",
+            "npm:vue-router",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/layouts/AuthLayout.vue",
+          "hash": "15291021921720190501",
+          "deps": [
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/layouts/RouterBypass.vue",
+          "hash": "3015905503561967474"
+        },
+        {
+          "file": "apps/app/src/main.ts",
+          "hash": "14331181835769194031",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/404.vue",
+          "hash": "242395953384793835"
+        },
+        {
+          "file": "apps/app/src/pages/admin/dashboard/Dashboard.vue",
+          "hash": "6131447264912968701"
+        },
+        {
+          "file": "apps/app/src/pages/admin/dashboard/DataSection.vue",
+          "hash": "17251508871832035368",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/admin/dashboard/DataSectionItem.vue",
+          "hash": "7618830149674723092",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/admin/dashboard/cards/MonthlyEarnings.vue",
+          "hash": "1404900141256682062",
+          "deps": [
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/admin/dashboard/cards/ProjectTable.vue",
+          "hash": "3257631328355910378",
+          "deps": [
+            "npm:vuestic-ui",
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/admin/dashboard/cards/RegionRevenue.vue",
+          "hash": "8364439835705589015",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/admin/dashboard/cards/RevenueByLocationMap.vue",
+          "hash": "12582902558435269950",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/admin/dashboard/cards/RevenueReport.vue",
+          "hash": "9578036018647937219",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/admin/dashboard/cards/RevenueReportChart.vue",
+          "hash": "4128409910389620314",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/admin/dashboard/cards/Timeline.vue",
+          "hash": "7687260859245471908"
+        },
+        {
+          "file": "apps/app/src/pages/admin/dashboard/cards/YearlyBreakup.vue",
+          "hash": "7358073673477707412",
+          "deps": [
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/admin/pages/404PagesPage.vue",
+          "hash": "15063820009787095739",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/auth/CheckTheEmail.vue",
+          "hash": "776090195282316107"
+        },
+        {
+          "file": "apps/app/src/pages/auth/Login.vue",
+          "hash": "15089810515711565057",
+          "deps": [
+            "npm:vue",
+            "npm:vue-router",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/auth/RecoverPassword.vue",
+          "hash": "5080625212343851691",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui",
+            "npm:vue-router"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/auth/Signup.vue",
+          "hash": "7921382851148175514",
+          "deps": [
+            "npm:vue",
+            "npm:vue-router",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/billing/BillingPage.vue",
+          "hash": "15015783642444214045"
+        },
+        {
+          "file": "apps/app/src/pages/billing/Invoices.vue",
+          "hash": "13778420201084263658",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui",
+            "npm:vue-i18n"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/billing/MembeshipTier.vue",
+          "hash": "6117490595093047766",
+          "deps": [
+            "npm:vuestic-ui",
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/billing/PaymentInfo.vue",
+          "hash": "17032403130023433759",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/billing/modals/ChangeYourPaymentPlan.vue",
+          "hash": "3103642244621629441",
+          "deps": [
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/billing/types.ts",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "apps/app/src/pages/faq/FaqPage.vue",
+          "hash": "287254605054019882"
+        },
+        {
+          "file": "apps/app/src/pages/faq/data/navigationLinks.json",
+          "hash": "44288268962983061"
+        },
+        {
+          "file": "apps/app/src/pages/faq/data/popularCategories.json",
+          "hash": "14353665284094495726"
+        },
+        {
+          "file": "apps/app/src/pages/faq/request-demo.svg",
+          "hash": "543553061923308970"
+        },
+        {
+          "file": "apps/app/src/pages/faq/widgets/Categories.vue",
+          "hash": "6975895860449146349",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/faq/widgets/Navigation.vue",
+          "hash": "11813240148592943843",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/faq/widgets/Questions.vue",
+          "hash": "6773681839874633904",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/faq/widgets/RequestDemo.vue",
+          "hash": "16294446409264763929",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/payments/PaymentsPage.vue",
+          "hash": "4471621545232612051"
+        },
+        {
+          "file": "apps/app/src/pages/payments/payment-system/PaymentSystem.stories.ts",
+          "hash": "11949396722871401668"
+        },
+        {
+          "file": "apps/app/src/pages/payments/payment-system/PaymentSystem.vue",
+          "hash": "9669324400532237823"
+        },
+        {
+          "file": "apps/app/src/pages/payments/payment-system/mastercard.png",
+          "hash": "17663705259262056101"
+        },
+        {
+          "file": "apps/app/src/pages/payments/payment-system/visa.png",
+          "hash": "16231563767130505253"
+        },
+        {
+          "file": "apps/app/src/pages/payments/types.ts",
+          "hash": "3292518387691670381"
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/billing-address/BillingAddressCreateModal.stories.ts",
+          "hash": "1453619676386563711"
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/billing-address/BillingAddressCreateModal.vue",
+          "hash": "14835090953038567775",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/billing-address/BillingAddressEdit.stories.ts",
+          "hash": "9898002959976131690"
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/billing-address/BillingAddressEdit.vue",
+          "hash": "11115033387431450651",
+          "deps": [
+            "npm:vuestic-ui",
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/billing-address/BillingAddressList.stories.ts",
+          "hash": "7220659180228381434"
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/billing-address/BillingAddressList.vue",
+          "hash": "9557422553141859459",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/billing-address/BillingAddressListItem.stories.ts",
+          "hash": "10685004581634714853"
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/billing-address/BillingAddressListItem.vue",
+          "hash": "11131259048456544215",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/billing-address/BillingAddressUpdateModal.stories.ts",
+          "hash": "5607150116480956807"
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/billing-address/BillingAddressUpdateModal.vue",
+          "hash": "11620556435616348637",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/my-cards/PaymentCardCreateModal.stories.ts",
+          "hash": "6629013077927077461"
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/my-cards/PaymentCardCreateModal.vue",
+          "hash": "12076876289584663961",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/my-cards/PaymentCardEdit.stories.ts",
+          "hash": "5305340423768107356"
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/my-cards/PaymentCardEdit.vue",
+          "hash": "15674082861565393909",
+          "deps": [
+            "npm:vuestic-ui",
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/my-cards/PaymentCardList.stories.ts",
+          "hash": "7667945250019826682"
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/my-cards/PaymentCardList.vue",
+          "hash": "12316037324120416611",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/my-cards/PaymentCardListItem.stories.ts",
+          "hash": "13676535917716394547"
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/my-cards/PaymentCardListItem.vue",
+          "hash": "10697835527055291375",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/my-cards/PaymentCardUpdateModal.stories.ts",
+          "hash": "13649397450282452514"
+        },
+        {
+          "file": "apps/app/src/pages/payments/widgets/my-cards/PaymentCardUpdateModal.vue",
+          "hash": "16851861166345598915",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/preferences/Preferences.vue",
+          "hash": "10858584948645313496",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/preferences/modals/EditNameModal.vue",
+          "hash": "17723663410926875740",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/preferences/modals/ResetPasswordModal.vue",
+          "hash": "7086677128315805060",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/preferences/preferences-header/PreferencesHeader.vue",
+          "hash": "15146225215675799957"
+        },
+        {
+          "file": "apps/app/src/pages/preferences/settings/Settings.vue",
+          "hash": "12376295592705056988",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/preferences/styles.ts",
+          "hash": "8358020219953361421"
+        },
+        {
+          "file": "apps/app/src/pages/pricing-plans/PricingPlans.vue",
+          "hash": "3516925026791357320",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/pricing-plans/options.ts",
+          "hash": "3464103165872488619"
+        },
+        {
+          "file": "apps/app/src/pages/pricing-plans/styles.ts",
+          "hash": "12958040290971988112"
+        },
+        {
+          "file": "apps/app/src/pages/projects/ProjectsPage.vue",
+          "hash": "15882566533870257194",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/projects/components/ProjectStatusBadge.vue",
+          "hash": "8298339682047896199",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/projects/composables/useProjectStatusColor.ts",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "apps/app/src/pages/projects/composables/useProjects.ts",
+          "hash": "17993858012596037463",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/projects/types.ts",
+          "hash": "11461599466886757215"
+        },
+        {
+          "file": "apps/app/src/pages/projects/widgets/EditProjectForm.vue",
+          "hash": "1695573766244175031",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/projects/widgets/ProjectCards.vue",
+          "hash": "17870346927174393500",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/projects/widgets/ProjectsTable.vue",
+          "hash": "10163660982539346783",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/settings/Settings.vue",
+          "hash": "13084471843550801250"
+        },
+        {
+          "file": "apps/app/src/pages/settings/language-switcher/LanguageSwitcher.vue",
+          "hash": "5830865171148822804",
+          "deps": [
+            "npm:vue",
+            "npm:vue-i18n"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/settings/notifications/Notifications.vue",
+          "hash": "6885810007991043926"
+        },
+        {
+          "file": "apps/app/src/pages/settings/theme-switcher/ThemeSwitcher.vue",
+          "hash": "11475173955144544993",
+          "deps": [
+            "npm:vue",
+            "npm:vue-i18n",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/users/UsersPage.vue",
+          "hash": "10586160515028684540",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/users/composables/useUsers.ts",
+          "hash": "7139371143260579004",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/users/types.ts",
+          "hash": "10302816913816358246"
+        },
+        {
+          "file": "apps/app/src/pages/users/widgets/EditUserForm.vue",
+          "hash": "14572217955789784939",
+          "deps": [
+            "npm:vue",
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/users/widgets/UserAvatar.vue",
+          "hash": "17028582515680141092",
+          "deps": [
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/pages/users/widgets/UsersTable.vue",
+          "hash": "18155793919590354952",
+          "deps": [
+            "npm:vuestic-ui",
+            "npm:vue"
+          ]
+        },
+        {
+          "file": "apps/app/src/router/index.ts",
+          "hash": "2717892636995731181",
+          "deps": [
+            "npm:vue-router"
+          ]
+        },
+        {
+          "file": "apps/app/src/scss/icon-fonts/index.scss",
+          "hash": "6995817845954500800"
+        },
+        {
+          "file": "apps/app/src/scss/icon-fonts/vuestic-icons/vuestic-icons.eot",
+          "hash": "9921210960768073494"
+        },
+        {
+          "file": "apps/app/src/scss/icon-fonts/vuestic-icons/vuestic-icons.scss",
+          "hash": "2125672112496891630"
+        },
+        {
+          "file": "apps/app/src/scss/icon-fonts/vuestic-icons/vuestic-icons.svg",
+          "hash": "15024426352320563495"
+        },
+        {
+          "file": "apps/app/src/scss/icon-fonts/vuestic-icons/vuestic-icons.ttf",
+          "hash": "16156767367575248272"
+        },
+        {
+          "file": "apps/app/src/scss/icon-fonts/vuestic-icons/vuestic-icons.woff",
+          "hash": "1614914052412310969"
+        },
+        {
+          "file": "apps/app/src/scss/main.scss",
+          "hash": "9119315893290387386"
+        },
+        {
+          "file": "apps/app/src/scss/vuestic-sass/index.scss",
+          "hash": "17286975539012093119"
+        },
+        {
+          "file": "apps/app/src/services/toCSV.ts",
+          "hash": "9198430971328273681"
+        },
+        {
+          "file": "apps/app/src/services/utils.ts",
+          "hash": "15519704992232734834"
+        },
+        {
+          "file": "apps/app/src/services/vuestic-ui/global-config.ts",
+          "hash": "17898802705850420425",
+          "deps": [
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/services/vuestic-ui/icons-config/aliases.ts",
+          "hash": "3110553903802483751"
+        },
+        {
+          "file": "apps/app/src/services/vuestic-ui/icons-config/icons-config.ts",
+          "hash": "12631753160307767366",
+          "deps": [
+            "npm:vuestic-ui"
+          ]
+        },
+        {
+          "file": "apps/app/src/services/vuestic-ui/themes.ts",
+          "hash": "5503362750239925123"
+        },
+        {
+          "file": "apps/app/src/stores/billing-addresses.ts",
+          "hash": "13071319524851327571",
+          "deps": [
+            "npm:pinia"
+          ]
+        },
+        {
+          "file": "apps/app/src/stores/global-store.ts",
+          "hash": "18224633454313355130",
+          "deps": [
+            "npm:pinia"
+          ]
+        },
+        {
+          "file": "apps/app/src/stores/index.ts",
+          "hash": "3389917530745517450",
+          "deps": [
+            "npm:pinia"
+          ]
+        },
+        {
+          "file": "apps/app/src/stores/notifications.ts",
+          "hash": "1873590995469053365",
+          "deps": [
+            "npm:pinia"
+          ]
+        },
+        {
+          "file": "apps/app/src/stores/payment-cards.ts",
+          "hash": "2262467901472595215",
+          "deps": [
+            "npm:pinia"
+          ]
+        },
+        {
+          "file": "apps/app/src/stores/user-store.ts",
+          "hash": "15255486436570046278",
+          "deps": [
+            "npm:pinia"
+          ]
+        },
+        {
+          "file": "apps/app/src/styles.scss",
+          "hash": "97131783897646283"
+        },
+        {
+          "file": "apps/app/tailwind.config.js",
+          "hash": "8603563381652699434"
+        },
+        {
+          "file": "apps/app/tsconfig.app.json",
+          "hash": "12501919227679338749"
+        },
+        {
+          "file": "apps/app/tsconfig.json",
+          "hash": "10843386858364267595"
+        },
+        {
+          "file": "apps/app/tsconfig.spec.json",
+          "hash": "15943385144407153049"
+        },
+        {
+          "file": "apps/app/vite.config.ts",
+          "hash": "6388705320923811430",
+          "deps": [
+            "npm:vite",
+            "npm:@vitejs/plugin-vue",
+            "npm:@nx/vite"
+          ]
+        }
+      ],
+      "app-e2e": [
+        {
+          "file": "apps/app-e2e/.eslintrc.json",
+          "hash": "12390454705546139987"
+        },
+        {
+          "file": "apps/app-e2e/cypress.config.ts",
+          "hash": "5647144546356622609",
+          "deps": [
+            "npm:@nx/cypress",
+            "npm:cypress"
+          ]
+        },
+        {
+          "file": "apps/app-e2e/project.json",
+          "hash": "12408727333375921155"
+        },
+        {
+          "file": "apps/app-e2e/src/e2e/app.cy.ts",
+          "hash": "10381000721242105215"
+        },
+        {
+          "file": "apps/app-e2e/src/fixtures/example.json",
+          "hash": "11785586596216172004"
+        },
+        {
+          "file": "apps/app-e2e/src/support/app.po.ts",
+          "hash": "11157016311132186162"
+        },
+        {
+          "file": "apps/app-e2e/src/support/commands.ts",
+          "hash": "5397443931564808659"
+        },
+        {
+          "file": "apps/app-e2e/src/support/e2e.ts",
+          "hash": "1054106023200826784"
+        },
+        {
+          "file": "apps/app-e2e/tsconfig.json",
+          "hash": "10740392072068377465"
+        }
+      ],
+      "@owl-app/request-context-nestjs": [
+        {
+          "file": "packages/server/http/request-context-nestjs/.eslintrc.json",
+          "hash": "11056782139993298370"
+        },
+        {
+          "file": "packages/server/http/request-context-nestjs/README.md",
+          "hash": "14775022887121394775"
+        },
+        {
+          "file": "packages/server/http/request-context-nestjs/jest.config.ts",
+          "hash": "16570446344683420882"
+        },
+        {
+          "file": "packages/server/http/request-context-nestjs/package.json",
+          "hash": "6201397549387074384",
+          "deps": [
+            "tsconfig",
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "packages/server/http/request-context-nestjs/project.json",
+          "hash": "4477692709719801038"
+        },
+        {
+          "file": "packages/server/http/request-context-nestjs/src/index.ts",
+          "hash": "18173697863139907766"
+        },
+        {
+          "file": "packages/server/http/request-context-nestjs/src/request-context.middleware.ts",
+          "hash": "17182380323587594602",
+          "deps": [
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "packages/server/http/request-context-nestjs/src/request-context.model.ts",
+          "hash": "17719698259028017838"
+        },
+        {
+          "file": "packages/server/http/request-context-nestjs/src/request-context.module.ts",
+          "hash": "2549023395758522496",
+          "deps": [
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "packages/server/http/request-context-nestjs/tsconfig.build.json",
+          "hash": "10025342396868717345"
+        },
+        {
+          "file": "packages/server/http/request-context-nestjs/tsconfig.eslint.json",
+          "hash": "15196146931688462923"
+        },
+        {
+          "file": "packages/server/http/request-context-nestjs/tsconfig.json",
+          "hash": "13030685839065866577"
+        },
+        {
+          "file": "packages/server/http/request-context-nestjs/tsconfig.spec.json",
+          "hash": "12676338339107966475"
+        }
+      ],
       "@owl-app/lib-contracts": [
         {
           "file": "libs/contracts/.eslintrc.json",
@@ -3601,22 +3766,967 @@
           "hash": "11550347367511341917"
         }
       ],
-      "eslint-config-custom": [
+      "@owl-app/lib-api-module-rbac": [
         {
-          "file": "packages/common/config/eslint-config-custom/base.json",
-          "hash": "14561093527936143769"
+          "file": "libs/api/modules/rbac/.eslintrc.json",
+          "hash": "4486578587756280717"
         },
         {
-          "file": "packages/common/config/eslint-config-custom/front.json",
+          "file": "libs/api/modules/rbac/README.md",
+          "hash": "280488757454237822"
+        },
+        {
+          "file": "libs/api/modules/rbac/jest.config.ts",
+          "hash": "14112305302065851486"
+        },
+        {
+          "file": "libs/api/modules/rbac/package.json",
+          "hash": "1567126351184703995",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:eslint",
+            "npm:eslint-plugin-import",
+            "npm:jest",
+            "npm:jest-environment-node",
+            "npm:prettier",
+            "npm:ts-jest",
+            "npm:ts-node",
+            "npm:typescript"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/project.json",
+          "hash": "11162421529845537107"
+        },
+        {
+          "file": "libs/api/modules/rbac/src/common/dto/base/base-item.request.dto.ts",
+          "hash": "7565978242404160076",
+          "deps": [
+            "npm:@nestjs/swagger",
+            "npm:class-validator",
+            "npm:class-transformer"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/common/dto/base/base-item.response.dto.ts",
+          "hash": "7017737120603246517",
+          "deps": [
+            "npm:@nestjs/swagger",
+            "npm:class-validator",
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/common/mapping.ts",
+          "hash": "9605748547276020792",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:moment",
+            "@owl-app/rbac-manager",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/permission/dto/create-permission.request.dto.ts",
+          "hash": "17042709094124895549",
+          "deps": [
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/permission/dto/permission.response.dto.ts",
+          "hash": "5386483927484855166",
+          "deps": [
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/permission/dto/update-permission.request.dto.ts",
+          "hash": "341438188434353027",
+          "deps": [
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/permission/features/v1/crud/crud.http.controller.ts",
+          "hash": "5766553023970143518",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/swagger",
+            "@owl-app/rbac-manager",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/permission/features/v1/crud/validation.ts",
+          "hash": "9147811421835097118",
+          "deps": [
+            "npm:joi"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/permission/mapping.ts",
+          "hash": "18260437093126761936",
+          "deps": [
+            "@owl-app/rbac-manager"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/permission/permission.module.ts",
+          "hash": "8791631857451579151",
+          "deps": [
+            "npm:@nestjs/common",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/rbac.module.ts",
+          "hash": "12935070234383403139",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/config",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/role/dto/create-role.request.dto.ts",
+          "hash": "6204986224954853618",
+          "deps": [
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/role/dto/role.response.dto.ts",
+          "hash": "6862215415744489409",
+          "deps": [
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/role/dto/update-role.request.dto.ts",
+          "hash": "6599194109550430672",
+          "deps": [
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/role/features/v1/assign/assign.http.controller.ts",
+          "hash": "1952277717072608785",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/swagger",
+            "@owl-app/rbac-manager"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/role/features/v1/crud/crud.http.controller.ts",
+          "hash": "2341390772298099703",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/swagger",
+            "@owl-app/rbac-manager"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/role/features/v1/revoke/revoke.http.controller.ts",
+          "hash": "3358690472220943218",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/swagger",
+            "@owl-app/rbac-manager"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/role/mapping.ts",
+          "hash": "15430780166639403831",
+          "deps": [
+            "@owl-app/rbac-manager"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/src/role/role.module.ts",
+          "hash": "2840449332799881818",
+          "deps": [
+            "npm:@nestjs/common",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/rbac/tsconfig.build.json",
+          "hash": "10025342396868717345"
+        },
+        {
+          "file": "libs/api/modules/rbac/tsconfig.eslint.json",
+          "hash": "15196146931688462923"
+        },
+        {
+          "file": "libs/api/modules/rbac/tsconfig.json",
+          "hash": "13030685839065866577"
+        },
+        {
+          "file": "libs/api/modules/rbac/tsconfig.spec.json",
+          "hash": "12676338339107966475"
+        }
+      ],
+      "@owl-app/winston-logger-nestjs": [
+        {
+          "file": "packages/server/logger/winston-nestjs/.eslintrc.json",
+          "hash": "5432134649201576264"
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/README.md",
+          "hash": "1048929961018058943"
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/jest.config.ts",
+          "hash": "8164310436837426609"
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/package.json",
+          "hash": "13553848864216081221",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:winston",
+            "npm:@nestjs/core",
+            "npm:@nestjs/platform-express",
+            "npm:@nestjs/testing",
+            "npm:@types/jest",
+            "npm:@typescript-eslint/eslint-plugin",
+            "npm:@typescript-eslint/parser",
+            "npm:eslint",
+            "npm:jest",
+            "npm:reflect-metadata",
+            "npm:rimraf",
+            "npm:rxjs",
+            "npm:source-map-support",
+            "npm:ts-jest",
+            "npm:ts-node",
+            "npm:typescript",
+            "npm:fast-safe-stringify",
+            "npm:logform",
+            "npm:util"
+          ]
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/project.json",
+          "hash": "6264059515203746570"
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/src/constants.ts",
+          "hash": "12630920911042519968"
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/src/index.ts",
+          "hash": "14642484412230461755"
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/src/interfaces.ts",
+          "hash": "14962955970960821825",
+          "deps": [
+            "npm:winston",
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/src/logger.ts",
+          "hash": "15978794383282769751",
+          "deps": [
+            "npm:winston",
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/src/utilities.ts",
+          "hash": "12349934731141328843",
+          "deps": [
+            "npm:logform",
+            "npm:winston",
+            "npm:fast-safe-stringify"
+          ]
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/src/winston-logger.module.ts",
+          "hash": "7261847708613618868",
+          "deps": [
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/src/winston-logger.providers.ts",
+          "hash": "5431760491822727297",
+          "deps": [
+            "npm:winston",
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/tsconfig.build.json",
+          "hash": "10025342396868717345"
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/tsconfig.eslint.json",
+          "hash": "15196146931688462923"
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/tsconfig.json",
+          "hash": "13030685839065866577"
+        },
+        {
+          "file": "packages/server/logger/winston-nestjs/tsconfig.spec.json",
+          "hash": "12676338339107966475"
+        }
+      ],
+      "@owl-app/lib-app-module-auth": [
+        {
+          "file": "libs/app/modules/auth/.eslintrc.json",
+          "hash": "16392146017564331604"
+        },
+        {
+          "file": "libs/app/modules/auth/README.md",
+          "hash": "10530921872567333450"
+        },
+        {
+          "file": "libs/app/modules/auth/package.json",
+          "hash": "11007689519248170112"
+        },
+        {
+          "file": "libs/app/modules/auth/project.json",
+          "hash": "10227668707368077072"
+        },
+        {
+          "file": "libs/app/modules/auth/src/index.ts",
           "hash": "3244421341483603138"
         },
         {
-          "file": "packages/common/config/eslint-config-custom/package.json",
-          "hash": "299925222110801236"
+          "file": "libs/app/modules/auth/src/vue-shims.d.ts",
+          "hash": "1350740973621485859",
+          "deps": [
+            "npm:vue"
+          ]
         },
         {
-          "file": "packages/common/config/eslint-config-custom/server.json",
-          "hash": "13320669691793355326"
+          "file": "libs/app/modules/auth/tsconfig.json",
+          "hash": "7916853921945324904"
+        },
+        {
+          "file": "libs/app/modules/auth/tsconfig.lib.json",
+          "hash": "14629489747122508846"
+        },
+        {
+          "file": "libs/app/modules/auth/tsconfig.spec.json",
+          "hash": "14619030086705980422"
+        },
+        {
+          "file": "libs/app/modules/auth/vite.config.ts",
+          "hash": "9166310520316036339",
+          "deps": [
+            "npm:vite",
+            "npm:@vitejs/plugin-vue",
+            "npm:vite-plugin-dts",
+            "npm:@nx/vite"
+          ]
+        }
+      ],
+      "@owl-app/registry": [
+        {
+          "file": "packages/common/registry/.eslintrc.json",
+          "hash": "8872291363485620765"
+        },
+        {
+          "file": "packages/common/registry/README.md",
+          "hash": "4044370980334221932"
+        },
+        {
+          "file": "packages/common/registry/jest.config.ts",
+          "hash": "3693282161765748019"
+        },
+        {
+          "file": "packages/common/registry/package.json",
+          "hash": "17902228395365086364",
+          "deps": [
+            "tsconfig"
+          ]
+        },
+        {
+          "file": "packages/common/registry/project.json",
+          "hash": "13075155548568370458"
+        },
+        {
+          "file": "packages/common/registry/src/exception/existing.service.exception.ts",
+          "hash": "16133248410533134480"
+        },
+        {
+          "file": "packages/common/registry/src/exception/non-existing.service.exception.ts",
+          "hash": "17889394316823547001"
+        },
+        {
+          "file": "packages/common/registry/src/index.ts",
+          "hash": "10591029301182472649"
+        },
+        {
+          "file": "packages/common/registry/src/service.registry.ts",
+          "hash": "9836601839202272708"
+        },
+        {
+          "file": "packages/common/registry/src/types.ts",
+          "hash": "2399730524262365408"
+        },
+        {
+          "file": "packages/common/registry/tsconfig.build.json",
+          "hash": "6744454704368603071"
+        },
+        {
+          "file": "packages/common/registry/tsconfig.eslint.json",
+          "hash": "15196146931688462923"
+        },
+        {
+          "file": "packages/common/registry/tsconfig.json",
+          "hash": "4892539202843831180"
+        },
+        {
+          "file": "packages/common/registry/tsconfig.spec.json",
+          "hash": "9110660443763673899"
+        }
+      ],
+      "api-e2e": [
+        {
+          "file": "apps/api-e2e/.eslintrc.json",
+          "hash": "942885824144343268"
+        },
+        {
+          "file": "apps/api-e2e/jest.config.ts",
+          "hash": "5451374175158945661"
+        },
+        {
+          "file": "apps/api-e2e/project.json",
+          "hash": "8268224624778693884"
+        },
+        {
+          "file": "apps/api-e2e/src/api/api.spec.ts",
+          "hash": "110394728024017389",
+          "deps": [
+            "npm:axios"
+          ]
+        },
+        {
+          "file": "apps/api-e2e/src/support/global-setup.ts",
+          "hash": "2568409276037275290"
+        },
+        {
+          "file": "apps/api-e2e/src/support/global-teardown.ts",
+          "hash": "5275447082211835490"
+        },
+        {
+          "file": "apps/api-e2e/src/support/test-setup.ts",
+          "hash": "10984585515912236441",
+          "deps": [
+            "npm:axios"
+          ]
+        },
+        {
+          "file": "apps/api-e2e/tsconfig.json",
+          "hash": "15443990093475294480"
+        },
+        {
+          "file": "apps/api-e2e/tsconfig.spec.json",
+          "hash": "14954872453723519891"
+        }
+      ],
+      "@owl-app/lib-api-module-client": [
+        {
+          "file": "libs/api/modules/client/.eslintrc.json",
+          "hash": "10305500608070025002"
+        },
+        {
+          "file": "libs/api/modules/client/README.md",
+          "hash": "14635170774560501767"
+        },
+        {
+          "file": "libs/api/modules/client/jest.config.ts",
+          "hash": "13923804909963199374"
+        },
+        {
+          "file": "libs/api/modules/client/package.json",
+          "hash": "1952493601603287156",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:eslint",
+            "npm:eslint-plugin-import",
+            "npm:jest",
+            "npm:jest-environment-node",
+            "npm:prettier",
+            "npm:ts-jest",
+            "npm:ts-node",
+            "npm:typescript",
+            "npm:@nestjs/swagger"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/project.json",
+          "hash": "4281188007776076194"
+        },
+        {
+          "file": "libs/api/modules/client/src/client.module.ts",
+          "hash": "13841674113100389359",
+          "deps": [
+            "npm:@nestjs/common",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/client/dto/client.response.ts",
+          "hash": "123881253916728376",
+          "deps": [
+            "npm:@nestjs/swagger",
+            "npm:class-transformer",
+            "npm:class-validator",
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/client/dto/relation-user.response.ts",
+          "hash": "18174413598310799304",
+          "deps": [
+            "npm:@nestjs/swagger",
+            "npm:class-transformer",
+            "npm:class-validator",
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/client/features/v1/crud/client.assembler.ts",
+          "hash": "8512103821792744444",
+          "deps": [
+            "@owl-app/lib-contracts",
+            "@owl-app/crud-core"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/client/features/v1/crud/crud.http.controller.ts",
+          "hash": "7225356604984905073",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/swagger",
+            "@owl-app/lib-api-building-blocks",
+            "@owl-app/crud-core"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/client/features/v1/crud/dto/client.paginated.response.dto.ts",
+          "hash": "4603162884494897604",
+          "deps": [
+            "npm:@nestjs/swagger",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/client/features/v1/crud/dto/create-client.request.ts",
+          "hash": "1165645495687429256",
+          "deps": [
+            "npm:@nestjs/swagger"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/client/features/v1/crud/dto/filter-client.dto.ts",
+          "hash": "15625168464040918318",
+          "deps": [
+            "npm:@nestjs/swagger",
+            "npm:class-validator",
+            "npm:class-transformer"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/client/features/v1/crud/dto/index.ts",
+          "hash": "175831411514600127"
+        },
+        {
+          "file": "libs/api/modules/client/src/client/features/v1/crud/dto/update-client.dto.ts",
+          "hash": "13233082969607944915",
+          "deps": [
+            "npm:@nestjs/swagger"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/client/features/v1/crud/dto/user.request.ts",
+          "hash": "8564306292484695759",
+          "deps": [
+            "npm:@nestjs/swagger",
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/client/features/v1/crud/list-filter.builder.ts",
+          "hash": "3961165157057632342",
+          "deps": [
+            "@owl-app/lib-contracts",
+            "@owl-app/lib-api-building-blocks",
+            "@owl-app/crud-core",
+            "@owl-app/utils"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/client/features/v1/crud/validation.ts",
+          "hash": "15707482560218512196",
+          "deps": [
+            "npm:joi"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/client/mapping.ts",
+          "hash": "14952211883178882678",
+          "deps": [
+            "npm:ts-mapper"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/database/entity-schema/client.entity-schema.ts",
+          "hash": "17989309801306680403",
+          "deps": [
+            "npm:typeorm",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/src/domain/entity/client.entity.ts",
+          "hash": "15577693036884170161",
+          "deps": [
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/client/tsconfig.build.json",
+          "hash": "10025342396868717345"
+        },
+        {
+          "file": "libs/api/modules/client/tsconfig.eslint.json",
+          "hash": "15196146931688462923"
+        },
+        {
+          "file": "libs/api/modules/client/tsconfig.json",
+          "hash": "13030685839065866577"
+        },
+        {
+          "file": "libs/api/modules/client/tsconfig.spec.json",
+          "hash": "7790607875696834052"
+        }
+      ],
+      "tsconfig": [
+        {
+          "file": "packages/common/config/tsconfig/front.json",
+          "hash": "3087963990809624833"
+        },
+        {
+          "file": "packages/common/config/tsconfig/package.json",
+          "hash": "6353504725875432030",
+          "deps": [
+            "npm:@tsconfig/node18"
+          ]
+        },
+        {
+          "file": "packages/common/config/tsconfig/server.json",
+          "hash": "8223390013009977724"
+        }
+      ],
+      "@owl-app/rbac-manager": [
+        {
+          "file": "packages/server/rbac/manager/.eslintrc.json",
+          "hash": "6882485833346702900"
+        },
+        {
+          "file": "packages/server/rbac/manager/README.md",
+          "hash": "8846848538542108216"
+        },
+        {
+          "file": "packages/server/rbac/manager/jest.config.ts",
+          "hash": "4964387704955019526"
+        },
+        {
+          "file": "packages/server/rbac/manager/package.json",
+          "hash": "15292312485356785927",
+          "deps": [
+            "tsconfig",
+            "@owl-app/registry"
+          ]
+        },
+        {
+          "file": "packages/server/rbac/manager/project.json",
+          "hash": "4926567653912812175"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/access-checker.interface.ts",
+          "hash": "8909918555155308910"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/exceptions/base.exception.ts",
+          "hash": "12936480112453716188",
+          "deps": [
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "packages/server/rbac/manager/src/exceptions/default-role-not-found.exception.ts",
+          "hash": "13215169955279498721"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/exceptions/index.ts",
+          "hash": "12336871034675333841"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/exceptions/invalid-argument.exception.ts",
+          "hash": "1238158693785905058"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/exceptions/item-alredy-exists.exception.ts",
+          "hash": "6148292534475881124"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/exceptions/runtime.exception.ts",
+          "hash": "11034265829173672657"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/index.ts",
+          "hash": "15453342439348658657"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/rbac.manager.ts",
+          "hash": "2707296515829906078",
+          "deps": [
+            "@owl-app/registry",
+            "@owl-app/utils"
+          ]
+        },
+        {
+          "file": "packages/server/rbac/manager/src/storage/assigments-storage.interface.ts",
+          "hash": "11555516339708926443"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/storage/index.ts",
+          "hash": "1719713829154820748"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/storage/item-storage.interface.ts",
+          "hash": "15810480433619834572"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/types/assignment.ts",
+          "hash": "8823300677089097968"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/types/base.item.ts",
+          "hash": "10783751605085624587"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/types/helper.types.ts",
+          "hash": "17539434658422837145"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/types/index.ts",
+          "hash": "5419508254838690675"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/types/permission.ts",
+          "hash": "4484051893843988349"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/types/role.ts",
+          "hash": "15387629815150241991"
+        },
+        {
+          "file": "packages/server/rbac/manager/src/types/rule.interface.ts",
+          "hash": "4281733925467525198"
+        },
+        {
+          "file": "packages/server/rbac/manager/tsconfig.build.json",
+          "hash": "17681090815214374294"
+        },
+        {
+          "file": "packages/server/rbac/manager/tsconfig.eslint.json",
+          "hash": "15196146931688462923"
+        },
+        {
+          "file": "packages/server/rbac/manager/tsconfig.json",
+          "hash": "13030685839065866577"
+        },
+        {
+          "file": "packages/server/rbac/manager/tsconfig.spec.json",
+          "hash": "12676338339107966475"
+        }
+      ],
+      "@owl-app/lib-api-module-company": [
+        {
+          "file": "libs/api/modules/company/.eslintrc.json",
+          "hash": "10711720245846001503"
+        },
+        {
+          "file": "libs/api/modules/company/README.md",
+          "hash": "1467085406167489337"
+        },
+        {
+          "file": "libs/api/modules/company/jest.config.ts",
+          "hash": "13893019032677482148"
+        },
+        {
+          "file": "libs/api/modules/company/package.json",
+          "hash": "97164894519969415",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:eslint",
+            "npm:eslint-plugin-import",
+            "npm:jest",
+            "npm:jest-environment-node",
+            "npm:prettier",
+            "npm:ts-jest",
+            "npm:ts-node",
+            "npm:typescript"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/project.json",
+          "hash": "439213434920251794"
+        },
+        {
+          "file": "libs/api/modules/company/src/company.module.ts",
+          "hash": "10910314214853005081",
+          "deps": [
+            "npm:@nestjs/common",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/company/dto/company.response.ts",
+          "hash": "15755769084923653838",
+          "deps": [
+            "npm:@nestjs/swagger",
+            "npm:class-transformer",
+            "npm:class-validator",
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/company/dto/relation-user.response.ts",
+          "hash": "14429824075142576444",
+          "deps": [
+            "npm:@nestjs/swagger",
+            "npm:class-transformer",
+            "npm:class-validator",
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/company/features/v1/crud/company.assembler.ts",
+          "hash": "8484377620031129698",
+          "deps": [
+            "@owl-app/crud-core"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/company/features/v1/crud/crud.http.controller.ts",
+          "hash": "7517519548137082781",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/swagger",
+            "@owl-app/crud-core",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/company/features/v1/crud/dto/company.paginated.response.dto.ts",
+          "hash": "621541061712382918",
+          "deps": [
+            "npm:@nestjs/swagger",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/company/features/v1/crud/dto/create-company.request.ts",
+          "hash": "11485576389346008840",
+          "deps": [
+            "npm:@nestjs/swagger"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/company/features/v1/crud/dto/filter-companies.dto.ts",
+          "hash": "377095318395543319",
+          "deps": [
+            "npm:@nestjs/swagger",
+            "npm:class-validator",
+            "npm:class-transformer"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/company/features/v1/crud/dto/index.ts",
+          "hash": "14601994579150254344"
+        },
+        {
+          "file": "libs/api/modules/company/src/company/features/v1/crud/dto/update-company.dto.ts",
+          "hash": "9892603476026576614",
+          "deps": [
+            "npm:@nestjs/swagger"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/company/features/v1/crud/dto/user.request.ts",
+          "hash": "8564306292484695759",
+          "deps": [
+            "npm:@nestjs/swagger",
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/company/features/v1/crud/list-filter.builder.ts",
+          "hash": "516886830755732722",
+          "deps": [
+            "@owl-app/lib-contracts",
+            "@owl-app/crud-core",
+            "@owl-app/utils",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/company/features/v1/crud/validation.ts",
+          "hash": "73724445453208501",
+          "deps": [
+            "npm:joi"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/company/mapping.ts",
+          "hash": "13643350764137251371",
+          "deps": [
+            "npm:ts-mapper",
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/database/entity-schema/company.entity-schema.ts",
+          "hash": "15439243258525636786",
+          "deps": [
+            "npm:typeorm",
+            "@owl-app/lib-api-building-blocks"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/src/domain/entity/company.entity.ts",
+          "hash": "12119834692583471109",
+          "deps": [
+            "@owl-app/lib-contracts"
+          ]
+        },
+        {
+          "file": "libs/api/modules/company/tsconfig.build.json",
+          "hash": "10025342396868717345"
+        },
+        {
+          "file": "libs/api/modules/company/tsconfig.eslint.json",
+          "hash": "15196146931688462923"
+        },
+        {
+          "file": "libs/api/modules/company/tsconfig.json",
+          "hash": "13030685839065866577"
+        },
+        {
+          "file": "libs/api/modules/company/tsconfig.spec.json",
+          "hash": "12676338339107966475"
         }
       ]
     }

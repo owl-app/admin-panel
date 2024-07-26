@@ -21,6 +21,8 @@
       "@owl-app/lib-api-module-user-access/*": [
         "libs/api/modules/user-access/src/*"
       ],
+      "@owl-app/lib-app-core": ["libs/app/core/src/index.ts"],
+      "@owl-app/lib-app-module-auth": ["libs/app/modules/auth/src/index.ts"],
       "@owl-app/lib-contracts": ["libs/contracts/src/index.ts"],
       "@owl-app/rbac-manager": ["packages/server/rbac/manager/src/index.ts"],
       "@owl-app/rbac-storage-typerom": [
