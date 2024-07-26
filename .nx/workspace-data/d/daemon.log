@@ -39937,3 +39937,8 @@ Error: LOCK_FILES_CHANGED
 [NX Daemon Server] - 2024-07-26T14:32:18.314Z - Time taken for 'build-project-configs' 61.75002899998799ms
 [NX Daemon Server] - 2024-07-26T14:32:18.320Z - Time taken for '@nx/vite/plugin:createDependencies' 8.273303000023589ms
 [NX Daemon Server] - 2024-07-26T14:32:18.344Z - Time taken for 'total execution time for createProjectGraph()' 28.5846550000133ms
+[NX Daemon Server] - 2024-07-26T14:35:33.623Z - [WATCHER]: Processing file changes in outputs
+[NX Daemon Server] - 2024-07-26T14:35:33.624Z - [WATCHER]: .gitignore was modified
+[NX Daemon Server] - 2024-07-26T14:35:33.625Z - [WATCHER]: Stopping the watcher for /var/www/html/admin-panel (sources)
+[NX Daemon Server] - 2024-07-26T14:35:33.625Z - [WATCHER]: Stopping the watcher for /var/www/html/admin-panel (outputs)
+[NX Daemon Server] - 2024-07-26T14:35:33.625Z - Server stopped because: "Stopping the daemon the set of ignored files changed (native)"
