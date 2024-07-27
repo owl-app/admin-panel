@@ -49,6 +49,7 @@ import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
 import { validators } from '../../services/utils'
+import { useApplicationConfig } from '@owl-app/lib-app-core/application/config';
 
 const { validate } = useForm('form')
 const { push } = useRouter()
@@ -59,6 +60,8 @@ const formData = reactive({
   password: '',
   keepLoggedIn: false,
 })
+
+console.log(useApplicationConfig()) 
 
 const submit = () => {
   if (validate()) {

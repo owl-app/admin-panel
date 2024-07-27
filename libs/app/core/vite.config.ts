@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue';
 import dts from 'vite-plugin-dts';
 import * as path from 'path';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import ViteYaml from '@modyfi/vite-plugin-yaml';
 
 export default defineConfig({
   root: __dirname,
@@ -12,10 +13,12 @@ export default defineConfig({
   plugins: [
     vue(),
     nxViteTsPaths(),
+    ViteYaml(),
     dts({
       entryRoot: 'src',
       tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
     }),
+
   ],
 
   // Uncomment this if you are using workers.
