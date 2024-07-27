@@ -1,11 +1,11 @@
 {
   "$schema": "http://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "ES2022",
+    "module": "ES2022",
     "moduleResolution": "Bundler",
     "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -15,6 +15,8 @@
     "resolveJsonModule": true,
     "noEmit": true,
     "noImplicitAny": true,
-    "jsx": "react-jsx"
+    "jsx": "preserve",
+    "verbatimModuleSyntax": true,
   }
 }
+

@@ -14,6 +14,7 @@ export interface User extends CompanyAware, Timestampable {
 	isActive?: boolean;
 	hashRefreshToken?: string;
 	lastLogin?: Date;
+	language?: string;
 }
 
 export interface IUserRegistrationInput {

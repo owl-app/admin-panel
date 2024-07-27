@@ -14,6 +14,7 @@ import TFASetup from '@/routes/tfa-setup.vue';
 // import { useAppStore } from '@directus/stores';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
 import { useApplicationConfig } from './config';
+import { useAppLifecycleRegistry } from './registry';
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
@@ -106,6 +107,10 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 	// const serverStore = useServerStore();
 	//const userStore = useUserStore();
   const appConfig = useApplicationConfig()
+  const appLifecycleRegistry = useAppLifecycleRegistry()
+
+  console.log('appLifecycleRegistry')
+  console.log(appLifecycleRegistry)
 
 	// First load
 	if (firstLoad) {
@@ -121,7 +126,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 
 	// if (serverStore.info.project === null) {
 		try {
-      await Promise.all(appConfig.onInitializeCallbacks.map((init) => init()));
+      await Promise.all(appLifecycleRegistry.initialize.map((initializeCallback) => initializeCallback()));
 		} catch (error: any) {
 			// appStore.error = error;
 		}

@@ -6,14 +6,17 @@ import { registerModules } from './registers/module';
 import { translate } from './lang/translate-object-values';
 import { registerComponents } from './registers/components';
 import { registerDirectives } from './registers/directives';
-import { createConfig, getCoreLayouts, getCoreModules } from './config';
+import { getCoreLayouts, getCoreModules } from './config';
 import { registerLayouts } from './registers/layouts';
 import { router } from './router';
+import { useAppRegistry, useAppLifecycleRegistry } from './registry';
 
 
 export default async function bootstrap(app: App) {
 	const layouts = getCoreLayouts();
 	const modules = getCoreModules();
+  const appRegistry = useAppRegistry();
+  const appLifecycleRegistry = useAppLifecycleRegistry()
 
 	registerDirectives(app);
 	registerComponents(app);
@@ -21,17 +24,15 @@ export default async function bootstrap(app: App) {
 
   const { registeredModules, onInitializeModules, onDestroyModules } = registerModules(modules);
 
-  const registereLayouts = registerLayouts(layouts, app);
+  appRegistry.set('layouts', registerLayouts(layouts, app));
+
+  appLifecycleRegistry.initialize.push(onInitializeModules)
+  appLifecycleRegistry.destroy.push('destroy', onDestroyModules)
 
   watch(
     [i18n.global.locale, registeredModules],
     () => {
-      createConfig(
-        translate(registeredModules.value),
-        registereLayouts,
-        onInitializeModules,
-        onDestroyModules
-      );
+      appRegistry.set('modules', translate(registeredModules.value))
     },
     { immediate: true }
   );
