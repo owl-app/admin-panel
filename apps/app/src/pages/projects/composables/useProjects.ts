@@ -1,13 +1,13 @@
-import { Ref, ref, unref } from 'vue'
+import { type Ref, ref, unref } from 'vue'
 import {
   getProjects,
   addProject,
   updateProject,
   removeProject,
-  Sorting,
-  Pagination,
+  type Sorting,
+  type Pagination,
 } from '../../../data/pages/projects'
-import { Project } from '../types'
+import type { Project } from '../types'
 import { watchIgnorable } from '@vueuse/core'
 
 const makePaginationRef = () => ref<Pagination>({ page: 1, perPage: 10, total: 0 })

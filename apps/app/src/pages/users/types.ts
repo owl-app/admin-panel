@@ -1,4 +1,4 @@
-import { Project } from '../projects/types'
+import type { Project } from '../projects/types'
 
 export type UserRole = 'admin' | 'user' | 'owner'
 

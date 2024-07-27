@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType } from 'vue'
-import { Project } from '../types'
+import type { PropType } from 'vue'
+import type { Project } from '../types'
 
 defineProps({
   status: {

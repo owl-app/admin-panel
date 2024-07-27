@@ -27,7 +27,7 @@ export default async function bootstrap(app: App) {
   appRegistry.set('layouts', registerLayouts(layouts, app));
 
   appLifecycleRegistry.initialize.push(onInitializeModules)
-  appLifecycleRegistry.destroy.push('destroy', onDestroyModules)
+  appLifecycleRegistry.destroy.push(onDestroyModules)
 
   watch(
     [i18n.global.locale, registeredModules],
@@ -37,6 +37,6 @@ export default async function bootstrap(app: App) {
     { immediate: true }
   );
 
-  	// Add router after loading of extensions to ensure all routes are registered
-	app.use(router);
+  	// Add router after loading application to ensure all routes are registered
+	app.use(router);7
 }

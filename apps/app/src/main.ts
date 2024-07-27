@@ -11,10 +11,6 @@ import bootstrap from '@owl-app/lib-app-core/application/bootstrap';
 initApp();
 
 async function initApp() {
-	console.info(
-		`Init application`,
-	);
-
 	console.info(`%c Starting...`, 'color:Green');
 
 	console.time('🕓 Application Loaded');

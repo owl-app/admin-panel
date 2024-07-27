@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType } from 'vue'
-import { User } from '../types'
+import type { PropType } from 'vue'
+import type { User } from '../types'
 
 const avatarColor = (userName: string) => {
   const colors = ['primary', '#FFD43A', '#ADFF00', '#262824', 'danger']

@@ -1,4 +1,4 @@
-import api, { RequestConfig } from '@/api';
+import api, { RequestConfig } from '../services/api';
 import { userName } from '../utils/user-name';
 import { User } from '@owl-app/lib-contracts';
 import { merge } from 'lodash';

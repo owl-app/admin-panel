@@ -5,7 +5,7 @@ import { useProjects } from './composables/useProjects'
 import ProjectCards from './widgets/ProjectCards.vue'
 import ProjectTable from './widgets/ProjectsTable.vue'
 import EditProjectForm from './widgets/EditProjectForm.vue'
-import { Project } from './types'
+import type { Project } from './types'
 import { useModal, useToast } from 'vuestic-ui'
 
 const doShowAsCards = useLocalStorage('projects-view', true)

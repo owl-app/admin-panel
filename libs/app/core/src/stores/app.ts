@@ -19,11 +19,11 @@ export const useAppStore = defineStore('appStore', () => {
 	/** Full screen hides the sidebars completely */
 	const fullScreen = ref(false);
 
-	/** Have all stores been hydrated. This indicates that the app is ready to be rendered */
-	const hydrated = ref(false);
+	/** Have all stores been initialized. This indicates that the app is ready to be rendered */
+	const initialized = ref(false);
 
-	/** Stores are currently being hydrated */
-	const hydrating = ref(false);
+	/** Stores are currently being initialized */
+	const initializing = ref(false);
 
 	/** Global hydration error. App should not be rendered */
 	const error = ref(null);
@@ -42,8 +42,8 @@ export const useAppStore = defineStore('appStore', () => {
 		sidebarOpen,
 		notificationsDrawerOpen,
 		fullScreen,
-		hydrated,
-		hydrating,
+		initialized,
+		initializing,
 		error,
 		authenticated,
 		accessTokenExpiry,

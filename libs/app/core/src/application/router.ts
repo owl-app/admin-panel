@@ -1,33 +1,37 @@
 // import { refresh } from '@/auth';
 // import { hydrate } from '@/hydrate';
-import AcceptInviteRoute from '@/routes/accept-invite.vue';
-import LoginRoute from '@/routes/login/login.vue';
-import LogoutRoute from '@/routes/logout.vue';
-import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
-import RegisterRoute from '@/routes/register/register.vue';
-import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
-import ShareRoute from '@/routes/shared/shared.vue';
-import TFASetup from '@/routes/tfa-setup.vue';
+// import AcceptInviteRoute from '@/routes/accept-invite.vue';
+// import LoginRoute from '@/routes/login/login.vue';
+// import LogoutRoute from '@/routes/logout.vue';
+// import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
+// import RegisterRoute from '@/routes/register/register.vue';
+// import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
+// import ShareRoute from '@/routes/shared/shared.vue';
+// import TFASetup from '@/routes/tfa-setup.vue';
 // import { useServerStore } from '@/stores/server';
-// import { useUserStore } from '@/stores/user';
+import { useUserStore } from '../stores/user';
 // import { getRootPath } from '@/utils/get-root-path';
-// import { useAppStore } from '@directus/stores';
-import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
-import { useApplicationConfig } from './config';
+import { useAppStore } from '../stores/app';
+import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 import { useAppLifecycleRegistry } from './registry';
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
+		path: '/:pathMatch(.*)*',
+		redirect: { name: 'dashboard' },
+	},
+	{
 		path: '/',
 		redirect: '/login',
 	},
-  {
-    name: 'dashboard',
-    displayName: 'menu.dashboard',
-    meta: {
-      icon: 'vuestic-iconset-dashboard',
-    },
-  },
+	{
+		name: 'dashboard',
+		displayName: 'menu.dashboard',
+		meta: {
+		icon: 'vuestic-iconset-dashboard',
+		},
+	},
 	// {
 	// 	name: 'login',
 	// 	path: '/login',
@@ -103,14 +107,10 @@ export const router = createRouter({
 let firstLoad = true;
 
 export const onBeforeEach: NavigationGuard = async (to) => {
-	//const appStore = useAppStore();
+	const appStore = useAppStore();
 	// const serverStore = useServerStore();
-	//const userStore = useUserStore();
-  const appConfig = useApplicationConfig()
+	const userStore = useUserStore();
   const appLifecycleRegistry = useAppLifecycleRegistry()
-
-  console.log('appLifecycleRegistry')
-  console.log(appLifecycleRegistry)
 
 	// First load
 	if (firstLoad) {
@@ -125,53 +125,53 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 	}
 
 	// if (serverStore.info.project === null) {
-		try {
-      await Promise.all(appLifecycleRegistry.initialize.map((initializeCallback) => initializeCallback()));
-		} catch (error: any) {
-			// appStore.error = error;
+	// try {
+	// 	await Promise.all(appLifecycleRegistry.initialize.map((initializeCallback) => initializeCallback()));
+	// } catch (error: any) {
+	// 	appStore.error = error;
+	// }
+	// }
+
+	if (to.meta?.public !== true) {
+		if (appStore.initialized === false) {
+			appStore.initializing = false;
+
+			if (appStore.authenticated === true) {
+				await Promise.all(appLifecycleRegistry.initialize.map((initializeCallback) => initializeCallback()));
+
+				if (
+					userStore.currentUser &&
+					to.fullPath === '/tfa-setup' &&
+					!('share' in userStore.currentUser) &&
+					userStore.currentUser.tfa_secret !== null
+				) {
+					return userStore.currentUser.last_page || '/login';
+				}
+
+				return to.fullPath;
+			} else {
+				if (to.fullPath) {
+					//return '/login?redirect=' + encodeURIComponent(to.fullPath);
+				} else {
+					//return '/login';
+				}
+			}
 		}
-	// }
 
-	// if (to.meta?.public !== true) {
-	// 	if (appStore.hydrated === false) {
-	// 		appStore.hydrating = false;
-
-	// 		if (appStore.authenticated === true) {
-	// 			// await hydrate();
-
-	// 			if (
-	// 				userStore.currentUser &&
-	// 				to.fullPath === '/tfa-setup' &&
-	// 				!('share' in userStore.currentUser) &&
-	// 				userStore.currentUser.tfa_secret !== null
-	// 			) {
-	// 				return userStore.currentUser.last_page || '/login';
-	// 			}
-
-	// 			return to.fullPath;
-	// 		} else {
-	// 			if (to.fullPath) {
-	// 				return '/login?redirect=' + encodeURIComponent(to.fullPath);
-	// 			} else {
-	// 				return '/login';
-	// 			}
-	// 		}
-	// 	}
-
-		// if (userStore.currentUser && !('share' in userStore.currentUser) && userStore.currentUser.role) {
-		// 	if (to.path !== '/tfa-setup') {
-		// 		if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
-		// 			if (userStore.currentUser.last_page === to.fullPath) {
-		// 				return '/tfa-setup';
-		// 			} else {
-		// 				return '/tfa-setup?redirect=' + encodeURIComponent(to.fullPath);
-		// 			}
-		// 		}
-		// 	} else if (userStore.currentUser.tfa_secret !== null) {
-				// return userStore.currentUser.last_page || '/login';
-		// 	}
-		// }
-	// }
+		if (userStore.currentUser && !('share' in userStore.currentUser) && userStore.currentUser.role) {
+			if (to.path !== '/tfa-setup') {
+				if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
+					if (userStore.currentUser.last_page === to.fullPath) {
+						return '/tfa-setup';
+					} else {
+						return '/tfa-setup?redirect=' + encodeURIComponent(to.fullPath);
+					}
+				}
+			} else if (userStore.currentUser.tfa_secret !== null) {
+				//return userStore.currentUser.last_page || '/login';
+			}
+		}
+	}
 
 	return;
 };
@@ -179,7 +179,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 let trackTimeout: number | null = null;
 
 export const onAfterEach: NavigationHookAfter = (to) => {
-	// const userStore = useUserStore();
+	const userStore = useUserStore();
 
 	if (to.meta.public !== true && to.meta.track !== false) {
 		// The timeout gives the page some breathing room to load. No need to clog up the thread with
@@ -191,7 +191,7 @@ export const onAfterEach: NavigationHookAfter = (to) => {
 		}
 
 		trackTimeout = window.setTimeout(() => {
-			// userStore.trackPage(to);
+			userStore.trackPage(to);
 		}, 500);
 	}
 };

@@ -1,8 +1,8 @@
 import { sleep } from '../../services/utils'
-import { User } from './../../pages/users/types'
+import type { User } from './../../pages/users/types'
 import usersDb from './users-db.json'
 import projectsDb from './projects-db.json'
-import { Project } from '../../pages/projects/types'
+import type { Project } from '../../pages/projects/types'
 
 export const users = usersDb as User[]
 

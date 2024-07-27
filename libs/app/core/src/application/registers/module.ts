@@ -20,9 +20,6 @@ export function registerModules(modules: ModuleConfig[]): {
 } {
   const registeredModules = shallowRef<ModuleConfig[]>([]);
 
-  console.log(modules);
-  console.log('updated modules');
-
   const onInitializeModules = async () => {
 
     console.log(modules);
