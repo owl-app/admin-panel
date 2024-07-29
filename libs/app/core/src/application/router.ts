@@ -14,6 +14,9 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		name: 'private-404',
 		path: '/:_(.+)+',
 		component: PrivateNotFound,
+		meta: {
+			public: true,
+		},
 	},
 	// {
 	// 	path: '/:pathMatch(.*)*',
@@ -119,7 +122,7 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	)
 			
 
-	next();
+	//next();
 	// const appStore = useAppStore();
 	// // const serverStore = useServerStore();
 	// const userStore = useUserStore();

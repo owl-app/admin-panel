@@ -10,6 +10,10 @@ export default defineModule({
   routes: {
     public: [
       {
+        path: '/',
+        redirect: '/login',
+      },
+      {
         name: 'login',
         path: 'login',
         component: LoginRoute,
@@ -20,6 +24,15 @@ export default defineModule({
         meta: {
           public: true,
         },
+      },
+      {
+        name: 'test',
+        path: 'test',
+        component: LoginRoute,
+        props: (route) => ({
+          ssoErrorCode: route.query.error ? route.query.code : null,
+          logoutReason: route.query.reason,
+        }),
       }
     ],
   }
