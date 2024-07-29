@@ -1,4 +1,4 @@
-import { App, watch } from 'vue';
+import { App, shallowRef, watch } from 'vue';
 
 import { i18n } from './lang/index';
 import { registerViews } from './registers/views';
@@ -10,6 +10,7 @@ import { getCoreLayouts, getCoreModules } from './config';
 import { registerLayouts } from './registers/layouts';
 import { router } from './router';
 import { useAppRegistry, useAppLifecycleRegistry } from './registry';
+import AuthModule from '@owl-app/lib-app-module-auth'
 
 
 export default async function bootstrap(app: App) {
@@ -22,9 +23,9 @@ export default async function bootstrap(app: App) {
 	registerComponents(app);
 	registerViews(app);
 
-  const { registeredModules, onInitializeModules, onDestroyModules } = registerModules(modules);
+  const { registeredModules, onInitializeModules, onDestroyModules } = registerModules([AuthModule]);
 
-  appRegistry.set('layouts', registerLayouts(layouts, app));
+  appRegistry.set('layouts', shallowRef(registerLayouts(layouts, app)));
 
   appLifecycleRegistry.initialize.push(onInitializeModules)
   appLifecycleRegistry.destroy.push(onDestroyModules)
@@ -32,11 +33,11 @@ export default async function bootstrap(app: App) {
   watch(
     [i18n.global.locale, registeredModules],
     () => {
-      appRegistry.set('modules', translate(registeredModules.value))
+      appRegistry.set('modules', shallowRef(translate(registeredModules.value)))
     },
     { immediate: true }
   );
 
   	// Add router after loading application to ensure all routes are registered
-	app.use(router);7
+	app.use(router);
 }

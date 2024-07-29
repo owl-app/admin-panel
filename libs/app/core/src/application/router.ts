@@ -15,23 +15,31 @@ import { useAppStore } from '../stores/app';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
 import { useAppLifecycleRegistry } from './registry';
+import { initialize } from './initialize';
+import { getRootPath } from '../utils/get-root-path';
+import PrivateNotFound from '../pages/private-not-found.vue'
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
-		path: '/:pathMatch(.*)*',
-		redirect: { name: 'dashboard' },
+		name: 'private-404',
+		path: '/:_(.+)+',
+		component: PrivateNotFound,
 	},
-	{
-		path: '/',
-		redirect: '/login',
-	},
-	{
-		name: 'dashboard',
-		displayName: 'menu.dashboard',
-		meta: {
-		icon: 'vuestic-iconset-dashboard',
-		},
-	},
+	// {
+	// 	path: '/:pathMatch(.*)*',
+	// 	redirect: { name: 'dashboard' },
+	// },
+	// {
+	// 	path: '/',
+	// 	redirect: '/login',
+	// },
+	// {
+	// 	name: 'dashboard',
+	// 	displayName: 'menu.dashboard',
+	// 	meta: {
+	// 	icon: 'vuestic-iconset-dashboard',
+	// 	},
+	// },
 	// {
 	// 	name: 'login',
 	// 	path: '/login',
@@ -100,21 +108,20 @@ export const defaultRoutes: RouteRecordRaw[] = [
 ];
 
 export const router = createRouter({
-	history: createWebHistory('admin/'),
+	history: createWebHistory(getRootPath()),
 	routes: defaultRoutes,
 });
 
 let firstLoad = true;
 
-export const onBeforeEach: NavigationGuard = async (to) => {
+export const onBeforeEach: NavigationGuard = async (to, next) => {
 	const appStore = useAppStore();
 	// const serverStore = useServerStore();
 	const userStore = useUserStore();
-  const appLifecycleRegistry = useAppLifecycleRegistry()
 
 	// First load
-	if (firstLoad) {
-		firstLoad = false;
+	//if (firstLoad) {
+	//	firstLoad = false;
 
 		// Try retrieving a fresh access token on first load
 		try {
@@ -122,7 +129,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		} catch {
 			// Ignore error
 		}
-	}
+	//}
 
 	// if (serverStore.info.project === null) {
 	// try {
@@ -137,7 +144,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 			appStore.initializing = false;
 
 			if (appStore.authenticated === true) {
-				await Promise.all(appLifecycleRegistry.initialize.map((initializeCallback) => initializeCallback()));
+				await initialize();
 
 				if (
 					userStore.currentUser &&

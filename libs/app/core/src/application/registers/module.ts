@@ -20,6 +20,19 @@ export function registerModules(modules: ModuleConfig[]): {
 } {
   const registeredModules = shallowRef<ModuleConfig[]>([]);
 
+  for (const module of modules) {
+    if(module.routes?.public ?? false) {
+      router.addRoute({
+        name: module.id,
+        path: `/`,
+        component: RouterPass,
+        children: module.routes?.public,
+      });
+
+      registeredModules.value.push(module);
+    }
+  }
+
   const onInitializeModules = async () => {
 
     console.log(modules);
@@ -28,33 +41,41 @@ export function registerModules(modules: ModuleConfig[]): {
     registeredModules.value = (
       await Promise.all(
         modules.map(async (module) => {
-          if (!module.preRegisterCheck) return module;
+          const isRegistered = registeredModules.value.find(registered => registered.name === module.name);
 
-          const allowed = await module.preRegisterCheck();
+          if (module.preRegisterCheck) {
+            const allowed = await module.preRegisterCheck();
 
-          if (allowed) return module;
+            if (allowed && !isRegistered) return module;
+          }
 
-          return null;
+          return !isRegistered;
         })
       )
     ).filter((module): module is ModuleConfig => module !== null);
 
     for (const module of registeredModules.value) {
-      router.addRoute({
-        name: module.id,
-        path: `/${module.id}`,
-        component: RouterPass,
-        children: module.routes,
-      });
+      if(module.routes?.private ?? false) {
+        router.addRoute({
+          name: module.id,
+          path: `/`,
+          component: RouterPass,
+          children: module.routes?.private,
+        });
+      }
     }
   };
 
   const onDestroyModules = async () => {
-    for (const module of modules) {
-      router.removeRoute(module.id);
-    }
+    registeredModules.value = []
 
-    registeredModules.value = [];
+    for (const module of modules) {
+        if(module.routes?.private ?? false) {
+          router.removeRoute(module.id);
+        } else {
+          registeredModules.value.push(module);
+        }
+    }
   };
 
   return { registeredModules, onInitializeModules, onDestroyModules };

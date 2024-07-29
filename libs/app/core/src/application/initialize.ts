@@ -22,17 +22,16 @@ export function useStores(
 
 export async function initialize(): Promise<void> {
 	const stores = useStores();
-
 	const appStore = useAppStore();
 	const userStore = useUserStore();
     const appLifecycleRegistry = useAppLifecycleRegistry()
 	// const permissionsStore = usePermissionsStore();
 	// const fieldsStore = useFieldsStore();
 
-	if (appStore.hydrated) return;
-	if (appStore.hydrating) return;
+	if (appStore.initialized) return;
+	if (appStore.initializing) return;
 
-	appStore.hydrating = true;
+	appStore.initializing = true;
 
 	try {
 		/**
@@ -41,7 +40,7 @@ export async function initialize(): Promise<void> {
 		 * following makes sure that the user store is always fetched first, before we hydrate anything
 		 * else.
 		 */
-		await userStore.initialize();
+		await userStore.hydrate();
 
 		const lang = getCurrentLanguage();
 		const currentUser = userStore.currentUser;
@@ -60,17 +59,17 @@ export async function initialize(): Promise<void> {
 	} catch (error: any) {
 		appStore.error = error;
 	} finally {
-		appStore.hydrating = false;
+		appStore.initializing = false;
 	}
 
-	appStore.hydrated = true;
+	appStore.initialized = true;
 }
 
 export async function deinitialize(stores = useStores()): Promise<void> {
 	const appStore = useAppStore();
     const appLifecycleRegistry = useAppLifecycleRegistry()
 
-	if (appStore.hydrated === false) return;
+	if (appStore.initialized === false) return;
 
 	for (const store of stores) {
 		await store.dehydrate?.();
@@ -78,5 +77,5 @@ export async function deinitialize(stores = useStores()): Promise<void> {
 
 	await Promise.all(appLifecycleRegistry.destroy);
 
-	appStore.hydrated = false;
+	appStore.initialized = false;
 }

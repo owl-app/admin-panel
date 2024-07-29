@@ -1,6 +1,6 @@
-import api from '@/services/api';
-import { Snackbar, SnackbarRaw } from '@/types/notifications';
-import { Notification } from '@/types/notifications';
+import api from '../services/api';
+import { Snackbar, SnackbarRaw } from '../types/notifications';
+import { Notification } from '../types/notifications';
 import { reverse, sortBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';

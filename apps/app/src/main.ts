@@ -22,7 +22,7 @@ async function initApp() {
   app.use(i18n);
   app.use(createVuestic({ config: vuesticGlobalConfig }));
 
-  bootstrap(app);
+  await bootstrap(app);
   
   app.mount('#app');
 

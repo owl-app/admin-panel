@@ -1,8 +1,8 @@
 // import { useCollectionsStore } from '@/stores/collections';
 // import { useFieldsStore } from '@/stores/fields';
-import { useTranslationsStore } from '@/stores/translations';
-import { loadDateFNSLocale } from '@/utils/get-date-fns-locale';
-import availableLanguages from './available-languages.yaml';
+import { useTranslationsStore } from '../../stores/translations';
+import { loadDateFNSLocale } from '../../utils/get-date-fns-locale';
+import * as availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
 
 export async function setLanguage(lang: Language): Promise<boolean> {

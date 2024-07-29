@@ -1,8 +1,8 @@
-import api from '@/services/api';
-import { i18n } from '@/application/lang';
-import { fetchAll } from '@/utils/fetch-all';
-import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
-import { unexpectedError } from '@/utils/unexpected-error';
+import api from '../services/api';
+import { i18n } from '../application/lang';
+import { fetchAll } from '../utils/fetch-all';
+import { getLiteralInterpolatedTranslation } from '../utils/get-literal-interpolated-translation';
+import { unexpectedError } from '../utils/unexpected-error';
 import { defineStore } from 'pinia';
 import { ref, unref, watch } from 'vue';
 

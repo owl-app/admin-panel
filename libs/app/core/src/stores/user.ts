@@ -30,9 +30,12 @@ export const useUserStore = defineStore({
 			return true;
 			// return this.currentUser?.role?.admin_access === true || false;
 		},
+		isPublic(): boolean {
+			return true;
+		}
 	},
 	actions: {
-		async initialize() {
+		async hydrate() {
 			this.loading = true;
 
 			try {
@@ -47,7 +50,7 @@ export const useUserStore = defineStore({
 				this.loading = false;
 			}
 		},
-		async deinitialize() {
+		async dehydrate() {
 			this.$reset();
 		},
 		async hydrateAdditionalFields(fields: string[]) {
@@ -69,13 +72,13 @@ export const useUserStore = defineStore({
 				return;
 			}
 
-			await api.patch(
-				`/users/me/track/page`,
-				{
-					last_page: to.fullPath,
-				},
-				{ measureLatency: true } as RequestConfig,
-			);
+			// await api.patch(
+			// 	`/users/me/track/page`,
+			// 	{
+			// 		last_page: to.fullPath,
+			// 	},
+			// 	{ measureLatency: true } as RequestConfig,
+			// );
 
 			if (this.currentUser && !('share' in this.currentUser)) {
 				// this.currentUser.last_page = to.fullPath;

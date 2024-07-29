@@ -1,17 +1,14 @@
-import { Ref } from 'vue';
 import type { LayoutConfig } from './layout.js';
 import type { ModuleConfig } from './module.js';
-
-export type AppConfigType = LayoutConfig | ModuleConfig
 
 export interface ApplicationConfig {
   /**
    * List of layouts that should be available in the application.
    */
-	layouts: Ref<LayoutConfig[]>;
+	layouts: LayoutConfig[];
   /**
    * List of modules that should be available in the application.
    */
-	modules: Ref<ModuleConfig[]>;
+	modules: ModuleConfig[];
 
 }
