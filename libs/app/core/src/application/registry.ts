@@ -4,15 +4,14 @@ import { Ref } from 'vue';
 export type RefRecord<T> = { [k in keyof T]: Ref<T[k]> };
 
 const appRegistry: ApplicationRegistry = new Map();
-const appLifecycleRegistry: ApplicationLifecycleRegistry = {
-    initialize: [],
-    destroy: []
+const appLifecycleEventRegistry: ApplicationLifecycleRegistry = {
+    request: [],
 };
 
 export function useAppRegistry(): ApplicationRegistry{
  return appRegistry;
 }
 
-export function useAppLifecycleRegistry(): ApplicationLifecycleRegistry { 
-  return appLifecycleRegistry;
+export function useAppLifecycleEventRegistry(): ApplicationLifecycleRegistry { 
+  return appLifecycleEventRegistry;
 }

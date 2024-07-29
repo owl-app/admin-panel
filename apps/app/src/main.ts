@@ -2,11 +2,13 @@ import { createApp } from 'vue';
 import i18n from './i18n';
 import { createVuestic } from 'vuestic-ui';
 
-import stores from './stores';
-import router from './router';
-import vuesticGlobalConfig from './services/vuestic-ui/global-config';
-import App from './App.vue';
 import bootstrap from '@owl-app/lib-app-core/application/bootstrap';
+import { createApplicationConfig } from '@owl-app/lib-app-core/application/config'
+import AuthModule from '@owl-app/lib-app-module-auth'
+
+import App from './App.vue';
+import stores from './stores';
+import vuesticGlobalConfig from './services/vuestic-ui/global-config';
 
 initApp();
 
@@ -22,7 +24,7 @@ async function initApp() {
   app.use(i18n);
   app.use(createVuestic({ config: vuesticGlobalConfig }));
 
-  await bootstrap(app);
+  await bootstrap(app, createApplicationConfig([AuthModule]));
   
   app.mount('#app');
 

@@ -1,23 +1,13 @@
-// import { refresh } from '@/auth';
-// import { hydrate } from '@/hydrate';
-// import AcceptInviteRoute from '@/routes/accept-invite.vue';
-// import LoginRoute from '@/routes/login/login.vue';
-// import LogoutRoute from '@/routes/logout.vue';
-// import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
-// import RegisterRoute from '@/routes/register/register.vue';
-// import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
-// import ShareRoute from '@/routes/shared/shared.vue';
-// import TFASetup from '@/routes/tfa-setup.vue';
-// import { useServerStore } from '@/stores/server';
-import { useUserStore } from '../stores/user';
-// import { getRootPath } from '@/utils/get-root-path';
-import { useAppStore } from '../stores/app';
+import { orderBy } from 'lodash';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
-import { useAppLifecycleRegistry } from './registry';
-import { initialize } from './initialize';
+
+import { useUserStore } from '../stores/user';
 import { getRootPath } from '../utils/get-root-path';
 import PrivateNotFound from '../pages/private-not-found.vue'
+
+import { useAppLifecycleEventRegistry } from './registry';
+import { LIFECYCLE_EVENTS } from './contants';
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
@@ -114,71 +104,86 @@ export const router = createRouter({
 
 let firstLoad = true;
 
-export const onBeforeEach: NavigationGuard = async (to, next) => {
-	const appStore = useAppStore();
-	// const serverStore = useServerStore();
-	const userStore = useUserStore();
+export const onBeforeEach: NavigationGuard = async (to, from, next) => {
+	const appLifecycleEventRegistry = useAppLifecycleEventRegistry();
 
-	// First load
-	//if (firstLoad) {
-	//	firstLoad = false;
+	console.log(appLifecycleEventRegistry)
 
-		// Try retrieving a fresh access token on first load
-		try {
-			// await refresh({ navigate: false });
-		} catch {
-			// Ignore error
-		}
-	//}
+	await Promise.all(
+		orderBy(appLifecycleEventRegistry.request, ['priority'], 'desc')
+			.filter(({event}) => event === LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH)
+			.map(async (event) => {
+				console.log('event', event)
+				await event.callback(to, from, next)
+			})
+	)
+			
 
-	// if (serverStore.info.project === null) {
-	// try {
-	// 	await Promise.all(appLifecycleRegistry.initialize.map((initializeCallback) => initializeCallback()));
-	// } catch (error: any) {
-	// 	appStore.error = error;
+	next();
+	// const appStore = useAppStore();
+	// // const serverStore = useServerStore();
+	// const userStore = useUserStore();
+
+	// // First load
+	// //if (firstLoad) {
+	// //	firstLoad = false;
+
+	// 	// Try retrieving a fresh access token on first load
+	// 	try {
+	// 		// await refresh({ navigate: false });
+	// 	} catch {
+	// 		// Ignore error
+	// 	}
+	// //}
+
+	// // if (serverStore.info.project === null) {
+	// // try {
+	// // 	await Promise.all(appLifecycleRegistry.initialize.map((initializeCallback) => initializeCallback()));
+	// // } catch (error: any) {
+	// // 	appStore.error = error;
+	// // }
+	// // }
+
+	// if (to.meta?.public !== true) {
+	// 	if (appStore.initialized === false) {
+	// 		appStore.initializing = false;
+
+	// 		if (appStore.authenticated === true) {
+	// 			await initialize();
+
+	// 			if (
+	// 				userStore.currentUser &&
+	// 				to.fullPath === '/tfa-setup' &&
+	// 				!('share' in userStore.currentUser) &&
+	// 				userStore.currentUser.tfa_secret !== null
+	// 			) {
+	// 				return userStore.currentUser.last_page || '/login';
+	// 			}
+
+	// 			return to.fullPath;
+	// 		} else {
+	// 			if (to.fullPath) {
+	// 				//return '/login?redirect=' + encodeURIComponent(to.fullPath);
+	// 			} else {
+	// 				//return '/login';
+	// 			}
+	// 		}
+	// 	}
+
+	// 	if (userStore.currentUser && !('share' in userStore.currentUser) && userStore.currentUser.role) {
+	// 		if (to.path !== '/tfa-setup') {
+	// 			if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
+	// 				if (userStore.currentUser.last_page === to.fullPath) {
+	// 					return '/tfa-setup';
+	// 				} else {
+	// 					return '/tfa-setup?redirect=' + encodeURIComponent(to.fullPath);
+	// 				}
+	// 			}
+	// 		} else if (userStore.currentUser.tfa_secret !== null) {
+	// 			//return userStore.currentUser.last_page || '/login';
+	// 		}
+	// 	}
 	// }
-	// }
-
-	if (to.meta?.public !== true) {
-		if (appStore.initialized === false) {
-			appStore.initializing = false;
-
-			if (appStore.authenticated === true) {
-				await initialize();
-
-				if (
-					userStore.currentUser &&
-					to.fullPath === '/tfa-setup' &&
-					!('share' in userStore.currentUser) &&
-					userStore.currentUser.tfa_secret !== null
-				) {
-					return userStore.currentUser.last_page || '/login';
-				}
-
-				return to.fullPath;
-			} else {
-				if (to.fullPath) {
-					//return '/login?redirect=' + encodeURIComponent(to.fullPath);
-				} else {
-					//return '/login';
-				}
-			}
-		}
-
-		if (userStore.currentUser && !('share' in userStore.currentUser) && userStore.currentUser.role) {
-			if (to.path !== '/tfa-setup') {
-				if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
-					if (userStore.currentUser.last_page === to.fullPath) {
-						return '/tfa-setup';
-					} else {
-						return '/tfa-setup?redirect=' + encodeURIComponent(to.fullPath);
-					}
-				}
-			} else if (userStore.currentUser.tfa_secret !== null) {
-				//return userStore.currentUser.last_page || '/login';
-			}
-		}
-	}
 
 	return;
 };

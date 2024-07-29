@@ -9,26 +9,28 @@ import { registerDirectives } from './registers/directives';
 import { getCoreLayouts, getCoreModules } from './config';
 import { registerLayouts } from './registers/layouts';
 import { router } from './router';
-import { useAppRegistry, useAppLifecycleRegistry } from './registry';
-import AuthModule from '@owl-app/lib-app-module-auth'
+import { useAppRegistry, useAppLifecycleEventRegistry } from './registry';
+import { registerEvents } from './registers/events';
+import { defineRequestModuleEvent } from './lifecycle/initialize-modules-event';
+import { ApplicationConfig } from './types/config';
 
 
-export default async function bootstrap(app: App) {
+export default async function bootstrap(app: App, config: ApplicationConfig) {
 	const layouts = getCoreLayouts();
 	const modules = getCoreModules();
   const appRegistry = useAppRegistry();
-  const appLifecycleRegistry = useAppLifecycleRegistry()
+  const appLifecycleEventRegistry = useAppLifecycleEventRegistry()
 
 	registerDirectives(app);
 	registerComponents(app);
 	registerViews(app);
+  registerEvents(app);
 
-  const { registeredModules, onInitializeModules, onDestroyModules } = registerModules([AuthModule]);
+  const registeredModules = registerModules(config.modules);
 
   appRegistry.set('layouts', shallowRef(registerLayouts(layouts, app)));
 
-  appLifecycleRegistry.initialize.push(onInitializeModules)
-  appLifecycleRegistry.destroy.push(onDestroyModules)
+  appLifecycleEventRegistry.request.push(...defineRequestModuleEvent(registeredModules, modules))
 
   watch(
     [i18n.global.locale, registeredModules],

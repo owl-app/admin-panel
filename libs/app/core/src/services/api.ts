@@ -5,7 +5,8 @@ import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'ax
 import PQueue, { Options, QueueAddOptions } from 'p-queue';
 
 const api = axios.create({
-	baseURL: getRootPath(),
+	// baseURL: getRootPath(),
+	baseURL: 'http://localhost:3000/api/v1/',
 	withCredentials: true,
 });
 
