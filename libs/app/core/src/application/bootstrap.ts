@@ -9,9 +9,9 @@ import { registerDirectives } from './registers/directives';
 import { getCoreLayouts, getCoreModules } from './config';
 import { registerLayouts } from './registers/layouts';
 import { router } from './router';
-import { useAppRegistry, useAppLifecycleEventRegistry } from './registry';
+import { useAppRegistry } from './registry';
 import { registerEvents } from './registers/events';
-import { defineRequestModuleEvent } from './lifecycle/initialize-modules-event';
+import { defineModuleRequestEvent } from './lifecycle/initialize-modules-event';
 import { ApplicationConfig } from './types/config';
 
 
@@ -19,18 +19,17 @@ export default async function bootstrap(app: App, config: ApplicationConfig) {
 	const layouts = getCoreLayouts();
 	const modules = getCoreModules();
   const appRegistry = useAppRegistry();
-  const appLifecycleEventRegistry = useAppLifecycleEventRegistry()
 
 	registerDirectives(app);
 	registerComponents(app);
 	registerViews(app);
-  registerEvents(app);
+  registerEvents(app, config.events);
 
   const registeredModules = registerModules(config.modules);
 
   appRegistry.set('layouts', shallowRef(registerLayouts(layouts, app)));
 
-  appLifecycleEventRegistry.request.push(...defineRequestModuleEvent(registeredModules, modules))
+  defineModuleRequestEvent(registeredModules, modules)
 
   watch(
     [i18n.global.locale, registeredModules],

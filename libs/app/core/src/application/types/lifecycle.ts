@@ -2,6 +2,10 @@ import { NavigationGuardNext, RouteLocationNormalized } from "vue-router";
 
 import { LIFECYCLE_EVENTS } from "../contants";
 
+export interface ApplicationLifecycleEvents {
+    request: RequestEvent[],
+}
+
 export type LifecycleEvent<Event, Callback> = {
     name: string;
     priority: number;

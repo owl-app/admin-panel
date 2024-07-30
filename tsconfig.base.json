@@ -4,10 +4,7 @@
     "rootDir": ".",
     "baseUrl": ".",
     "sourceMap": true,
-    "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2017",
-    "module": "esnext",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "paths": {
@@ -21,8 +18,8 @@
       "@owl-app/lib-api-module-user-access/*": [
         "libs/api/modules/user-access/src/*"
       ],
-      "@owl-app/lib-app-core": ["libs/app/core/src/*"],
-      "@owl-app/lib-app-module-auth": ["libs/app/modules/auth/src/index.ts"],
+      "@owl-app/lib-app-core/*": ["libs/app/core/src/*"],
+      "@owl-app/lib-app-module-auth/*": ["libs/app/modules/auth/src/*"],
       "@owl-app/lib-contracts": ["libs/contracts/src/index.ts"],
       "@owl-app/rbac-manager": ["packages/server/rbac/manager/src/index.ts"],
       "@owl-app/rbac-storage-typerom": [

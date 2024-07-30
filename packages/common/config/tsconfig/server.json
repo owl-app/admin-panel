@@ -12,5 +12,8 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "strictNullChecks": false,
+    "moduleResolution": "node",
+    "target": "es2017",
+    "module": "esnext",
   }
 }

@@ -4,6 +4,7 @@ import { User } from '@owl-app/lib-contracts';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
 import type { RouteLocationNormalized } from 'vue-router';
+import { useAppStore } from './app';
 
 type ShareUser = {
 	share: string;
@@ -84,5 +85,16 @@ export const useUserStore = defineStore({
 				// this.currentUser.last_page = to.fullPath;
 			}
 		},
+		async login(email: string, password: string) {
+			const appStore = useAppStore()
+			try {
+				const { data } = await api.post('/auth/login', { email, password });
+
+				this.currentUser = data.data;
+				appStore.authenticated = true;
+			} catch (error: any) {
+				this.error = error.response.data.message;
+			}
+		}
 	},
 });

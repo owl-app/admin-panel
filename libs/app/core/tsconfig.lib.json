@@ -3,13 +3,6 @@
   "compilerOptions": {
     "outDir": "../../../dist/out-tsc",
     "types": ["vite/client"],
-    "baseUrl": ".",
-    "paths": {
-			"@/*": ["src/*"]
-		},
-    "verbatimModuleSyntax": false,
-		"exactOptionalPropertyTypes": false,
-		"noPropertyAccessFromIndexSignature": false,
   },
   "exclude": [
     "src/**/__tests__/*",
@@ -30,5 +23,5 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue"
-  ]
+]
 }

@@ -1,5 +1,6 @@
 import { ModuleConfig } from './types/module';
 import { LayoutConfig } from './types/layout';
+import { ApplicationLifecycleEvents } from './types/lifecycle';
 import { ApplicationConfig } from './types/config';
 
 export function getCoreModules(): ModuleConfig[] {
@@ -19,9 +20,14 @@ export function getCoreLayouts(): LayoutConfig[] {
 	return Object.values(layouts);
 }
 
-export function createApplicationConfig(modules: ModuleConfig[], layouts: LayoutConfig[]): ApplicationConfig {
+export function createApplicationConfig(
+  modules: ModuleConfig[],
+  layouts: LayoutConfig[],
+  events: ApplicationLifecycleEvents
+): ApplicationConfig {
   return {
     modules,
     layouts,
+    events
   }
 }

@@ -28,7 +28,7 @@ export async function bootstrap(
     bootstrapModule: any
 ): Promise<INestApplication> {
     const app = await NestFactory.create<NestExpressApplication>(bootstrapModule, {
-        logger: ['log', 'error', 'warn', 'debug', 'verbose']
+        logger: ['log', 'error', 'warn', 'debug', 'verbose'],
     });
 
     const allowedHeaders = [
@@ -43,7 +43,9 @@ export async function bootstrap(
         'Accept',
         'Accept-Language',
         'Observe',
-        'Set-Cookie'
+        'Set-Cookie',
+        'Access-Control-Allow-Origin',
+        'Referer'
     ];
 
     const reflector = app.get(Reflector);
@@ -54,8 +56,9 @@ export async function bootstrap(
     app.use(urlencoded({ extended: true, limit: '10mb' }));
 
     app.enableCors({
-        origin: '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        origin: true,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        preflightContinue: false,
         credentials: true,
         allowedHeaders: allowedHeaders.join(',')
     });

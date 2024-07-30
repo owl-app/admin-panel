@@ -11,10 +11,10 @@ import { RouteLocationRaw } from "vue-router";
 
 export default defineRequestEvent({
 	name: 'redirect-event',
-    priority: 800,
+    priority: -999,
     event: LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH,
     callback: async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext): Promise<void> => {
-		console.log('run initialize language', to)
+		console.log('run initialize redirect', to)
         const appStore = useAppStore();
         const userStore = useUserStore();
 

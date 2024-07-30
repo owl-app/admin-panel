@@ -1,36 +1,37 @@
-import { NavigationGuardNext, RouteLocationNormalized } from "vue-router";
+import { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 
-import { LIFECYCLE_EVENTS } from "../contants";
-import { defineRequestEvent } from "../defines/events";
-import { useAppStore } from "../../stores/app";
-import { useUserStore } from "../../stores/user";
-import { getCurrentLanguage } from "../lang/get-current-language";
-import { setLanguage } from "../lang/set-language";
+import { LIFECYCLE_EVENTS } from '../contants';
+import { defineRequestEvent } from '../defines/events';
+import { useAppStore } from '../../stores/app';
+import { useUserStore } from '../../stores/user';
+import { getCurrentLanguage } from '../lang/get-current-language';
+import { setLanguage } from '../lang/set-language';
 
 export default defineRequestEvent({
-	name: 'initialize-lang',
-    priority: 800,
-    event: LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH,
-    callback: async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext): Promise<void> => {
-		console.log('run initialize language', to)
+  name: 'initialize-lang',
+  priority: 400,
+  event: LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH,
+  callback: async (
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
+    next: NavigationGuardNext
+  ): Promise<void> => {
+    console.log('run initialize language', to);
 
-		const appStore = useAppStore();
-	
-		if (!appStore.initializing) return;
+    const appStore = useAppStore();
 
-		try {
+    if (!appStore.initializing) return;
 
-			const lang = getCurrentLanguage();
-	
-			await setLanguage(lang);
+    try {
+      const lang = getCurrentLanguage();
 
-		} catch (error: any) {
-			appStore.error = error;
-		} finally {
-            appStore.initializing = false;
-        }
-    
-        appStore.initialized = true;
-	}
-})
-	
+      await setLanguage(lang);
+    } catch (error: any) {
+      appStore.error = error;
+    } finally {
+      appStore.initializing = false;
+    }
+
+    appStore.initialized = true;
+  },
+});
