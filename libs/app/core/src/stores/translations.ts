@@ -18,33 +18,33 @@ export const useTranslationsStore = defineStore('translations', () => {
 	const lang = ref<string>('en-US');
 
 	const loadTranslations = async (newLang = unref(lang)) => {
-		loading.value = true;
+		// loading.value = true;
 
-		try {
-			translations.value = await fetchAll(`/translations`, {
-				params: {
-					fields: ['language', 'key', 'value'],
-					filter: {
-						language: { _eq: newLang },
-					},
-				},
-			});
+		// try {
+		// 	translations.value = await fetchAll(`/translations`, {
+		// 		params: {
+		// 			fields: ['language', 'key', 'value'],
+		// 			filter: {
+		// 				language: { _eq: newLang },
+		// 			},
+		// 		},
+		// 	});
 
-			lang.value = newLang;
-		} catch (error) {
-			// No public permissions for translations
-		} finally {
-			loading.value = false;
-		}
+		// 	lang.value = newLang;
+		// } catch (error) {
+		// 	// No public permissions for translations
+		// } finally {
+		// 	loading.value = false;
+		// }
 	};
 
 	const create = async (translation: Translation) => {
-		try {
-			await api.post('/translations', translation);
-			await loadTranslations();
-		} catch (error) {
-			unexpectedError(error);
-		}
+		// try {
+		// 	await api.post('/translations', translation);
+		// 	await loadTranslations();
+		// } catch (error) {
+		// 	unexpectedError(error);
+		// }
 	};
 
 	watch(translations, (newTranslations) => {

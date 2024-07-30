@@ -7,7 +7,7 @@ export class AuthResponse {
     user: UserResponseAuth;
 
     @ApiProperty({ type: () => String })
-    accessToken: string;
+    accessToken?: string;
 
     @ApiProperty({ type: () => String })
     refreshToken: string;

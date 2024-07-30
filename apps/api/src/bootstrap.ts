@@ -12,6 +12,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config'
 import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-bulding-blocks/config'
 import { JwtAuthGuard } from '@owl-app/lib-api-bulding-blocks/passport/jwt.guard'
+import cookieParser from 'cookie-parser'
 // import { HttpExceptionsFilter } from '../http';
 // import { EntitySubscriberInterface } from 'typeorm';
 // // import { IPluginConfig } from '@gauzy/common';
@@ -54,6 +55,7 @@ export async function bootstrap(
     // // app.useLogger(app.get(SentryService));
     app.use(json({ limit: '10mb' }));
     app.use(urlencoded({ extended: true, limit: '10mb' }));
+    app.use(cookieParser());
 
     app.enableCors({
         origin: true,
@@ -81,6 +83,7 @@ export async function bootstrap(
     	.setTitle('Owl API')
     	.setVersion('1.0')
     	.addBearerAuth()
+        .addCookieAuth('access_token')
     	.build();
 
     const document = SwaggerModule.createDocument(app, options);
@@ -88,9 +91,10 @@ export async function bootstrap(
         swaggerOptions: {
           tagsSorter: 'alpha',
           operationsSorter: 'alpha',
-          },
-        });
-    
+          useBasicAuthenticationWithAccessCodeGrant: true
+        },
+    });
+
     let { port, host } = configService.get<IConfigApp>(APP_CONFIG_NAME);
 
     if (!port) {

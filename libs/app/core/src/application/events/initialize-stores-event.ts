@@ -33,18 +33,15 @@ export default defineRequestEvent({
     const userStore = useUserStore();
 
     if (
-      to.meta?.public !== true ||
+      to.meta?.public === true ||
       appStore.initialized ||
-      appStore.initializing ||
-      !appStore.authenticated
+      appStore.initializing
     )
       return;
 
     appStore.initializing = true;
 
     try {
-      await userStore.hydrate();
-
       const currentUser = userStore.currentUser;
 
       if (currentUser?.role) {
@@ -58,11 +55,8 @@ export default defineRequestEvent({
         );
       }
 
-      console.log('initializizng 1', appStore.initializing);
     } catch (error: any) {
-      console.log('error', error);
       appStore.error = error;
-      // appStore.initializing = false;
     }
   },
 });

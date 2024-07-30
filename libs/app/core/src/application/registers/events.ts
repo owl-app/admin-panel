@@ -1,9 +1,9 @@
 import { App } from 'vue';
 
 import { useAppLifecycleEventRegistry } from '../registry';
-import InitializeStoresEvent from '../lifecycle/initialize-stores-event';
-import initializeLangEvent from '../lifecycle/initialize-lang-event';
-import RedirectEvent from '../lifecycle/redirect-event';
+import InitializeStoresEvent from '../events/initialize-stores-event';
+import initializeLangEvent from '../events/initialize-lang-event';
+import RedirectEvent from '../events/redirect-event';
 import { ApplicationLifecycleEvents } from '../types/lifecycle';
 
 export function registerEvents(

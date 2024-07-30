@@ -5,7 +5,10 @@ export interface ModuleConfig {
 	name: string;
 	icon: string;
 
-	routes?: Record<'private' | 'public', RouteRecordRaw[]>;
+	routes?: {
+		public?: RouteRecordRaw[];
+		private?: RouteRecordRaw[];
+	};
 	hidden?: boolean;
 	preRegisterCheck?: () => Promise<boolean> | boolean;
 }

@@ -11,13 +11,12 @@ import { registerLayouts } from './registers/layouts';
 import { router } from './router';
 import { useAppRegistry } from './registry';
 import { registerEvents } from './registers/events';
-import { defineModuleRequestEvent } from './lifecycle/initialize-modules-event';
+import { defineModuleRequestEvent } from './events/initialize-modules-event';
 import { ApplicationConfig } from './types/config';
 
 
 export default async function bootstrap(app: App, config: ApplicationConfig) {
 	const layouts = getCoreLayouts();
-	const modules = getCoreModules();
   const appRegistry = useAppRegistry();
 
 	registerDirectives(app);
@@ -29,7 +28,7 @@ export default async function bootstrap(app: App, config: ApplicationConfig) {
 
   appRegistry.set('layouts', shallowRef(registerLayouts(layouts, app)));
 
-  defineModuleRequestEvent(registeredModules, modules)
+  defineModuleRequestEvent(registeredModules, config.modules)
 
   watch(
     [i18n.global.locale, registeredModules],

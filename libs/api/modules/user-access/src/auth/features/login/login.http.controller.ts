@@ -1,17 +1,25 @@
-import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common'
-import { CommandBus } from '@nestjs/cqrs'
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { Response } from 'express';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { Public } from '@owl-app/lib-api-bulding-blocks/metadata/route'
-import { ApiErrorValidationResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error-validation.response'
-import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
+import { Public } from '@owl-app/lib-api-bulding-blocks/metadata/route';
+import { ApiErrorValidationResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error-validation.response';
+import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response';
 
-import { InvalidAuthenticationError } from '../../../domain/auth.errors'
+import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 
-import { AuthResponse } from './dto/auth.response'
-import { AuthRequest } from './dto/auth.request'
-import { Login } from './login.service'
-
+import { AuthResponse } from './dto/auth.response';
+import { AuthRequest } from './dto/auth.request';
+import { Login } from './login.service';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -31,21 +39,29 @@ export class LoginController {
   @ApiResponse({
     status: HttpStatus.UNPROCESSABLE_ENTITY,
     description: 'Validation errors.',
-    type: ApiErrorValidationResponse
+    type: ApiErrorValidationResponse,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: InvalidAuthenticationError.message,
-    type: ApiErrorResponse
+    type: ApiErrorResponse,
   })
   @Post('/login')
-  async login(@Body() auth: AuthRequest): Promise<AuthResponse> {
+  async login(
+    @Body() auth: AuthRequest,
+    @Res({ passthrough: true }) response: Response
+  ): Promise<AuthResponse> {
     try {
       const result = await this.commandBus.execute(new Login(auth));
 
-      return result;
+      response.cookie('access_token', result.accessToken, {
+        httpOnly: true,
+        secure: true,
+      });
+
+      return { user: result.user, refreshToken: result.refreshToken };
     } catch (error: unknown) {
-      if(error instanceof InvalidAuthenticationError) {
+      if (error instanceof InvalidAuthenticationError) {
         throw new BadRequestException(error.message);
       }
 

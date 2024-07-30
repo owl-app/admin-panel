@@ -49,6 +49,7 @@ import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
 import { useUserStore } from '@owl-app/lib-app-core/stores/user';
+import { router } from '@owl-app/lib-app-core/application/router';
 import { validators } from './utils'
 
 const userStore = useUserStore()
@@ -65,8 +66,13 @@ const submit = async () => {
   if (validate()) {
     await userStore.login(formData.email, formData.password)
 
+    init({ message: 'Success', color: 'success' })
+
+    router.push({ path: 'dashboard' });
+    console.log()
+
     if(userStore.error) {
-      init({ message: userStore.error, color: 'error' })
+      init({ message: userStore.error.message, color: 'error' })
       return
     }
   }

@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
@@ -7,6 +8,7 @@ import { Manager } from '@owl-app/rbac-manager';
 
 import { JWT_CONFIG_PROVIDER, type IJwtConfig } from '../config/jwt'
 import { IJwtTokenPayload, IJwtTokenService } from './jwt-token.interface';
+import { extractJWT } from './extract-jwt';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -19,13 +21,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     readonly rbacManager: Manager
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        extractJWT,
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       ignoreExpiration: false,
       secretOrKey: jwtConfig.secret,
     });
   }
 
   async validate(payload: IJwtTokenPayload): Promise<Partial<AuthUserData>> {
+    console.log(payload)
     const user = await this.jwtTokenService.validateUserForJWTStragtegy(payload.email);
 
     if (!user) {
