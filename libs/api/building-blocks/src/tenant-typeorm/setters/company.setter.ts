@@ -20,7 +20,7 @@ export class CompanySetter<Entity extends CompanyAware> implements EntitySetter<
   {
     return !!metadata
       .relations.find(r => r.type === COMPANY_ENTITY && r.propertyName === 'company') && 
-      RequestContextService.getCurrentUser().roles.includes(RolesEnum.ROLE_ADMIN_COMPANY);
+      RequestContextService.getCurrentUser()?.roles.includes(RolesEnum.ROLE_ADMIN_COMPANY);
   }
 
   execute<T extends DeepPartial<Entity>>(entityOrEntities: T | T[],): void

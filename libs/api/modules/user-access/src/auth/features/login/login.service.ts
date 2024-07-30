@@ -1,8 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { User } from '@owl-app/lib-contracts';
-import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
+import { IJwtTokenService, Token } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
 import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
 
 import { UserEntity } from '../../../domain/entity/user.entity';
@@ -10,11 +9,7 @@ import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 
 import type { IUserRepository } from '../../../database/repository/user-repository.interface';
 
-import { UserResponseAuth } from '../../dto/user.response';
-import userMapper from '../../mapping';
-
 import { loginValidation } from './validation';
-import { AuthResponse } from './dto/auth.response';
 
 export class Login {
   email: string;
@@ -35,7 +30,7 @@ export class LoginHandler implements ICommandHandler<Login> {
     private readonly userRepository: IUserRepository
   ) {}
 
-  async execute(command: Login): Promise<AuthResponse> {
+  async execute(command: Login): Promise<Record<'accessToken' | 'refreshToken', Token>> {
     await loginValidation.validateAsync(command, { abortEarly: false });
 
     const user = await this.userRepository.getUserByEmail(command.email);
@@ -51,7 +46,6 @@ export class LoginHandler implements ICommandHandler<Login> {
     const refreshToken = await this.jwtTokenService.getJwtRefreshToken(command.email);
 
     return {
-      user: userMapper.map<User, UserResponseAuth>(user, new UserResponseAuth()),
       accessToken,
       refreshToken,
     };

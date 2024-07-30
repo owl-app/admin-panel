@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 
 import { User } from '@owl-app/lib-contracts';
 import { type IJwtConfig } from '@owl-app/lib-api-bulding-blocks/config/jwt';
-import { IJwtTokenService, IJwtTokenPayload } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
+import { IJwtTokenService, IJwtTokenPayload, Token } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
 
 import type { IUserRepository } from '../database/repository/user-repository.interface';
 
@@ -28,24 +28,24 @@ export default class JwtTokenService implements IJwtTokenService<User> {
     });
   }
 
-  async getJwtToken(email: string): Promise<string> {
+  async getJwtToken(email: string): Promise<Token> {
     const payload: IJwtTokenPayload = { email };
     const secret = this.jwtConfig?.secret;
-    const expiresIn = `${this.jwtConfig.expiration_time}s`;
-    const token = this.createToken(payload, secret, expiresIn);
+    const expiresIn = this.jwtConfig.expiration_time;
+    const token = this.createToken(payload, secret, `${expiresIn}s`);
 
-    return token;
+    return { token, expiresIn };
   }
 
-  async getJwtRefreshToken(email: string): Promise<string> {
+  async getJwtRefreshToken(email: string): Promise<Token> {
     const payload: IJwtTokenPayload = { email };
     const secret = this.jwtConfig.refresh_token_secret;
-    const expiresIn = `${this.jwtConfig.refresh_token_expiration_time}s`;
-    const token = this.createToken(payload, secret, expiresIn);
+    const expiresIn = this.jwtConfig.refresh_token_expiration_time;
+    const token = this.createToken(payload, secret, `${expiresIn}s`);
 
     await this.setCurrentRefreshToken(token, email);
 
-    return token;
+    return { token, expiresIn };
   }
 
   async validateToken(pass: string, passwordHash: string): Promise<boolean> {

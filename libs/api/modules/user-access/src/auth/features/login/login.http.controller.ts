@@ -20,6 +20,8 @@ import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 import { AuthResponse } from './dto/auth.response';
 import { AuthRequest } from './dto/auth.request';
 import { Login } from './login.service';
+import { unset } from 'lodash';
+import { Token } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -52,14 +54,22 @@ export class LoginController {
     @Res({ passthrough: true }) response: Response
   ): Promise<AuthResponse> {
     try {
-      const result = await this.commandBus.execute(new Login(auth));
+      const result = await this.commandBus.execute<Login, Record<'accessToken' | 'refreshToken', Token>>(new Login(auth));
 
-      response.cookie('access_token', result.accessToken, {
+      response.cookie('access_token', result.accessToken.token, {
         httpOnly: true,
         secure: true,
       });
 
-      return { user: result.user, refreshToken: result.refreshToken };
+      response.cookie('refresh_token', result.refreshToken.token, {
+        httpOnly: true,
+        secure: true,
+      });
+
+      return {
+        accessTokenExpires: result.accessToken.expiresIn,
+        refreshTokenExpires: result.refreshToken.expiresIn
+      };
     } catch (error: unknown) {
       if (error instanceof InvalidAuthenticationError) {
         throw new BadRequestException(error.message);
