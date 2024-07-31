@@ -28,12 +28,6 @@ export const useAppStore = defineStore('appStore', () => {
 	/** Global hydration error. App should not be rendered */
 	const error = ref(null);
 
-	/** Is the current user authenticated. @TODO maybe move to userStore */
-	const authenticated = ref(false);
-
-	/** How long until the access token will expire */
-	const accessTokenExpiry = ref(0);
-
 	/** What basemap provider should be used in global map interfaces */
 	const basemap = ref('OpenStreetMap');
 
@@ -45,8 +39,6 @@ export const useAppStore = defineStore('appStore', () => {
 		initialized,
 		initializing,
 		error,
-		authenticated,
-		accessTokenExpiry,
 		basemap,
 	};
 });

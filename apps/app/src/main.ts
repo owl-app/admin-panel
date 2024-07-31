@@ -5,7 +5,8 @@ import { createVuestic } from 'vuestic-ui';
 import bootstrap from '@owl-app/lib-app-core/application/bootstrap';
 import { createApplicationConfig } from '@owl-app/lib-app-core/application/config'
 import AuthModule from '@owl-app/lib-app-module-auth'
-import LoadUserEvent from '@owl-app/lib-app-module-auth/events/load-user-event'
+import LoadUserEvent from '@owl-app/lib-app-module-auth/events/hydrate-user-event'
+import RefreshTokenEvent from '@owl-app/lib-app-module-auth/events/refresh-token'
 
 import App from './App.vue';
 import stores from './stores';
@@ -29,7 +30,7 @@ async function initApp() {
     [AuthModule],
     [],
     {
-      request: [LoadUserEvent]
+      request: [LoadUserEvent, RefreshTokenEvent]
     }
   ));
   

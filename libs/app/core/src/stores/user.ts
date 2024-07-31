@@ -1,24 +1,19 @@
+import { User } from '@owl-app/lib-contracts';
+
 import api, { RequestConfig } from '../services/api';
 import { userName } from '../utils/user-name';
-import { User } from '@owl-app/lib-contracts';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
 import type { RouteLocationNormalized } from 'vue-router';
 import { useAppStore } from './app';
-
-type ShareUser = {
-  share: string;
-  role: {
-    id: string;
-    admin_access: false;
-    app_access: false;
-  };
-};
+import { useLocalStorage } from '@vueuse/core';
 
 export const useUserStore = defineStore({
   id: 'userStore',
   state: () => ({
-    currentUser: null as User | ShareUser | null,
+    authenticated: false as boolean,
+    accessTokenExpiry: useLocalStorage<number>('accessTokenExpiry', 0),
+    currentUser: null as User | null,
     loading: false,
     error: null,
   }),
@@ -39,15 +34,16 @@ export const useUserStore = defineStore({
     async hydrate() {
       this.loading = true;
       this.error = null;
-      const appStore = useAppStore();
 
       try {
         const { data } = await api.get(`/user/me`);
 
         this.currentUser = data.user;
-        appStore.authenticated = true;
+        this.authenticated = true;
       } catch (error: any) {
         this.error = error;
+        this.authenticated = false;
+        this.accessTokenExpiry = 0;
       } finally {
         this.loading = false;
       }
@@ -55,13 +51,20 @@ export const useUserStore = defineStore({
     async dehydrate() {
       this.$reset();
     },
-    async hydrateAdditionalFields(fields: string[]) {
-      try {
-        const { data } = await api.get(`/users/me`, { params: { fields } });
+    async login(email: string, password: string) {
+      this.loading = true;
+      this.error = null;
 
-        this.currentUser = merge({}, this.currentUser, data.data);
+      try {
+        const { data } = await api.post('/auth/login', { email, password });
+
+        this.authenticated = true;
+        // const expiredIn = useLocalStorage<number>('accessTokenExpiry', (Date.now() + (data.expires ?? 0)));
+        this.accessTokenExpiry = (Date.now() + (data.accessTokenExpires ?? 0) * 1000);
       } catch (error: any) {
-        // Do nothing
+        this.error = error.response.data.message;
+      } finally {
+        this.loading = false;
       }
     },
     async trackPage(to: RouteLocationNormalized) {
@@ -86,18 +89,8 @@ export const useUserStore = defineStore({
         // this.currentUser.last_page = to.fullPath;
       }
     },
-    async login(email: string, password: string) {
-      const appStore = useAppStore();
-      this.error = null;
+    async refresh() {
 
-      try {
-        const { data } = await api.post('/auth/login', { email, password });
-
-        this.currentUser = data.user;
-        appStore.authenticated = true;
-      } catch (error: any) {
-        this.error = error.response.data.message;
-      }
-    },
+    }
   },
 });
