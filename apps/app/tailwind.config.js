@@ -1,12 +1,13 @@
-const textSizes = {
-  regularSmall: {
-    fontSize: '0.8125rem',
-    lineHeight: '1rem',
-  },
-}
+const { createGlobPatternsForDependencies } = require('@nx/vue/tailwind');
+const { join } = require('path');
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+  content: [
+    join(__dirname, 'index.html'),
+    join(__dirname, 'src/**/*!(*.stories|*.spec).{vue,ts,tsx,js,jsx}'),
+    ...createGlobPatternsForDependencies(__dirname),
+  ],
   theme: {
     extend: {
       fontSize: {
@@ -53,4 +54,4 @@ module.exports = {
     },
   },
   plugins: [],
-}
+};
