@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from '@owl-app/lib-contracts';
 import { type IJwtConfig } from '@owl-app/lib-api-bulding-blocks/config/jwt';
 import { IJwtTokenService, IJwtTokenPayload, Token } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
+import { getMilliseconds } from '@owl-app/lib-api-bulding-blocks/utils/get-milliseconds';
 
 import type { IUserRepository } from '../database/repository/user-repository.interface';
 
@@ -32,20 +33,20 @@ export default class JwtTokenService implements IJwtTokenService<User> {
     const payload: IJwtTokenPayload = { email };
     const secret = this.jwtConfig?.secret;
     const expiresIn = this.jwtConfig.expiration_time;
-    const token = this.createToken(payload, secret, `${expiresIn}s`);
+    const token = this.createToken(payload, secret, expiresIn);
 
-    return { token, expiresIn };
+    return { token, expiresIn: getMilliseconds(expiresIn) };
   }
 
   async getJwtRefreshToken(email: string): Promise<Token> {
     const payload: IJwtTokenPayload = { email };
     const secret = this.jwtConfig.refresh_token_secret;
     const expiresIn = this.jwtConfig.refresh_token_expiration_time;
-    const token = this.createToken(payload, secret, `${expiresIn}s`);
+    const token = this.createToken(payload, secret, expiresIn);
 
     await this.setCurrentRefreshToken(token, email);
 
-    return { token, expiresIn };
+    return { token, expiresIn: getMilliseconds(expiresIn) };
   }
 
   async validateToken(pass: string, passwordHash: string): Promise<boolean> {
@@ -66,6 +67,7 @@ export default class JwtTokenService implements IJwtTokenService<User> {
 
   async getUserIfRefreshTokenMatches(refreshToken: string, email: string): Promise<User|null> {
     const user = await this.userRepository.getUserByEmail(email);
+
     if (!user) {
       return null;
     }

@@ -1,18 +1,16 @@
 
 import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
+import { AuthLayout } from '@owl-app/lib-app-core/layouts/auth'
 
 import LoginRoute from './features/login/login.vue';
+import RecoveryPasswordRoute from './features/recovery-password/recovery-password.vue';
 
 export default defineModule({
   id: 'users',
-  name: '$t:user_directory',
+  name: '$t:auth_module',
   icon: 'people_alt',
   routes: {
     public: [
-      {
-        path: '/',
-        redirect: '/login',
-      },
       {
         name: 'login',
         path: 'login',
@@ -26,14 +24,13 @@ export default defineModule({
         },
       },
       {
-        name: 'test',
-        path: 'test',
-        component: LoginRoute,
-        props: (route) => ({
-          ssoErrorCode: route.query.error ? route.query.code : null,
-          logoutReason: route.query.reason,
-        }),
+        name: 'recovery-password',
+        path: 'recovery-password',
+        component: RecoveryPasswordRoute,
+        meta: {
+          public: true,
+        },
       }
-    ],
+    ]
   }
 })

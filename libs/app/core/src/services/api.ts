@@ -34,6 +34,11 @@ export const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalA
 
 	return new Promise((resolve) => {
 		requestQueue.add(async () => {
+			// await sdk.getToken().catch(() => {
+			// 	/* fail gracefully */
+			// });
+
+
 			if (requestConfig.measureLatency) requestConfig.start = performance.now();
 
 			return resolve(requestConfig);

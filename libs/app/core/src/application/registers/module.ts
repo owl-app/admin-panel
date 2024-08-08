@@ -4,7 +4,6 @@ import { sortBy } from 'lodash';
 import { router } from '../router';
 import RouterPass from '../../router/passthrough';
 import type { ModuleConfig } from '../types/module';
-import { useAppLifecycleEventRegistry } from '../registry';
 
 export function getInternalModules(): ModuleConfig[] {
   const modules = import.meta.glob<ModuleConfig>('./*/index.ts', {

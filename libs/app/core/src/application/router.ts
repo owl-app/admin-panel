@@ -17,7 +17,7 @@ import Dashboard from '../pages/dashboard/dashboard.vue';
 
 export const defaultRoutes: RouteRecordRaw[] = [
   {
-    name: 'dasboard',
+    name: 'dashboard',
     path: '/dashboard',
     component: Dashboard,
   },

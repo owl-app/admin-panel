@@ -24,17 +24,17 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { useGlobalStore } from '../../stores/global-store'
+import { useAppStore } from '../../../../stores/app'
+import VuesticLogo from '../../../../components/logo.vue'
 import AppNavbarActions from './components/AppNavbarActions.vue'
-import VuesticLogo from '../VuesticLogo.vue'
 
 defineProps({
   isMobile: { type: Boolean, default: false },
 })
 
-const GlobalStore = useGlobalStore()
+const appStore = useAppStore()
 
-const { isSidebarMinimized } = storeToRefs(GlobalStore)
+const { isSidebarMinimized } = storeToRefs(appStore)
 </script>
 
 <style lang="scss" scoped>

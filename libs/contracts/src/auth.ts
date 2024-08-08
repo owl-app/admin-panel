@@ -3,12 +3,13 @@ import { Tenant } from './tenant';
 import { User } from './user';
 
 export type AuthUserData = {
-	id: string,
-	username: string
-	email: string,
-	company: Company,
-	tenant: Tenant,
-	roles: string[]
+	id: string;
+	username: string;
+	email: string;
+	company: Company;
+	tenant: Tenant;
+	roles: string[];
+	refreshToken?: string;
 }
 
 export type IAuthResponse = {

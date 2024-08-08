@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   BadRequestException,
   Body,
@@ -6,37 +6,39 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import { AuthUserData } from '@owl-app/lib-contracts';
 
 import { Public } from '@owl-app/lib-api-bulding-blocks/metadata/route';
 import { ApiErrorValidationResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error-validation.response';
 import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response';
+import { Token } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
+import { JwtRefreshGuard } from '@owl-app/lib-api-bulding-blocks/passport/guards/jwt-refresh.guard';
 
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 
-import { AuthResponse } from './dto/auth.response';
-import { AuthRequest } from './dto/auth.request';
-import { Login } from './login.service';
-import { unset } from 'lodash';
-import { Token } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
+import { TokenResponse } from '../../dto/token.response';
+import { RefreshToken } from './refresh-token.service';
 
 @Controller('auth')
 @ApiTags('Auth')
 @ApiResponse({ status: 500, description: 'Internal error' })
-export class LoginController {
+export class RefreshTokenController {
   constructor(private readonly commandBus: CommandBus) {}
 
   @ApiOperation({ description: 'login' })
   @HttpCode(HttpStatus.OK)
-  @ApiBody({ type: AuthRequest })
   @Public()
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'The user has been successfully logged.',
-    type: AuthResponse,
+    type: TokenResponse,
   })
   @ApiResponse({
     status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -48,13 +50,16 @@ export class LoginController {
     description: InvalidAuthenticationError.message,
     type: ApiErrorResponse,
   })
-  @Post('/login')
+  @UseGuards(JwtRefreshGuard)
+  @Post('/refresh')
   async login(
-    @Body() auth: AuthRequest,
+    @Req() request: Request & { user: Partial<AuthUserData> },
     @Res({ passthrough: true }) response: Response
-  ): Promise<AuthResponse> {
+  ): Promise<TokenResponse> {
     try {
-      const result = await this.commandBus.execute<Login, Record<'accessToken' | 'refreshToken', Token>>(new Login(auth));
+      const result = await this.commandBus.execute<RefreshToken, Record<'accessToken' | 'refreshToken', Token>>(
+        new RefreshToken({ token: request.cookies['refresh_token'], email: request.user.email })
+      );
 
       response.cookie('access_token', result.accessToken.token, {
         httpOnly: true,
@@ -65,8 +70,7 @@ export class LoginController {
       response.cookie('refresh_token', result.refreshToken.token, {
         httpOnly: true,
         secure: true,
-        maxAge:result.refreshToken.expiresIn,
-
+        maxAge: result.refreshToken.expiresIn,
       });
 
       return {

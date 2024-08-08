@@ -26,5 +26,5 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue"
-  ]
+, "../../core/src/application/events/hydrate-user-event.ts"]
 }

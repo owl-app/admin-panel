@@ -8,9 +8,9 @@ export const JWT_CONFIG_PROVIDER = 'JwtConfig';
 
 export interface IJwtConfig {
   secret: string;
-  expiration_time: number;
+  expiration_time: string;
   refresh_token_secret: string;
-  refresh_token_expiration_time: number;
+  refresh_token_expiration_time: string;
 }
 
 export const JwtConfigProvider = {
@@ -31,9 +31,9 @@ export default registerAs(JWT_CONFIG_NAME, (): IJwtConfig => {
         .description('JWT secret key'),
     },
     expiration_time: {
-      value: parseInt(process.env.JWT_EXPIRATION_TIME),
-      joi: Joi.number()
-        .default(30)
+      value: process.env.JWT_EXPIRATION_TIME,
+      joi: Joi.string()
+        .default('10m')
         .description('minutes after which access tokens expire'),
     },
     refresh_token_secret: {
@@ -44,9 +44,9 @@ export default registerAs(JWT_CONFIG_NAME, (): IJwtConfig => {
         .description('JWT secret key'),
     },
     refresh_token_expiration_time: {
-      value: parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME),
-      joi: Joi.number()
-        .default(30)
+      value: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+      joi: Joi.string()
+      .default('30m')
         .description('minutes after which refresh tokens expire'),
     }
   };

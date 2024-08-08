@@ -22,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        extractJWT,
+        extractJWT('access_token'),
         ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
       ignoreExpiration: false,
@@ -31,7 +31,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: IJwtTokenPayload): Promise<Partial<AuthUserData>> {
-    console.log(payload)
     const user = await this.jwtTokenService.validateUserForJWTStragtegy(payload.email);
 
     if (!user) {

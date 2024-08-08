@@ -4,6 +4,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 
 import { JwtStrategy } from '@owl-app/lib-api-bulding-blocks/passport/jwt.strategy'
+import { JwtRefreshStrategy } from '@owl-app/lib-api-bulding-blocks/passport/strategies/jwt-refresh.strategy'
 import { WinstonLoggerModule } from '@owl-app/winston-logger-nestjs'
 
 import { IJwtConfig, JWT_CONFIG_NAME, JwtConfigProvider } from '@owl-app/lib-api-bulding-blocks/config/jwt'
@@ -21,6 +22,8 @@ import { LoginController } from './features/login/login.http.controller'
 import { GetMeController } from './features/get-me/get-me.http.controller'
 import { LoginHandler } from './features/login/login.service'
 import JwtTokenService from './jwt-token.service'
+import { RefreshTokenController } from './features/refresh-token/refresh-token.http.controller'
+import { RefreshTokenHandler } from './features/refresh-token/refresh-token.service'
 
 @Module({
   imports: [
@@ -50,12 +53,15 @@ import JwtTokenService from './jwt-token.service'
   ],
   controllers: [
     LoginController,
-    GetMeController
+    GetMeController,
+    RefreshTokenController
   ],
   providers: [
     JwtConfigProvider,
     JwtStrategy,
+    JwtRefreshStrategy,
     LoginHandler,
+    RefreshTokenHandler,
     {
       inject: [ConfigService, getRepositoryToken(UserEntity), JwtService],
       provide: IJwtTokenService,

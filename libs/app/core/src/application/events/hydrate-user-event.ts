@@ -1,9 +1,8 @@
 import { NavigationGuardNext, RouteLocationNormalized } from "vue-router";
 
-import { LIFECYCLE_EVENTS } from "@owl-app/lib-app-core/application/contants";
-import { defineRequestEvent } from "@owl-app/lib-app-core/application/defines/events";
-import { useUserStore } from "@owl-app/lib-app-core/stores/user";
-import { useAppStore } from "@owl-app/lib-app-core/stores/app";
+import { LIFECYCLE_EVENTS } from "../contants";
+import { defineRequestEvent } from "../defines/events";
+import { useUserStore } from "../../stores/user";
 
 export default defineRequestEvent({
 	name: 'hydrate-user-event',
@@ -13,7 +12,7 @@ export default defineRequestEvent({
 		console.log('hydrate user event')
     const userStore = useUserStore();
 
-    if(!userStore.currentUser && Date.now() < userStore.accessTokenExpiry)
+    if(!userStore.currentUser && userStore.authenticated)
       try {
         await userStore.hydrate();
       } catch {

@@ -1,6 +1,5 @@
 <template>
   <RouterView />
-  <router-link to="/login">Home</router-link>
 </template>
 
 <style lang="scss">

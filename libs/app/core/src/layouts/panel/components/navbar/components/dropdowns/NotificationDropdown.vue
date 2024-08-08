@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import VaIconNotification from '../../../icons/VaIconNotification.vue'
+import VaIconNotification from '../../../../../../components/icons/VaIconNotification.vue'
 
 const { t, locale } = useI18n()
 

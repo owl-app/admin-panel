@@ -24,23 +24,27 @@ export class UserRepository extends BaseRepository <UserEntity> implements IUser
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    const user = await this.findOne({
-      where: {
-        email,
-      },
-      select: {
-        company: {
-          id: true,
-        }
-      },
-      relations: {
-        tenant: true,
-      },
-    });
-    if (!user) {
-      return null;
+    if(email) {
+      const user = await this.findOne({
+        where: {
+          email,
+        },
+        select: {
+          company: {
+            id: true,
+          }
+        },
+        relations: {
+          tenant: true,
+        },
+      });
+      if (!user) {
+        return null;
+      }
+      return user;
     }
-    return user;
+
+    return null;
   }
 
   async updateRefreshToken(email: string, refreshToken: string): Promise<void> {

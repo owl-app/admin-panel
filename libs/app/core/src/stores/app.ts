@@ -11,7 +11,7 @@ export const useAppStore = defineStore('appStore', () => {
 	const navbarOpen = useLocalStorage('app-store-navbar-open', window.innerWidth >= 1430);
 
 	/** Toggled visibility state of the right contextual sidebar. Synced with localStorage */
-	const sidebarOpen = useLocalStorage('app-store-sidebar-open', window.innerWidth >= 1430);
+	const isSidebarMinimized = useLocalStorage('app-store-sidebar-minimized', true);
 
 	/** Toggled visibility state notifications drawer */
 	const notificationsDrawerOpen = ref(false);
@@ -33,7 +33,7 @@ export const useAppStore = defineStore('appStore', () => {
 
 	return {
 		navbarOpen,
-		sidebarOpen,
+		isSidebarMinimized,
 		notificationsDrawerOpen,
 		fullScreen,
 		initialized,

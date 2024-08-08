@@ -13,6 +13,7 @@ export const useUserStore = defineStore({
   state: () => ({
     authenticated: false as boolean,
     accessTokenExpiry: useLocalStorage<number>('accessTokenExpiry', 0),
+    refreshTokenExpiry: useLocalStorage<number>('refreshTokenExpiry', 0),
     currentUser: null as User | null,
     loading: false,
     error: null,
@@ -39,10 +40,8 @@ export const useUserStore = defineStore({
         const { data } = await api.get(`/user/me`);
 
         this.currentUser = data.user;
-        this.authenticated = true;
       } catch (error: any) {
         this.error = error;
-        this.authenticated = false;
         this.accessTokenExpiry = 0;
       } finally {
         this.loading = false;
@@ -59,10 +58,10 @@ export const useUserStore = defineStore({
         const { data } = await api.post('/auth/login', { email, password });
 
         this.authenticated = true;
-        // const expiredIn = useLocalStorage<number>('accessTokenExpiry', (Date.now() + (data.expires ?? 0)));
         this.accessTokenExpiry = (Date.now() + (data.accessTokenExpires ?? 0) * 1000);
+        this.refreshTokenExpiry = (Date.now() + (data.refreshTokenExpires ?? 0) * 1000);
       } catch (error: any) {
-        this.error = error.response.data.message;
+        throw error.response?.data?.message ?? error.message;
       } finally {
         this.loading = false;
       }
@@ -90,7 +89,20 @@ export const useUserStore = defineStore({
       }
     },
     async refresh() {
+      this.loading = true;
+      this.error = null;
 
+      try {
+        const { data } = await api.post('/auth/refresh');
+
+        this.authenticated = true;
+        this.accessTokenExpiry = (Date.now() + (data.accessTokenExpires ?? 0) * 1000);
+        this.refreshTokenExpiry = (Date.now() + (data.refreshTokenExpires ?? 0) * 1000);
+      } catch (error: any) {
+        this.error = error.response.data.message;
+      } finally {
+        this.loading = false;
+      }
     }
   },
 });
