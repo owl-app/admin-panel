@@ -82,8 +82,10 @@ export default defineComponent({
 
     const routeHasActiveChild = (section: INavigationRoute) => {
       if (!section.children) {
-        return route.path.endsWith(`${section.name}`)
+        return route?.name === section.name
       }
+
+      
 
       return section.children.some(({ name }) => route.path.endsWith(`${name}`))
     }

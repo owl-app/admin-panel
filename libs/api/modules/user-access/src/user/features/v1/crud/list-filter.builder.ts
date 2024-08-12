@@ -12,7 +12,7 @@ export class ListFilterBuilder implements FilterBuilder<Filter<Client>, FilterUs
 
     if (!isEmpty(data.email)) {
       filters.push({
-        name: { like: `%${data.email}%` },
+        email: { like: `%${data.email}%` },
       });
     }
 

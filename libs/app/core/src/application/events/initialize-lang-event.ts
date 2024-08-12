@@ -16,7 +16,7 @@ export default defineRequestEvent({
     from: RouteLocationNormalized,
     next: NavigationGuardNext
   ): Promise<void> => {
-    console.log('run initialize language', to);
+    console.log('run initialize language');
 
     const appStore = useAppStore();
 
@@ -28,10 +28,6 @@ export default defineRequestEvent({
       await setLanguage(lang);
     } catch (error: any) {
       appStore.error = error;
-    } finally {
-      appStore.initializing = false;
     }
-
-    appStore.initialized = true;
   },
 });

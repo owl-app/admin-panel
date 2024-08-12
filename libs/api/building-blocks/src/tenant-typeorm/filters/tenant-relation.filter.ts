@@ -27,6 +27,6 @@ export class TenantRelationFilter<Entity extends TenantAware> implements FilterQ
   {
     qb
       .leftJoin(`${qb.alias}.tenant`, 'tenant')
-      .where('tenant.id = :id', { id: RequestContextService.getCurrentUser().tenant.id })
+      .andWhere('tenant.id = :id', { id: RequestContextService.getCurrentUser().tenant.id })
   }
 }

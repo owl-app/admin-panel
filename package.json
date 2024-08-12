@@ -45,6 +45,7 @@
     "fast-safe-stringify": "^2.1.1",
     "joi": "^17.12.2",
     "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "lodash.filter": "^4.6.0",
     "lodash.merge": "^4.6.2",
     "lodash.omit": "^4.5.0",

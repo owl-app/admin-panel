@@ -1,12 +1,11 @@
 
 import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
-import { AuthLayout } from '@owl-app/lib-app-core/layouts/auth'
 
 import LoginRoute from './features/login/login.vue';
 import RecoveryPasswordRoute from './features/recovery-password/recovery-password.vue';
 
 export default defineModule({
-  id: 'users',
+  id: 'auth',
   name: '$t:auth_module',
   icon: 'people_alt',
   routes: {

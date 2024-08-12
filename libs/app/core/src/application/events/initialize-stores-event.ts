@@ -26,7 +26,7 @@ export default defineRequestEvent({
     from: RouteLocationNormalized,
     next: NavigationGuardNext
   ): Promise<void> => {
-    console.log('run initialize stores', to);
+    console.log('run initialize stores');
 
     const stores = useStores();
     const appStore = useAppStore();

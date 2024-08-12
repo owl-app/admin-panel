@@ -25,14 +25,11 @@ export const defaultRoutes: RouteRecordRaw[] = [
     name: 'private-404',
     path: '/:_(.+)+',
     component: PrivateNotFound,
-    meta: {
-      public: true,
-    },
   },
 ];
 
 export const router = createRouter({
-  history: createWebHistory(getRootPath()),
+  history: createWebHistory(getRootPath()+ 'admin/'),
   routes: defaultRoutes,
 });
 

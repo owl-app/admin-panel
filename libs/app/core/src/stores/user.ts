@@ -96,8 +96,8 @@ export const useUserStore = defineStore({
         const { data } = await api.post('/auth/refresh');
 
         this.authenticated = true;
-        this.accessTokenExpiry = (Date.now() + (data.accessTokenExpires ?? 0) * 1000);
-        this.refreshTokenExpiry = (Date.now() + (data.refreshTokenExpires ?? 0) * 1000);
+        this.accessTokenExpiry = (Date.now() + (data.accessTokenExpires ?? 0));
+        this.refreshTokenExpiry = (Date.now() + (data.refreshTokenExpires ?? 0));
       } catch (error: any) {
         this.error = error.response.data.message;
       } finally {

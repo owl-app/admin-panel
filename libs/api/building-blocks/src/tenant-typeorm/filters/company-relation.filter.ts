@@ -27,6 +27,6 @@ export class CompanyRelationFilter<Entity extends CompanyAware> implements Filte
   {
     qb
       .leftJoin(`${qb.alias}.company`, 'company')
-      .where('company.id = :id', { id: RequestContextService.getCurrentUser().company.id })
+      .andWhere('company.id = :id', { id: RequestContextService.getCurrentUser().company.id })
   }
 }

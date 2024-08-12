@@ -5,6 +5,7 @@ import { createVuestic } from 'vuestic-ui';
 import bootstrap from '@owl-app/lib-app-core/application/bootstrap';
 import { createApplicationConfig } from '@owl-app/lib-app-core/application/config'
 import AuthModule from '@owl-app/lib-app-module-auth'
+import UserModule from '@owl-app/lib-app-module-user'
 
 import App from './App.vue';
 import stores from './stores';
@@ -25,7 +26,10 @@ async function initApp() {
   app.use(createVuestic({ config: vuesticGlobalConfig }));
 
   await bootstrap(app, createApplicationConfig(
-    [AuthModule],
+    [
+      AuthModule,
+      UserModule
+    ],
     [],
     {
       request: []
