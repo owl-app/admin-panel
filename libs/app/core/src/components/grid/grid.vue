@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { computed, PropType, ref, Ref } from 'vue'
+import { computed, PropType, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router';
 import { DataTableColumnSource } from 'vuestic-ui/web-components';
+
+import HeaderBar, { type Props as HeaderBarProps } from '../../layouts/panel/components/header-bar.vue';
+
 import { useItems } from './composables/useItems';
-import type { PageHeader } from './types';
+import { isEqual } from 'lodash';
 
 const props = defineProps({
-  pageHeader: {
-    type: Object as PropType<PageHeader>,
+  headerBar: {
+    type: Object as PropType<HeaderBarProps>,
     required: false,
   },
   columns: {
@@ -22,19 +26,11 @@ const props = defineProps({
     type: String as PropType<string>,
     required: true,
   },
-  //   sortBy: {
-  //     type: Object as PropType<Sorting['sortBy']>,
-  //     required: true,
-  //   },
-  //   sortingOrder: {
-  //     type: Object as PropType<Sorting['sortingOrder']>,
-  //     required: true,
-  //   },
 })
-const page = ref(1);
-const limit = ref(props.defaultLimit);
-const sort = ref([props.defaultSort]);
-const filter = ref({});
+const router = useRouter();
+const route = useRoute();
+
+const { sort, limit, page, filter } = useItemOptions();
 
 const {
     items,
@@ -55,6 +51,7 @@ const showingFrom = computed(() => {
 
   return 1;
 });
+
 const showingTo = computed(() => {
   const to: number = limit.value * page.value;
 
@@ -64,22 +61,59 @@ const showingTo = computed(() => {
 
   return to;
 });
-const changeFilter = (event: { target: HTMLInputElement; } ) => {
+
+watch(
+  [limit, sort, filter, page],
+  async (after, before) => {
+    if (isEqual(after, before)) return;
+
+    const [newLimit, newSort, newFilter, newPage] = after;
+    const [oldLimit, oldSort, oldFilter, oldPage] = before;
+
+    if(newPage !== oldPage) {
+      router.push({ query: { ...route.query, page: page.value } });
+    }
+
+    if(newLimit !== oldLimit) {
+      router.push({ query: { ...route.query, limit: limit.value } });
+    }
+
+    if(!isEqual(newFilter, oldFilter)) {
+      router.push({ query: { ...route.query, ...filter.value } });
+    }
+  },
+  { deep: true, immediate: true }
+);
+
+function changeFilter (event: { target: HTMLInputElement; } ) {
   filter.value = { email: event.target.value};
 }
+
+function useItemOptions() {
+  const page = ref(route.query.page ? parseInt(route.query.page as string) : 1);
+  const limit = ref(route.query.limit ? parseInt(route.query?.limit as string) : props.defaultLimit);
+  const sort = ref([props.defaultSort]);
+  const filter = ref({});
+
+  return { sort, limit, page, filter };
+}
+
 </script>
 
 <template>
-  <div class="page-header">
-    <h1 v-if="pageHeader?.title">{{ pageHeader.title }}</h1>
-  </div>
+  <header-bar
+    :title="headerBar?.title"
+    :description="headerBar?.description"
+    :icon="headerBar?.icon"
+  />
+
   <va-card style="margin-bottom: 10px;">
     <va-card-content>
       <va-collapse
           :v-model="false"
           class="min-w-96"
           header="Filters"
-          icon="home"
+          icon="filter_list"
         >
         <slot
           name="filters"
@@ -153,15 +187,6 @@ const changeFilter = (event: { target: HTMLInputElement; } ) => {
 
   &__header {
     padding: 0;
-  }
-}
-.page-header {
-  display: flex;
-
-  h1 {
-    font-size: 2rem;
-    font-weight: 600;
-    margin: 20px 0 20px 0;
   }
 }
 .wrapper-bottom {

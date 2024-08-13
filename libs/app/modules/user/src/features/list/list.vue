@@ -3,7 +3,7 @@
       <Grid 
         :columns="columns"
         defaultSort="id"
-        :pageHeader="{ title: 'Users' }"
+        :headerBar="headerBar"
       >
         <template #filters="{ filters, changeFilter }">
           <input :value="filters?.email" @input="changeFilter" />
@@ -32,10 +32,17 @@
   
 <script setup>
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue'
+import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 
-const columns = [
+const headerBar = {
+  title: 'Users',
+  description: 'Managing users who have access to the panel',
+  icon: 'people_alt',
+}
+
+const columns = defineVaDataTableColumns([
   { label: 'Full Name', key: 'fullname', sortable: true },
   { label: 'Email', key: 'email', sortable: true },
   { label: 'Phone number', key: 'phoneNumber', sortable: true },
-]
+])
 </script>

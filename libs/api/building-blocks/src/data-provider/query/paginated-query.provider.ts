@@ -28,7 +28,7 @@ export class PaginatedDataProvider<Entity, FiltersData> implements DataProvider<
       page = (paginationQuery.page - 1) * paginationQuery.limit;
     }
 
-    if(this.paginationConfig.availablePerPage.includes(paginationQuery.limit)) {
+    if(this.paginationConfig.availablePerPage.indexOf(paginationQuery.limit)) {
       perPage = paginationQuery.limit
     }
 

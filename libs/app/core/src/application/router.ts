@@ -33,15 +33,20 @@ export const router = createRouter({
   routes: defaultRoutes,
 });
 
-export const onBeforeEach: NavigationGuard = async (to, from, next) => {
+export const onBeforeEach: NavigationGuard = async (to, from) => {
   const appLifecycleEventRegistry = useAppLifecycleEventRegistry();
+  let result = null;
 
   await orderBy(appLifecycleEventRegistry.request, ['priority'], 'desc')
     .filter(({ event }) => event === LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH)
     .reduce(async (prviousEvent, event) => {
       await prviousEvent;
-      await event.callback(to, from, next);
+      result = await event.callback(to, from);
     }, Promise.resolve());
+
+    if (result) {
+      return result;
+    }
 };
 
 let trackTimeout: number | null = null;

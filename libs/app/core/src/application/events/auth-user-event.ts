@@ -1,5 +1,3 @@
-import { NavigationGuardNext, RouteLocationNormalized } from "vue-router";
-
 import { LIFECYCLE_EVENTS } from "../contants";
 import { defineRequestEvent } from "../defines/events";
 import { useUserStore } from "../../stores/user";
@@ -10,8 +8,7 @@ export default defineRequestEvent({
 	name: 'auth-user-event',
     priority: 600,
     event: LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH,
-    callback: async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext): Promise<void> => {
-		console.log('auth user event')
+    callback: async (): Promise<void> => {
     const userStore = useUserStore();
 
     // refresh token if page reload
@@ -24,17 +21,6 @@ export default defineRequestEvent({
         firstLoad = false;
       }
     }
-
-    // if (
-    //   userStore.refreshTokenExpiry &&
-    //   Date.now() < userStore.refreshTokenExpiry
-    // ) {
-    //   try {
-    //     await userStore.refresh();
-    //   } catch {
-    //     // Ignore error
-    //   }
-    // }
 	}
 })
 	

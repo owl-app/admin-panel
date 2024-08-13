@@ -2,10 +2,10 @@
   <div class="profile-dropdown-wrapper">
     <VaDropdown v-model="isShown" :offset="[9, 0]" class="profile-dropdown" stick-to-edges>
       <template #anchor>
-        <VaButton preset="secondary" color="textPrimary">
+        <VaButton preset="secondary" color="textPrimary" icon="account_circle" icon-right="arrow_drop_down">
           <span class="profile-dropdown__anchor min-w-max">
             <slot />
-            <VaAvatar :size="32" color="warning"> 😍 </VaAvatar>
+            {{  fullName }}
           </span>
         </VaButton>
       </template>
@@ -37,6 +37,11 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useColors } from 'vuestic-ui'
+import { useUserStore } from '../../../../../../stores/user'
+
+const userStore = useUserStore()
+
+const fullName = computed(() => `${userStore.currentUser?.firstName} ${userStore.currentUser?.lastName}`)
 
 const { colors, setHSLAColor } = useColors()
 const hoverColor = computed(() => setHSLAColor(colors.focus, { a: 0.1 }))

@@ -1,5 +1,4 @@
 import { ShallowRef } from 'vue';
-import { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 
 import { LIFECYCLE_EVENTS } from '../contants';
 import RouterPass from '../../router/passthrough';
@@ -18,14 +17,8 @@ export function defineModuleRequestEvent(
       name: 'initialize-modules',
       priority: 450,
       event: LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH,
-      callback: async (
-        to: RouteLocationNormalized,
-        from: RouteLocationNormalized,
-        next: NavigationGuardNext
-      ): Promise<void> => {
+      callback: async (): Promise<void> => {
         const appStore = useAppStore();
-
-        console.log('run initialize modules');
 
         if (!appStore.initializing) return;
 
@@ -63,11 +56,7 @@ export function defineModuleRequestEvent(
       name: 'deinitialize-modules',
       priority: 998,
       event: 'onAfterEach',
-      callback: async (
-        to: RouteLocationNormalized,
-        from: RouteLocationNormalized,
-        next: NavigationGuardNext
-      ): Promise<void> => {
+      callback: async (): Promise<void> => {
         registeredModules.value = [];
 
         for (const module of modules) {

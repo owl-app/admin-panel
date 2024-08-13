@@ -1,5 +1,5 @@
 <template>
-  <VaNavbar class="app-layout-navbar py-2 px-0">
+  <VaNavbar class="app-layout-navbar py-3 px-0">
     <template #left>
       <div class="left">
         <Transition v-if="isMobile" name="icon-fade" mode="out-in">
@@ -11,8 +11,10 @@
             @click="isSidebarMinimized = !isSidebarMinimized"
           />
         </Transition>
-        <RouterLink to="/" aria-label="Visit home page">
-          <VuesticLogo />
+        <RouterLink to="/dashboard" aria-label="Owl">
+          <div class="logo-bar">
+            <VuesticLogo /> OWL
+          </div>
         </RouterLink>
       </div>
     </template>
@@ -40,6 +42,9 @@ const { isSidebarMinimized } = storeToRefs(appStore)
 <style lang="scss" scoped>
 .va-navbar {
   z-index: 2;
+  -webkit-box-shadow: 0px 9px 16px -16px rgba(66, 68, 90, 1);
+  -moz-box-shadow: 0px 9px 16px -16px rgba(66, 68, 90, 1);
+  box-shadow: 0px 9px 16px -16px rgba(66, 68, 90, 1);
 
   @media screen and (max-width: 950px) {
     .left {
@@ -49,6 +54,19 @@ const { isSidebarMinimized } = storeToRefs(appStore)
     .app-navbar__actions {
       display: flex;
       justify-content: space-between;
+    }
+  }
+
+  .logo-bar {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000;
+
+    img {
+      height: 40px;
+      margin-right: 0.5rem;
     }
   }
 }

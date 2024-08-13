@@ -13,7 +13,7 @@ export type LifecycleEvent<Event, Callback> = {
     callback: Callback;
 }
 
-export type RequestEventCallbackType = (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => Promise<void>
+export type RequestEventCallbackType = (to: RouteLocationNormalized, from: RouteLocationNormalized, next?: NavigationGuardNext) => Promise<void | string>
 
 export type RequestEventType = typeof LIFECYCLE_EVENTS.REQUEST.ON_AFTER_EACH | typeof LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH
 

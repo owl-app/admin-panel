@@ -3,7 +3,7 @@ import axios from 'axios';
 import { isEqual, throttle } from 'lodash-es';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
 import { computed, ref, unref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+
 import api from '../../../services/api';
 
 export type ManualSortData = {
@@ -23,20 +23,18 @@ export type UsableItems = {
 export type ComputedQuery = {
   limit:
     | Ref<Query['limit']>
-    | ComputedRef<Query['limit']>
     | WritableComputedRef<Query['limit']>;
   sort:
     | Ref<Query['sort']>
-    | ComputedRef<Query['sort']>
     | WritableComputedRef<Query['sort']>;
   filter:
     | Ref<Query['filter']>
-    | ComputedRef<Query['filter']>
     | WritableComputedRef<Query['filter']>;
-  page: Ref<Query['page']> | WritableComputedRef<Query['page']>;
+  page: 
+    | Ref<Query['page']> 
+    | WritableComputedRef<Query['page']>;
   deep?:
     | Ref<Query['deep']>
-    | ComputedRef<Query['deep']>
     | WritableComputedRef<Query['deep']>;
 };
 
@@ -51,8 +49,7 @@ export function useItems(
     page,
     deep: queryDeep,
   } = query;
-  const router = useRouter();
-  const route = useRoute();
+
   const deep = queryDeep ?? ref();
 
   const items = ref<Item[]>([]);
@@ -83,30 +80,10 @@ export function useItems(
   watch(
     [limit, sort, filter, page, deep],
     async (after, before) => {
-      console.log('dzialaaaaaaaaaaaaaaaa', after, before)
       if (isEqual(after, before)) return;
 
-      const [newLimit, newSort, newFilter, newPage] = after;
-      const [oldLimit, oldSort, oldFilter, oldPage] = before;
-
-      if(newPage !== oldPage) {
-        router.push({ query: { ...route.query, page: page.value } });
-      }
-
-      if(newLimit !== oldLimit) {
-        router.push({ query: { ...route.query, limit: limit.value } });
-      }
-
-      console.log(newFilter, oldFilter)
-
-      if(!isEqual(newFilter, oldFilter)) {
-        router.push({ query: { ...route.query, ...filter.value } });
-      }
-      // if (!newCollection || !query) return;
-
-      // if (newCollection !== oldCollection) {
-      //   reset();
-      // }
+      const [newLimit, newSort, newFilter] = after;
+      const [oldLimit, oldSort, oldFilter] = before;
 
       if (
         !isEqual(newFilter, oldFilter) ||
@@ -184,10 +161,5 @@ export function useItems(
 
       if (!loadingTimeout) loading.value = false;
     }
-  }
-
-  function reset() {
-    items.value = [];
-    totalCount.value = null;
   }
 }

@@ -23,8 +23,6 @@ export default defineRequestEvent({
   event: LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH,
   callback: async (
     to: RouteLocationNormalized,
-    from: RouteLocationNormalized,
-    next: NavigationGuardNext
   ): Promise<void> => {
     console.log('run initialize stores');
 

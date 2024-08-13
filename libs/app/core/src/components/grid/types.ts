@@ -1,9 +1,3 @@
-export type PageHeader = {
-  title: string;
-  description: string;
-  icon: string;
-}
-
 export type Item = Record<string, any>;
 
 export type Query = {

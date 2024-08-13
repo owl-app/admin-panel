@@ -27,7 +27,7 @@ export default registerAs(PAGINATION_CONFIG_NAME, (): PaginationConfig => {
         .description('Items per page'),
     },
     availablePerPage: {
-      value: process.env.PAGINATION_AVAILABLE_PER_PAGE || [10,25, 50, 100],
+      value: process.env.PAGINATION_AVAILABLE_PER_PAGE || [10, 50, 100],
       joi: Joi.array()
         .optional()
         .empty(Joi.array().length(0))
