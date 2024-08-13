@@ -14,14 +14,13 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '@owl-app/lib-api-bulding-blocks/metadata/route';
 import { ApiErrorValidationResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error-validation.response';
 import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response';
+import { Token } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
 
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 
 import { AuthResponse } from './dto/auth.response';
 import { AuthRequest } from './dto/auth.request';
 import { Login } from './login.service';
-import { unset } from 'lodash';
-import { Token } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
 
 @Controller('auth')
 @ApiTags('Auth')

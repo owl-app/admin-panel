@@ -2,6 +2,7 @@
 import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
 
 import LoginRoute from './features/login/login.vue';
+import LogoutRoute from './features/logout/logout.vue';
 import RecoveryPasswordRoute from './features/recovery-password/recovery-password.vue';
 
 export default defineModule({
@@ -20,6 +21,14 @@ export default defineModule({
         }),
         meta: {
           public: true,
+        },
+      },
+      {
+        name: 'logout',
+        path: 'logout',
+        component: LogoutRoute,
+        meta: {
+          private: true,
         },
       },
       {

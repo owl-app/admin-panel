@@ -52,7 +52,7 @@ export class RefreshTokenController {
   })
   @UseGuards(JwtRefreshGuard)
   @Post('/refresh')
-  async login(
+  async refresh(
     @Req() request: Request & { user: Partial<AuthUserData> },
     @Res({ passthrough: true }) response: Response
   ): Promise<TokenResponse> {

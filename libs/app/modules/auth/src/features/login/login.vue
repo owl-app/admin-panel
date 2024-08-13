@@ -3,7 +3,7 @@
     <VaForm ref="form" @submit.prevent="submit">
       <h1 class="font-semibold text-4xl mb-4">Log in</h1>
       <p class="text-base mb-4 leading-5">
-        New to Vuestic?
+        New to Owl?
         <RouterLink :to="{ name: 'login' }" class="font-semibold text-primary">Sign up</RouterLink>
       </p>
       <VaInput
@@ -48,7 +48,6 @@
 
 <script lang="ts" setup>
 import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
 import { useUserStore } from '@owl-app/lib-app-core/stores/user';
 import { router } from '@owl-app/lib-app-core/application/router';
@@ -56,7 +55,6 @@ import { validators } from './utils'
 
 const userStore = useUserStore()
 const { validate } = useForm('form')
-const { push } = useRouter()
 const { init } = useToast()
 
 const formData = reactive({

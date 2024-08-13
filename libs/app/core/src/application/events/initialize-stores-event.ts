@@ -24,8 +24,6 @@ export default defineRequestEvent({
   callback: async (
     to: RouteLocationNormalized,
   ): Promise<void> => {
-    console.log('run initialize stores');
-
     const stores = useStores();
     const appStore = useAppStore();
     const userStore = useUserStore();
@@ -33,18 +31,19 @@ export default defineRequestEvent({
     if (
       to.meta?.public === true ||
       appStore.initialized ||
-      appStore.initializing
+      appStore.initializing || 
+      !userStore.authenticated
     )
       return;
 
     appStore.initializing = true;
 
+    console.log('run initialize stores');
+
     try {
       const currentUser = userStore.currentUser;
 
       if (currentUser?.role) {
-        // await Promise.all([permissionsStore.hydrate(), fieldsStore.hydrate({ skipTranslation: true })]);
-
         const hydratedStores = ['userStore'];
         await Promise.all(
           stores

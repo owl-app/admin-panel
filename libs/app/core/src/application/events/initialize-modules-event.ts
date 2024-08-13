@@ -4,6 +4,7 @@ import { LIFECYCLE_EVENTS } from '../contants';
 import RouterPass from '../../router/passthrough';
 import { defineRequestEvent } from '../defines/events';
 import { useAppStore } from '../../stores/app';
+import { useUserStore } from '../../stores/user';
 import { RequestEvent } from '../types/lifecycle';
 import { ModuleConfig } from '../types/module';
 import { router } from '../router';
@@ -55,8 +56,19 @@ export function defineModuleRequestEvent(
     defineRequestEvent({
       name: 'deinitialize-modules',
       priority: 998,
-      event: 'onAfterEach',
+      event: LIFECYCLE_EVENTS.REQUEST.ON_AFTER_EACH,
       callback: async (): Promise<void> => {
+        const appStore = useAppStore();
+        const userStore = useUserStore();
+
+        if (
+          !appStore.initialized ||
+          userStore.authenticated
+        )
+          return;
+
+        console.log('deinitialized-modules')
+
         registeredModules.value = [];
 
         for (const module of modules) {
@@ -66,6 +78,9 @@ export function defineModuleRequestEvent(
             registeredModules.value.push(module);
           }
         }
+
+        appStore.initialized = false;
+
       },
     })
   ]

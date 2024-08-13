@@ -24,6 +24,8 @@ import { LoginHandler } from './features/login/login.service'
 import JwtTokenService from './jwt-token.service'
 import { RefreshTokenController } from './features/refresh-token/refresh-token.http.controller'
 import { RefreshTokenHandler } from './features/refresh-token/refresh-token.service'
+import { LogoutController } from './features/logout/logout.http.controller'
+import { LogoutHandler } from './features/logout/logout.service'
 
 @Module({
   imports: [
@@ -54,7 +56,8 @@ import { RefreshTokenHandler } from './features/refresh-token/refresh-token.serv
   controllers: [
     LoginController,
     GetMeController,
-    RefreshTokenController
+    RefreshTokenController,
+    LogoutController,
   ],
   providers: [
     JwtConfigProvider,
@@ -62,6 +65,7 @@ import { RefreshTokenHandler } from './features/refresh-token/refresh-token.serv
     JwtRefreshStrategy,
     LoginHandler,
     RefreshTokenHandler,
+    LogoutHandler,
     {
       inject: [ConfigService, getRepositoryToken(UserEntity), JwtService],
       provide: IJwtTokenService,

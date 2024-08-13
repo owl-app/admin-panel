@@ -44,28 +44,24 @@ export const onBeforeEach: NavigationGuard = async (to, from) => {
       result = await event.callback(to, from);
     }, Promise.resolve());
 
-    if (result) {
-      return result;
-    }
+  if (result) {
+    return result;
+  }
 };
 
-let trackTimeout: number | null = null;
+export const onAfterEach: NavigationHookAfter = async (to, from) => {
+  const appLifecycleEventRegistry = useAppLifecycleEventRegistry();
+  let result = null;
 
-export const onAfterEach: NavigationHookAfter = (to) => {
-  const userStore = useUserStore();
+  await orderBy(appLifecycleEventRegistry.request, ['priority'], 'desc')
+    .filter(({ event }) => event === LIFECYCLE_EVENTS.REQUEST.ON_AFTER_EACH)
+    .reduce(async (prviousEvent, event) => {
+      await prviousEvent;
+      result = await event.callback(to, from);
+    }, Promise.resolve());
 
-  if (to.meta.public !== true && to.meta.track !== false) {
-    // The timeout gives the page some breathing room to load. No need to clog up the thread with
-    // this call while more important things are loading
-
-    if (trackTimeout) {
-      window.clearTimeout(trackTimeout);
-      trackTimeout = null;
-    }
-
-    trackTimeout = window.setTimeout(() => {
-      userStore.trackPage(to);
-    }, 500);
+  if (result) {
+    return result;
   }
 };
 

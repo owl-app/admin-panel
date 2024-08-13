@@ -7,7 +7,7 @@ export interface IUserRepository {
 
   updateLastLogin(username: string): Promise<void>;
 
-  updateRefreshToken(username: string, refreshToken: string): Promise<void>;
+  updateRefreshToken(email: string, refreshToken: string | null): Promise<void>;
 
   register(user: User): Promise<void>;
 }

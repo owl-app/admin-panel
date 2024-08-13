@@ -21,6 +21,8 @@ export interface IJwtTokenService<User> {
   validateUserForJWTStragtegy(email: string): Promise<User|null>;
 
   getUserIfRefreshTokenMatches(refreshToken: string, email: string): Promise<User|null>;
+
+  removeRefreshToken(email: string): Promise<void>;
 }
 
 export const IJwtTokenService = Symbol('IJwtTokenService');

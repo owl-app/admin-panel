@@ -4,9 +4,10 @@ import api, { RequestConfig } from '../services/api';
 import { userName } from '../utils/user-name';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
-import type { RouteLocationNormalized } from 'vue-router';
+import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router';
 import { useAppStore } from './app';
 import { useLocalStorage } from '@vueuse/core';
+import { router } from '../application/router';
 
 export const useUserStore = defineStore({
   id: 'userStore',
@@ -64,6 +65,30 @@ export const useUserStore = defineStore({
         throw error.response?.data?.message ?? error.message;
       } finally {
         this.loading = false;
+      }
+    },
+    async logout() {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        await api.post('/auth/logout');
+      } catch (error: any) {
+        this.error = error.response.data.message;
+      } finally {
+        this.loading = false;
+        this.authenticated = false;
+        this.currentUser = null;
+        this.accessTokenExpiry = 0;
+        this.refreshTokenExpiry = 0;
+
+        const location: RouteLocationRaw = {
+          path: `/login`,
+        };
+
+        setTimeout(() => {
+          router.push(location);
+        }, 500);
       }
     },
     async trackPage(to: RouteLocationNormalized) {

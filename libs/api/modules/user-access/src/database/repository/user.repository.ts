@@ -47,7 +47,7 @@ export class UserRepository extends BaseRepository <UserEntity> implements IUser
     return null;
   }
 
-  async updateRefreshToken(email: string, refreshToken: string): Promise<void> {
+  async updateRefreshToken(email: string, refreshToken: string | null): Promise<void> {
     await this.update(
       {
         email,

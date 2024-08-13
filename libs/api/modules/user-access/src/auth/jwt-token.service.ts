@@ -83,6 +83,10 @@ export default class JwtTokenService implements IJwtTokenService<User> {
     return null;
   }
 
+  public async removeRefreshToken(email: string): Promise<void> {
+    await this.userRepository.updateRefreshToken(email, null);
+  }
+
   private async setCurrentRefreshToken(refreshToken: string, email: string) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
     
