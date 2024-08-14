@@ -1,7 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
 
-import { UserDto } from "../../../../dto/user.dto";
-
 export class CreateUserRequest {
 
     @ApiProperty({ type: () => String, example: 'test@fajny.pl'})

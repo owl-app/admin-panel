@@ -11,7 +11,7 @@ import {
   HttpCode,
   Injectable,
 } from '@nestjs/common'
-import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
+import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth, ApiQuery, getSchemaPath, ApiExtraModels } from '@nestjs/swagger'
 
 import { InjectAssemblerQueryService, QueryService } from '@owl-app/crud-core'
 import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
@@ -28,6 +28,8 @@ import { UserDto } from '../../../dto/user.dto'
 import { CreateUserRequest, UpdateUserRequest, FilterUserDto, UserPaginatedResponse } from './dto'
 import { createUserValidation } from './validation'
 import { UserAssembler } from './user.assembler'
+import { ApiFilterQuery } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/api-filter-query.decorator'
+import { FilterStringApiProperty } from '@owl-app/lib-api-bulding-blocks/data-provider/query/filters/string'
 
 @ApiTags('User')
 @Controller('users')
@@ -117,11 +119,22 @@ export class UserCrudController {
       description:
         'Invalid input, The response body may contain clues as to what went wrong',
     })
+    @ApiFilterQuery([
+      {
+        name: 'filters[search]', 
+        filter: FilterStringApiProperty,
+      },
+      {
+        name: 'filters[email]', 
+        filter: 'string'
+      },
+    ])
   @Get()
   async paginated(
     @Query() pagination: PaginatedQuery,
     @Query('filters') filters: FilterUserDto = {}
   ): Promise<UserPaginatedResponse> {
+    console.log(filters)
     const paginated = await this.paginatedService.getData(filters, pagination);
 
     return new UserPaginatedResponse(paginated);
