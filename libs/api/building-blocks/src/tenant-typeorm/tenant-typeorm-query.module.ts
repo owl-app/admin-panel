@@ -10,7 +10,6 @@ import { NestjsQueryTypeOrmModule } from '@owl-app/crud-nestjs'
 import { TypeOrmEntitesOpts } from '../typeorm/types';
 import { DEFAULT_DATA_SOURCE_NAME } from '../typeorm/constants';
 import { getRepositoryToken } from '../typeorm/common/tenant-typeorm.utils';
-
 import { AppTypeOrmQueryService } from '../query-service/app-typeorm-query.service';
 import { FilterBuilder } from '../data-provider/filter.builder';
 import { createPaginatedQueryServiceProvider } from '../data-provider/query/providers';
@@ -18,8 +17,9 @@ import { PaginationConfigProvider } from '../config/pagination';
 import { FilterQuery } from '../registry/interfaces/filter-query';
 import { EntitySetter } from '../registry/interfaces/entity-setter';
 import { TypeOrmModule } from '../typeorm/typeorm.module';
-
 import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from '../registry/constants';
+import FiltersRegistry from '../data-provider/query/filters.registry';
+
 import { CompanySetter } from './setters/company.setter';
 import { TenantRelationFilter } from './filters/tenant-relation.filter';
 import { TenantRelationSetter } from './setters/tenant-relation.setter';
@@ -109,6 +109,7 @@ export class TenantTypeOrmQueryModule {
           ],
           assemblers: [...assemblers ?? []],
         }),
+        FiltersRegistry,
       ],
       module: TenantTypeOrmQueryModule,
       providers: [PaginationConfigProvider, ...dataProviders ?? []],

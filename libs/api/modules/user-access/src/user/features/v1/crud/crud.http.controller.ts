@@ -20,6 +20,7 @@ import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/pagin
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
 import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
+import { QueryFilter } from '@owl-app/lib-api-bulding-blocks/data-provider/decorators/query-filter.decorator';
 
 import { UserEntity } from '../../../../domain/entity/user.entity'
 import { UserDto } from '../../../dto/user.dto'
@@ -118,8 +119,8 @@ export class UserCrudController {
     })
   @Get()
   async paginated(
-    @Query() filters: FilterUserDto,
-    @Query() pagination: PaginatedQuery
+    @Query() pagination: PaginatedQuery,
+    @Query('filters') filters: FilterUserDto = {}
   ): Promise<UserPaginatedResponse> {
     const paginated = await this.paginatedService.getData(filters, pagination);
 
