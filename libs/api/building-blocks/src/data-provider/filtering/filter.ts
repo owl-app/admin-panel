@@ -1,4 +1,4 @@
 export interface Filter<FilterData>
 {
-    apply<QueryData>(fields: string[], data: QueryData): FilterData;
+    apply<QueryData, Options>(fields: string[], data: QueryData, options?: Options): FilterData;
 }

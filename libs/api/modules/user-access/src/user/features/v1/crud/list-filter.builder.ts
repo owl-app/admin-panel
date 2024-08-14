@@ -10,7 +10,7 @@ export class ListFilterBuilder extends QueryFilterBuilder<Client, FilterUserDto>
   {
     const filters: Filter<Client>[] = []
 
-    filters.push(this.filterRegistry.get('string').apply(['email'], data?.search?.value));
+    filters.push(this.filterRegistry.get('string').apply(['email'], data?.search));
 
     return {
       or: filters

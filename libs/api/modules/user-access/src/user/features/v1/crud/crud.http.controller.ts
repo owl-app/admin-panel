@@ -134,7 +134,6 @@ export class UserCrudController {
     @Query() pagination: PaginatedQuery,
     @Query('filters') filters: FilterUserDto = {}
   ): Promise<UserPaginatedResponse> {
-    console.log(filters)
     const paginated = await this.paginatedService.getData(filters, pagination);
 
     return new UserPaginatedResponse(paginated);
