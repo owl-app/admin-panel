@@ -13,7 +13,7 @@ export default defineRequestEvent({
         const userStore = useUserStore();
         const appStore = useAppStore();
 
-        if(to.name === 'login' && to.name !== from.name && userStore.authenticated) {
+        if((to.name === 'login' || to.fullPath === '/') && to.name !== from.name && userStore.authenticated) {
             return '/dashboard';
         } else if (to.meta?.public !== true && !userStore.authenticated && to.matched.length > 0) {
             return '/login?redirect=' + encodeURIComponent(to.fullPath);

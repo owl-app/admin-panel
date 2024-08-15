@@ -113,7 +113,7 @@ export class ClientCrudController {
     })
   @Get()
   async paginated(
-    @Query() filters: FilterClientDto,
+    @Query('filters') filters: FilterClientDto,
     @Query() pagination: PaginatedQuery
   ): Promise<ClientPaginatedResponseDto> {
     const paginated = await this.paginatedService.getData(filters, pagination);

@@ -20,6 +20,9 @@
       ],
       "@owl-app/lib-app-core/*": ["libs/app/core/src/*"],
       "@owl-app/lib-app-module-auth/*": ["libs/app/modules/auth/src/*"],
+      "@owl-app/lib-app-module-client": [
+        "libs/app/modules/client/src/index.ts"
+      ],
       "@owl-app/lib-app-module-user/*": ["libs/app/modules/user/src/*"],
       "@owl-app/lib-contracts": ["libs/contracts/src/index.ts"],
       "@owl-app/rbac-manager": ["packages/server/rbac/manager/src/index.ts"],

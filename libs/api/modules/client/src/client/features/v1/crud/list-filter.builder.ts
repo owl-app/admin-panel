@@ -1,23 +1,20 @@
 import { Client } from '@owl-app/lib-contracts';
-import { FilterBuilder } from '@owl-app/lib-api-bulding-blocks/data-provider/filter.builder';
+import { QueryFilterBuilder } from '@owl-app/lib-api-bulding-blocks/data-provider/query/query-filter.builder';
 import { Filter } from '@owl-app/crud-core';
-import { isEmpty } from '@owl-app/utils';
 
 import { FilterClientDto } from './dto';
 
-export class ListFilterBuilder implements FilterBuilder<Filter<Client>, FilterClientDto> {
+export class ListFilterBuilder extends QueryFilterBuilder<Client, FilterClientDto> {
   build(data: FilterClientDto): Filter<Client>
   {
-    const filters = [];
+    const filters: Filter<Client>[] = []
 
-    if (!isEmpty(data.name)) {
-      filters.push({
-        name: { like: `%${data.name}%` },
-      });
-    }
+    filters.push(this.filterRegistry.get('string').apply(['name'], data?.search));
+
+    console.log(filters)
 
     return {
-      or: filters,
+      or: filters
     }
   }
 }

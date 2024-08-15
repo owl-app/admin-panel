@@ -13,14 +13,21 @@ export default {
   routes: [
     {
       name: 'dashboard',
-      displayName: 'menu.dashboard',
+      displayName: 'dashboard',
       meta: {
         icon: 'vuestic-iconset-dashboard',
       },
     },
     {
+      name: 'client-list',
+      displayName: 'clients',
+      meta: {
+        icon: 'sensor_occupied',
+      },
+    },
+    {
       name: 'user-list',
-      displayName: 'menu.users',
+      displayName: 'users',
       meta: {
         icon: 'group',
       },

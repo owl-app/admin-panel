@@ -1,9 +1,9 @@
-import type { Item, Query } from '../types';
 import axios from 'axios';
 import { isEqual, throttle } from 'lodash-es';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
 import { computed, ref, unref, watch } from 'vue';
 
+import type { Item, Query } from '../types';
 import api from '../../../services/api';
 
 export type ManualSortData = {
@@ -124,13 +124,11 @@ export function useItems(
     }, 150);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       const response = await api.get<any>(url, {
         params: {
           limit: unref(limit),
           sort: unref(sort),
           page: unref(page),
-          filter: unref(filter),
           deep: unref(deep),
           ...unref(filter)
         },

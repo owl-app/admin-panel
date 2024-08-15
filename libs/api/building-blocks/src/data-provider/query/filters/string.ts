@@ -59,15 +59,11 @@ export class StringFilter<Entity> implements Filter<FilterQueryService<Entity>> 
     ): FilterQueryService<Entity> {
         const filters: FilterQueryService<Entity> = {};
 
-        console.log('data', data);
-
         if (
-            ![StringFilter.TYPE_NOT_EMPTY, StringFilter.TYPE_EMPTY].indexOf(data.type) &&
-            isEmpty(data.value)
+            isEmpty(data?.type) || 
+            (![StringFilter.TYPE_NOT_EMPTY, StringFilter.TYPE_EMPTY].indexOf(data.type) && isEmpty(data.value))
         ) 
             return {};
-
-        console.log('filters', filters);
     
         fields.map((field) => {
             filters[field as keyof Entity] = this.getQuery(data.type, data.value) as FilterQueryService<Entity>[keyof Entity];
@@ -79,8 +75,6 @@ export class StringFilter<Entity> implements Filter<FilterQueryService<Entity>> 
     private getQuery<K extends keyof Entity>(type: string, value: string): FilterFieldComparison<K>
     {
         let filter = null;
-
-        console.log('type', type);
 
         switch (type) {
             case StringFilter.TYPE_EQUAL:

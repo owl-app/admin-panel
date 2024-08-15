@@ -1,12 +1,15 @@
 <template>
     <panel-layout>
       <Grid 
+        url="users"
         :columns="columns"
         defaultSort="id"
         :headerBar="headerBar"
       >
         <template #filters="{ filters, changeFilter }">
-          <input :value="filters?.email" @input="changeFilter" />
+          <div class="grid grid-cols-3 gap-4">
+            <string-filter :value="filters?.search" :change-filter="changeFilter" />
+          </div>
         </template>
 
         <template #cell(fullname)="{ rowData }">
@@ -31,11 +34,16 @@
 </template>
   
 <script setup>
-import Grid from '@owl-app/lib-app-core/components/grid/grid.vue'
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
+import { useI18n } from 'vue-i18n'
+
+import Grid from '@owl-app/lib-app-core/components/grid/grid.vue'
+import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue'
+
+const { t } = useI18n();
 
 const headerBar = {
-  title: 'Users',
+  title: t('users'),
   description: 'Managing users who have access to the panel',
   icon: 'people_alt',
 }

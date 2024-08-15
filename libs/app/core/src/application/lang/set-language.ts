@@ -2,7 +2,7 @@
 // import { useFieldsStore } from '@/stores/fields';
 import { useTranslationsStore } from '../../stores/translations';
 import { loadDateFNSLocale } from '../../utils/get-date-fns-locale';
-import * as availableLanguages from './available-languages.yaml';
+import availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
 
 export async function setLanguage(lang: Language): Promise<boolean> {
@@ -12,7 +12,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 
 	if (Object.keys(availableLanguages).includes(lang) === false) {
 		// eslint-disable-next-line no-console
-		console.warn(`"${lang}" is not an available language in the Directus app.`);
+		console.warn(`"${lang}" is not an available language in the app.`);
 	} else {
 		if (loadedLanguages.includes(lang) === false) {
 			try {

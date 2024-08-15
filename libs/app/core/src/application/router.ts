@@ -1,19 +1,20 @@
 import { orderBy } from 'lodash';
+import qs from 'qs'
 import {
   createRouter,
   createWebHistory,
   NavigationGuard,
   NavigationHookAfter,
 } from 'vue-router';
-import type { RouteRecordRaw } from 'vue-router';
+import type { LocationQuery, RouteRecordRaw } from 'vue-router';
 
-import { useUserStore } from '../stores/user';
 import { getRootPath } from '../utils/get-root-path';
 import PrivateNotFound from '../pages/private-not-found.vue';
 
 import { useAppLifecycleEventRegistry } from './registry';
 import { LIFECYCLE_EVENTS } from './contants';
 import Dashboard from '../pages/dashboard/dashboard.vue';
+
 
 export const defaultRoutes: RouteRecordRaw[] = [
   {
@@ -31,6 +32,10 @@ export const defaultRoutes: RouteRecordRaw[] = [
 export const router = createRouter({
   history: createWebHistory(getRootPath()+ 'admin/'),
   routes: defaultRoutes,
+  parseQuery(search: string): LocationQuery {
+    return qs.parse(search) as LocationQuery;
+  },
+  stringifyQuery: qs.stringify
 });
 
 export const onBeforeEach: NavigationGuard = async (to, from) => {
