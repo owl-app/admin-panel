@@ -1,7 +1,4 @@
-export type APIError = {
+export type ApiValidationError = {
 	message: string;
-	extensions: {
-		code: string;
-		[key: string]: any;
-	};
+	path: string[];
 };

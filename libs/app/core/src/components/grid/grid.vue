@@ -120,7 +120,11 @@ function useItemOptions() {
       :title="headerBar?.title"
       :description="headerBar?.description"
       :icon="headerBar?.icon"
-    />
+    >
+      <template #actions>
+        <slot name="header-bar-actions" />
+      </template>
+    </header-bar>
     <va-card style="margin-bottom: 10px;">
       <va-card-content>
         <va-collapse

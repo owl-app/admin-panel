@@ -1,112 +1,146 @@
-import axios from 'axios';
-import type { Ref } from 'vue';
-import { ref} from 'vue';
+import type { ComputedRef, Ref } from 'vue';
+import { computed, ref} from 'vue';
+import { useToast } from 'vuestic-ui/web-components';
+
+import { isEmpty } from '@owl-app/utils';
 
 import api from '../services/api';
+import { Item, PrimaryKey } from '../types/item';
+import { i18n } from '../application/lang';
+import { ApiValidationError } from '../types/error';
 
 export type ManualSortData = {
   item: string | number;
   to: string | number;
 };
 
-export type UsableItem = {
-  item: Ref<Record<string, any>>;
+export type UsableItem<T extends Item> = {
+  primaryKey: Ref<PrimaryKey | undefined | null>;
+  item: Ref<T | null>;
   loading: Ref<boolean>;
   error: Ref<any>;
-  getItem: (id: string | number) => Promise<void>;
-  createItem: (data: Record<string, any>) => Promise<void>;
-  updateItem: (id: string | number, data: Record<string, any>) => Promise<void>;
+  getItem: () => Promise<void>;
+  isNew: ComputedRef<boolean>;
+  saving: Ref<boolean>;
+  save: (data: T) => Promise<T>;
+  deleting: Ref<boolean>;
+  remove: () => Promise<void>;
+  validationErrors: Ref<any[]>;
 };
 
-export function useItem(
-  url: string,
-): UsableItem {
-  const item = ref<Record<string, any>>({});
+export function useItem<T extends Item>(
+  //change to collection like in directus with permissions
+  collection: string,
+  id?: PrimaryKey | undefined,
+): UsableItem<T> {
+  const { init: notify } = useToast();
+
+  const item: Ref<T | null> = ref(null);
   const loading = ref(false);
+  const saving = ref(false);
+  const deleting = ref(false);
   const error = ref<any>(null);
+  const validationErrors = ref<any[]>([]);
+  const primaryKey = ref<PrimaryKey | undefined | null>(id ?? null);
+  const isNew = computed(() =>  isEmpty(primaryKey.value));
 
-  const existingRequests: Record<
-    'item',
-    AbortController | null
-  > = {
-    item: null,
-  };
+  const endpoint = computed(() => {
+    if (isNew.value) {
+      return collection;
+    }
 
-  let loadingTimeout: NodeJS.Timeout | null = null;
+    return `${collection}/${encodeURIComponent(primaryKey.value as string)}`;
+  });
 
   return {
+    primaryKey,
     item,
     loading,
     error,
     getItem,
-    createItem,
-    updateItem,
+    isNew,
+    saving,
+    save,
+    deleting,
+    remove,
+    validationErrors,
   };
 
-  async function getItem(id: string | number) {
-    runAction(async () => {
-      const response = await api.get<any>('/' + url + '/' + id);
-
-      const fetchedItem = response.data;
-      existingRequests.item = null;
-
-      item.value = fetchedItem;
-    })
-  }
-
-  async function createItem(data: Record<string, any>) {
-    runAction(async () => {
-      const response = await api.post<any>('/' + url, data);
-
-      const fetchedItem = response.data;
-      existingRequests.item = null;
-
-      item.value = fetchedItem;
-    })
-  }
-
-  async function updateItem(id: string | number, data: Record<string, any>) {
-    runAction(async () => {
-      const response = await api.put<any>('/' + url + '/' + id, data);
-
-      const fetchedItem = response.data;
-      existingRequests.item = null;
-
-      item.value = fetchedItem;
-    })
-  }
-
-  async function runAction(action: () => Promise<any>) {
-    let isCurrentRequestCanceled = false;
-
-    if (existingRequests.item) existingRequests.item.abort();
-    existingRequests.item = new AbortController();
-
+  async function getItem() {
+    loading.value = true;
     error.value = null;
 
-    if (loadingTimeout) {
-      clearTimeout(loadingTimeout);
+    try {
+      const response = await api.get(endpoint.value);
+      item.value = response.data;
+    } catch (err) {
+      error.value = err;
+    } finally {
+      loading.value = false;
     }
+  }
 
-    loadingTimeout = setTimeout(() => {
-      loading.value = true;
-    }, 150);
+  async function save(data: T) {
+    saving.value = true;
+    validationErrors.value = [];
 
     try {
-      await action();
-    } catch (err: any) {
-      if (axios.isCancel(err)) {
-        isCurrentRequestCanceled = true;
+      let response;
+
+      if (isNew.value) {
+        response = await api.post(endpoint.value, data);
+
+        notify({
+          message: i18n.global.t('item_create_success', 1),
+          color: 'success',
+        })
       } else {
-        error.value = err;
-      }
-    } finally {
-      if (loadingTimeout && !isCurrentRequestCanceled) {
-        clearTimeout(loadingTimeout);
-        loadingTimeout = null;
+        response = await api.put(endpoint.value, data);
+
+        notify({
+          message: i18n.global.t('item_update_success', 1),
+          color: 'success',
+        })
       }
 
-      if (!loadingTimeout) loading.value = false;
+      item.value = response.data;
+
+      return response.data;
+    } catch (error) {
+      saveErrorHandler(error);
+    } finally {
+      saving.value = false;
+    }
+  }
+
+  async function remove() {
+    deleting.value = true;
+
+    try {
+      await api.delete(endpoint.value);
+
+      item.value = null;
+
+      notify({
+        message: i18n.global.t('item_delete_success', 1),
+        color: 'success',
+      })
+    } catch (errorResponse) {
+      error.value = errorResponse;
+      throw errorResponse;
+    } finally {
+      deleting.value = false;
+    }
+  }
+
+  function saveErrorHandler(error: any) {
+    if (error?.response?.data?.errors) {
+      validationErrors.value = error.response.data.errors
+        .map((err: ApiValidationError) => {
+          return [err.path.join('.'), err.message];
+        });
+
+      throw error;
     }
   }
 }

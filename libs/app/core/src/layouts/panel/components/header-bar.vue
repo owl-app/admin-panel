@@ -9,16 +9,22 @@ withDefaults(defineProps<Props>(), { });
 </script>
 
 <template>
-    <div class="header-bar">
-        <div class="header-icon">
-            <va-icon class="material-symbols-outlined" :name="icon" :size="30" color="#158DE3" />
-        </div>
-
-        <div class="title">
-          <h1 v-if="title">{{ title }}</h1>
-          <div class="description" v-if="description">{{ description }}</div>
-        </div>
+<div class="grid grid-cols-2 gap-2">
+  <div class="header-bar">
+    <div class="header-icon">
+        <va-icon class="material-symbols-outlined" :name="icon" :size="30" color="#158DE3" />
     </div>
+
+    <div class="title">
+      <h1 v-if="title">{{ title }}</h1>
+      <div class="description" v-if="description">{{ description }}</div>
+    </div>
+  </div>
+  <div class="content-top header-actions">
+    <slot name="actions"></slot>
+  </div>
+</div>
+
 </template>
 
 <style lang="scss" scoped>
@@ -56,5 +62,8 @@ withDefaults(defineProps<Props>(), { });
     width: var(--v-header-bar-icon-width, 50px);
     margin-right: 1rem;
   }
+}
+.header-actions {
+  text-align: right;
 }
 </style>

@@ -4,69 +4,40 @@
     v-model="model"
     ok-text="Apply"
     hide-default-actions
-    @beforeOpen="beforeOpen"
   >
     <h3 class="va-h5">
-      Title
+      {{ user ? 'Edit' : 'Create' }} User
     </h3>
     <user-form
-      :user="item"
+      :user="user"
       save-button-label="Save"
       @close="cancel"
-      @save="
-          (user) => {
-            onProjectSaved(user)
+      @saved="
+          () => {
             ok()
           }
       "
-    />
+    >
+    <template #actions="{validate, save}">
+      <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">
+        <VaButton preset="secondary" color="secondary" @click="cancel">Cancel</VaButton>
+        <VaButton @click="validate() && save()">Save</VaButton>
+      </div>
+    </template>
+  </user-form>
   </VaModal>
 </template>
 
 <script setup lang="ts">
-import { ref, toRefs, defineEmits } from 'vue';
-import { useToast } from 'vuestic-ui'
+import { toRefs } from 'vue';
 import type { User } from "@owl-app/lib-contracts";
-import { useItem } from '@owl-app/lib-app-core/composables/use-item'
 import UserForm from './user-form.vue';
 
-const model = defineModel();
+const model = defineModel<boolean>();
 
 const props = defineProps<{
 	user?: User ;
 }>();
 
-const emit = defineEmits<{
-	(e: 'update:modelValue', value: boolean): void;
-}>();
-
 const { user } = toRefs(props);
-const { item, loading, getItem, createItem, updateItem } = useItem(`users`);
-const { init: notify } = useToast()
-
-function beforeOpen() {
-  if(user.value) {
-    getItem(user.value.id)
-  } else {
-    item.value = {}
-  }
-}
-
-const onProjectSaved = async (user: User) => {
-  if(user.id !== undefined) {
-    delete user.id
-    await updateItem(item.value.id, user);
-  } else {
-    delete user.id
-    await createItem(user)
-  }
-
-  model.value = false;
-
-  notify({
-    message: 'Project saved',
-    color: 'success',
-  })
-}
-
 </script>

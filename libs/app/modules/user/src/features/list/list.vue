@@ -1,15 +1,6 @@
 <template>
     <panel-layout>
-      <VaButton
-              preset="primary"
-              size="small"
-              color="primary"
-              icon="mso-edit"
-              aria-label="Edit project"
-              @click="
-                showModalUser = true;
-              "
-            />
+
 
       <grid 
         url="users"
@@ -17,6 +8,20 @@
         defaultSort="id"
         :headerBar="headerBar"
       >
+      <template #header-bar-actions>
+        <VaButton
+          preset="primary"
+          size="medium"
+          color="primary"
+          icon="mso-add"
+          aria-label="Add user"
+          @click="
+            showModalUser = true;
+          "
+        >
+          Add user
+        </VaButton>
+      </template>
         <template #filters="{ filters, changeFilter, removeFilter }">
           <div class="grid grid-cols-3 gap-4">
             <string-filter 
