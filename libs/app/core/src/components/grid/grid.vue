@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { isEqual, debounce, isEmpty } from 'lodash';
-import { computed, PropType, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router';
+import { isEqual, isEmpty, omit } from 'lodash';
+import { computed, PropType, ref, watch, onUpdated, nextTick } from 'vue'
+import { LocationQueryRaw, useRoute, useRouter } from 'vue-router';
+
 import { DataTableColumnSource } from 'vuestic-ui/web-components';
 
 import HeaderBar, { type Props as HeaderBarProps } from '../../layouts/panel/components/header-bar.vue';
@@ -34,6 +35,7 @@ const props = defineProps({
 
 const router = useRouter();
 const route = useRoute();
+let filtersChanged = false;
 
 const { sort, limit, page, filter } = useItemOptions();
 
@@ -84,26 +86,29 @@ watch(
     }
 
     if(!isEqual(newFilter, oldFilter)) {
-      router.push({ query: { ...route.query, ...filter.value ?? {} } });
+      filtersChanged = true;
+      router.push({ query: { ...route.query, ...{ filters: filter.value} } as unknown as LocationQueryRaw });
     }
   },
   { deep: true, immediate: true }
 );
 
-const changeFilter = debounce(data => {
+const changeFilter = (data: any) => {
   filter.value = {
-    filters: {
-      ...filter.value?.filters,
-      ...data,
-    }
+    ...filter.value,
+    ...data,
   }
-}, 500);
+};
+
+const removeFilter = (key: string) => {
+  filter.value = omit(filter.value, key)
+};
 
 function useItemOptions() {
   const page = ref(route.query.page ? parseInt(route.query.page as string) : 1);
   const limit = ref(route.query.limit ? parseInt(route.query?.limit as string) : props.defaultLimit);
   const sort = ref([props.defaultSort]);
-  const filter = ref(route.query as Record<string, any> ?? {});
+  const filter = ref(route.query?.filters as Record<string, any> ?? undefined);
 
   return { sort, limit, page, filter };
 }
@@ -119,15 +124,16 @@ function useItemOptions() {
     <va-card style="margin-bottom: 10px;">
       <va-card-content>
         <va-collapse
-            :model-value="(!isEmpty(filter))"
+            :model-value="(!isEmpty(filter?.filters) || filtersChanged)"
             class="min-w-96"
             header="Filters"
             icon="filter_list"
           >
           <slot
             name="filters"
-            :filters="filter?.filters"
+            :filters="filter"
             :change-filter="changeFilter"
+            :remove-filter="removeFilter"
           />
         </va-collapse>
       </va-card-content>
@@ -182,13 +188,13 @@ function useItemOptions() {
             <b>Showing {{ showingFrom }} - {{ showingTo }} of {{ totalCount }} results</b>
           </div>
         </div>
-
       </va-card-content>
     </va-card>
   </div>
 </template>
 <style lang="scss" scoped>
-  ::v-deep .va-collapse {
+:deep() {
+  .va-collapse {
     &--expanded {
       .va-collapse {
         &__header {
@@ -226,6 +232,5 @@ function useItemOptions() {
       margin-top: 0.5rem;
     }
   }
-
-
+}
 </style>

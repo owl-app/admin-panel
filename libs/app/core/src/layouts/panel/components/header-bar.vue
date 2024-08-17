@@ -11,7 +11,7 @@ withDefaults(defineProps<Props>(), { });
 <template>
     <div class="header-bar">
         <div class="header-icon">
-            <VaIcon class="material-symbols-outlined" :name="icon" :size="30" color="#158DE3" />
+            <va-icon class="material-symbols-outlined" :name="icon" :size="30" color="#158DE3" />
         </div>
 
         <div class="title">

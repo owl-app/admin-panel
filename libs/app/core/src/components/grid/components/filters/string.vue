@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { reactive, PropType } from 'vue'
+import { debounce, DebouncedFunc } from 'lodash';
+import { reactive, PropType } from 'vue';
 import { isEmpty } from "@owl-app/utils";
 
 export type SelectTypeOption = {
@@ -14,6 +15,10 @@ const props = defineProps({
     default: () => ({ type: 'equal', value: '' }),
   },
   changeFilter: {
+    type: Function as PropType<Function>,
+    required: true,
+  },
+  removeFilter: {
     type: Function as PropType<Function>,
     required: true,
   },
@@ -37,45 +42,98 @@ const form: { type: SelectTypeOption, text: string } = reactive({
     text: props.value?.value,
 });
 
+let textDebounce: DebouncedFunc<(...args: any[]) => any>;
+
 function change(field: string) {
   const { type , text } = form;
 
-  if (
-    field === 'type' && isEmpty(text) || 
-    (!['not_empty', 'empty'].indexOf(type.value) && isEmpty(text))
-  ) 
-    return;
+  if(textDebounce) {
+    textDebounce.cancel();
+  }
 
-  props.changeFilter({
-    search: {
-      type: type?.value,
-      value: text
-    }
-  });
+  if (
+    isEmpty(text) &&
+    (!['not_empty', 'empty'].includes(type.value))
+  ) {
+    if (field === 'text') props.removeFilter('search');
+
+    return
+  }
+
+  if (field === 'text') {
+    textDebounce = debounce(() => {
+      props.changeFilter({
+        search: {
+          type: type?.value,
+          value: text
+        }
+      });
+    }, 500);
+
+    textDebounce();
+  } else {
+    props.changeFilter({
+      search: {
+        type: type?.value,
+        value: text
+      }
+    });
+  }
+}
+
+function clear() {
+  form.text = '';
+  form.type = { value: 'equal', text: 'Equals'}
+  props.removeFilter('search')
 }
 
 </script>
 
 <template>
-  <div class="grid grid-cols-2 gap-2">
-    <div class="flex flex-col md6">
-      <div class="item">
-        <va-select
-          v-model="form.type"
-          :options="types"
-          label="Type"
-          @update:modelValue="change('type')"
-        />
-      </div>
+  <div class="grid grid-cols-12 gap-2">
+    <div class="col-span-11">
+        <div class="grid grid-cols-2 gap-2">
+          <va-select
+            v-model="form.type"
+            :options="types"
+            label="Type"
+            @update:modelValue="change('type')"
+          />
+
+          <va-input
+            v-model="form.text"
+            label="Search text"
+            @update:modelValue="change('text')"
+          />
+        </div>
     </div>
-    <div class="flex flex-col md6">
-      <div class="item">
-        <va-input
-          v-model="form.text"
-          label="Search text"
-          @update:modelValue="change('text')"
-        />
-      </div>
-    </div>
+    <div class="clear">
+      <button @click="clear">
+        <va-icon class="material-symbols-outlined" name="close" size="small" color="danger" />
+      </button>
+  </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+:deep() {
+  .clear {
+    display: flex;
+    align-items: end;
+    width:100%;
+    justify-content: left;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      border: .125rem solid var(--va-danger);
+      font-weight: bold;
+      margin-bottom: .4rem;
+    }
+  }
+}
+</style>

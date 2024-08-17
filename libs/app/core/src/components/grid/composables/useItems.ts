@@ -130,7 +130,7 @@ export function useItems(
           sort: unref(sort),
           page: unref(page),
           deep: unref(deep),
-          ...unref(filter)
+          filters: unref(filter)
         },
         signal: existingRequests.items.signal,
       });

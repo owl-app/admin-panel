@@ -1,14 +1,29 @@
 <template>
     <panel-layout>
-      <Grid 
+      <VaButton
+              preset="primary"
+              size="small"
+              color="primary"
+              icon="mso-edit"
+              aria-label="Edit project"
+              @click="
+                showModalUser = true;
+              "
+            />
+
+      <grid 
         url="users"
         :columns="columns"
         defaultSort="id"
         :headerBar="headerBar"
       >
-        <template #filters="{ filters, changeFilter }">
+        <template #filters="{ filters, changeFilter, removeFilter }">
           <div class="grid grid-cols-3 gap-4">
-            <string-filter :value="filters?.search" :change-filter="changeFilter" />
+            <string-filter 
+              :value="filters?.search"
+              :change-filter="changeFilter"
+              :remove-filter="removeFilter"
+            />
           </div>
         </template>
 
@@ -29,18 +44,55 @@
             {{ rowData.phoneNumber }}
           </div>
         </template>
-      </Grid>
+
+        <template #cell(actions)="{ rowData: user }">
+          <div class="flex gap-2 justify-end">
+            <VaButton
+              preset="primary"
+              size="small"
+              color="primary"
+              icon="mso-edit"
+              aria-label="Edit project"
+              @click="
+                editUser = user;
+                showModalUser = true;
+              "
+            />
+            <VaButton
+              preset="primary"
+              size="small"
+              icon="mso-delete"
+              color="danger"
+              aria-label="Delete project"
+            />
+        </div>
+        </template>
+      </grid>
+      <user-modal
+        v-model="showModalUser"
+        :user="editUser"
+        @update:model-value="updateModelValue"
+      />
     </panel-layout>
 </template>
   
-<script setup>
+<script setup lang="ts">
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n'
+import { ref } from 'vue';
+
+import { User } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue'
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue'
 
+import Create from '../create/create.vue'
+import UserModal from '../../components/user-modal.vue'
+
 const { t } = useI18n();
+
+const editUser = ref<User>();
+const showModalUser = ref(false);
 
 const headerBar = {
   title: t('users'),
@@ -52,5 +104,10 @@ const columns = defineVaDataTableColumns([
   { label: 'Full Name', key: 'fullname', sortable: true },
   { label: 'Email', key: 'email', sortable: true },
   { label: 'Phone number', key: 'phoneNumber', sortable: true },
+  { label: ' ', key: 'actions' },
 ])
+
+function updateModelValue() {
+  editUser.value = undefined;
+}
 </script>

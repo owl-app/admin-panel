@@ -1,18 +1,22 @@
 <template>
     <panel-layout>
-      <Grid 
+      <grid 
         :columns="columns"
         defaultSort="id"
         :headerBar="headerBar"
         url="clients"
       >
-        <template #filters="{ filters, changeFilter }">
+        <template #filters="{ filters, changeFilter, removeFilter }">
           <div class="grid grid-cols-3 gap-4">
-            <string-filter :value="filters?.search" :change-filter="changeFilter" />
+            <string-filter 
+              :value="filters?.search"
+              :change-filter="changeFilter"
+              :remove-filter="removeFilter"
+            />
           </div>
         </template>
 
-      </Grid>
+      </grid>
     </panel-layout>
 </template>
   
