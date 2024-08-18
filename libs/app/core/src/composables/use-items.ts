@@ -3,8 +3,10 @@ import { isEqual, throttle } from 'lodash-es';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
 import { computed, ref, unref, watch } from 'vue';
 
-import type { Item, Query } from '../types';
-import api from '../../../services/api';
+import type { Item } from '../types/item';
+import type { Query } from '../types/query';
+import api from '../services/api';
+import { delay } from '../utils/delay';
 
 export type ManualSortData = {
   item: string | number;
@@ -18,6 +20,7 @@ export type UsableItems = {
   loading: Ref<boolean>;
   error: Ref<any>;
   getItems: () => Promise<void>;
+  reset: () => void;
 };
 
 export type ComputedQuery = {
@@ -33,9 +36,6 @@ export type ComputedQuery = {
   page: 
     | Ref<Query['page']> 
     | WritableComputedRef<Query['page']>;
-  deep?:
-    | Ref<Query['deep']>
-    | WritableComputedRef<Query['deep']>;
 };
 
 export function useItems(
@@ -47,15 +47,11 @@ export function useItems(
     sort,
     filter,
     page,
-    deep: queryDeep,
   } = query;
-
-  const deep = queryDeep ?? ref();
 
   const items = ref<Item[]>([]);
   const loading = ref(false);
   const error = ref<any>(null);
-
   const totalCount = ref<number | null>(null);
 
   const totalPages = computed(() => {
@@ -73,24 +69,34 @@ export function useItems(
     filter: null,
   };
 
+  let firstLoad = true;
   let loadingTimeout: NodeJS.Timeout | null = null;
 
   const fetchItems = throttle(getItems, 500);
 
   watch(
-    [limit, sort, filter, page, deep],
+    [limit, sort, filter, page],
     async (after, before) => {
+      if(firstLoad) {
+        firstLoad = false;
+        fetchItems();
+        return;
+      }
+
       if (isEqual(after, before)) return;
 
-      const [newLimit, newSort, newFilter] = after;
-      const [oldLimit, oldSort, oldFilter] = before;
+      const [newLimit, newSort, newFilter, newPage] = after;
+      const [oldLimit, oldSort, oldFilter, oldPage] = before;
 
       if (
         !isEqual(newFilter, oldFilter) ||
-        !isEqual(newSort, oldSort) ||
         newLimit !== oldLimit
       ) {
-        page.value = 1;
+          page.value = 1;
+
+        if(newPage !== oldPage) {
+          return;
+        }
       }
 
       fetchItems();
@@ -105,6 +111,7 @@ export function useItems(
     loading,
     error,
     getItems,
+    reset,
   };
 
   async function getItems() {
@@ -124,12 +131,12 @@ export function useItems(
     }, 150);
 
     try {
+      await delay(500);
       const response = await api.get<any>(url, {
         params: {
           limit: unref(limit),
           sort: unref(sort),
           page: unref(page),
-          deep: unref(deep),
           filters: unref(filter)
         },
         signal: existingRequests.items.signal,
@@ -142,9 +149,9 @@ export function useItems(
 
       items.value = fetchedItems;
 
-      if (page && fetchedItems.length === 0 && page?.value !== 1) {
-        page.value = 1;
-      }
+			if (page && fetchedItems.length === 0 && page?.value !== 1) {
+				page.value = 1;
+			}
     } catch (err: any) {
       if (axios.isCancel(err)) {
         isCurrentRequestCanceled = true;
@@ -160,4 +167,13 @@ export function useItems(
       if (!loadingTimeout) loading.value = false;
     }
   }
+
+  function reset() {
+		items.value = [];
+		page.value = 1;
+		filter.value = {};
+    sort.value = [];
+    limit.value = 10;
+    firstLoad = true;
+	}
 }

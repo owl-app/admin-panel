@@ -8,6 +8,7 @@ import api from '../services/api';
 import { Item, PrimaryKey } from '../types/item';
 import { i18n } from '../application/lang';
 import { ApiValidationError } from '../types/error';
+import { delay } from '../utils/delay';
 
 export type ManualSortData = {
   item: string | number;
@@ -71,6 +72,7 @@ export function useItem<T extends Item>(
     error.value = null;
 
     try {
+      await delay(500);
       const response = await api.get(endpoint.value);
       item.value = response.data;
     } catch (err) {
@@ -85,6 +87,7 @@ export function useItem<T extends Item>(
     validationErrors.value = [];
 
     try {
+      await delay(500);
       let response;
 
       if (isNew.value) {

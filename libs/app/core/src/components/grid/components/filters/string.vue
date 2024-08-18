@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { debounce, DebouncedFunc } from 'lodash';
-import { reactive, PropType } from 'vue';
+import { reactive, watch, PropType } from 'vue';
 import { isEmpty } from "@owl-app/utils";
 
 export type SelectTypeOption = {
@@ -9,7 +9,7 @@ export type SelectTypeOption = {
 }
 
 const props = defineProps({
-  value: {
+  data: {
     type: Object as PropType<{ type: string, value: string }>,
     required: true,
     default: () => ({ type: 'equal', value: '' }),
@@ -38,11 +38,16 @@ const types = [
 ]
 
 const form: { type: SelectTypeOption, text: string } = reactive({
-    type: { value: props.value?.type, text: types.filter(t => t.value === props.value?.type)[0]?.text },
-    text: props.value?.value,
+    type: { value: props.data?.type, text: types.filter(t => t.value === props.data?.type)[0]?.text },
+    text: props.data?.value,
 });
 
 let textDebounce: DebouncedFunc<(...args: any[]) => any>;
+
+watch(() => props.data, () => {
+  form.type = { value: props.data?.type, text: types.filter(t => t.value === props.data?.type)[0]?.text };
+  form.text = props.data?.value;
+}, { immediate: true });
 
 function change(field: string) {
   const { type , text } = form;
@@ -83,8 +88,8 @@ function change(field: string) {
 
 function clear() {
   form.text = '';
-  form.type = { value: 'equal', text: 'Equals'}
-  props.removeFilter('search')
+  form.type = { value: 'equal', text: 'Equals' };
+  props.removeFilter('search');
 }
 
 </script>

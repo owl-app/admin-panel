@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { isEqual, isEmpty, omit } from 'lodash';
-import { computed, PropType, ref, watch, onUpdated, nextTick } from 'vue'
+import { computed, PropType, ref, watch, onUpdated } from 'vue'
 import { LocationQueryRaw, useRoute, useRouter } from 'vue-router';
 
 import { DataTableColumnSource } from 'vuestic-ui/web-components';
 
 import HeaderBar, { type Props as HeaderBarProps } from '../../layouts/panel/components/header-bar.vue';
 
-import { useItems } from './composables/useItems';
+import { useItems } from '../../composables/use-items';
 
 const props = defineProps({
   url: {
@@ -33,6 +33,10 @@ const props = defineProps({
   },
 });
 
+defineExpose({
+  reloadGrid,
+})
+
 const router = useRouter();
 const route = useRoute();
 let filtersChanged = false;
@@ -44,6 +48,8 @@ const {
     loading,
     totalPages,
     totalCount,
+    getItems,
+    reset,
   } = useItems(props.url, {
     limit,
     page,
@@ -69,6 +75,18 @@ const showingTo = computed(() => {
   return to;
 });
 
+let firstLoad = true;
+
+watch(
+  () => route.query,
+  () => {
+    if(isEmpty(route.query)) {
+      reset();
+      firstLoad = true;
+    }
+  }
+)
+
 watch(
   [limit, sort, filter, page],
   async (after, before) => {
@@ -77,18 +95,20 @@ watch(
     const [newLimit, newSort, newFilter, newPage] = after;
     const [oldLimit, oldSort, oldFilter, oldPage] = before;
 
-    if(newPage !== oldPage) {
+    if(newPage !== oldPage && !firstLoad) {
       router.push({ query: { ...route.query, page: page.value } });
     }
 
-    if(newLimit !== oldLimit) {
-      router.push({ query: { ...route.query, limit: limit.value } });
+    if(newLimit !== oldLimit && !firstLoad) {
+      router.push({ query: { ...route.query, limit: limit.value, page: 1 } });
     }
 
-    if(!isEqual(newFilter, oldFilter)) {
+    if(!isEqual(newFilter, oldFilter) && !firstLoad) {
       filtersChanged = true;
-      router.push({ query: { ...route.query, ...{ filters: filter.value} } as unknown as LocationQueryRaw });
+      router.push({ query: { ...route.query, ...{ filters: filter.value}, page: 1 } as unknown as LocationQueryRaw });
     }
+
+    firstLoad = false;
   },
   { deep: true, immediate: true }
 );
@@ -112,6 +132,10 @@ function useItemOptions() {
 
   return { sort, limit, page, filter };
 }
+
+async function reloadGrid() {
+  await getItems();
+}
 </script>
 
 <template>
@@ -128,7 +152,7 @@ function useItemOptions() {
     <va-card style="margin-bottom: 10px;">
       <va-card-content>
         <va-collapse
-            :model-value="(!isEmpty(filter?.filters) || filtersChanged)"
+            :model-value="(!isEmpty(filter) || filtersChanged)"
             class="min-w-96"
             header="Filters"
             icon="filter_list"
@@ -237,4 +261,4 @@ function useItemOptions() {
     }
   }
 }
-</style>
+</style>../../composables/useItems
