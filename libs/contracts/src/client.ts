@@ -1,10 +1,9 @@
-import { Company } from "./company";
+import { TenantAware } from "./tenant";
 
-export type Client = {
+export type Client = TenantAware & {
   id: string;
   name: string;
   email: string;
   address: string;
   description: string;
-  company: Company;
 }

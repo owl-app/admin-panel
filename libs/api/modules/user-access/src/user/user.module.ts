@@ -3,7 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
-import { TenantTypeOrmQueryModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant-typeorm-query.module'
+import { CrudTenantTypeOrmQueryModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/crud-tenant-typeorm-query.module'
 
 import { UserEntitySchema } from '../database/entity-schema/user.entity-schema'
 import { UserRepository } from '../database/repository/user.repository'
@@ -19,7 +19,7 @@ import { RegistrationHandler } from './features/v1/registration/registration.ser
   imports: [
     CqrsModule,
     RbacTypeOrmModule.forFeature({}),
-    TenantTypeOrmQueryModule.forFeature({
+    CrudTenantTypeOrmQueryModule.forFeature({
       entities: [
         {
           entity: UserEntitySchema,

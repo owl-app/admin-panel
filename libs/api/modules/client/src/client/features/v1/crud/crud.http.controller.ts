@@ -39,7 +39,7 @@ export class ClientCrudController {
     @InjectPaginatedQueryService(ClientEntity) readonly paginatedService: DataProvider<Paginated<ClientEntity>, FilterClientDto>
   ) {}
 
-	@ApiOperation({ summary: 'Find client by id' })
+@ApiOperation({ summary: 'Find client by id' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Found one client record',

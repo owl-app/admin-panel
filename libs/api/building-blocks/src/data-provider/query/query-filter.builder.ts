@@ -1,5 +1,5 @@
 import { Registry } from "@owl-app/registry";
-import { Filter as FilterQueryService } from '@owl-app/crud-core';
+import { Filter as FilterQueryService, SelectRelation } from '@owl-app/crud-core';
 
 import { FilterBuilder } from "../filter.builder";
 import { Filter } from "../filtering/filter";
@@ -12,4 +12,6 @@ export abstract class QueryFilterBuilder<Entity, FilterData> implements FilterBu
   abstract build(filters: FilterData): FilterQueryService<Entity>;
 
   buildCustom?(filters: FilterData, qb: SelectQueryBuilder<Entity>): void;
+
+  buildRelations?(): SelectRelation<Entity>[];
 }

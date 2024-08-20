@@ -1,6 +1,6 @@
 import { EntitySchema } from 'typeorm';
 
-import { CLIENT_ENTITY, COMPANY_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
+import { CLIENT_ENTITY, TENANT_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
 
 import { ClientEntity } from '../../domain/entity/client.entity';
 
@@ -31,12 +31,13 @@ export const ClientEntitySchema = new EntitySchema<ClientEntity>({
     }
   },
   relations: {
-    company: {
+    tenant: {
       type: 'many-to-one',
-      target: COMPANY_ENTITY,
+      target: TENANT_ENTITY,
+      // cascade: true,
       joinColumn: {
-        name: 'company_id',
+        name: 'tenant_id',
       },
-    }
+    },
   },
 });

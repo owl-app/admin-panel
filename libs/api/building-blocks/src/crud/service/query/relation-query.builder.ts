@@ -5,7 +5,7 @@ import { Query } from '@owl-app/crud-core'
 import { RelationQueryBuilder as BaseRelationqueryBuilder } from '@owl-app/crud-nestjs'
 import { Registry } from '@owl-app/registry'
 
-import { FilterQuery } from '../../registry/interfaces/filter-query'
+import { FilterQuery } from '../../../registry/interfaces/filter-query'
 
 import { FilterQueryBuilder } from './filter-query.builder'
 

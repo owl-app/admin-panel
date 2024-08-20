@@ -11,8 +11,6 @@ export class ListFilterBuilder extends QueryFilterBuilder<Client, FilterClientDt
 
     filters.push(this.filterRegistry.get('string').apply(['name'], data?.search));
 
-    console.log(filters)
-
     return {
       or: filters
     }

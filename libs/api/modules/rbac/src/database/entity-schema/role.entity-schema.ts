@@ -19,6 +19,7 @@ export const RoleEntitySchema = new EntitySchema<RoleEntity>({
     setting: {
       type: 'one-to-one',
       target: ROLE_SETTING_ENTITY,
+      inverseSide: 'role',
     }
   },
 })

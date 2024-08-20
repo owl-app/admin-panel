@@ -5,22 +5,20 @@ import { DeepPartial } from '@owl-app/crud-core'
 import { convertToSnakeCase } from '@owl-app/utils'
 import { Registry } from '@owl-app/registry'
 
-import { BaseRepository } from '../database/repository/base.repository'
-import { DomainEvent } from '../event/domain-event.base'
+import { DomainEvent } from '../../event/domain-event.base'
 import { FilterQueryBuilder } from './query/filter-query.builder'
-import { FilterQuery } from '../registry/interfaces/filter-query'
+import { FilterQuery } from '../../registry/interfaces/filter-query'
 import { RelationQueryBuilder } from './query/relation-query.builder'
-import BaseEntity from '../database/entity/base.entity'
-import { EntitySetter } from '../registry/interfaces/entity-setter'
-import { TransactionalRepository } from '../database/repository/transactional.repository'
-import DomainEventableEntity from '../database/entity/domain-eventable.entity'
+import BaseEntity from '../../database/entity/base.entity'
+import { EntitySetter } from '../../registry/interfaces/entity-setter'
+import { TransactionalRepository } from '../../database/repository/transactional.repository'
+import DomainEventableEntity from '../../database/entity/domain-eventable.entity'
 
-
-export interface AppTypeOrmQueryServiceOpts<Entity> extends TypeOrmQueryServiceOpts<Entity> {
+export interface CrudTypeOrmQueryServiceOpts<Entity> extends TypeOrmQueryServiceOpts<Entity> {
   useTransaction?: boolean
 }
 
-export class AppTypeOrmQueryService<Entity extends BaseEntity> extends TypeOrmQueryService<Entity>
+export class CrudTypeOrmQueryService<Entity extends BaseEntity> extends TypeOrmQueryService<Entity>
 {
   readonly filterQueryBuilder: FilterQueryBuilder<Entity>
 
@@ -34,7 +32,7 @@ export class AppTypeOrmQueryService<Entity extends BaseEntity> extends TypeOrmQu
 
   constructor(
     readonly repo: Repository<Entity>,
-    opts?: AppTypeOrmQueryServiceOpts<Entity>,
+    opts?: CrudTypeOrmQueryServiceOpts<Entity>,
     readonly filters?: Registry<FilterQuery<Entity>>,
     readonly setters?: Registry<EntitySetter<DeepPartial<Entity>>>,
   ) {

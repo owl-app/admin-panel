@@ -1,5 +1,5 @@
 import { SelectQueryBuilder } from "typeorm";
-import { AssemblerQueryService, Filter, QueryService } from "@owl-app/crud-core";
+import { AssemblerQueryService, Filter, QueryService, SelectRelation } from "@owl-app/crud-core";
 
 import { PaginationConfig } from "../../config/pagination";
 import { PaginatedQuery } from "../../pagination/paginated.query";
@@ -31,6 +31,7 @@ export class PaginatedDataProvider<Entity, FiltersData> implements DataProvider<
     let perPage = this.paginationConfig.perPage;
     const queryService = this.getTypeOrmQueryService();
     let filterQuery = {}
+    let relations: SelectRelation<Entity>[] = [];
 
     if (paginationQuery.page && paginationQuery.page > 0) {
       page = (paginationQuery.page - 1) * paginationQuery.limit;
@@ -44,12 +45,17 @@ export class PaginatedDataProvider<Entity, FiltersData> implements DataProvider<
       filterQuery = this.filterBuilder.build(filtersData);
     }
 
+    if (instanceOf<QueryFilterBuilder<Entity, FiltersData>>(this.filterBuilder, 'buildRelations')) {
+      relations = this.filterBuilder.buildRelations();
+    }
+
     const qb = queryService.filterQueryBuilder.select({
       filter: filterQuery,
       paging: {
         limit: perPage,
         offset: page,
       },
+      relations,
     });
 
     if (instanceOf<QueryFilterBuilder<Entity, FiltersData>>(this.filterBuilder, 'buildCustom')) {

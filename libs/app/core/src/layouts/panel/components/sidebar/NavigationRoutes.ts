@@ -32,6 +32,13 @@ export default {
         icon: 'group',
       },
     },
+    {
+      name: 'role-list',
+      displayName: 'roles',
+      meta: {
+        icon: 'admin_panel_settings',
+      },
+    },
     // {
     //   name: 'dashboard',
     //   displayName: 'menu.projects',

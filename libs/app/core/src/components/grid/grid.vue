@@ -229,6 +229,7 @@ async function reloadGrid() {
     </va-card>
   </div>
 </template>
+
 <style lang="scss" scoped>
 :deep() {
   .va-collapse {

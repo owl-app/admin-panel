@@ -9,6 +9,7 @@ import { createApplicationConfig } from '@owl-app/lib-app-core/application/confi
 import AuthModule from '@owl-app/lib-app-module-auth'
 import UserModule from '@owl-app/lib-app-module-user'
 import ClientModule from '@owl-app/lib-app-module-client'
+import RbacModule from '@owl-app/lib-app-module-rbac'
 
 import App from './app.vue';
 import vuesticGlobalConfig from './config/vuestic-ui/global-config';
@@ -31,6 +32,7 @@ async function initApp() {
       AuthModule,
       UserModule,
       ClientModule,
+      RbacModule,
     ],
     [],
     {

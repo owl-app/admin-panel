@@ -3,31 +3,33 @@ import { ref } from 'vue';
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import { Client } from "@owl-app/lib-contracts";
+import { Role } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
 
-import CreateInline from '../components/create-inline.vue';
-import ClientModal from '../components/client-modal.vue'
+import RoleModal from '../components/role-modal.vue'
 
 const { t } = useI18n();
 
-const showModalUser = ref(false);
+const showModalRole = ref(false);
 const showDeleteModal = ref(false);
-const editClient = ref<Client | null>();
-const deleteClient = ref<Client>();
+const editRole = ref<Role | null>();
+const deleteRole = ref<Role>();
 const gridRef = ref<InstanceType<typeof Grid>>();
 
 const headerBar = {
-  title: t('clients'),
-  description: 'Managing clients in system',
-  icon: 'sensor_occupied',
+  title: t('roles'),
+  description: 'Managing roles in system',
+  icon: 'admin_panel_settings',
 }
 
 const columns = defineVaDataTableColumns([
-  { label: 'Name', key: 'name', sortable: true },
+  { label: 'Name', key: 'setting.displayName', sortable: true },
+  { label: 'Description', key: 'description', sortable: true },
+  { label: 'Theme', key: 'setting.theme', sortable: true },
+  { label: 'Canonical name', key: 'name', sortable: true },
   { label: ' ', key: 'actions' },
 ])
 </script>
@@ -39,10 +41,22 @@ const columns = defineVaDataTableColumns([
       :columns="columns"
       defaultSort="id"
       :headerBar="headerBar"
-      url="clients"
+      url="rbac/roles"
     >
       <template #header-bar-actions>
-        <create-inline @saved="gridRef?.addItem" />
+        <VaButton
+          preset="primary"
+          size="medium"
+          color="primary"
+          icon="mso-add"
+          aria-label="Add role"
+          @click="
+            editRole = null;
+            showModalRole = true;
+          "
+        >
+          Add role
+        </VaButton>
       </template>
 
       <template #filters="{ filters, changeFilter, removeFilter }">
@@ -55,7 +69,7 @@ const columns = defineVaDataTableColumns([
         </div>
       </template>
 
-      <template #cell(actions)="{ rowData: client }">
+      <template #cell(actions)="{ rowData: role }">
         <div class="flex gap-2 justify-end">
           <VaButton
             preset="primary"
@@ -64,8 +78,8 @@ const columns = defineVaDataTableColumns([
             icon="mso-edit"
             aria-label="Edit project"
             @click="
-              editClient = client as Client;
-              showModalUser = true;
+              editRole = role as Role;
+              showModalRole = true;
             "
           />
           <VaButton
@@ -76,21 +90,21 @@ const columns = defineVaDataTableColumns([
             aria-label="Delete project"
             @click="
               showDeleteModal = true;
-              deleteClient = client as Client;
+              deleteRole = role as Role;
             "
           />
         </div>
       </template>
     </grid>
-    <client-modal
-      v-model="showModalUser"
-      :user="editClient"
+    <role-modal
+      v-model="showModalRole"
+      :role="editRole"
       @saved="gridRef?.reloadGrid()"
     />
     <delete-modal 
-      collection="clients"
+      collection="rbac/roles"
       v-model="showDeleteModal"
-      :primaryKey="deleteClient?.id"
+      :primaryKey="deleteRole?.name"
       @deleted="gridRef?.reloadGrid"
     />
   </panel-layout>

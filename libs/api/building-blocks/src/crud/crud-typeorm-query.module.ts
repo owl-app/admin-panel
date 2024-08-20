@@ -1,53 +1,48 @@
 import { DataSource, DataSourceOptions, ObjectLiteral } from 'typeorm';
 import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, ForwardReference, Module } from '@nestjs/common';
 
-import { CompanyAware, TenantAware } from '@owl-app/lib-contracts';
-import { RegistryServiceModule } from '@owl-app/registry-nestjs';
 import { Assembler, Class, Filter, NestjsQueryCoreModule } from '@owl-app/crud-core';
-import { NestjsQueryTypeOrmModule } from '@owl-app/crud-nestjs'
+import { NestjsQueryTypeOrmModule, NestjsQueryTypeOrmModuleQueryServiceOpts } from '@owl-app/crud-nestjs'
 
 import { TypeOrmEntitesOpts } from '../typeorm/types';
 import { DEFAULT_DATA_SOURCE_NAME } from '../typeorm/constants';
 import { getRepositoryToken } from '../typeorm/common/tenant-typeorm.utils';
-import { AppTypeOrmQueryService } from '../query-service/app-typeorm-query.service';
+import { CrudTypeOrmQueryService } from '../crud/service/crud-typeorm-query.service';
 import { FilterBuilder } from '../data-provider/filter.builder';
 import { createPaginatedQueryServiceProvider } from '../data-provider/query/providers';
 import { PaginationConfigProvider } from '../config/pagination';
-import { FilterQuery } from '../registry/interfaces/filter-query';
-import { EntitySetter } from '../registry/interfaces/entity-setter';
 import { TypeOrmModule } from '../typeorm/typeorm.module';
-import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from '../registry/constants';
 import FiltersRegistry from '../data-provider/query/filters.registry';
 
-import { CompanySetter } from './setters/company.setter';
-import { TenantRelationFilter } from './filters/tenant-relation.filter';
-import { TenantRelationSetter } from './setters/tenant-relation.setter';
 
-
-export interface TenantTypeOrmQueryModuleOpts {
-  entities: TenantTypeOrmQueryEntitiesOpts[]
+export interface CrudTypeOrmQueryModuleOpts {
+  entities: CrudTypeOrmQueryEntitiesOpts[]
+  queryService?: NestjsQueryTypeOrmModuleQueryServiceOpts
+  importsQueryTypeOrm?: Array<Class<any> | DynamicModule | Promise<DynamicModule> | ForwardReference>
 }
 
-export interface TenantTypeOrmQueryEntitiesOpts extends TypeOrmEntitesOpts {
-  dataProvider?: TenantTypeOrmQueryProviderOpts
+export interface CrudTypeOrmQueryEntitiesOpts extends TypeOrmEntitesOpts {
+  dataProvider?: CrudTypeOrmQueryProviderOpts
   assembler?: Class<Assembler<any, any, any, any, any, any>>
 }
 
-export interface TenantTypeOrmQueryProviderOpts {
+export interface CrudTypeOrmQueryProviderOpts {
   filterBuilder?: Class<FilterBuilder<Filter<EntityClassOrSchema>, any>>
   
 }
 
 @Module({})
-export class TenantTypeOrmQueryModule {
+export class CrudTypeOrmQueryModule {
   static forFeature(
-    opts: TenantTypeOrmQueryModuleOpts,
+    opts: CrudTypeOrmQueryModuleOpts,
     dataSource:
       | DataSource
       | DataSourceOptions
       | string = DEFAULT_DATA_SOURCE_NAME,
   ): DynamicModule {
+
+    const queryService = opts.queryService ?? { classService: CrudTypeOrmQueryService };
 
     const assemblers = opts.entities.reduce((assemblers, opt) => {
       if(opt.assembler) {
@@ -84,25 +79,8 @@ export class TenantTypeOrmQueryModule {
         NestjsQueryCoreModule.forFeature({
           imports: [
             NestjsQueryTypeOrmModule.forFeature({
-              imports: [
-                RegistryServiceModule.forFeature<FilterQuery<ObjectLiteral>>({
-                  name: FILTER_REGISTRY_TENANT,
-                  services: {
-                    tenant: TenantRelationFilter<TenantAware>
-                  }
-                }),
-                RegistryServiceModule.forFeature<EntitySetter<ObjectLiteral>>({
-                  name: SETTER_REGISTRY_TENANT,
-                  services: {
-                    company: CompanySetter<CompanyAware>,
-                    tenant: TenantRelationSetter<TenantAware>
-                  }
-                })
-              ],
-              queryService: {
-                classService: AppTypeOrmQueryService,
-                inject: [FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT]
-              },
+              imports: [...opts.importsQueryTypeOrm ?? []],
+              queryService: queryService,
               typeOrmModule: TypeOrmModule.forFeature({ entities: opts.entities }, dataSource),
               entities
             }),
@@ -111,7 +89,7 @@ export class TenantTypeOrmQueryModule {
         }),
         FiltersRegistry,
       ],
-      module: TenantTypeOrmQueryModule,
+      module: CrudTypeOrmQueryModule,
       providers: [PaginationConfigProvider, ...dataProviders ?? []],
       exports: [NestjsQueryCoreModule, ...dataProviders ?? []],
     };

@@ -5,7 +5,7 @@ import {
 import { FilterQueryBuilder as BaseFilterQueryBuilder } from '@owl-app/crud-nestjs'
 import { Registry } from '@owl-app/registry';
 
-import { FilterQuery } from '../../registry/interfaces/filter-query';
+import { FilterQuery } from '../../../registry/interfaces/filter-query';
 
 export class FilterQueryBuilder<Entity> extends BaseFilterQueryBuilder<Entity>
 {

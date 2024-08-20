@@ -17,9 +17,11 @@ export const RoleSettingEntitySchema = new EntitySchema<RoleSettingEntity>({
     displayName: {
       name: "display_name",
       type: String,
+      nullable: true,
     },
     theme: {
       type: String,
+      nullable: true,
     },
   },
   relations: {
@@ -29,7 +31,8 @@ export const RoleSettingEntitySchema = new EntitySchema<RoleSettingEntity>({
       joinColumn: {
         name: 'role_name',
       },
-      cascade: true,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     }
   },
 });

@@ -1,7 +1,9 @@
-import type { Client, Company } from '@owl-app/lib-contracts';
+import type { Client, Tenant } from '@owl-app/lib-contracts';
 
 export class ClientEntity implements Client {
   id: string;
+
+  tenant: Tenant;
 
   name: string;
 
@@ -10,6 +12,4 @@ export class ClientEntity implements Client {
   address: string;
 
   description: string;
-
-  company: Company;
 }

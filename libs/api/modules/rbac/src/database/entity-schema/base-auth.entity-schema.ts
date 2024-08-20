@@ -19,10 +19,12 @@ export const BaseAuthEntitySchema = new EntitySchema<BaseAuthEntity>({
     },
     description: {
       type: String,
+      nullable: true,
     },
     ruleName: {
       name: "rule_name",
       type: String,
+      nullable: true,
     },
     ...TimestampableSchemaPart
   },

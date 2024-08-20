@@ -19,6 +19,7 @@
                 :name="route.meta.icon"
                 size="20px"
                 :color="iconColor(route)"
+                class="material-symbols-outlined"
               />
               <VaSidebarItemTitle class="flex justify-between items-center leading-5 font-semibold">
                 {{ t(route.displayName) }}

@@ -20,6 +20,7 @@ import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/pagin
 import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
 import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
+import { InjectQueryService, QueryService } from '@owl-app/crud-core'
 
 import mapper from '../../../mapping'
 import { RoleResponse } from '../../../dto/role.response.dto'
@@ -31,6 +32,7 @@ import { FilterRoleDto } from './dto';
 import { RolePaginatedResponseDto } from './dto/role.paginated.response.dto'
 import { RoleService } from './role.service'
 
+
 @ApiTags('Rbac Role')
 @Controller('rbac/roles')
 @ApiBearerAuth()
@@ -39,8 +41,27 @@ export class CrudController {
   constructor(
     readonly roleService: RoleService,
     @Inject('RBAC_MANAGER') readonly rbacManager: Manager,
+    @InjectQueryService(RoleEntity) readonly service: QueryService<RoleEntity>,
     @InjectPaginatedQueryService(RoleEntity) readonly paginatedService: DataProvider<Paginated<RoleResponse>, FilterRoleDto>
   ) {}
+
+  @ApiOperation({ summary: 'Find role by id' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Found one role record',
+    type: RoleResponse,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Role not found',
+    type: RoleResponse
+  })
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<RoleResponse> {
+    const role = await this.service.getById(id, { relations: [{ name: 'setting', query: {}}]});
+
+    return mapper.toResponse(role);
+  }
 
 	@ApiOperation({ summary: 'Create new role' })
     @ApiCreatedResponse({

@@ -1,4 +1,19 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
+export interface Role {
+  name: string;
+  description?: string;
+  ruleName?: string;
+  setting: RoleSetting;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export type RoleSetting = {
+  id?: string;
+  displayName?: string;
+  theme?: string;
+}
+
 export interface IBaseRbacItemResponse {
   name: string;
   description: string;
@@ -15,12 +30,6 @@ export interface IBaseRbacItemRequest {
   name: string;
   description?: string;
   ruleName?: string;
-}
-
-export type RoleSetting = {
-  id: string;
-  displayName: string;
-  theme: string;
 }
 
 export interface ICreatePermissionRequest extends IBaseRbacItemRequest{}
