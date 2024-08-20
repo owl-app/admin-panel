@@ -88,7 +88,7 @@ function change(field: string) {
 
 function clear() {
   form.text = '';
-  form.type = { value: 'equal', text: 'Equals' };
+  form.type = { value: 'equal', text: 'Equal' };
   props.removeFilter('search');
 }
 

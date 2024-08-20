@@ -7,6 +7,7 @@ import { User } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue'
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue'
+import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
 
 import UserModal from '../components/user-modal.vue'
 
@@ -14,6 +15,7 @@ const { t } = useI18n();
 
 const editUser = ref<User|null>();
 const showModalUser = ref(false);
+const deleteUser = ref<User>();
 const gridRef = ref<InstanceType<typeof Grid>>();
 
 const headerBar = {
@@ -102,6 +104,9 @@ const columns = defineVaDataTableColumns([
             icon="mso-delete"
             color="danger"
             aria-label="Delete project"
+            @click="
+              deleteUser = user as User;
+            "
           />
       </div>
       </template>
@@ -110,6 +115,11 @@ const columns = defineVaDataTableColumns([
       v-model="showModalUser"
       :user="editUser"
       @saved="gridRef?.reloadGrid()"
+    />
+    <delete-modal 
+      collection="users"
+      :primaryKey="deleteUser?.id"
+      @deleted="gridRef?.reloadGrid"
     />
   </panel-layout>
 </template>

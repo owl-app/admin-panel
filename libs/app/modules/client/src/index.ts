@@ -1,7 +1,7 @@
 
 import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
 
-import ListRoute from './features/list/list.vue';
+import ListRoute from './routes/list.vue';
 
 export default defineModule({
   id: 'client',

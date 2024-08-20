@@ -6,20 +6,19 @@
     hide-default-actions
   >
     <h3 class="va-h5">
-      {{ user ? 'Edit' : 'Create' }} User
+      {{ user ? 'Edit' : 'Create' }} client
     </h3>
     <owl-form
       class-form="flex flex-col gap-2"
-      collection="users"
+      collection="clients"
       :primaryKey="user?.id"
       @saved="ok(); $emit('saved');"
     >
       <template #fields="{ data }">
-        <va-input v-model="data.email" label="email" :rules="[required]" />
-        <va-input v-model="data.password" label="password" />
-        <va-input v-model="data.firstName" label="firstName" :rules="[required]" />
-        <va-input v-model="data.lastName" label="lastName" :rules="[required]" />
-        <va-input v-model="data.phoneNumber" label="phoneNumber" :rules="[required]" />
+        <va-input v-model="data.name" label="name" :rules="[required]" />
+        <va-input v-model="data.email" label="email" />
+        <va-textarea v-model="data.addess" label="address" min-rows="5" />
+        <va-textarea v-model="data.description" label="description" min-rows="5" />
       </template>
 
       <template #actions="{ validate, save, isLoading, isValid }">
@@ -31,10 +30,10 @@
     </owl-form>
   </VaModal>
 </template>
-
+  
 <script setup lang="ts">
 import { toRefs } from 'vue';
-import type { User } from "@owl-app/lib-contracts";
+import type { Client } from "@owl-app/lib-contracts";
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue'
 
 const model = defineModel<boolean>();
@@ -44,10 +43,11 @@ const emit = defineEmits<{
 }>()
 
 const props = defineProps<{
-	user?: User | null;
+    user?: Client | null;
 }>();
 
 const { user } = toRefs(props);
 
 const required = (v: string) => !!v || 'This field is required'
 </script>
+  

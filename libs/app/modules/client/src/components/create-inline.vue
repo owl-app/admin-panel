@@ -1,0 +1,33 @@
+<template>
+  <owl-form collection="clients" @saved="$emit('saved', $event);" class-form="grid grid-cols-12 gap-4">
+    <template #fields="{ data }">
+      <div class="col-span-10">
+        <va-input label="" placeholder="Add new client" v-model="data.name" background="#fff" />
+      </div>
+    </template>
+
+    <template #actions="{ save, data }">
+      <div class="flex justify-end flex-col-reverse sm:flex-row col-span-2">
+        <va-button :disabled="isEmpty(data.name)" @click="!isEmpty(data.name) && save()">Add</va-button>
+      </div>
+    </template>
+  </owl-form>
+</template>
+
+<script setup lang="ts">
+import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
+import { Client } from '@owl-app/lib-contracts';
+import { isEmpty } from '@owl-app/utils';
+
+const emit = defineEmits<{
+  (event: 'saved', clientSaved: Client): void
+}>()
+</script>
+
+<style lang="scss" scoped>
+:deep() {
+  .va-message-list { 
+    display: none;
+  }
+}
+</style>

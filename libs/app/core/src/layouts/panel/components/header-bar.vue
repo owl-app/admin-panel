@@ -20,7 +20,7 @@ withDefaults(defineProps<Props>(), { });
       <div class="description" v-if="description">{{ description }}</div>
     </div>
   </div>
-  <div class="content-top header-actions">
+  <div class="content-top header-actions ">
     <slot name="actions"></slot>
   </div>
 </div>

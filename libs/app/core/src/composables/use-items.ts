@@ -14,13 +14,14 @@ export type ManualSortData = {
 };
 
 export type UsableItems = {
-  totalCount: Ref<number | null>;
+  totalCount: Ref<number>;
   items: Ref<Record<string, any>[]>;
   totalPages: ComputedRef<number>;
   loading: Ref<boolean>;
   error: Ref<any>;
   getItems: () => Promise<void>;
   reset: () => void;
+  addItem: (item: Item) => void;
 };
 
 export type ComputedQuery = {
@@ -52,10 +53,10 @@ export function useItems(
   const items = ref<Item[]>([]);
   const loading = ref(false);
   const error = ref<any>(null);
-  const totalCount = ref<number | null>(null);
+  const totalCount = ref<number>(0);
 
   const totalPages = computed(() => {
-    if (totalCount.value === null) return 1;
+    if (totalCount.value === 0) return 1;
     if (totalCount.value < (unref(limit) ?? 100)) return 1;
     return Math.ceil(totalCount.value / (unref(limit) ?? 100));
   });
@@ -112,6 +113,7 @@ export function useItems(
     error,
     getItems,
     reset,
+    addItem,
   };
 
   async function getItems() {
@@ -176,4 +178,9 @@ export function useItems(
     limit.value = 10;
     firstLoad = true;
 	}
+
+  function addItem(item: Item) {
+    items.value.unshift(item);
+    totalCount.value += 1;
+  }
 }

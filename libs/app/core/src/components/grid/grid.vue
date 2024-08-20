@@ -27,15 +27,16 @@ const props = defineProps({
     required: false,
     default: 10,
   },
+  availableLimit: {
+    type: Array as PropType<number[]>,
+    required: false,
+    default: () => [10, 50, 100],
+  },
   defaultSort: {
     type: String as PropType<string>,
     required: true,
   },
 });
-
-defineExpose({
-  reloadGrid,
-})
 
 const router = useRouter();
 const route = useRoute();
@@ -50,12 +51,18 @@ const {
     totalCount,
     getItems,
     reset,
+    addItem,
   } = useItems(props.url, {
     limit,
     page,
     sort,
     filter
   });
+
+defineExpose({
+  reloadGrid,
+  addItem,
+})
 
 const showingFrom = computed(() => {
   if(page.value > 1 ) {
@@ -74,6 +81,8 @@ const showingTo = computed(() => {
 
   return to;
 });
+
+const showLimit = computed(() => totalCount.value > Math.min(...props.availableLimit));
 
 let firstLoad = true;
 
@@ -128,7 +137,7 @@ function useItemOptions() {
   const page = ref(route.query.page ? parseInt(route.query.page as string) : 1);
   const limit = ref(route.query.limit ? parseInt(route.query?.limit as string) : props.defaultLimit);
   const sort = ref([props.defaultSort]);
-  const filter = ref(route.query?.filters as Record<string, any> ?? undefined);
+  const filter = ref(route.query?.filters as Record<string, any> ?? {});
 
   return { sort, limit, page, filter };
 }
@@ -182,9 +191,9 @@ async function reloadGrid() {
 
         <div class="wrapper-bottom">
           <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-top py-2">
-            <div>
-              Results per page
-              <VaSelect v-model="limit" class="!w-20" :options="[10, 50, 100]" />
+            <div  v-if="showLimit" >
+              Results per page {{ showLimit }}
+              <VaSelect v-model="limit" class="!w-20" :options="availableLimit" />
             </div>
             <div v-if="totalPages > 1" class="flex">
               <va-button
@@ -261,4 +270,4 @@ async function reloadGrid() {
     }
   }
 }
-</style>../../composables/useItems
+</style>

@@ -1,3 +1,4 @@
 clients: Clients
 dashboard: Dashboard
 users: Users
+logout: Logout

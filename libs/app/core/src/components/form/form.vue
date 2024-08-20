@@ -7,12 +7,13 @@ import { useItem } from '../../composables/use-item';
 
 const props = defineProps<{
   collection: string,
-  primaryKey: PrimaryKey | undefined,
+  primaryKey?: PrimaryKey | undefined,
   defaultValue?: Item | null,
+  classForm?: string,
 }>()
 
 const emit = defineEmits<{
-  (event: 'saved',): void
+  (event: 'saved', dataSaved: any): void
 }>()
 
 const dataForm = ref({ ...props.defaultValue ?? {} })
@@ -50,9 +51,10 @@ watch(
 )
 
 const saveForm = async () => {
-  delete dataForm?.value?.id
-  await save(dataForm.value);
-  emit('saved');
+  delete dataForm.value?.id
+  const savedData = await save(dataForm.value);
+  dataForm.value = {}
+  emit('saved', savedData);
 }
 
 </script>
@@ -61,7 +63,9 @@ const saveForm = async () => {
   <VaInnerLoading :loading="loading || saving">
     <va-form 
       ref="form"
-      v-slot="{ validate }" class="flex flex-col gap-2">
+      v-slot="{ validate }"
+      :class="classForm"
+    >
       
       <slot name="fields" :data="dataForm"></slot>
       <slot
@@ -70,6 +74,7 @@ const saveForm = async () => {
         :save="saveForm"
         :is-valid="isValid"
         :is-loading="loading || saving"
+        :data="dataForm"
       />
     </va-form>
   </VaInnerLoading>

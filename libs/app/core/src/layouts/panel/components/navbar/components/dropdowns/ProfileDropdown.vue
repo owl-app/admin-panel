@@ -24,7 +24,7 @@
             v-bind="resolveLinkAttribute(item)"
           >
             <VaIcon :name="item.icon" class="pr-1" color="secondary" />
-            {{ t(`user.${item.name}`) }}
+            {{ t(`${item.name}`) }}
           </VaListItem>
           <VaListSeparator v-if="group.separator" class="mx-3 my-2" />
         </VaList>

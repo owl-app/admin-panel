@@ -19,12 +19,15 @@ export const ClientEntitySchema = new EntitySchema<ClientEntity>({
     },
     email: {
       type: String,
+      nullable: true,
     },
     address: {
       type: String,
+      nullable: true,
     },
     description: {
       type: 'text',
+      nullable: true,
     }
   },
   relations: {

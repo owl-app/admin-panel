@@ -10,6 +10,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import BaseEntity from '../entity/base.entity';
 
 import { TransactionalRepository } from './transactional.repository';
+import DomainEventableEntity from '../entity/domain-eventable.entity';
 
 export class BaseRepository<Entity extends BaseEntity> extends TransactionalRepository<Entity>
 {
@@ -111,7 +112,9 @@ export class BaseRepository<Entity extends BaseEntity> extends TransactionalRepo
 
     await Promise.all(
       (!Array.isArray(savedEntity) ? [savedEntity] : savedEntity).map(async (entity) => {
-        await entity.publishEvents(entity.id, this.eventEmitter);
+        if(entity instanceof DomainEventableEntity) {
+          await entity.publishEvents(entity.id, this.eventEmitter);
+        }
       })
     );
 
@@ -121,9 +124,11 @@ export class BaseRepository<Entity extends BaseEntity> extends TransactionalRepo
   private copyOriginalEvents(entity: Entity | Entity[], record: DeepPartial<Entity> | DeepPartial<Entity>[]): void
   {
     function copy(entity: Entity, record: Entity ) {
-      record.domainEvents.map((event) => {
-        entity.addEvent(event);
-      })
+      if(record instanceof DomainEventableEntity) {
+        record.domainEvents.map((event) => {
+          entity.addEvent(event);
+        })
+      }
     }
 
     if(Array.isArray(entity)) {

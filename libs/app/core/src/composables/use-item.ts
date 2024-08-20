@@ -120,6 +120,7 @@ export function useItem<T extends Item>(
     deleting.value = true;
 
     try {
+      await delay(500);
       await api.delete(endpoint.value);
 
       item.value = null;
