@@ -1,10 +1,16 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty } from "class-validator";
+
 import { ICreateRoleRequest } from "@owl-app/lib-contracts";
 
 import { BaseRbacItemRequest } from "../../common/dto/base/base-item.request.dto";
 
-/**
- * Create Role DTO validation
- */
+import { RoleSettingRequest } from "./role-setting.request.dto";
+
 export class CreateRoleRequest extends BaseRbacItemRequest implements ICreateRoleRequest {
+
+  @ApiProperty({ type: () => RoleSettingRequest })
+  @IsNotEmpty()
+  setting: RoleSettingRequest;
 
 }

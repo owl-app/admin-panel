@@ -8,23 +8,39 @@ import {
   Put,
   HttpCode,
   Delete,
-  Param
+  Param,
+  Get,
+  Query
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
 import { Manager } from '@owl-app/rbac-manager'
 
+import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
+import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
+import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
+import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
+
 import mapper from '../../../mapping'
 import { RoleResponse } from '../../../dto/role.response.dto'
 import { CreateRoleRequest } from '../../../dto/create-role.request.dto'
 import { UpdateRoleRequest } from '../../../dto/update-role.request.dto'
+import { RoleEntity } from '../../../../domain/entity/role.entity'
+
+import { FilterRoleDto } from './dto';
+import { RolePaginatedResponseDto } from './dto/role.paginated.response.dto'
+import { RoleService } from './role.service'
 
 @ApiTags('Rbac Role')
 @Controller('rbac/roles')
 @ApiBearerAuth()
 @Injectable()
 export class CrudController {
-  constructor(@Inject('RBAC_MANAGER') readonly rbacManager: Manager) {}
+  constructor(
+    readonly roleService: RoleService,
+    @Inject('RBAC_MANAGER') readonly rbacManager: Manager,
+    @InjectPaginatedQueryService(RoleEntity) readonly paginatedService: DataProvider<Paginated<RoleResponse>, FilterRoleDto>
+  ) {}
 
 	@ApiOperation({ summary: 'Create new role' })
     @ApiCreatedResponse({
@@ -38,9 +54,7 @@ export class CrudController {
     })
   @Post()
   async createRole(@Body() createRoleDto: CreateRoleRequest) {
-    const addedRole = await this.rbacManager.addRole(
-      mapper.toPersistence(createRoleDto)
-    );
+    const addedRole = await this.roleService.createWithSetting(createRoleDto);
 
     return mapper.toResponse(addedRole);
   }
@@ -62,11 +76,30 @@ export class CrudController {
     @HttpCode(HttpStatus.ACCEPTED)
 	@Put(':name')
   async updateRole(@Param('name') name: string, @Body() updateRoleDto: UpdateRoleRequest) {
-    const updatedRole = await this.rbacManager.updateRole(
-      name, mapper.toPersistence(updateRoleDto)
-    );
+    const updatedRole = await this.roleService.updateWithSetting(name, updateRoleDto);
 
     return mapper.toResponse(updatedRole);
+  }
+
+  @ApiOperation({ summary: 'Find all roles by filters using pagination' })
+    @ApiResponse({
+      status: HttpStatus.OK,
+      description: 'Found records.',
+      type: RolePaginatedResponseDto,
+    })
+    @ApiResponse({
+      status: HttpStatus.BAD_REQUEST,
+      description:
+        'Invalid input, The response body may contain clues as to what went wrong',
+    })
+  @Get()
+  async paginated(
+    @Query('filters') filters: FilterRoleDto,
+    @Query() pagination: PaginatedQuery
+  ): Promise<RolePaginatedResponseDto> {
+    const paginated = await this.paginatedService.getData(filters, pagination);
+
+    return new RolePaginatedResponseDto(paginated);
   }
 
   @ApiOperation({ summary: 'Delete role' })

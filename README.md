@@ -28,3 +28,8 @@ Build
 ```
 npx nx build @owl-app/crud-nestjs --skip-nx-cache
 ```
+
+APP:
+```
+yarn nx g @nx/vue:lib @owl-app/lib-app-module-rbac --directory=libs/app/modules/rbac
+```

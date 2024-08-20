@@ -590,7 +590,7 @@ export class Manager implements IAccessCheckerInterface {
       item.updatedAt = date;
     }
 
-    this.itemsStorage.add(item);
+    await this.itemsStorage.add(item);
   }
 
   private async hasItem(name: string): Promise<boolean> {

@@ -17,6 +17,12 @@ export interface IBaseRbacItemRequest {
   ruleName?: string;
 }
 
+export type RoleSetting = {
+  id: string;
+  displayName: string;
+  theme: string;
+}
+
 export interface ICreatePermissionRequest extends IBaseRbacItemRequest{}
 
 export interface IUpdatePermissionRequest extends IBaseRbacItemRequest{}
