@@ -1,28 +1,33 @@
 import { ApiProperty } from "@nestjs/swagger"
+import { Exclude, Expose, Transform, TransformFnParams, Type } from "class-transformer";
 
 import { IRoleResponse } from "@owl-app/lib-contracts";
 
 import { BaseRbacItemResponse } from '../../common/dto/base/base-item.response.dto'
-import { RoleSettingResponse } from "./role-setting.response.dto";
+
+export class RoleSettingResponse {
+
+  @Exclude()
+  role: BaseRbacItemResponse;
+
+  @Exclude()
+  id: number;
+
+  @ApiProperty({ type: () => String })
+  @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
+  displayName: string;
+
+  @ApiProperty({ type: () => String })
+  @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
+  theme?: string | null;
+
+}
 
 export class RoleResponse extends BaseRbacItemResponse implements IRoleResponse{
 
-  constructor(
-    name: string,
-    description: string | null = null,
-    ruleName: string | null = null,
-    createdAt: string | null = null,
-    updatedAt: string | null = null,
-    setting: RoleSettingResponse | null = null,
-  ) {
-    super(name, description, ruleName, createdAt, updatedAt);
-    this.setting = {
-      displayName: setting?.displayName,
-      theme: setting?.theme,
-    };
-  }
-  
   @ApiProperty({ type: () => RoleSettingResponse })
+  @Expose()
+  @Type(() => RoleSettingResponse)
   setting: RoleSettingResponse;
 
 }

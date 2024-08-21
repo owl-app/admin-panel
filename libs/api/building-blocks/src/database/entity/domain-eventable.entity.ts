@@ -1,9 +1,10 @@
 import { EventEmitter2 } from "@nestjs/event-emitter";
-
+import { Exclude } from "class-transformer";
 
 import { DomainEvent } from "../../event/domain-event.base";
 
 export default class DomainEventableEntity {
+    @Exclude()
     private _domainEvents: DomainEvent[] = [];
 
     get domainEvents(): DomainEvent[] {

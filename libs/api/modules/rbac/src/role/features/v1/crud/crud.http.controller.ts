@@ -10,19 +10,16 @@ import {
   Delete,
   Param,
   Get,
-  Query
+  Query,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
-
-import { Manager } from '@owl-app/rbac-manager'
 
 import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
 import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
 import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
-import { InjectQueryService, QueryService } from '@owl-app/crud-core'
+import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core'
 
-import mapper from '../../../mapping'
 import { RoleResponse } from '../../../dto/role.response.dto'
 import { CreateRoleRequest } from '../../../dto/create-role.request.dto'
 import { UpdateRoleRequest } from '../../../dto/update-role.request.dto'
@@ -30,7 +27,7 @@ import { RoleEntity } from '../../../../domain/entity/role.entity'
 
 import { FilterRoleDto } from './dto';
 import { RolePaginatedResponseDto } from './dto/role.paginated.response.dto'
-import { RoleService } from './role.service'
+import { RoleAssembler } from './role.assembler'
 
 
 @ApiTags('Rbac Role')
@@ -39,9 +36,7 @@ import { RoleService } from './role.service'
 @Injectable()
 export class CrudController {
   constructor(
-    readonly roleService: RoleService,
-    @Inject('RBAC_MANAGER') readonly rbacManager: Manager,
-    @InjectQueryService(RoleEntity) readonly service: QueryService<RoleEntity>,
+    @InjectAssemblerQueryService(RoleAssembler) readonly service: AssemblerQueryService<RoleResponse, RoleEntity>,
     @InjectPaginatedQueryService(RoleEntity) readonly paginatedService: DataProvider<Paginated<RoleResponse>, FilterRoleDto>
   ) {}
 
@@ -60,7 +55,7 @@ export class CrudController {
   async findOne(@Param('id') id: string): Promise<RoleResponse> {
     const role = await this.service.getById(id, { relations: [{ name: 'setting', query: {}}]});
 
-    return mapper.toResponse(role);
+    return role;
   }
 
 	@ApiOperation({ summary: 'Create new role' })
@@ -75,9 +70,9 @@ export class CrudController {
     })
   @Post()
   async createRole(@Body() createRoleDto: CreateRoleRequest) {
-    const addedRole = await this.roleService.createWithSetting(createRoleDto);
+    const addedRole = await this.service.createOne(createRoleDto);
 
-    return mapper.toResponse(addedRole);
+    return addedRole;
   }
 
 	@ApiOperation({ summary: 'Update role' })
@@ -97,9 +92,9 @@ export class CrudController {
     @HttpCode(HttpStatus.ACCEPTED)
 	@Put(':name')
   async updateRole(@Param('name') name: string, @Body() updateRoleDto: UpdateRoleRequest) {
-    const updatedRole = await this.roleService.updateWithSetting(name, updateRoleDto);
+    const updatedRole = await this.service.updateOne(name, updateRoleDto);
 
-    return mapper.toResponse(updatedRole);
+    return updatedRole;
   }
 
   @ApiOperation({ summary: 'Find all roles by filters using pagination' })
@@ -135,6 +130,6 @@ export class CrudController {
     @HttpCode(HttpStatus.ACCEPTED)
   @Delete(':name')
   async remove(@Param('name') name: string): Promise<void> {
-    await this.rbacManager.removeRole(name);
+    await this.service.deleteOne(name);
   }
 }

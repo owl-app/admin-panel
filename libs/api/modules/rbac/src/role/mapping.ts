@@ -2,42 +2,41 @@ import { Type } from "@nestjs/common";
 import moment from "moment";
 
 import { Role } from "@owl-app/rbac-manager"
-
+import { DeepPartial } from "@owl-app/crud-core";
 import { Mapper } from "@owl-app/lib-api-bulding-blocks/types/mapper.interface";
 
-import { RoleResponse } from "./dto/role.response.dto"
 import { RoleEntity } from "../domain/entity/role.entity";
-import { CreateRoleRequest } from "./dto/create-role.request.dto";
-import { UpdateRoleRequest } from "./dto/update-role.request.dto";
 
 export class RoleItemMapper<
-  Entity extends Role,
-  Request extends CreateRoleRequest|UpdateRoleRequest,
-  Response extends RoleResponse
-> implements Mapper<Request, Entity|RoleEntity, Response>
+  Entity extends DeepPartial<RoleEntity>,
+  Item extends Role,
+  Response extends RoleEntity
+> implements Mapper<Entity, Item, Response>
 {
-  constructor(private entity: Type<Entity>, private response: Type<Response>) {}
+  constructor(private response: Type<Response>, private item: Type<Item>) {}
 
-  toPersistence(request: Request): Entity {
-    return new (this.entity)(
+  toPersistence(request: Entity): Item {
+    return new (this.item)(
       request.name,
       request.description,
       request.ruleName
     );
   }
 
-  toResponse(entity: Partial<RoleEntity>): Response {
-    return new (this.response)(
-      entity.name,
-      entity.description,
-      entity.ruleName,
-      entity.createdAt !== null ? moment(entity.createdAt).format('YYYY-MM-DD HH:mm:ss') : null,
-      entity.updatedAt !== null ? moment(entity.updatedAt).format('YYYY-MM-DD HH:mm:ss') : null,
-      entity.setting
-    )
+  toResponse(item: Item): Response
+  {
+    const role = new (this.response);
+    role.name = item.name;
+    role.description = item.description;
+    role.ruleName = item.ruleName;
+    role.createdAt = moment(item.createdAt).toDate();
+    role.updatedAt = moment(item.updatedAt).toDate(); 
+
+    return role;
   }
 }
 
-const mapper = new RoleItemMapper(Role, RoleResponse);
+const mapper = new RoleItemMapper(RoleEntity, Role);
 
 export default mapper;
+

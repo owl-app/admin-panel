@@ -2,6 +2,7 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { EventEmitter2 } from '@nestjs/event-emitter'
+import { DataSource } from 'typeorm'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
 import { CrudTypeOrmQueryModule } from '@owl-app/lib-api-bulding-blocks/crud/crud-typeorm-query.module'
@@ -15,12 +16,14 @@ import { BaseAuthEntitySchema } from '../database/entity-schema/base-auth.entity
 import { ListFilterBuilder } from './features/v1/crud/list-filter.builder'
 import { RoleSettingEntitySchema } from '../database/entity-schema/role-setting.entity-schema'
 import { RoleService } from './features/v1/crud/role.service'
+import { RoleAssembler } from './features/v1/crud/role.assembler'
 
 @Module({
   imports: [
     RbacTypeOrmModule.forFeature(),
     TypeOrmModule.forFeature([BaseAuthEntitySchema, RoleSettingEntitySchema]),
     CrudTypeOrmQueryModule.forFeature({
+      importsQueryTypeOrm: [RbacTypeOrmModule.forFeature()],
       entities: [
         {
           entity: RoleEntitySchema,
@@ -29,8 +32,13 @@ import { RoleService } from './features/v1/crud/role.service'
           dataProvider: {
             filterBuilder: ListFilterBuilder,
           },
+          assembler: RoleAssembler
         }
       ],
+      queryService: {
+        classService: RoleService,
+        inject: [DataSource, 'RBAC_MANAGER']
+      }
     })
   ],
   controllers: [
@@ -38,8 +46,5 @@ import { RoleService } from './features/v1/crud/role.service'
     AssignController,
     RevokeController
   ],
-  providers: [
-    RoleService
-  ]
 })
 export class RbacRoleModule {}

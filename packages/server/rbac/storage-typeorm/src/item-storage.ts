@@ -187,7 +187,7 @@ export class ItemStorage extends BaseStorage implements IItemsStorageInterface {
       SELECT DISTINCT item.* FROM (
         SELECT DISTINCT child
         FROM (SELECT * FROM ${this.childrenTableName} ORDER by parent) item_child_sorted,
-        (SELECT @pv := ?) init
+        (SELECT @pv := ?  COLLATE utf8mb4_general_ci) init
         WHERE find_in_set(parent, @pv) AND length(@pv := concat(@pv, ',', child))
       ) s
       LEFT JOIN ${this.tableName} AS item ON item.name = s.child

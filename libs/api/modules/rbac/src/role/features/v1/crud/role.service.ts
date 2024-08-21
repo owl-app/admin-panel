@@ -1,22 +1,25 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { DataSource } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 
 import { Manager } from "@owl-app/rbac-manager";
+import { CrudTypeOrmQueryService, CrudTypeOrmQueryServiceOpts } from "@owl-app/lib-api-bulding-blocks/crud/service/crud-typeorm-query.service";
+import { DeepPartial } from "@owl-app/crud-core";
 
 import { RoleEntity } from "../../../../domain/entity/role.entity";
 import { RoleSettingEntity } from "../../../../domain/entity/role-setting.entity";
-import { CreateRoleRequest } from "../../../dto/create-role.request.dto";
-import { UpdateRoleRequest } from "../../../dto/update-role.request.dto";
 import mapper from '../../../mapping'
 
-@Injectable()
-export class RoleService {
+export class RoleService extends CrudTypeOrmQueryService<RoleEntity> {
   constructor(
+    readonly repository: Repository<RoleEntity>,
+    opts: CrudTypeOrmQueryServiceOpts<RoleEntity>,
     private dataSource: DataSource,
-    @Inject('RBAC_MANAGER') readonly rbacManager: Manager,
-  ) {}
+    private rbacManager: Manager,
+  ) {
+    super(repository, opts);
+  }
 
-  async createWithSetting(createRoleDto: CreateRoleRequest): Promise<Partial<RoleEntity>> {
+  public override async createOne(record: DeepPartial<RoleEntity>): Promise<RoleEntity>
+  {
     const queryRunner = this.dataSource.createQueryRunner();
   
     await queryRunner.connect();
@@ -24,19 +27,19 @@ export class RoleService {
 
     try {
       const addedRole = await this.rbacManager.addRole(
-        mapper.toPersistence(createRoleDto)
+        mapper.toPersistence(record)
       );
 
       const roleSetting = new RoleSettingEntity()
       roleSetting.role = { name: addedRole.name };
-      roleSetting.displayName = createRoleDto.setting?.displayName;
-      roleSetting.theme = createRoleDto.setting?.theme;
+      roleSetting.displayName = record.setting?.displayName;
+      roleSetting.theme = record.setting?.theme;
 
       await queryRunner.manager.save(roleSetting);
   
       await queryRunner.commitTransaction();
 
-      return { ...addedRole, setting: roleSetting };
+      return Object.assign(mapper.toResponse(addedRole), { setting: roleSetting });
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw err;
@@ -45,7 +48,7 @@ export class RoleService {
     }
   }
 
-  async updateWithSetting(name: string, updateRoleDto: UpdateRoleRequest): Promise<Partial<RoleEntity>> {
+  async updateOne(id: number | string, update: DeepPartial<RoleEntity>): Promise<RoleEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
   
     await queryRunner.connect();
@@ -53,23 +56,31 @@ export class RoleService {
 
     try {
       const updatedRole = await this.rbacManager.updateRole(
-        name, mapper.toPersistence(updateRoleDto)
+        id as string, mapper.toPersistence(update)
       );
 
       const roleSetting = new RoleSettingEntity()
-      roleSetting.displayName = updateRoleDto.setting?.displayName;
-      roleSetting.theme = updateRoleDto.setting?.theme;
+      roleSetting.displayName = update.setting?.displayName;
+      roleSetting.theme = update.setting?.theme;
 
       await queryRunner.manager.update(RoleSettingEntity, { role: { name: updatedRole.name } }, roleSetting);
-  
+
       await queryRunner.commitTransaction();
 
-      return { ...updatedRole, setting: roleSetting };
+      return Object.assign(mapper.toResponse(updatedRole), { setting: roleSetting });
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw err;
     } finally {
       await queryRunner.release();
     }
+  }
+
+  public async deleteOne(id: string | number): Promise<RoleEntity> {
+    const role = await this.findById(id as string);
+
+    await this.rbacManager.removeRole(role.name);
+
+    return role;
   }
 }

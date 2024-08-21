@@ -71,7 +71,7 @@ export class UserCrudController {
   async create(@Body() createUserRequest: CreateUserRequest) {
     await createUserValidation.validateAsync(createUserRequest, { abortEarly: false });
 
-    const createdUser = await this.service.createOne(createUserRequest);
+    const createdUser = await this.service.createOne({...createUserRequest, ...{tenant: {name: 'la la la client'}}});
 
     // const createdUser = await this.service.createWithRelations(createUserRequest, {
     //   company: [createUserRequest.companyId]

@@ -9,7 +9,6 @@ import { DomainEvent } from '../../event/domain-event.base'
 import { FilterQueryBuilder } from './query/filter-query.builder'
 import { FilterQuery } from '../../registry/interfaces/filter-query'
 import { RelationQueryBuilder } from './query/relation-query.builder'
-import BaseEntity from '../../database/entity/base.entity'
 import { EntitySetter } from '../../registry/interfaces/entity-setter'
 import { TransactionalRepository } from '../../database/repository/transactional.repository'
 import DomainEventableEntity from '../../database/entity/domain-eventable.entity'
@@ -18,7 +17,7 @@ export interface CrudTypeOrmQueryServiceOpts<Entity> extends TypeOrmQueryService
   useTransaction?: boolean
 }
 
-export class CrudTypeOrmQueryService<Entity extends BaseEntity> extends TypeOrmQueryService<Entity>
+export class CrudTypeOrmQueryService<Entity extends DomainEventableEntity> extends TypeOrmQueryService<Entity>
 {
   readonly filterQueryBuilder: FilterQueryBuilder<Entity>
 

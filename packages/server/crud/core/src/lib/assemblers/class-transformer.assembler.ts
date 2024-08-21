@@ -1,4 +1,4 @@
-import { plainToClass } from 'class-transformer'
+import { instanceToPlain, plainToClass } from 'class-transformer'
 
 import { Class, DeepPartial } from '../common'
 import { AggregateQuery, AggregateResponse, Query } from '../interfaces'
@@ -51,7 +51,7 @@ export abstract class ClassTransformerAssembler<DTO, Entity extends DeepPartial<
     if (deserializer) {
       return deserializer(obj)
     }
-    return plainToClass(cls, obj)
+    return plainToClass(cls, instanceToPlain(obj))
   }
 
   isConstructor(x: any) {

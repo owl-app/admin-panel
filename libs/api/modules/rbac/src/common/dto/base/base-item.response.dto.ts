@@ -1,9 +1,13 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
+import { ApiPropertyOptional } from "@nestjs/swagger"
 import { IsOptional } from "class-validator"
+import { Exclude } from "class-transformer";
 
 import type { IBaseRbacItemResponse } from '@owl-app/lib-contracts'
 
 export abstract class BaseRbacItemResponse implements IBaseRbacItemResponse {
+
+  @Exclude()
+  type: string;
 
   @ApiPropertyOptional({ type: () => String })
   name: string;
@@ -24,17 +28,4 @@ export abstract class BaseRbacItemResponse implements IBaseRbacItemResponse {
   @IsOptional()
   updatedAt: string | null = null;
 
-  constructor(
-    name: string,
-    description: string | null = null,
-    ruleName: string | null = null,
-    createdAt: string | null = null,
-    updatedAt: string | null = null,
-  ) {
-    this.name = name;
-    this.description = description;
-    this.ruleName = ruleName;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-  }
 }
