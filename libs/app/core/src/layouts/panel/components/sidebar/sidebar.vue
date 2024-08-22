@@ -39,6 +39,14 @@
               hover-opacity="0.10"
             >
               <VaSidebarItemContent class="py-3 pr-2 pl-11">
+                <VaIcon
+                  v-if="childRoute.meta.icon"
+                  aria-hidden="true"
+                  :name="childRoute.meta.icon"
+                  size="20px"
+                  :color="iconColor(childRoute)"
+                  class="material-symbols-outlined"
+                />
                 <VaSidebarItemTitle class="leading-5 font-semibold">
                   {{ t(childRoute.displayName) }}
                 </VaSidebarItemTitle>
@@ -86,9 +94,9 @@ export default defineComponent({
         return route?.name === section.name
       }
 
-      
-
-      return section.children.some(({ name }) => route.path.endsWith(`${name}`))
+      return section.children.some(({ name }) => {
+        return typeof route?.name === 'string' && route?.name?.includes(`${name}`)
+      })
     }
 
     const setActiveExpand = () =>

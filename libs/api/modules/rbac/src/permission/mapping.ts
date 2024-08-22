@@ -2,8 +2,8 @@ import { Permission } from "@owl-app/rbac-manager"
 
 import { RbacItemMapper } from "../common/mapping"
 
-import { PermissionResponse } from "./dto/permission.response.dto"
+import { PermissionEntity } from "../domain/entity/permission.entity";
 
-const mapper = new RbacItemMapper(Permission, PermissionResponse);
+const mapper = new RbacItemMapper(PermissionEntity, Permission);
 
 export default mapper;

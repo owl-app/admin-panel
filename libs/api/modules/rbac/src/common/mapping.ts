@@ -1,36 +1,38 @@
 import { Type } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 import moment from 'moment';
 
 import { Item } from '@owl-app/rbac-manager';
 
 import { Mapper } from '@owl-app/lib-api-bulding-blocks/types/mapper.interface';
 
-import { BaseRbacItemResponse } from './dto/base/base-item.response.dto';
-import { BaseRbacItemRequest } from './dto/base/base-item.request.dto';
+import { BaseAuthItemEntity } from '../domain/entity/base-auth.entity';
 
 export class RbacItemMapper<
-  Entity extends Item,
-  Request extends BaseRbacItemRequest,
-  Response extends BaseRbacItemResponse
-> implements Mapper<Request, Entity, Response>
+  Entity extends DeepPartial<BaseAuthItemEntity>,
+  BaseItem extends Item,
+  Response extends BaseAuthItemEntity
+> implements Mapper<Entity, BaseItem, Response>
 {
-  constructor(private entity: Type<Entity>, private response: Type<Response>) {}
+  constructor(private response: Type<Response>, private item: Type<BaseItem>) {}
 
-  toPersistence(request: Request): Entity {
-    return new (this.entity)(
+  toPersistence(request: Entity): BaseItem {
+    return new (this.item)(
       request.name,
       request.description,
       request.ruleName
     );
   }
 
-  toResponse(entity: Entity): Response {
-    return new (this.response)(
-      entity.name,
-      entity.description,
-      entity.ruleName,
-      entity.createdAt !== null ? moment(entity.createdAt).format('YYYY-MM-DD HH:mm:ss') : null,
-      entity.updatedAt !== null ? moment(entity.updatedAt).format('YYYY-MM-DD HH:mm:ss') : null,
-    )
+  toResponse(item: Item): Response
+  {
+    const role = new (this.response);
+    role.name = item.name;
+    role.description = item.description;
+    role.ruleName = item.ruleName;
+    role.createdAt = moment(item.createdAt).toDate();
+    role.updatedAt = moment(item.updatedAt).toDate(); 
+
+    return role;
   }
 }

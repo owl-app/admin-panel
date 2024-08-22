@@ -33,11 +33,27 @@ export default {
       },
     },
     {
-      name: 'role-list',
-      displayName: 'roles',
+      name: 'permissions',
+      displayName: 'access_control',
       meta: {
         icon: 'admin_panel_settings',
       },
+      children: [
+        {
+          name: 'role-list',
+          displayName: 'roles',
+          meta: {
+            icon: 'guardian',
+          },
+        },
+        {
+          name: 'permission-list',
+          displayName: 'permissions',
+          meta: {
+            icon: 'vpn_key',
+          },
+        },
+      ],
     },
     // {
     //   name: 'dashboard',

@@ -2,4 +2,6 @@ clients: Clients
 dashboard: Dashboard
 users: Users
 roles: Roles
+access_control: Access control
+permissions: Permissions
 logout: Logout

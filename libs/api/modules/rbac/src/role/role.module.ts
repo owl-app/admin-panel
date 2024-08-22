@@ -12,11 +12,11 @@ import { CrudController } from './features/v1/crud/crud.http.controller'
 import { AssignController } from './features/v1/assign/assign.http.controller'
 import { RevokeController } from './features/v1/revoke/revoke.http.controller'
 import { RoleEntitySchema } from '../database/entity-schema/role.entity-schema'
-import { BaseAuthEntitySchema } from '../database/entity-schema/base-auth.entity-schema'
 import { ListFilterBuilder } from './features/v1/crud/list-filter.builder'
 import { RoleSettingEntitySchema } from '../database/entity-schema/role-setting.entity-schema'
 import { RoleService } from './features/v1/crud/role.service'
 import { RoleAssembler } from './features/v1/crud/role.assembler'
+import { BaseAuthEntitySchema } from '../database/entity-schema/base-auth.entity-schema'
 
 @Module({
   imports: [

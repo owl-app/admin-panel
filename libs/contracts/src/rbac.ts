@@ -8,6 +8,14 @@ export interface Role {
   updatedAt?: string;
 }
 
+export interface Permission {
+  name: string;
+  description?: string;
+  ruleName?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export type RoleSetting = {
   id?: string;
   displayName?: string;

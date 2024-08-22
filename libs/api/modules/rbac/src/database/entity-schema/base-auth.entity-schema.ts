@@ -16,6 +16,7 @@ export const BaseAuthEntitySchema = new EntitySchema<BaseAuthItemEntity>({
     name: {
       type: String,
       primary: true,
+      nullable: false,
     },
     description: {
       type: String,

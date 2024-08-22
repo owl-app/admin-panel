@@ -97,6 +97,21 @@ export class CrudController {
     return updatedRole;
   }
 
+  @ApiOperation({ summary: 'Delete role' })
+    @ApiResponse({
+      status: HttpStatus.NO_CONTENT,
+      description: 'Role has been successfully deleted',
+    })
+    @ApiResponse({
+      status: HttpStatus.NOT_FOUND,
+      description: 'Record not found',
+    })
+    @HttpCode(HttpStatus.ACCEPTED)
+  @Delete(':name')
+  async remove(@Param('name') name: string): Promise<void> {
+    await this.service.deleteOne(name);
+  }
+
   @ApiOperation({ summary: 'Find all roles by filters using pagination' })
     @ApiResponse({
       status: HttpStatus.OK,
@@ -116,20 +131,5 @@ export class CrudController {
     const paginated = await this.paginatedService.getData(filters, pagination);
 
     return new RolePaginatedResponseDto(paginated);
-  }
-
-  @ApiOperation({ summary: 'Delete role' })
-    @ApiResponse({
-      status: HttpStatus.NO_CONTENT,
-      description: 'Role has been successfully deleted',
-    })
-    @ApiResponse({
-      status: HttpStatus.NOT_FOUND,
-      description: 'Record not found',
-    })
-    @HttpCode(HttpStatus.ACCEPTED)
-  @Delete(':name')
-  async remove(@Param('name') name: string): Promise<void> {
-    await this.service.deleteOne(name);
   }
 }

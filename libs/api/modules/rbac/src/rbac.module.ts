@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { TypeOrmModule } from '@nestjs/typeorm'
 
 import config from '@owl-app/lib-api-bulding-blocks/config'
 import { DatabaseModule } from '@owl-app/lib-api-bulding-blocks/database/database.module'
 
 import { RbacPermissionModule } from './permission/permission.module'
 import { RbacRoleModule } from './role/role.module'
+import { BaseAuthEntitySchema } from './database/entity-schema/base-auth.entity-schema'
 
 @Module({
   imports: [
