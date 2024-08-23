@@ -23,8 +23,8 @@ const emit = defineEmits<{
 const dataForm = ref({ ...props.defaultValue ?? {} })
 const validationErrors = ref<any>({})
 const { primaryKey, item, loading, saving, getItem, save } = useItem<Item>(props.collection, props.primaryKey);
-const { fields, resetValidation } = useForm('owl-form')
-const isValid = ref(false);
+const { fields } = useForm('owl-form')
+const isValid = ref(!props?.schema);
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(dataForm.value).some((key) => {
@@ -36,8 +36,6 @@ const isFormHasUnsavedChanges = computed(() => {
 
 let immediateValidation = false;
 let textDebounce: DebouncedFunc<(...args: any[]) => any>;
-
-resetValidation();
 
 defineExpose({
   isFormHasUnsavedChanges,
@@ -66,10 +64,11 @@ watch(
 watch(
   [dataForm],
   () => {
-    debouceValidate(immediateValidation ? 0 : 1000);
-
-    if(immediateValidation) {
+    if (immediateValidation) {
+      validate();
       immediateValidation = false;
+    } else {
+      debouceValidate(1000);
     }
   },
   { deep: true },
@@ -105,7 +104,8 @@ const getVNodeComponentName = (node: VNode) => {
 }
 
 function validate(showAllErrors = false): boolean {
-  console.log('validate')
+  if(!props.schema) return true;
+
   if(textDebounce) {
     textDebounce.cancel();
   }
