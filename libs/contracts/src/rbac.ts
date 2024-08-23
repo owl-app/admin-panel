@@ -16,6 +16,11 @@ export interface Permission {
   updatedAt?: string;
 }
 
+export enum PermissionReferType {
+  ROUTE = 'ROUTE',
+  FIELD = 'FIELD',
+}
+
 export type RoleSetting = {
   id?: string;
   displayName?: string;

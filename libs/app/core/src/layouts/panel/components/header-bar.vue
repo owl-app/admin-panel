@@ -3,14 +3,17 @@ export interface Props {
   title?: string;
   description?: string;
   icon?: string;
+  borderedBottom?: boolean;
 }
 
-withDefaults(defineProps<Props>(), { });
+withDefaults(defineProps<Props>(), { borderedBottom: false });
 </script>
 
 <template>
-<div class="grid grid-cols-2 gap-2">
-  <div class="header-bar">
+<div :class="`grid grid-cols-${Object.keys($slots).length+1} gap-2`">
+  <div class="header-bar"
+    :class="{ 'header-bar--borderred-bottom': borderedBottom }"
+  >
     <div class="header-icon">
         <va-icon class="material-symbols-outlined" :name="icon" :size="30" color="#158DE3" />
     </div>
@@ -20,7 +23,7 @@ withDefaults(defineProps<Props>(), { });
       <div class="description" v-if="description">{{ description }}</div>
     </div>
   </div>
-  <div class="content-top header-actions ">
+  <div class="content-top header-actions" v-if="$slots.actions">
     <slot name="actions"></slot>
   </div>
 </div>
@@ -30,6 +33,11 @@ withDefaults(defineProps<Props>(), { });
 <style lang="scss" scoped>
 .header-bar {
   --header-bar-height: 60px;
+
+  &--borderred-bottom {
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--va-background-border)
+  }
 
   display: flex;
   align-items: center;

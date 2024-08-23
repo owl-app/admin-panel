@@ -27,6 +27,10 @@ export const BaseAuthEntitySchema = new EntitySchema<BaseAuthItemEntity>({
       type: String,
       nullable: true,
     },
+    collection: {
+      type: String,
+      nullable: true,
+    },
     ...TimestampableSchemaPart
   },
   inheritance: {

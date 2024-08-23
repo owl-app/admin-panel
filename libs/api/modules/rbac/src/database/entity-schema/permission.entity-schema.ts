@@ -14,5 +14,9 @@ export const PermissionEntitySchema = new EntitySchema<PermissionEntity>({
   discriminatorValue: 'permission',
   columns: {
       ...BaseAuthEntitySchema.options.columns,
+      refer: {
+        type: String,
+        nullable: true,
+      },
   },
 })

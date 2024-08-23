@@ -10,6 +10,8 @@ export abstract class BaseAuthItemEntity extends DomainEventableEntity
 
   ruleName: string;
 
+  collection: string;
+
   createdAt: Date;
 
   updatedAt: Date;

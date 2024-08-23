@@ -5,3 +5,4 @@ roles: Roles
 access_control: Access control
 permissions: Permissions
 logout: Logout
+select_option: Select an option
