@@ -12,6 +12,7 @@ export interface Permission {
   name: string;
   description?: string;
   ruleName?: string;
+  refer?: string;
   createdAt?: string;
   updatedAt?: string;
 }

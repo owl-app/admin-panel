@@ -1,7 +1,7 @@
 import { DataSource, QueryRunner } from 'typeorm'
 import moment from 'moment'
 
-import { AccessType, IItemsStorageInterface, Item, Permission, Role, TypesItem } from '@owl-app/rbac-manager'
+import { AccessType, CustomFields, IItemsStorageInterface, Item, Permission, Role, TypesItem } from '@owl-app/rbac-manager'
 import { isEmpty } from '@owl-app/utils'
 
 import { BaseStorage } from './base.storage'
@@ -30,7 +30,7 @@ export class ItemStorage extends BaseStorage implements IItemsStorageInterface {
     childrenTableName: string | null = null
   ) {
     super(dataSource);
-    this.childrenTableName = childrenTableName ?? tableName + '_child';
+    this.childrenTableName = childrenTableName ?? `${tableName}_child`;
   }
 
   async clear(): Promise<void>
@@ -46,10 +46,7 @@ export class ItemStorage extends BaseStorage implements IItemsStorageInterface {
     const rawItems: Array<RawItem> = await this.singleQuery(`SELECT * FROM ${this.childrenTableName}`);
 
     return rawItems.map(
-        (item): Item => {
-
-          return this.createItem(item)
-        }
+      (item): Item => this.createItem(item)
     );
   }
 
@@ -65,19 +62,29 @@ export class ItemStorage extends BaseStorage implements IItemsStorageInterface {
   {
     const result: Array<RawItem> = await this.singleQuery(`SELECT * FROM ${this.tableName} WHERE name = "${name}" LIMIT 1`);
 
-    return result.length > 0 ? true : false;
+    return result.length > 0;
   }
 
-  async add(item: Item): Promise<void>
+  async add(item: Item, customFields?: CustomFields[]): Promise<void>
   {
-    await this.singleQuery(`INSERT INTO ${this.tableName} (name, description, rule_name, created_at, updated_at, type) VALUES(?,?,?,?,?,?)`,
+    let customFieldNames: string[] = [];
+    let customFieldsValues: unknown[] = [];
+
+    if(customFields) {
+      customFieldNames = customFields.map((field) => field.name);
+      customFieldsValues = customFields.map((field) => field.value);
+    }
+    await this.singleQuery(`
+      INSERT INTO ${this.tableName} (name, description, rule_name, created_at, updated_at, type ${customFieldNames ? `,${customFieldNames.join(',')}` : ''})
+      VALUES(?,?,?,?,?,? ${customFieldNames ? `,${customFieldNames.map(() => '?').join(',')}` : ''})`,
       [
         item.name,
         item.description,
         item.ruleName,
         moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'),
         moment(item.updatedAt).format('YYYY-MM-DD HH:mm:ss'),
-        item.type
+        item.type,
+        ...customFieldsValues
       ]
     );
   }

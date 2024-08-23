@@ -10,6 +10,7 @@ import { IAccessCheckerInterface } from './access-checker.interface';
 import {
   IItemsStorageInterface,
   IAssignmentsStorageInterface,
+  CustomFields,
 } from './storage';
 import {
   Item,
@@ -395,8 +396,8 @@ export class Manager implements IAccessCheckerInterface {
    *
    * @throws ItemAlreadyExistsException
    */
-  async addRole(role: Role): Promise<Role> {
-    await this.addItem(role);
+  async addRole(role: Role, customFields?: CustomFields[]): Promise<Role> {
+    await this.addItem(role, customFields);
 
     return role;
   }
@@ -437,8 +438,8 @@ export class Manager implements IAccessCheckerInterface {
    *
    * @return self
    */
-  async addPermission(permission: Permission): Promise<Permission> {
-    await this.addItem(permission);
+  async addPermission(permission: Permission, customField?: CustomFields[]): Promise<Permission> {
+    await this.addItem(permission, customField);
 
     return permission;
   }
@@ -577,7 +578,7 @@ export class Manager implements IAccessCheckerInterface {
   /**
    * @throws ItemAlreadyExistsException
    */
-  private async addItem(item: Item): Promise<void> {
+  private async addItem(item: Item, customField?: CustomFields[]): Promise<void> {
     if (await this.itemsStorage.exists(item.name)) {
       throw new ItemAlreadyExistsException(item);
     }
@@ -590,7 +591,7 @@ export class Manager implements IAccessCheckerInterface {
       item.updatedAt = date;
     }
 
-    await this.itemsStorage.add(item);
+    await this.itemsStorage.add(item, customField);
   }
 
   private async hasItem(name: string): Promise<boolean> {

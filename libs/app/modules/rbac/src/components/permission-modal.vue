@@ -32,8 +32,22 @@
           />
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <refer-select v-model="data.refer" :disabled="!isEmpty(data.createdAt)" />
-          <collection-select v-model="data.collection" :disabled="!isEmpty(data.createdAt)" />
+          <refer-select
+            v-model="data.refer"
+            :disabled="!isEmpty(data.createdAt)"
+            name="refer"
+            :error="!!validation['refer']"
+            :error-messages="validation['refer']"
+            :required-mark="true"
+          />
+          <collection-select
+            v-model="data.collection"
+            :disabled="!isEmpty(data.createdAt)"
+            name="collection"
+            :error="!!validation['collection']"
+            :error-messages="validation['collection']"
+            :required-mark="true"
+          />
         </div>
         <va-input
           v-model="data.name"
@@ -85,13 +99,23 @@ const validationSchema = v.object({
   description: v.optional(
     v.pipe(
       v.string(),
-      v.nonEmpty('The string should contain at least one character.')
+      v.nonEmpty('The string should contain at least one character')
     ), ''),
   name: v.optional(
     v.pipe(
       v.string(),
-      v.nonEmpty('The string should contain at least one character.')
-    ), '')
+      v.nonEmpty('The string should contain at least one character')
+    ), ''),
+  refer: v.optional(
+  v.pipe(
+    v.string(),
+    v.nonEmpty('Please select option')
+  ), ''),
+  collection: v.optional(
+  v.pipe(
+    v.string(),
+    v.nonEmpty('Please select option')
+  ), '')
 });
 </script>
   

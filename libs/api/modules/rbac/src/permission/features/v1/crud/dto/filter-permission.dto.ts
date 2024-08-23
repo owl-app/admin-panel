@@ -6,4 +6,6 @@ export class FilterPermissionDto {
 
     readonly email?: string;
 
+    readonly refer?: string;
+
 }

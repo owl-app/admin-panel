@@ -10,6 +10,7 @@ import StringFilter from '@owl-app/lib-app-core/components/grid/components/filte
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
 
 import PermissionModal from '../components/permission-modal.vue'
+import ReferSelect from '../components/form/refer-select.vue';
 
 const { t } = useI18n();
 
@@ -28,8 +29,13 @@ const headerBar = {
 const columns = defineVaDataTableColumns([
   { label: 'Description', key: 'description', sortable: true },
   { label: 'Canonical name', key: 'name', sortable: true },
+  { label: 'Refer', key: 'refer', sortable: true },
+  { label: 'Collection', key: 'collection', sortable: true },
   { label: ' ', key: 'actions' },
 ])
+function test(value: any) {
+  console.log(value);
+}
 </script>
 
 <template>
@@ -63,6 +69,10 @@ const columns = defineVaDataTableColumns([
             :data="filters?.search"
             :change-filter="changeFilter"
             :remove-filter="removeFilter"
+          />
+          <refer-select
+            v-model="filters.refer"
+            @update:model-value="(value) => changeFilter({ refer: value })"
           />
         </div>
       </template>

@@ -1,5 +1,7 @@
 import { Role, Item, Permission, AccessType } from '../types';
 
+export type CustomFields = { name: string; value: unknown };
+
 /**
  * A storage for RBAC roles and permissions used in {@see Manager}.
  */
@@ -37,11 +39,16 @@ export interface IItemsStorageInterface
     exists(name: string): Promise<boolean>;
 
     /**
-     * Adds the role or the permission to RBAC system.
-     *
      * @param Item item The role or the permission to add.
      */
     add(item: Item): Promise<void>;
+    /**
+     * Adds the role or the permission to RBAC system.
+     *
+     * @param Item item The role or the permission to add.
+     * @param customFields Custom fields to add to the item.
+     */
+    add(item: Item, customFields?: CustomFields[]): Promise<void>;
 
     /**
      * Updates the specified role or permission in the system.

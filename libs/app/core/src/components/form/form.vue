@@ -168,11 +168,7 @@ const saveForm = async () => {
       :class="classForm"
     >
       <template v-for="child in getUnSlottedVNodes($slots.fields({data: dataForm, validation: validationErrors }))" :key="getVNodeKey(child)">
-        <component 
-          v-if="getVNodeComponentName(child) === 'VaTextarea' || 'VaInput'"
-          :is="child" @focusout="$event.stopPropagation(); validate();" 
-        />
-        <component v-else :is="child" />
+        <component :is="child" @focusout="$event.stopPropagation(); validate();" />
       </template>
 
       <slot

@@ -5,11 +5,17 @@ import { Filter } from '@owl-app/crud-core';
 import { FilterPermissionDto } from './dto';
 
 export class ListFilterBuilder extends QueryFilterBuilder<Permission, FilterPermissionDto> {
-  build(data: FilterPermissionDto): Filter<Client>
+  build(data: FilterPermissionDto): Filter<Permission>
   {
-    const filters: Filter<Client>[] = []
+    const filters: Filter<Permission>[] = []
 
-    filters.push(this.filterRegistry.get('string').apply(['name'], data?.search));
+    if (data?.search) {
+      filters.push(this.filterRegistry.get('string').apply(['name'], data?.search));
+    }
+
+    if (data?.refer) {
+      filters.push({ refer: { eq: data?.refer }});
+    }
 
     return {
       or: filters

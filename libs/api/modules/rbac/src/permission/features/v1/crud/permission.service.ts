@@ -18,8 +18,15 @@ export class PermissionService extends CrudTypeOrmQueryService<PermissionEntity>
 
   public override async createOne(record: DeepPartial<PermissionEntity>): Promise<PermissionEntity>
   {
+      this.resolveName(record);
+
       const addedPermission = await this.rbacManager.addPermission(
-        mapper.toPersistence(record)
+        mapper.toPersistence(record),
+        [
+          { name: 'collection', value: record.collection },
+          { name: 'refer', value: record.refer }
+        ]
+        
       );
 
       return Object.assign(mapper.toResponse(addedPermission));
@@ -39,5 +46,9 @@ export class PermissionService extends CrudTypeOrmQueryService<PermissionEntity>
     await this.rbacManager.removePermission(permission.name);
 
     return permission;
+  }
+
+  private resolveName(record: DeepPartial<PermissionEntity>): void {
+    record.name = (`${record.refer}_${record.collection}_${record.name}`).toUpperCase();
   }
 }
