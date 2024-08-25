@@ -1,8 +1,10 @@
 
 import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
+import RouterPass from '@owl-app/lib-app-core/router/passthrough';
 
 import ListRoleRoute from './routes/role-list.vue';
 import ListPermissionRoute from './routes/permission-list.vue';
+import AssignPermissionsRoute from './routes/permission-assign.vue';
 
 export default defineModule({
   id: 'rbac',
@@ -11,21 +13,36 @@ export default defineModule({
   routes: {
     private: [
       {
-        name: 'role-list',
-        path: 'roles',
-        component: ListRoleRoute,
-        meta: {
-          private: true,
-        },
+        path: 'rbac/roles',
+        component: RouterPass,
+        children: [
+          {
+            name: 'role-list',
+            path: '',
+            component: ListRoleRoute,
+            meta: {
+              private: true,
+            },
+          },
+          {
+            name: 'role-permission-assign',
+            path: 'assing-permissions/:roleId',
+            component: AssignPermissionsRoute,
+            meta: {
+              private: true,
+            },
+          }
+        ]
       },
       {
         name: 'permission-list',
-        path: 'permissions',
+        path: 'rbac/permissions',
         component: ListPermissionRoute,
         meta: {
           private: true,
         },
-      }
+      },
+
     ]
   }
 })

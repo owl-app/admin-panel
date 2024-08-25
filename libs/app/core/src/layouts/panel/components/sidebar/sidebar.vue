@@ -87,15 +87,29 @@ export default defineComponent({
       set: (v: boolean) => emit('update:visible', v),
     })
 
-    const isActiveChildRoute = (child: INavigationRoute) => route.name === child.name
+    const isActiveChildRoute = (child: INavigationRoute) => {
+      if(typeof route?.name === 'string') {
+        if (route?.name?.includes(`${child.name}`)) {
+          return true;
+        }
+
+        if (route?.name?.includes(`${child.meta?.untrackedPages}`)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
 
     const routeHasActiveChild = (section: INavigationRoute) => {
       if (!section.children) {
-        return route?.name === section.name
+        return route?.name === section.name ||
+        (typeof route?.name === 'string' && route?.name?.includes(`${section.meta?.untrackedPages}`))
       }
 
-      return section.children.some(({ name }) => {
-        return typeof route?.name === 'string' && route?.name?.includes(`${name}`)
+      return section.children.some(({ name, meta }) => {
+        return typeof route?.name === 'string' && 
+          (route?.name?.includes(`${name}`) || route?.name?.includes(`${meta?.untrackedPages}`))
       })
     }
 

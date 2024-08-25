@@ -16,10 +16,10 @@
       @saved="ok(); $emit('saved');"
     >
       <template #fields="{ data }">
-        <va-input v-model="data.setting.displayName" label="Display name" />
-        <va-input v-model="data.setting.theme" label="Theme" min-rows="5" />
-        <va-textarea v-model="data.description" name="description" label="Description" min-rows="5" />
-        <va-input v-model="data.name" :disabled="!isEmpty(data.createdAt)" label="Canonical name" />
+        <va-input v-model="data.ref.setting.displayName" label="Display name" />
+        <va-input v-model="data.ref.setting.theme" label="Theme" min-rows="5" />
+        <va-textarea v-model="data.ref.description" name="description" label="Description" min-rows="5" />
+        <va-input v-model="data.name" :disabled="!isEmpty(data.ref.createdAt)" label="Canonical name" />
       </template>
 
       <template #actions="{ validate, save, isLoading, isValid }">

@@ -22,7 +22,7 @@
       <template #fields="{ data, validation }">
         <div class="grid grid-cols-1">
           <va-textarea 
-            v-model="data.description"
+            v-model="data.ref.description"
             name="description"
             label="Description"
             min-rows="5"
@@ -33,16 +33,16 @@
         </div>
         <div class="grid grid-cols-2 gap-4">
           <refer-select
-            v-model="data.refer"
-            :disabled="!isEmpty(data.createdAt)"
+            v-model="data.ref.refer"
+            :disabled="!isEmpty(data.ref.createdAt)"
             name="refer"
             :error="!!validation['refer']"
             :error-messages="validation['refer']"
             :required-mark="true"
           />
           <collection-select
-            v-model="data.collection"
-            :disabled="!isEmpty(data.createdAt)"
+            v-model="data.ref.collection"
+            :disabled="!isEmpty(data.ref.createdAt)"
             name="collection"
             :error="!!validation['collection']"
             :error-messages="validation['collection']"
@@ -50,8 +50,8 @@
           />
         </div>
         <va-input
-          v-model="data.name"
-          :disabled="!isEmpty(data.createdAt)"
+          v-model="data.ref.name"
+          :disabled="!isEmpty(data.ref.createdAt)"
           label="Canonical name"
           name="name"
           :error="!!validation['name']"

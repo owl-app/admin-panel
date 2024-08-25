@@ -74,6 +74,15 @@ const columns = defineVaDataTableColumns([
           <VaButton
             preset="primary"
             size="small"
+            color="#229635"
+            icon="mso-join"
+            aria-label="Assign permissions"
+            tag="router-link"
+            :to="{ name: 'role-permission-assign', params: { roleId: role.name } }"
+          />
+          <VaButton
+            preset="primary"
+            size="small"
             color="primary"
             icon="mso-edit"
             aria-label="Edit project"

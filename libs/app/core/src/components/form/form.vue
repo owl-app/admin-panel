@@ -2,7 +2,7 @@
 import { computed, ref, watch, VNode, Fragment } from 'vue'
 import { debounce, DebouncedFunc } from 'lodash';
 import * as v from 'valibot'
-import { BaseSchema } from 'valibot'
+import { BaseSchema, BaseIssue } from 'valibot'
 import { useForm } from 'vuestic-ui'
 
 import type { Item, PrimaryKey } from '../../types/item';
@@ -10,7 +10,7 @@ import { useItem } from '../../composables/use-item';
 
 const props = defineProps<{
   collection: string,
-  schema?: BaseSchema,
+  schema?: BaseSchema<unknown, unknown, BaseIssue<unknown>> | null,
   primaryKey?: PrimaryKey | undefined,
   defaultValue?: Item | null,
   classForm?: string,
@@ -43,7 +43,7 @@ defineExpose({
 
 watch(
   () => props.primaryKey,
-  async () => {
+  async (): Promise<void> => {
     if (!props.primaryKey) {
       primaryKey.value = null;
       validate();
@@ -93,14 +93,6 @@ const getVNodeKey = (node: VNode): string => {
   }
 
   return String(node.key)
-}
-
-const getVNodeComponentName = (node: VNode) => {
-  if (typeof node.type === 'object' && 'name' in node.type && typeof node.type.name === 'string') {
-    return node.type.name
-  }
-
-  return ''
 }
 
 function validate(showAllErrors = false): boolean {
@@ -159,6 +151,25 @@ const saveForm = async () => {
   dataForm.value = {}
   emit('saved', savedData);
 }
+const makeSlotRef = () => {
+  return new Proxy(dataForm, {
+    get (v, key) {
+      if (key === 'ref') {
+        return dataForm.value
+      }
+
+      return Reflect.get(v, key)
+    },
+    set (_, key, value) {
+      if (key === 'ref') {
+        dataForm.value = value
+        return true
+      }
+
+      return Reflect.set(dataForm, key, value)
+    },
+  })
+}
 </script>
 
 <template>
@@ -167,7 +178,7 @@ const saveForm = async () => {
       ref="owl-form"
       :class="classForm"
     >
-      <template v-for="child in getUnSlottedVNodes($slots.fields({data: dataForm, validation: validationErrors }))" :key="getVNodeKey(child)">
+      <template v-for="child in getUnSlottedVNodes($slots.fields({data: makeSlotRef(), validation: validationErrors }))" :key="getVNodeKey(child)">
         <component :is="child" @focusout="$event.stopPropagation(); validate();" />
       </template>
 

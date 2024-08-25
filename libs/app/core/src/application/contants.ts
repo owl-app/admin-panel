@@ -4,3 +4,6 @@ export const LIFECYCLE_EVENTS = {
         ON_AFTER_EACH: 'onAfterEach'
     }
 }
+
+export const STORES_INJECT = "stores";
+export const API_INJECT = "api";

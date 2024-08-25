@@ -17,6 +17,7 @@ import { RoleSettingEntitySchema } from '../database/entity-schema/role-setting.
 import { RoleService } from './features/v1/crud/role.service'
 import { RoleAssembler } from './features/v1/crud/role.assembler'
 import { BaseAuthEntitySchema } from '../database/entity-schema/base-auth.entity-schema'
+import { AssignedPermissionsController } from './features/v1/assigned-permissions/assigned-permissions.http.controller'
 
 @Module({
   imports: [
@@ -43,8 +44,9 @@ import { BaseAuthEntitySchema } from '../database/entity-schema/base-auth.entity
   ],
   controllers: [
     CrudController,
+    AssignedPermissionsController,
     AssignController,
-    RevokeController
+    RevokeController,
   ],
 })
 export class RbacRoleModule {}

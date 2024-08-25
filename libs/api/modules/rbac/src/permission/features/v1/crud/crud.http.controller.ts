@@ -9,7 +9,11 @@ import {
   Delete,
   Param,
   Get,
-  Query
+  Query,
+  ClassSerializerInterceptor,
+  UseInterceptors,
+  UsePipes,
+  ValidationPipe
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -17,7 +21,6 @@ import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/cru
 import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination';
 import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator';
-import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query';
 
 import { PermissionEntity } from '../../../../domain/entity/permission.entity';
 
@@ -26,6 +29,7 @@ import { PermissionResponse } from './dto/permission.response.dto'
 import { UpdatePermissionRequest } from './dto/update-permission.request.dto'
 import { PermissionAssembler } from './permission.assembler';
 import { FilterPermissionDto, PermissionPaginatedResponseDto } from './dto';
+import { PermissionPaginatedQuery } from './dto/permission-paginated.query';
 
 @ApiTags('Rbac Permission')
 @Controller('rbac/permissions')
@@ -122,12 +126,14 @@ export class RbacPermissionCrudController {
       description:
         'Invalid input, The response body may contain clues as to what went wrong',
     })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({ whitelist: false, transform: true}))
   @Get()
   async paginated(
     @Query('filters') filters: FilterPermissionDto,
-    @Query() pagination: PaginatedQuery
+    @Query() pagination: PermissionPaginatedQuery,
   ): Promise<PermissionPaginatedResponseDto> {
-    const paginated = await this.paginatedService.getData(filters, pagination);
+    const paginated = await this.paginatedService.getData(filters, (pagination.pageable === 0 ? null : pagination));
 
     return new PermissionPaginatedResponseDto(paginated);
   }

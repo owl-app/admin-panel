@@ -8,4 +8,6 @@ export class FilterPermissionDto {
 
     readonly refer?: string;
 
+    readonly collection?: string;
+
 }

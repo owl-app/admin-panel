@@ -1,5 +1,5 @@
 import { SelectQueryBuilder } from "typeorm";
-import { AssemblerQueryService, Filter, QueryService, SelectRelation } from "@owl-app/crud-core";
+import { AssemblerQueryService, Filter, Query, QueryService, SelectRelation } from "@owl-app/crud-core";
 
 import { PaginationConfig } from "../../config/pagination";
 import { PaginatedQuery } from "../../pagination/paginated.query";
@@ -25,38 +25,35 @@ export class PaginatedDataProvider<Entity, FiltersData> implements DataProvider<
 
   async getData(
     filtersData: FiltersData,
-    paginationQuery: PaginatedQuery,
+    paginationQuery?: PaginatedQuery,
   ): Promise<Pagination<Entity>> {
-    let page = 0;
-    let perPage = this.paginationConfig.perPage;
     const queryService = this.getTypeOrmQueryService();
-    let filterQuery = {}
-    let relations: SelectRelation<Entity>[] = [];
+    const query: Query<Entity> = {};
 
-    if (paginationQuery.page && paginationQuery.page > 0) {
-      page = (paginationQuery.page - 1) * paginationQuery.limit;
-    }
+    if(paginationQuery) {
+      query.paging = {
+        limit: this.paginationConfig.perPage ?? 10,
+        offset: 0,
+      };
 
-    if(this.paginationConfig.availablePerPage.indexOf(paginationQuery.limit)) {
-      perPage = paginationQuery.limit
+      if (paginationQuery.page && paginationQuery.page > 0) {
+        query.paging.offset = (paginationQuery.page - 1) * paginationQuery.limit;
+      }
+
+      if(paginationQuery.limit && this.paginationConfig.availablePerPage.indexOf(paginationQuery.limit)) {
+        query.paging.limit = paginationQuery.limit
+      }
     }
 
     if(instanceOf<FilterBuilder<Filter<Entity>, FiltersData>>(this.filterBuilder, 'build')) {
-      filterQuery = this.filterBuilder.build(filtersData);
+      query.filter = this.filterBuilder.build(filtersData);
     }
 
     if (instanceOf<QueryFilterBuilder<Entity, FiltersData>>(this.filterBuilder, 'buildRelations')) {
-      relations = this.filterBuilder.buildRelations();
+      query.relations = this.filterBuilder.buildRelations();
     }
 
-    const qb = queryService.filterQueryBuilder.select({
-      filter: filterQuery,
-      paging: {
-        limit: perPage,
-        offset: page,
-      },
-      relations,
-    });
+    const qb = queryService.filterQueryBuilder.select(query);
 
     if (instanceOf<QueryFilterBuilder<Entity, FiltersData>>(this.filterBuilder, 'buildCustom')) {
       this.filterBuilder.buildCustom(filtersData, qb);

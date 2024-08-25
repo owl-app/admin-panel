@@ -32,7 +32,7 @@ withDefaults(defineProps<Props>(), { borderedBottom: false });
 
 <style lang="scss" scoped>
 .header-bar {
-  --header-bar-height: 60px;
+  --header-bar-height: 80px;
 
   &--borderred-bottom {
     padding-bottom: 0.8rem;
@@ -46,15 +46,15 @@ withDefaults(defineProps<Props>(), { borderedBottom: false });
 
   .title {
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.7rem;
       font-weight: bold;
     }
 
     .description {
-      font-size: 0.8rem;
+      font-size: .8rem;
       font-weight: 400;
       color: #878d99;
-      margin-top: 0.3rem;
+      margin-top: 0.6rem;
 
       line-height: 0.7rem;
     }
@@ -66,8 +66,8 @@ withDefaults(defineProps<Props>(), { borderedBottom: false });
     justify-content: center;
     background-color: #d9efff;
     border-radius: 50%;
-    height: var(--v-header-bar-icon-height, 50px);
-    width: var(--v-header-bar-icon-width, 50px);
+    height: var(--v-header-bar-icon-height, 60px);
+    width: var(--v-header-bar-icon-width, 60px);
     margin-right: 1rem;
   }
 }

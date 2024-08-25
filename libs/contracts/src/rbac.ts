@@ -13,13 +13,14 @@ export interface Permission {
   description?: string;
   ruleName?: string;
   refer?: string;
+  collection?: string;
   createdAt?: string;
   updatedAt?: string;
 }
 
 export enum PermissionReferType {
-  ROUTE = 'ROUTE',
-  FIELD = 'FIELD',
+  ROUTE = 'Route',
+  FIELD = 'Field',
 }
 
 export type RoleSetting = {

@@ -1,7 +1,7 @@
 export interface INavigationRoute {
   name: string
   displayName: string
-  meta: { icon: string }
+  meta: { icon: string, untrackedPages?: string[] }
   children?: INavigationRoute[]
 }
 
@@ -44,6 +44,7 @@ export default {
           displayName: 'roles',
           meta: {
             icon: 'guardian',
+            untrackedPages: ['role-permission-assign'],
           },
         },
         {

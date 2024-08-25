@@ -3,11 +3,10 @@ import { NestFactory, Reflector } from '@nestjs/core'
 import { NestExpressApplication } from '@nestjs/platform-express'
 // // import { SentryService } from '@ntegral/nestjs-sentry';
 // import { useContainer } from 'class-validator';
-import session from 'express-session'
 // import * as helmet from 'helmet';
 import chalk from 'chalk'
 // import { join } from 'path';
-import { urlencoded, json } from 'express'
+import { urlencoded, json, Request, Response, NextFunction } from 'express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config'
 import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-bulding-blocks/config'
@@ -56,6 +55,7 @@ export async function bootstrap(
     app.use(json({ limit: '10mb' }));
     app.use(urlencoded({ extended: true, limit: '10mb' }));
     app.use(cookieParser());
+    app.use
 
     app.enableCors({
         origin: true,
@@ -64,14 +64,6 @@ export async function bootstrap(
         credentials: true,
         allowedHeaders: allowedHeaders.join(',')
     });
-
-    app.use(
-    	session({
-    		secret: 'asdad',
-    		resave: true,
-    		saveUninitialized: true
-    	})
-    );
 
     const configService = app.get(ConfigService);
     const { version } = configService.get<IConfigApp>(APP_CONFIG_NAME);

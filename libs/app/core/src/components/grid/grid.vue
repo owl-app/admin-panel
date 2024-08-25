@@ -42,7 +42,7 @@ const router = useRouter();
 const route = useRoute();
 let filtersChanged = false;
 
-const { sort, limit, page, filter, filterValues } = useItemOptions();
+const { sort, limit, page, filter } = useItemOptions();
 
 const {
     items,
@@ -91,7 +91,6 @@ watch(
   () => {
     if(isEmpty(route.query)) {
       reset();
-      filterValues.value = {};
       firstLoad = true;
     }
   }
@@ -99,12 +98,11 @@ watch(
 
 watch(
   [limit, sort, filter, page],
-  async (after, before) => {
+  (after, before) => {
+    if (isEqual(after, before)) return;
 
     const [newLimit, newSort, newFilter, newPage] = after;
     const [oldLimit, oldSort, oldFilter, oldPage] = before;
-
-    if (isEqual(after, before)) return;
 
     if(newPage !== oldPage && !firstLoad) {
       router.push({ query: { ...route.query, page: page.value } });
@@ -129,13 +127,10 @@ const changeFilter = (data: any) => {
     ...filter.value,
     ...data,
   }
-
-  filterValues.value = {...filter.value};
 };
 
 const removeFilter = (key: string) => {
   filter.value = omit(filter.value, key)
-  filterValues.value = {...filter.value};
 };
 
 function useItemOptions() {
@@ -143,9 +138,8 @@ function useItemOptions() {
   const limit = ref(route.query.limit ? parseInt(route.query?.limit as string) : props.defaultLimit);
   const sort = ref([props.defaultSort]);
   const filter = ref(route.query?.filters as Record<string, any> ?? {});
-  const filterValues = ref({...filter.value});
 
-  return { sort, limit, page, filter, filterValues };
+  return { sort, limit, page, filter };
 }
 
 async function reloadGrid() {
@@ -174,7 +168,7 @@ async function reloadGrid() {
           >
           <slot
             name="filters"
-            :filters="filterValues"
+            :filters="filter"
             :change-filter="changeFilter"
             :remove-filter="removeFilter"
           />

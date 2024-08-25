@@ -322,7 +322,9 @@ export class Manager implements IAccessCheckerInterface {
       return {};
     }
 
-    return this.normalizePermissions(result);
+    const normalizedPermissions = await this.normalizePermissions(result);
+
+    return normalizedPermissions;
   }
 
   /**
@@ -602,13 +604,16 @@ export class Manager implements IAccessCheckerInterface {
     permissionNames: Record<string, boolean>
   ): Promise<Record<string, Permission>> {
     const normalizePermissions: Record<string, Permission> = {};
-
+    const resultPermissions: Array<Promise<Permission>> = [];
+  
     Object.keys(permissionNames).forEach(async (permissionName) => {
-      const permission = await this.itemsStorage.getPermission(permissionName);
+      resultPermissions.push(this.itemsStorage.getPermission(permissionName))
+    })
 
-      if (permission !== null) {
-        normalizePermissions[permissionName] = permission;
-      }
+    const permissions = await Promise.all(resultPermissions);
+
+    permissions.forEach((permission) => { 
+      normalizePermissions[permission.name] = permission
     })
 
     return normalizePermissions;
@@ -652,14 +657,13 @@ export class Manager implements IAccessCheckerInterface {
   ): Promise<Record<string, Permission>> {
     const assignments = await this.assignmentsStorage.getByUserId(userId);
     const result:Record<string, boolean> = {};
+    const resultChildrenResursive: Promise<void>[] = [];
 
-    const forLoop = async () => {
-      Object.keys(assignments).forEach(async (roleName) => { 
-        await this.getChildrenRecursive(roleName, result);
-      })
-    }
+    Object.keys(assignments).forEach(async (roleName) => { 
+      resultChildrenResursive.push(this.getChildrenRecursive(roleName, result));
+    })
 
-    await forLoop();
+    await Promise.all(resultChildrenResursive);
 
     if (isEmpty(result)) {
       return {};
@@ -781,19 +785,18 @@ export class Manager implements IAccessCheckerInterface {
     result: Record<string, boolean>
   ): Promise<void> {
     const children = await this.itemsStorage.getChildren(name);
+    const resultPromise: Array<Promise<void>> = []
 
     if (isEmpty(children)) {
       return;
     }
 
-    const forLoop = async () => {
-      Object.keys(children).forEach(async (childName) => {
-        result[childName] = true;
-        await this.getChildrenRecursive(childName, result);
-      });
-    }
+    Object.keys(children).forEach(async (childName) => {
+      result[childName] = true;
+      resultPromise.push(this.getChildrenRecursive(childName, result));
+    });
 
-    await forLoop();
+    await Promise.all(resultPromise);
   }
 
   /**

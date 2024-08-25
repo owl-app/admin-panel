@@ -12,14 +12,12 @@ import { registerEvents } from './registers/events';
 import { defineModuleRequestEvent } from './events/initialize-modules-event';
 import { ApplicationConfig } from './types/config';
 
-
 export default async function bootstrap(app: App, config: ApplicationConfig) {
   const appRegistry = useAppRegistry();
 
-	registerDirectives(app);
-	registerComponents(app);
-	registerLayouts(app);
-  
+  registerDirectives(app);
+  registerComponents(app);
+  registerLayouts(app);
 
   const registeredModules = registerModules(config.modules);
 
@@ -37,6 +35,6 @@ export default async function bootstrap(app: App, config: ApplicationConfig) {
 
   registerEvents(app, config.events);
 
-  	// Add router after loading application to ensure all routes are registered
-	app.use(router);
+    // Add router after loading application to ensure all routes are registered
+  app.use(router);
 }

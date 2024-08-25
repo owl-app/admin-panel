@@ -15,10 +15,10 @@
       @saved="ok(); $emit('saved');"
     >
       <template #fields="{ data }">
-        <va-input v-model="data.name" label="name" :rules="[required]" />
-        <va-input v-model="data.email" label="email" />
-        <va-textarea v-model="data.addess" label="address" min-rows="5" />
-        <va-textarea v-model="data.description" label="description" min-rows="5" />
+        <va-input v-model="data.ref.name" label="name" :rules="[required]" />
+        <va-input v-model="data.ref.email" label="email" />
+        <va-textarea v-model="data.ref.addess" label="address" min-rows="5" />
+        <va-textarea v-model="data.ref.description" label="description" min-rows="5" />
       </template>
 
       <template #actions="{ validate, save, isLoading, isValid }">

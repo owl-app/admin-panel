@@ -6,3 +6,16 @@ access_control: Access control
 permissions: Permissions
 logout: Logout
 select_option: Select an option
+vuestic:
+  sortColumnBy: Sort column by
+  toggleDropdown: Toggle dropdown
+  breadcrumbs: Breadcrumbs
+  pagination: Pagination
+  goToSpecificPage: Go to specific page
+  select: Select
+auth_module: Auth module
+user_module: User module
+client_module: Client module
+rbac_module: RBAC module
+assign_permissions: Assign permissions
+assign_permissions_to_role: Assign permissions to role

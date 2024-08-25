@@ -17,8 +17,12 @@ export class ListFilterBuilder extends QueryFilterBuilder<Permission, FilterPerm
       filters.push({ refer: { eq: data?.refer }});
     }
 
+    if (data?.collection) {
+      filters.push({ collection: { eq: data?.collection }});
+    }
+
     return {
-      or: filters
+      and: filters
     }
   }
 }

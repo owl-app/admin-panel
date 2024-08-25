@@ -15,11 +15,11 @@
       @saved="ok(); $emit('saved');"
     >
       <template #fields="{ data }">
-        <va-input v-model="data.email" label="email" :rules="[required]" />
-        <va-input v-model="data.password" label="password" />
-        <va-input v-model="data.firstName" label="firstName" :rules="[required]" />
-        <va-input v-model="data.lastName" label="lastName" :rules="[required]" />
-        <va-input v-model="data.phoneNumber" label="phoneNumber" :rules="[required]" />
+        <va-input v-model="data.ref.email" label="email" :rules="[required]" />
+        <va-input v-model="data.ref.password" label="password" />
+        <va-input v-model="data.ref.firstName" label="firstName" :rules="[required]" />
+        <va-input v-model="data.ref.lastName" label="lastName" :rules="[required]" />
+        <va-input v-model="data.ref.phoneNumber" label="phoneNumber" :rules="[required]" />
       </template>
 
       <template #actions="{ validate, save, isLoading, isValid }">
