@@ -3,7 +3,7 @@ import {
   HttpStatus,
   Get,
   Post,
-	Put,
+  Put,
   Delete,
   Body,
   Query,
@@ -13,6 +13,8 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
+import { AvalilableCollections, CrudActions } from '@owl-app/lib-contracts'
+
 import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
 import { InjectQueryService, QueryService } from '@owl-app/crud-core'
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
@@ -20,14 +22,13 @@ import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.
 import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
 import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
+import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission';
 
 import { ClientEntity } from '../../../../domain/entity/client.entity'
 import { ClientResponse } from '../../../dto/client.response'
 
 import { CreateClientRequest, UpdateClientDto, FilterClientDto, ClientPaginatedResponseDto } from './dto'
 import { createClientValidation } from './validation'
-
-
 
 @ApiTags('Client')
 @Controller('clients')
@@ -51,6 +52,7 @@ export class ClientCrudController {
     type: ApiErrorResponse
   })
   @Get(':id')
+  @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.READ)
   findOne(@Param('id') id: string): Promise<ClientResponse> {
     return this.service.getById(id, { relations: [{ name: 'users', query: {}}]});
   }
@@ -66,6 +68,7 @@ export class ClientCrudController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Post()
+  @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.CREATE)
   async create(@Body() createClientRequest: CreateClientRequest) {
     await createClientValidation.validateAsync(createClientRequest, { abortEarly: false });
 
@@ -74,7 +77,7 @@ export class ClientCrudController {
     return createdClient;
   }
 
-	@ApiOperation({ summary: 'Update Client' })
+  @ApiOperation({ summary: 'Update Client' })
     @ApiAcceptedResponse({
       description: 'Client has been successfully updated.',
       type: ClientResponse,
@@ -89,36 +92,16 @@ export class ClientCrudController {
         'Invalid input, The response body may contain clues as to what went wrong'
     })
     @HttpCode(HttpStatus.ACCEPTED)
-	@Put(':id')
-	async update(
-		@Param('id', UUIDValidationPipe) id: string,
-		@Body() updateClientDto: UpdateClientDto,
-	): Promise<ClientResponse> {
+  @Put(':id')
+  @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.UPDATE)
+  async update(
+    @Param('id', UUIDValidationPipe) id: string,
+    @Body() updateClientDto: UpdateClientDto,
+  ): Promise<ClientResponse> {
 
     const updatedClient = await this.service.updateOne(id, updateClientDto);
 
-		return updatedClient;
-	}
-
-  @ApiOperation({ summary: 'Find all companies by filters using pagination' })
-    @ApiResponse({
-      status: HttpStatus.OK,
-      description: 'Found records.',
-      type: ClientPaginatedResponseDto,
-    })
-    @ApiResponse({
-      status: HttpStatus.BAD_REQUEST,
-      description:
-        'Invalid input, The response body may contain clues as to what went wrong',
-    })
-  @Get()
-  async paginated(
-    @Query('filters') filters: FilterClientDto,
-    @Query() pagination: PaginatedQuery
-  ): Promise<ClientPaginatedResponseDto> {
-    const paginated = await this.paginatedService.getData(filters, pagination);
-
-    return new ClientPaginatedResponseDto(paginated);
+    return updatedClient;
   }
 
   @ApiOperation({ summary: 'Delete client' })
@@ -132,7 +115,30 @@ export class ClientCrudController {
     })
     @HttpCode(HttpStatus.ACCEPTED)
   @Delete(':id')
+  @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.DELETE)
   async remove(@Param('id') id: string): Promise<void> {
     await this.service.deleteOne(id);
+  }
+
+  @ApiOperation({ summary: 'Find all clients by filters using pagination' })
+    @ApiResponse({
+      status: HttpStatus.OK,
+      description: 'Found records.',
+      type: ClientPaginatedResponseDto,
+    })
+    @ApiResponse({
+      status: HttpStatus.BAD_REQUEST,
+      description:
+        'Invalid input, The response body may contain clues as to what went wrong',
+    })
+  @Get()
+  @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.LIST)
+  async paginated(
+    @Query('filters') filters: FilterClientDto,
+    @Query() pagination: PaginatedQuery
+  ): Promise<ClientPaginatedResponseDto> {
+    const paginated = await this.paginatedService.getData(filters, pagination);
+
+    return new ClientPaginatedResponseDto(paginated);
   }
 }

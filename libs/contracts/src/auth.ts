@@ -9,6 +9,7 @@ export type AuthUserData = {
 	company: Company;
 	tenant: Tenant;
 	roles: string[];
+	permissions: string[];
 	refreshToken?: string;
 }
 

@@ -8,6 +8,8 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger'
 
+import { AvalilableCollections, RoleActions } from '@owl-app/lib-contracts';
+import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission';
 import { Manager } from '@owl-app/rbac-manager'
 
 @ApiTags('Rbac Role')
@@ -30,6 +32,7 @@ export class AssignedPermissionsController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Get('assigned-permissions/:name')
+  @RoutePermissions(AvalilableCollections.ROLE, RoleActions.ASSIGNED_PERMISSIONS)
   async assignedPermissions(@Param('name') name: string): Promise<string[]> {
     const permissions = await this.rbacManager.getPermissionsByRoleName(name);
 

@@ -42,15 +42,15 @@ export const onBeforeEach: NavigationGuard = async (to, from) => {
   const appLifecycleEventRegistry = useAppLifecycleEventRegistry();
   let result = null;
 
-  await orderBy(appLifecycleEventRegistry.request, ['priority'], 'desc')
+  const events = await orderBy(appLifecycleEventRegistry.request, ['priority'], 'desc')
     .filter(({ event }) => event === LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH)
-    .reduce(async (prviousEvent, event) => {
-      await prviousEvent;
-      result = await event.callback(to, from);
-    }, Promise.resolve());
 
-  if (result) {
-    return result;
+  for (const event of events) {
+    result = await event.callback(to, from);
+
+    if (result) {
+      return result;
+    }
   }
 };
 

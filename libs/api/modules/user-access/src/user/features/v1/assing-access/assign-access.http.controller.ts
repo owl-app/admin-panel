@@ -11,8 +11,10 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 import { Manager } from '@owl-app/rbac-manager'
 
+import { AvalilableCollections, UserActions } from '@owl-app/lib-contracts'
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
 import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators'
+import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission'
 
 import type { IUserRepository } from '../../../../database/repository/user-repository.interface'
 import { UserEntity } from '../../../../domain/entity/user.entity'
@@ -43,6 +45,7 @@ export class AssignAccessController {
     })
     @HttpCode(HttpStatus.ACCEPTED)
 	@Put('/assign-access/:id')
+  @RoutePermissions(AvalilableCollections.USER, UserActions.ASSIGN_ACCESS)
 	async assignAccess(
 		@Param('id', UUIDValidationPipe) userId: string,
     @Body() items: Array<string>

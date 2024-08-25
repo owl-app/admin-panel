@@ -2,7 +2,7 @@
   <owl-form collection="clients" @saved="$emit('saved', $event);" class-form="grid grid-cols-12 gap-4">
     <template #fields="{ data }">
       <div class="col-span-10">
-        <va-input label="" placeholder="Add new client" v-model="data.name" background="#fff" />
+        <va-input label="" placeholder="Add new client" v-model="data.ref.name" background="#fff" />
       </div>
     </template>
 

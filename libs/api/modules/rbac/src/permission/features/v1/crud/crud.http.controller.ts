@@ -17,10 +17,12 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger';
 
+import { AvalilableCollections, CrudActions } from '@owl-app/lib-contracts';
 import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core';
 import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination';
 import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator';
+import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission'
 
 import { PermissionEntity } from '../../../../domain/entity/permission.entity';
 
@@ -54,6 +56,7 @@ export class RbacPermissionCrudController {
     type: PermissionResponse
   })
   @Get(':id')
+  @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.READ)
   async findOne(@Param('id') id: string): Promise<PermissionResponse> {
     const permission = await this.service.getById(id);
 
@@ -71,6 +74,7 @@ export class RbacPermissionCrudController {
       'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Post()
+  @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.CREATE)
   async createRole(@Body() createPermissionDto: CreatePermissionRequest) {
     const addedPermission = await this.service.createOne(createPermissionDto);
 
@@ -94,6 +98,7 @@ export class RbacPermissionCrudController {
   // @HttpCode(HttpStatus.ACCEPTED)
   // @UseGuards(RbacGuard)
 	@Put(':name')
+  @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.UPDATE)
   async updatePermission(@Param('name') name: string, @Body() updatePermissionDto: UpdatePermissionRequest) {
     const updatedPermission = await this.service.updateOne(name, updatePermissionDto);
 
@@ -111,6 +116,7 @@ export class RbacPermissionCrudController {
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Delete(':name')
+  @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.DELETE)
   async remove(@Param('name') name: string): Promise<void> {
     await this.service.deleteOne(name);
   }
@@ -129,6 +135,7 @@ export class RbacPermissionCrudController {
   @UseInterceptors(ClassSerializerInterceptor)
   @UsePipes(new ValidationPipe({ whitelist: false, transform: true}))
   @Get()
+  @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.LIST)
   async paginated(
     @Query('filters') filters: FilterPermissionDto,
     @Query() pagination: PermissionPaginatedQuery,

@@ -3,7 +3,7 @@ import {
   HttpStatus,
   Get,
   Post,
-	Put,
+  Put,
   Delete,
   Body,
   Query,
@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth, ApiQuery, getSchemaPath, ApiExtraModels } from '@nestjs/swagger'
 
+import { AvalilableCollections, CrudActions } from '@owl-app/lib-contracts'
 import { InjectAssemblerQueryService, QueryService } from '@owl-app/crud-core'
 import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
 import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
@@ -20,7 +21,9 @@ import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/pagin
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
 import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
-import { QueryFilter } from '@owl-app/lib-api-bulding-blocks/data-provider/decorators/query-filter.decorator';
+import { ApiFilterQuery } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/api-filter-query.decorator'
+import { FilterStringApiProperty } from '@owl-app/lib-api-bulding-blocks/data-provider/query/filters/string'
+import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission'
 
 import { UserEntity } from '../../../../domain/entity/user.entity'
 import { UserDto } from '../../../dto/user.dto'
@@ -28,8 +31,6 @@ import { UserDto } from '../../../dto/user.dto'
 import { CreateUserRequest, UpdateUserRequest, FilterUserDto, UserPaginatedResponse } from './dto'
 import { createUserValidation } from './validation'
 import { UserAssembler } from './user.assembler'
-import { ApiFilterQuery } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/api-filter-query.decorator'
-import { FilterStringApiProperty } from '@owl-app/lib-api-bulding-blocks/data-provider/query/filters/string'
 
 @ApiTags('User')
 @Controller('users')
@@ -41,7 +42,7 @@ export class UserCrudController {
     @InjectPaginatedQueryService(UserEntity) readonly paginatedService: DataProvider<Paginated<UserEntity>, FilterUserDto>
   ) {}
 
-	@ApiOperation({ summary: 'Find user by id' })
+  @ApiOperation({ summary: 'Find user by id' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Found one user record',
@@ -53,6 +54,7 @@ export class UserCrudController {
     type: ApiErrorResponse
   })
   @Get(':id')
+  @RoutePermissions(AvalilableCollections.USER, CrudActions.READ)
   findOne(@Param('id') id: string) {
     return this.service.getById(id);
   }
@@ -68,6 +70,7 @@ export class UserCrudController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Post()
+  @RoutePermissions(AvalilableCollections.USER, CrudActions.CREATE)
   async create(@Body() createUserRequest: CreateUserRequest) {
     await createUserValidation.validateAsync(createUserRequest, { abortEarly: false });
 
@@ -82,7 +85,7 @@ export class UserCrudController {
     return createdUser
   }
 
-	@ApiOperation({ summary: 'Update user' })
+  @ApiOperation({ summary: 'Update user' })
     @ApiAcceptedResponse({
       description: 'User has been successfully updated.',
       type: UserDto,
@@ -97,16 +100,33 @@ export class UserCrudController {
         'Invalid input, The response body may contain clues as to what went wrong'
     })
     @HttpCode(HttpStatus.ACCEPTED)
-	@Put(':id')
-	async update(
-		@Param('id', UUIDValidationPipe) id: string,
-		@Body() updateUserRequest: UpdateUserRequest,
-	): Promise<UserDto> {
+  @Put(':id')
+  @RoutePermissions(AvalilableCollections.USER, CrudActions.UPDATE)
+  async update(
+    @Param('id', UUIDValidationPipe) id: string,
+    @Body() updateUserRequest: UpdateUserRequest,
+  ): Promise<UserDto> {
 
     const updatedUser = await this.service.updateOne(id, updateUserRequest);
 
-		return  updatedUser
-	}
+    return  updatedUser
+  }
+
+  @ApiOperation({ summary: 'Delete user' })
+    @ApiResponse({
+      status: HttpStatus.NO_CONTENT,
+      description: 'User has been successfully deleted',
+    })
+    @ApiResponse({
+      status: HttpStatus.NOT_FOUND,
+      description: 'Record not found',
+    })
+    @HttpCode(HttpStatus.ACCEPTED)
+  @Delete(':id')
+  @RoutePermissions(AvalilableCollections.USER, CrudActions.DELETE)
+  async remove(@Param('id') id: string): Promise<void> {
+    await this.service.deleteOne(id);
+  }
 
   @ApiOperation({ summary: 'Find all users by filters using pagination' })
     @ApiResponse({
@@ -130,6 +150,7 @@ export class UserCrudController {
       },
     ])
   @Get()
+  @RoutePermissions(AvalilableCollections.USER, CrudActions.LIST)
   async paginated(
     @Query() pagination: PaginatedQuery,
     @Query('filters') filters: FilterUserDto = {}
@@ -137,20 +158,5 @@ export class UserCrudController {
     const paginated = await this.paginatedService.getData(filters, pagination);
 
     return new UserPaginatedResponse(paginated);
-  }
-
-  @ApiOperation({ summary: 'Delete user' })
-    @ApiResponse({
-      status: HttpStatus.NO_CONTENT,
-      description: 'User has been successfully deleted',
-    })
-    @ApiResponse({
-      status: HttpStatus.NOT_FOUND,
-      description: 'Record not found',
-    })
-    @HttpCode(HttpStatus.ACCEPTED)
-  @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    await this.service.deleteOne(id);
   }
 }

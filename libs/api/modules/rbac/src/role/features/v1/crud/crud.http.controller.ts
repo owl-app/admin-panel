@@ -14,6 +14,8 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
+import { AvalilableCollections, CrudActions } from '@owl-app/lib-contracts'
+import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission'
 import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
 import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
@@ -51,6 +53,7 @@ export class CrudController {
     description: 'Role not found',
     type: RoleResponse
   })
+  @RoutePermissions(AvalilableCollections.USER, CrudActions.READ)
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<RoleResponse> {
     const role = await this.service.getById(id, { relations: [{ name: 'setting', query: {}}]});
@@ -69,6 +72,7 @@ export class CrudController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Post()
+  @RoutePermissions(AvalilableCollections.USER, CrudActions.CREATE)
   async createRole(@Body() createRoleDto: CreateRoleRequest) {
     const addedRole = await this.service.createOne(createRoleDto);
 
@@ -91,6 +95,7 @@ export class CrudController {
     })
     @HttpCode(HttpStatus.ACCEPTED)
 	@Put(':name')
+  @RoutePermissions(AvalilableCollections.USER, CrudActions.UPDATE)
   async updateRole(@Param('name') name: string, @Body() updateRoleDto: UpdateRoleRequest) {
     const updatedRole = await this.service.updateOne(name, updateRoleDto);
 
@@ -108,6 +113,7 @@ export class CrudController {
     })
     @HttpCode(HttpStatus.ACCEPTED)
   @Delete(':name')
+  @RoutePermissions(AvalilableCollections.USER, CrudActions.DELETE)
   async remove(@Param('name') name: string): Promise<void> {
     await this.service.deleteOne(name);
   }
@@ -124,6 +130,7 @@ export class CrudController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Get()
+  @RoutePermissions(AvalilableCollections.USER, CrudActions.LIST)
   async paginated(
     @Query('filters') filters: FilterRoleDto,
     @Query() pagination: PaginatedQuery

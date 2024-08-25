@@ -30,7 +30,7 @@ async function loadPermissions(): Promise<void> {
 
   const groupedPermissions = result.data?.items.reduce(
     (groupedPermissions: Record<string, GroupedPermission[]>, permission: Permission) => {
-      if(permission.collection) {
+      if (permission.collection) {
         if (!groupedPermissions[permission.collection]) {
           groupedPermissions = {...groupedPermissions, ...{ [permission.collection]: [] }}
         }

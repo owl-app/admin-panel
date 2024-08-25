@@ -11,6 +11,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config'
 import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-bulding-blocks/config'
 import { JwtAuthGuard } from '@owl-app/lib-api-bulding-blocks/passport/jwt.guard'
+import { RoutePermissionGuard } from '@owl-app/lib-api-bulding-blocks/rbac/guards/route-permission.guard'
 import cookieParser from 'cookie-parser'
 // import { HttpExceptionsFilter } from '../http';
 // import { EntitySubscriberInterface } from 'typeorm';
@@ -50,6 +51,7 @@ export async function bootstrap(
 
     const reflector = app.get(Reflector);
     app.useGlobalGuards(new JwtAuthGuard(reflector));
+    app.useGlobalGuards(new RoutePermissionGuard(reflector));
 
     // // app.useLogger(app.get(SentryService));
     app.use(json({ limit: '10mb' }));

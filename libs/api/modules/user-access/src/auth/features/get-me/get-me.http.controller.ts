@@ -1,9 +1,10 @@
 import { Controller, Get, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { User } from '@owl-app/lib-contracts';
+import { AvalilableCollections, User, UserActions } from '@owl-app/lib-contracts';
 import { RequestContextService } from '@owl-app/lib-api-bulding-blocks/context/app-request-context';
 import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
+import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission';
 
 import { UserEntity } from '../../../domain/entity/user.entity'
 import {type  IUserRepository } from '../../../database/repository/user-repository.interface';
@@ -33,6 +34,7 @@ export class GetMeController {
   })
   @Get('/me')
   @UsePipes(new ValidationPipe({ whitelist: true }))
+  @RoutePermissions(AvalilableCollections.USER, UserActions.ME)
   async getMe(): Promise<UserWithPermissionResponse> {
     const user = await this.userRepository.findOneByIdString(RequestContextService.getCurrentUserId());
 

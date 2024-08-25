@@ -10,9 +10,10 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { AuthUserData } from '@owl-app/lib-contracts';
+import { AuthUserData, AvalilableCollections, UserActions } from '@owl-app/lib-contracts';
 
 import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response';
+import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission';
 
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 
@@ -37,6 +38,7 @@ export class LogoutController {
     type: ApiErrorResponse,
   })
   @Post('/logout')
+  @RoutePermissions(AvalilableCollections.USER, UserActions.LOGOUT)
   async logout(
     @Req() request: Request & { user: Partial<AuthUserData> },
     @Res({ passthrough: true }) response: Response,
