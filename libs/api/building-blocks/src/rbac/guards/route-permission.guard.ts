@@ -11,7 +11,6 @@ export class RoutePermissionGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    console.log('RoutePermissionGuard');
     if(!isPublicRoute(this.reflector, context)) {
       const permission = this.reflector.getAllAndOverride<string>(ROUTE_PERMISSIONS_KEY, [
         context.getHandler(),
