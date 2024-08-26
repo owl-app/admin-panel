@@ -1,21 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ApiErrorValidationItem {
-
-  @ApiProperty({ example: 'Invalid email' })
-  readonly message: string;
-
-  @ApiProperty({ example: ['email'], type: [String, Number] })
-  readonly path: (string | number)[]
-
-}
+import type { ApiErrors } from '../validation/validation-error.exception';
 
 export class ApiErrorValidationResponse {
 
-  @ApiProperty({ type: () => [ApiErrorValidationItem] })
-  errors: ApiErrorValidationItem[]
+  @ApiProperty({ example: { email: ['Email is required'] } })
+  errors: ApiErrors;
 
-  constructor(errors: ApiErrorValidationItem[]) {
+  constructor(errors: ApiErrors) {
     this.errors = errors;
   }
 

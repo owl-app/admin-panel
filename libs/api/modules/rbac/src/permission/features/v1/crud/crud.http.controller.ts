@@ -17,12 +17,14 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger';
 
-import { AvalilableCollections, CrudActions } from '@owl-app/lib-contracts';
+import { AvalilableCollections, CrudActions, permissionValidationSchema } from '@owl-app/lib-contracts';
 import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core';
 import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination';
 import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator';
 import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission'
+import { ValibotValidationPipe } from '@owl-app/lib-api-bulding-blocks/validation/valibot.pipe';
+import { ApiErrorValidationResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error-validation.response';
 
 import { PermissionEntity } from '../../../../domain/entity/permission.entity';
 
@@ -45,16 +47,16 @@ export class RbacPermissionCrudController {
   ) {}
 
   @ApiOperation({ summary: 'Find permission by id' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Found one permission record',
-    type: PermissionResponse,
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Permission not found',
-    type: PermissionResponse
-  })
+    @ApiResponse({
+      status: HttpStatus.OK,
+      description: 'Found one permission record',
+      type: PermissionResponse,
+    })
+    @ApiResponse({
+      status: HttpStatus.NOT_FOUND,
+      description: 'Permission not found',
+      type: PermissionResponse
+    })
   @Get(':id')
   @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.READ)
   async findOne(@Param('id') id: string): Promise<PermissionResponse> {
@@ -64,18 +66,24 @@ export class RbacPermissionCrudController {
   }
 
 	@ApiOperation({ summary: 'Create new permission' })
-  @ApiCreatedResponse({
-    description: 'The permission has been successfully created.',
-    type: PermissionResponse
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
-  })
+    @ApiCreatedResponse({
+      description: 'The permission has been successfully created.',
+      type: PermissionResponse
+    })
+    @ApiResponse({
+      status: HttpStatus.BAD_REQUEST,
+      description:
+        'Invalid input, The response body may contain clues as to what went wrong',
+    })
+    @ApiResponse({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
+      description: 'Validation errors.',
+      type: ApiErrorValidationResponse,
+    })
   @Post()
   @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.CREATE)
-  async createRole(@Body() createPermissionDto: CreatePermissionRequest) {
+  @UsePipes(new ValibotValidationPipe(permissionValidationSchema))
+  async createPermission(@Body() createPermissionDto: CreatePermissionRequest) {
     const addedPermission = await this.service.createOne(createPermissionDto);
 
     return addedPermission;
@@ -132,7 +140,6 @@ export class RbacPermissionCrudController {
       description:
         'Invalid input, The response body may contain clues as to what went wrong',
     })
-  @UseInterceptors(ClassSerializerInterceptor)
   @UsePipes(new ValidationPipe({ whitelist: false, transform: true}))
   @Get()
   @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.LIST)

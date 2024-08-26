@@ -16,7 +16,7 @@
       class-form="flex flex-col gap-2"
       collection="rbac/permissions"
       :primaryKey="permission?.name"
-      :schema="validationSchema"
+      :schema="permissionValidationSchema"
       @saved="ok(); $emit('saved');"
     >
       <template #fields="{ data, validation }">
@@ -76,7 +76,7 @@ import { toRefs } from 'vue';
 import * as v from 'valibot'
 import { isEmpty } from 'lodash';
 
-import type { Permission } from "@owl-app/lib-contracts";
+import { type Permission, permissionValidationSchema } from "@owl-app/lib-contracts";
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue'
 import HeaderBar from '@owl-app/lib-app-core/layouts/panel/components/header-bar.vue'
 
@@ -94,28 +94,4 @@ const props = defineProps<{
 }>();
 
 const { permission } = toRefs(props);
-
-const validationSchema = v.object({
-  description: v.optional(
-    v.pipe(
-      v.string(),
-      v.nonEmpty('The string should contain at least one character')
-    ), ''),
-  name: v.optional(
-    v.pipe(
-      v.string(),
-      v.nonEmpty('The string should contain at least one character')
-    ), ''),
-  refer: v.optional(
-  v.pipe(
-    v.string(),
-    v.nonEmpty('Please select option')
-  ), ''),
-  collection: v.optional(
-  v.pipe(
-    v.string(),
-    v.nonEmpty('Please select option')
-  ), '')
-});
 </script>
-  

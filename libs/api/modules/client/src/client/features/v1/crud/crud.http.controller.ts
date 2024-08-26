@@ -16,7 +16,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResp
 import { AvalilableCollections, CrudActions } from '@owl-app/lib-contracts'
 
 import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
-import { InjectQueryService, QueryService } from '@owl-app/crud-core'
+import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core'
 import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
 import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
 import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
@@ -28,7 +28,7 @@ import { ClientEntity } from '../../../../domain/entity/client.entity'
 import { ClientResponse } from '../../../dto/client.response'
 
 import { CreateClientRequest, UpdateClientDto, FilterClientDto, ClientPaginatedResponseDto } from './dto'
-import { createClientValidation } from './validation'
+import { ClientAssembler } from './client.assembler'
 
 @ApiTags('Client')
 @Controller('clients')
@@ -36,7 +36,7 @@ import { createClientValidation } from './validation'
 @Injectable()
 export class ClientCrudController {
   constructor(
-    @InjectQueryService(ClientEntity) readonly service: QueryService<ClientEntity>,
+    @InjectAssemblerQueryService(ClientAssembler) readonly service: AssemblerQueryService<ClientResponse, ClientEntity>,
     @InjectPaginatedQueryService(ClientEntity) readonly paginatedService: DataProvider<Paginated<ClientEntity>, FilterClientDto>
   ) {}
 
@@ -70,8 +70,6 @@ export class ClientCrudController {
   @Post()
   @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.CREATE)
   async create(@Body() createClientRequest: CreateClientRequest) {
-    await createClientValidation.validateAsync(createClientRequest, { abortEarly: false });
-
     const createdClient = await this.service.createOne(createClientRequest);
 
     return createdClient;

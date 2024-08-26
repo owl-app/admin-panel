@@ -7,3 +7,5 @@ export * from './client';
 export * from './tenant';
 export * from './timestampable';
 export * from './system';
+
+export * from './validation';

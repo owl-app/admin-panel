@@ -26,7 +26,7 @@ export type UsableItem<T extends Item> = {
   save: (data: T) => Promise<T>;
   deleting: Ref<boolean>;
   remove: () => Promise<void>;
-  validationErrors: Ref<any[]>;
+  validationServerErrors: Ref<any>;
 };
 
 export function useItem<T extends Item>(
@@ -41,7 +41,7 @@ export function useItem<T extends Item>(
   const saving = ref(false);
   const deleting = ref(false);
   const error = ref<any>(null);
-  const validationErrors = ref<any[]>([]);
+  const validationServerErrors = ref<any>({});
   const primaryKey = ref<PrimaryKey | undefined | null>(id ?? null);
   const isNew = computed(() =>  isEmpty(primaryKey.value));
 
@@ -64,7 +64,7 @@ export function useItem<T extends Item>(
     save,
     deleting,
     remove,
-    validationErrors,
+    validationServerErrors,
   };
 
   async function getItem() {
@@ -84,7 +84,6 @@ export function useItem<T extends Item>(
 
   async function save(data: T) {
     saving.value = true;
-    validationErrors.value = [];
 
     try {
       await delay(500);
@@ -107,6 +106,7 @@ export function useItem<T extends Item>(
       }
 
       item.value = response.data;
+      validationServerErrors.value = {};
 
       return response.data;
     } catch (error) {
@@ -139,12 +139,7 @@ export function useItem<T extends Item>(
 
   function saveErrorHandler(error: any) {
     if (error?.response?.data?.errors) {
-      validationErrors.value = error.response.data.errors
-        .map((err: ApiValidationError) => {
-          return [err.path.join('.'), err.message];
-        });
-
-      throw error;
+      validationServerErrors.value = error.response.data.errors
     }
   }
 }

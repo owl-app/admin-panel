@@ -7,7 +7,7 @@ import { debounce } from 'lodash-es';
 import { Permission } from '@owl-app/lib-contracts';
 
 import HeaderBar from '@owl-app/lib-app-core/layouts/panel/components/header-bar.vue'
-import { useApi} from '@owl-app/lib-app-core/composables/use-system'
+import { useApi } from '@owl-app/lib-app-core/composables/use-system'
 
 export type GroupedPermission = {
   name: string;
@@ -28,7 +28,7 @@ async function loadPermissions(): Promise<void> {
   const result = await api.get('rbac/permissions?pageable=0');
   const assignedPermissions = (await api.get(`rbac/roles/assigned-permissions/${route.params?.roleId}`)).data;
 
-  const groupedPermissions = result.data?.items.reduce(
+  permissions.value = result.data?.items.reduce(
     (groupedPermissions: Record<string, GroupedPermission[]>, permission: Permission) => {
       if (permission.collection) {
         if (!groupedPermissions[permission.collection]) {
@@ -46,9 +46,8 @@ async function loadPermissions(): Promise<void> {
 
         return groupedPermissions;
       }
-    }, []);
-
-  permissions.value = groupedPermissions;
+      return groupedPermissions;
+    }, {});
 }
 
 async function change(value: string, permission: GroupedPermission) {
@@ -81,6 +80,7 @@ async function change(value: string, permission: GroupedPermission) {
         <va-card-title>
           <va-chip color="#d9efff" size="small">{{ key }}</va-chip>
         </va-card-title>
+
         <va-card-content>
           <div v-for="(permission, key) in group" :key="key">
             <va-switch

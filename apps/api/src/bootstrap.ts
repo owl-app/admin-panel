@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common'
+import { ClassSerializerInterceptor, INestApplication } from '@nestjs/common'
 import { NestFactory, Reflector } from '@nestjs/core'
 import { NestExpressApplication } from '@nestjs/platform-express'
 // // import { SentryService } from '@ntegral/nestjs-sentry';
@@ -52,6 +52,8 @@ export async function bootstrap(
     const reflector = app.get(Reflector);
     app.useGlobalGuards(new JwtAuthGuard(reflector));
     app.useGlobalGuards(new RoutePermissionGuard(reflector));
+
+    app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
     // // app.useLogger(app.get(SentryService));
     app.use(json({ limit: '10mb' }));

@@ -11,16 +11,18 @@ import {
   Param,
   Get,
   Query,
+  UsePipes,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
-import { AvalilableCollections, CrudActions } from '@owl-app/lib-contracts'
+import { AvalilableCollections, CrudActions, roleValidationSchema } from '@owl-app/lib-contracts'
 import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission'
 import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
 import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
 import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
 import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core'
+import { ValibotValidationPipe } from '@owl-app/lib-api-bulding-blocks/validation/valibot.pipe'
 
 import { RoleResponse } from '../../../dto/role.response.dto'
 import { CreateRoleRequest } from '../../../dto/create-role.request.dto'
@@ -30,7 +32,6 @@ import { RoleEntity } from '../../../../domain/entity/role.entity'
 import { FilterRoleDto } from './dto';
 import { RolePaginatedResponseDto } from './dto/role.paginated.response.dto'
 import { RoleAssembler } from './role.assembler'
-
 
 @ApiTags('Rbac Role')
 @Controller('rbac/roles')
@@ -73,6 +74,7 @@ export class CrudController {
     })
   @Post()
   @RoutePermissions(AvalilableCollections.USER, CrudActions.CREATE)
+  @UsePipes(new ValibotValidationPipe(roleValidationSchema))
   async createRole(@Body() createRoleDto: CreateRoleRequest) {
     const addedRole = await this.service.createOne(createRoleDto);
 

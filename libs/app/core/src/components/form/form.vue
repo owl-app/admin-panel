@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref, watch, VNode, Fragment } from 'vue'
-import { debounce, DebouncedFunc } from 'lodash';
+import { useI18n } from 'vue-i18n';
+import { debounce, DebouncedFunc, snakeCase } from 'lodash';
 import * as v from 'valibot'
-import { BaseSchema, BaseIssue } from 'valibot'
+import { BaseSchema, BaseIssue, FlatErrors } from 'valibot'
 import { useForm } from 'vuestic-ui'
+
+import { isEmpty } from '@owl-app/utils';
 
 import type { Item, PrimaryKey } from '../../types/item';
 import { useItem } from '../../composables/use-item';
@@ -20,9 +23,19 @@ const emit = defineEmits<{
   (event: 'saved', dataSaved: any): void
 }>()
 
+const { t } = useI18n();
 const dataForm = ref({ ...props.defaultValue ?? {} })
 const validationErrors = ref<any>({})
-const { primaryKey, item, loading, saving, getItem, save } = useItem<Item>(props.collection, props.primaryKey);
+const { 
+    primaryKey,
+    item,
+    loading,
+    saving,
+    validationServerErrors,
+    getItem,
+    save 
+  } = useItem<Item>(props.collection, props.primaryKey);
+  
 const { fields } = useForm('owl-form')
 const isValid = ref(!props?.schema);
 
@@ -61,6 +74,7 @@ watch(
   },
   { immediate: true },
 )
+
 watch(
   [dataForm],
   () => {
@@ -74,9 +88,21 @@ watch(
   { deep: true },
 )
 
+watch(
+  () => validationServerErrors.value,
+  () => {
+    if (!isEmpty(validationServerErrors.value)) {
+      validationErrors.value = getErrors(validationServerErrors.value, true);
+      isValid.value = false;
+    } else {
+      isValid.value = true;
+    }
+  },
+  { deep: true },
+)
+
 const getUnSlottedVNodes = (nodes: VNode[]) => {
   if (Array.isArray(nodes) && nodes[0].type === Fragment) {
-    // If passed as slot, ignore Fragment VNode (template #default)
     return nodes[0].children as VNode[]
   }
 
@@ -106,22 +132,8 @@ function validate(showAllErrors = false): boolean {
 
   if (result.issues) {
     const flattenResult = v.flatten(result.issues)?.nested ?? {}
-    let errors = {};
-  
-    fields.value.map((field) => {
-      if (
-        (field.isDirty || field.isTouched || showAllErrors) &&
-        field.name !== undefined && Object.keys(flattenResult).includes(field.name)
-      ) {
-        if(showAllErrors) {
-          field.isTouched = true;
-        }
 
-        errors = { ...errors, ...{ [field.name]: flattenResult[field.name] }};
-      }
-    })
-
-    validationErrors.value = errors;
+    validationErrors.value = getErrors(flattenResult, showAllErrors);
     isValid.value = false;
 
     return false;
@@ -131,6 +143,33 @@ function validate(showAllErrors = false): boolean {
 
     return true;
   }
+}
+
+function getErrors(flatErrors: FlatErrors<undefined>['nested'], showAllErrors = false): Record<string, string> {
+  let errors = {};
+
+  fields.value.map((field) => {
+    if (
+      (field.isDirty || field.isTouched || showAllErrors) &&
+      field.name !== undefined && 
+      (flatErrors && Object.keys(flatErrors).includes(field.name))
+    ) {
+      if(showAllErrors) {
+        field.isTouched = true;
+      }
+
+      errors = { 
+        ...errors, 
+        ...{ 
+          [field.name]: (flatErrors[field.name] ?? []).map((error) => {
+            return t(`validation.${snakeCase(error.replace(/\s+/g,"_"))}`)
+          })
+        }
+      };
+    }
+  })
+
+  return errors;
 }
 
 function debouceValidate(time: number) {
@@ -148,8 +187,11 @@ function debouceValidate(time: number) {
 const saveForm = async () => {
   delete dataForm.value?.id
   const savedData = await save(dataForm.value);
-  dataForm.value = {}
-  emit('saved', savedData);
+
+  if(isValid.value) {
+    dataForm.value = {}
+    emit('saved', savedData);
+  }
 }
 const makeSlotRef = () => {
   return new Proxy(dataForm, {
