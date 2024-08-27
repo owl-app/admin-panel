@@ -6,16 +6,16 @@
     hide-default-actions
   >
     <h3 class="va-h5">
-      {{ user ? 'Edit' : 'Create' }} client
+      {{ item ? 'Edit' : 'Create' }} client
     </h3>
     <owl-form
       class-form="flex flex-col gap-2"
       collection="clients"
-      :primaryKey="user?.id"
+      :primaryKey="item?.id"
       @saved="ok(); $emit('saved');"
     >
       <template #fields="{ data }">
-        <va-input v-model="data.ref.name" label="name" :rules="[required]" />
+        <va-input v-model="data.ref.name" label="name" />
         <va-input v-model="data.ref.email" label="email" />
         <va-textarea v-model="data.ref.addess" label="address" min-rows="5" />
         <va-textarea v-model="data.ref.description" label="description" min-rows="5" />
@@ -32,7 +32,7 @@
 </template>
   
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { ref } from 'vue';
 import type { Client } from "@owl-app/lib-contracts";
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue'
 
@@ -42,12 +42,15 @@ const emit = defineEmits<{
   (event: 'saved',): void
 }>()
 
-const props = defineProps<{
-    user?: Client | null;
-}>();
+defineExpose({
+  show,
+})
 
-const { user } = toRefs(props);
+const item = ref<any>({})
 
-const required = (v: string) => !!v || 'This field is required'
+function show(data: any = {}): void {
+  model.value = true;
+  item.value = data;
+}
 </script>
   

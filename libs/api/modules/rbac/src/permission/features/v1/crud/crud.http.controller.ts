@@ -10,10 +10,7 @@ import {
   Param,
   Get,
   Query,
-  ClassSerializerInterceptor,
-  UseInterceptors,
   UsePipes,
-  ValidationPipe
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -103,11 +100,12 @@ export class RbacPermissionCrudController {
     description:
       'Invalid input, The response body may contain clues as to what went wrong'
   })
-  // @HttpCode(HttpStatus.ACCEPTED)
-  // @UseGuards(RbacGuard)
 	@Put(':name')
   @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.UPDATE)
-  async updatePermission(@Param('name') name: string, @Body() updatePermissionDto: UpdatePermissionRequest) {
+  async updatePermission(
+    @Param('name') name: string,
+    @Body(new ValibotValidationPipe(permissionValidationSchema)) updatePermissionDto: UpdatePermissionRequest
+  ) {
     const updatedPermission = await this.service.updateOne(name, updatePermissionDto);
 
     return updatedPermission;
@@ -140,7 +138,6 @@ export class RbacPermissionCrudController {
       description:
         'Invalid input, The response body may contain clues as to what went wrong',
     })
-  @UsePipes(new ValidationPipe({ whitelist: false, transform: true}))
   @Get()
   @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.LIST)
   async paginated(

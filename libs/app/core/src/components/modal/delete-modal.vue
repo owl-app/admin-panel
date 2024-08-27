@@ -15,36 +15,26 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, defineModel } from 'vue';
+import { defineModel, defineExpose } from 'vue';
 
 import type { Item, PrimaryKey } from '../../types/item';
 import { useItem } from '../../composables/use-item';
 
 const props = defineProps<{
   collection: string,
-  primaryKey?: PrimaryKey | undefined,
 }>()
 
 const emit = defineEmits<{
   (event: 'deleted'): void
 }>()
 
+defineExpose({
+  show,
+})
+
 const model = defineModel<boolean>();
 
-const { primaryKey, deleting, remove } = useItem<Item>(props.collection, props.primaryKey);
-
-watch(
-  () => props.primaryKey,
-  async () => {
-    if (!props.primaryKey) {
-      primaryKey.value = null;
-      return;
-    }
-
-    primaryKey.value = props.primaryKey;
-  },
-  { immediate: false },
-)
+const { primaryKey, deleting, remove } = useItem<Item>(props.collection);
 
 const onDelete = async () => {
   await remove();
@@ -52,5 +42,10 @@ const onDelete = async () => {
   emit('deleted');
 
   model.value = false;
+}
+
+function show(id?: PrimaryKey): void {
+  model.value = true;
+  primaryKey.value = id;
 }
 </script>

@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
-import { AvalilableCollections, CrudActions } from '@owl-app/lib-contracts'
+import { AvalilableCollections, CrudActions, clientValidationSchema } from '@owl-app/lib-contracts'
 
 import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
 import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core'
@@ -23,6 +23,7 @@ import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
 import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
 import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission';
+import { ValibotValidationPipe } from '@owl-app/lib-api-bulding-blocks/validation/valibot.pipe';
 
 import { ClientEntity } from '../../../../domain/entity/client.entity'
 import { ClientResponse } from '../../../dto/client.response'
@@ -69,7 +70,7 @@ export class ClientCrudController {
     })
   @Post()
   @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.CREATE)
-  async create(@Body() createClientRequest: CreateClientRequest) {
+  async create(@Body(new ValibotValidationPipe(clientValidationSchema)) createClientRequest: CreateClientRequest) {
     const createdClient = await this.service.createOne(createClientRequest);
 
     return createdClient;
@@ -94,9 +95,8 @@ export class ClientCrudController {
   @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.UPDATE)
   async update(
     @Param('id', UUIDValidationPipe) id: string,
-    @Body() updateClientDto: UpdateClientDto,
+    @Body(new ValibotValidationPipe(clientValidationSchema)) updateClientDto: UpdateClientDto,
   ): Promise<ClientResponse> {
-
     const updatedClient = await this.service.updateOne(id, updateClientDto);
 
     return updatedClient;

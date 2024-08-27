@@ -10,7 +10,6 @@ import { RoleSettingRequest } from "./role-setting.request.dto";
 export class CreateRoleRequest extends BaseRbacItemRequest implements ICreateRoleRequest {
 
   @ApiProperty({ type: () => RoleSettingRequest })
-  @IsNotEmpty()
   setting: RoleSettingRequest;
 
 }

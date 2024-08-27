@@ -185,7 +185,6 @@ function debouceValidate(time: number) {
 }
 
 const saveForm = async () => {
-  delete dataForm.value?.id
   const savedData = await save(dataForm.value);
 
   if(isValid.value) {

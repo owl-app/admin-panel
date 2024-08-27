@@ -19,6 +19,8 @@ const showDeleteModal = ref(false);
 const editClient = ref<Client | null>();
 const deleteClient = ref<Client>();
 const gridRef = ref<InstanceType<typeof Grid>>();
+const clientModal = ref<InstanceType<typeof ClientModal>>();
+const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 
 const headerBar = {
   title: t('clients'),
@@ -63,10 +65,7 @@ const columns = defineVaDataTableColumns([
             color="primary"
             icon="mso-edit"
             aria-label="Edit project"
-            @click="
-              editClient = client as Client;
-              showModalUser = true;
-            "
+            @click="clientModal?.show(client)"
           />
           <VaButton
             preset="primary"
@@ -74,20 +73,19 @@ const columns = defineVaDataTableColumns([
             icon="mso-delete"
             color="danger"
             aria-label="Delete project"
-            @click="
-              showDeleteModal = true;
-              deleteClient = client as Client;
-            "
+            @click="deleteModal?.show(client?.id)"
           />
         </div>
       </template>
     </grid>
     <client-modal
+      ref="clientModal"
       v-model="showModalUser"
       :user="editClient"
       @saved="gridRef?.reloadGrid()"
     />
     <delete-modal 
+      ref="deleteModal"
       collection="clients"
       v-model="showDeleteModal"
       :primaryKey="deleteClient?.id"

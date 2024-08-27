@@ -1,6 +1,7 @@
 import { PipeTransform } from '@nestjs/common';
 import { BaseSchema, BaseIssue, parse, flatten, ValiError, FlatErrors } from 'valibot';
 import { ValidationErrorException } from './validation-error.exception';
+import { isObject } from '@owl-app/utils';
 
 
 export class ValibotValidationPipe implements PipeTransform {
@@ -9,8 +10,10 @@ export class ValibotValidationPipe implements PipeTransform {
   transform(value: unknown) {
     try {
       const parsedValue = parse(this.schema, value);
+console.log(parsedValue)
       return parsedValue;
     } catch (error: any) {
+      console.log(error)
       throw new ValidationErrorException(this.flattenErrors(error));
     }
   }
