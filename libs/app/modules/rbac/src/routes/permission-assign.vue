@@ -46,7 +46,6 @@ async function loadPermissions(): Promise<void> {
 
         return groupedPermissions;
       }
-      return groupedPermissions;
     }, {});
 }
 

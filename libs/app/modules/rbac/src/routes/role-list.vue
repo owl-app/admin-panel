@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import { Role } from "@owl-app/lib-contracts";
+import { Role, RoleSetting } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
@@ -26,7 +26,7 @@ const headerBar = {
 }
 
 const columns = defineVaDataTableColumns([
-  { label: 'Name', key: 'setting.displayName', sortable: true },
+  { label: 'Name', key: 'settingDsiplayName', sortable: true },
   { label: 'Description', key: 'description', sortable: true },
   { label: 'Theme', key: 'setting.theme', sortable: true },
   { label: 'Canonical name', key: 'name', sortable: true },
@@ -42,6 +42,7 @@ const columns = defineVaDataTableColumns([
       defaultSort="id"
       :headerBar="headerBar"
       url="rbac/roles"
+      grid
     >
       <template #header-bar-actions>
         <VaButton
@@ -67,6 +68,12 @@ const columns = defineVaDataTableColumns([
             :remove-filter="removeFilter"
           />
         </div>
+      </template>
+
+      <template #cell(settingDsiplayName)="{ rowData: { setting: { displayName } } }">
+        <va-chip>
+          {{ displayName }}
+        </va-chip>
       </template>
 
       <template #cell(actions)="{ rowData: role }">

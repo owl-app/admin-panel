@@ -11,6 +11,7 @@ import {
   Get,
   Query,
   UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -142,8 +143,9 @@ export class RbacPermissionCrudController {
   @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.LIST)
   async paginated(
     @Query('filters') filters: FilterPermissionDto,
-    @Query() pagination: PermissionPaginatedQuery,
+    @Query(new ValidationPipe({ transform: true })) pagination: PermissionPaginatedQuery,
   ): Promise<PermissionPaginatedResponseDto> {
+    console.log(pagination)
     const paginated = await this.paginatedService.getData(filters, (pagination.pageable === 0 ? null : pagination));
 
     return new PermissionPaginatedResponseDto(paginated);

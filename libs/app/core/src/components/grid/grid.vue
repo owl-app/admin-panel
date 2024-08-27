@@ -43,6 +43,11 @@ const props = defineProps({
     required: false,
     default: 'table',
   },
+  grid: {
+    type: Boolean as PropType<boolean>,
+    required: false,
+    default: false
+  },
 });
 
 const router = useRouter();
@@ -195,6 +200,8 @@ async function reloadGrid() {
           :columns="columns"
           :loading="loading"
           :per-page="limit"
+          :grid="props.grid"
+          :hideDefaultHeader="props.grid"
           v-if="props.layout === 'table'"
         >
           <template v-for="(_, slot) in $slots" v-slot:[slot]="scope">
