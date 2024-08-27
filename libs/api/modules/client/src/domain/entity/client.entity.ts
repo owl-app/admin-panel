@@ -1,7 +1,8 @@
-import DomainEventableEntity from "@owl-app/lib-api-bulding-blocks/database/entity/domain-eventable.entity";
 import type { Client, Tenant } from '@owl-app/lib-contracts';
 
-export class ClientEntity extends DomainEventableEntity implements Client {
+import BaseEntity from '@owl-app/lib-api-bulding-blocks/database/entity/base.entity';
+
+export class ClientEntity extends BaseEntity implements Client {
   id: string;
 
   tenant: Tenant;

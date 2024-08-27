@@ -9,6 +9,8 @@ import HeaderBar, { type Props as HeaderBarProps } from '../../layouts/panel/com
 
 import { useItems } from '../../composables/use-items';
 
+export type LayoutTypes = 'table' | 'custom';
+
 const props = defineProps({
   url: {
     type: String as PropType<string>,
@@ -35,6 +37,11 @@ const props = defineProps({
   defaultSort: {
     type: String as PropType<string>,
     required: true,
+  },
+  layout: {
+    type: String as PropType<LayoutTypes>,
+    required: false,
+    default: 'table',
   },
 });
 
@@ -178,11 +185,17 @@ async function reloadGrid() {
 
     <va-card>
       <va-card-content>
+        <slot 
+          name="custom"
+          v-if="props.layout === 'custom'"
+          v-bind="{ items, loading }"
+        />
         <va-data-table
           :items="items"
           :columns="columns"
           :loading="loading"
           :per-page="limit"
+          v-if="props.layout === 'table'"
         >
           <template v-for="(_, slot) in $slots" v-slot:[slot]="scope">
             <slot :name="slot" v-bind="scope" />

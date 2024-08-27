@@ -1,6 +1,7 @@
 import { EntitySchema } from 'typeorm';
 
 import { CLIENT_ENTITY, TENANT_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
+import { TimestampableSchemaPart } from '@owl-app/lib-api-bulding-blocks/database/entity-schema/timestampable.schemat';
 
 import { ClientEntity } from '../../domain/entity/client.entity';
 
@@ -28,7 +29,8 @@ export const ClientEntitySchema = new EntitySchema<ClientEntity>({
     description: {
       type: 'text',
       nullable: true,
-    }
+    },
+    ...TimestampableSchemaPart
   },
   relations: {
     tenant: {
