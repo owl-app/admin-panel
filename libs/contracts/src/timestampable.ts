@@ -1,7 +1,4 @@
-export interface Timestampable
-{
+export interface Timestampable {
     createdAt: Date;
-  
     updatedAt: Date;
-
 }

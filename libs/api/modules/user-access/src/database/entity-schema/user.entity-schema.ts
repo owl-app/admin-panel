@@ -1,6 +1,6 @@
 import { EntitySchema } from 'typeorm';
 
-import { USER_ENTITY, COMPANY_ENTITY, TENANT_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
+import { USER_ENTITY, COMPANY_ENTITY, TENANT_ENTITY, TIME_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
 import { TimestampableSchemaPart } from '@owl-app/lib-api-bulding-blocks/database/entity-schema/timestampable.schemat';
 
 import { UserEntity } from '../../domain/entity/user.entity';
@@ -75,6 +75,12 @@ export const UserEntitySchema = new EntitySchema<UserEntity>({
       joinColumn: {
         name: 'tenant_id',
       },
+    },
+    times: {
+      type: 'one-to-many',
+      target: TIME_ENTITY,
+      cascade: true,
+      inverseSide: 'user'
     },
   },
 });

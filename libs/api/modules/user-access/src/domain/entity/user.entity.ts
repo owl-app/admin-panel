@@ -1,4 +1,4 @@
-import { Company, Tenant, User } from '@owl-app/lib-contracts';
+import { Company, Tenant, Time, User } from '@owl-app/lib-contracts';
 
 import BaseEntity from '@owl-app/lib-api-bulding-blocks/database/entity/base.entity';
 
@@ -12,6 +12,8 @@ export class UserEntity extends BaseEntity implements User {
   company: Company;
 
   tenant: Tenant;
+
+  times: Time[];
 
   email: string;
 
