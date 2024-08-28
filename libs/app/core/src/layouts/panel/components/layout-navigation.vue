@@ -29,7 +29,7 @@ import { useColors } from 'vuestic-ui'
 import VaIconMenuCollapsed from '../../../components/icons/VaIconMenuCollapsed.vue'
 import { storeToRefs } from 'pinia'
 import { useAppStore } from '../../../stores/app'
-import NavigationRoutes from './sidebar/NavigationRoutes'
+import NavigationRoutes from './sidebar/routes'
 
 const { isSidebarMinimized } = storeToRefs(useAppStore())
 
@@ -94,3 +94,4 @@ const handleBreadcrumbClick = (item: BreadcrumbNavigationItem) => {
   transform: scaleX(-100%);
 }
 </style>
+./sidebar/routes
