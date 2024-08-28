@@ -37,6 +37,7 @@
       "@owl-app/request-context-nestjs": [
         "packages/server/http/request-context-nestjs/src/index.ts"
       ],
+      "@owl-app/lib-api-module-time-tracker/*": ["libs/api/modules/time-tracker/src/*"],
       "@owl-app/utils": ["packages/common/utils/src/index.ts"],
       "@owl-app/winston-logger-nestjs": [
         "packages/server/logger/winston-nestjs/src/index.ts"
