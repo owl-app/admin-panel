@@ -1,7 +1,7 @@
 import { TenantAware } from "./tenant";
 import { Timestampable } from "./timestampable";
 
-export type Client = TenantAware & {
+export type Client = TenantAware & Timestampable &{
   id: string;
   name: string;
   email: string;

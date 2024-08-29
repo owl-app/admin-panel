@@ -72,7 +72,7 @@
     "vue-chartjs": "^5.3.1",
     "vue-i18n": "^9.13.1",
     "vue-router": "^4.0.13",
-    "vuestic-ui": "^1.9.12",
+    "vuestic-ui": "^1.10.0",
     "winston": "^3.11.0"
   },
   "devDependencies": {

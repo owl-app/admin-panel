@@ -19,25 +19,28 @@ export default {
       },
     },
     {
-      name: 'client-list',
-      displayName: 'clients',
+      name: 'time-list',
+      displayName: 'time_tracker',
       meta: {
-        icon: 'sensor_occupied',
+        icon: 'vuestic-iconset-dashboard',
       },
     },
     {
-      name: 'user-list',
-      displayName: 'users',
-      meta: {
-        icon: 'group',
-      },
+      name: 'manage',
+      displayName: 'manage',
+      children: [ 
+        {
+          name: 'client-list',
+          displayName: 'clients',
+          meta: {
+            icon: 'sensor_occupied',
+          },
+        },
+      ]
     },
     {
       name: 'permissions',
       displayName: 'access_control',
-      meta: {
-        icon: 'admin_panel_settings',
-      },
       children: [
         {
           name: 'role-list',
@@ -55,6 +58,19 @@ export default {
           },
         },
       ],
+    },
+    {
+      name: 'system',
+      displayName: 'system',
+      children: [ 
+        {
+          name: 'user-list',
+          displayName: 'users',
+          meta: {
+            icon: 'group',
+          },
+        },
+      ]
     },
     // {
     //   name: 'dashboard',

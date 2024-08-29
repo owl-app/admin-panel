@@ -162,6 +162,7 @@ async function reloadGrid() {
 <template>
   <div class="wrapper-grid">
     <header-bar
+      v-if="headerBar"
       :title="headerBar?.title"
       :description="headerBar?.description"
       :icon="headerBar?.icon"

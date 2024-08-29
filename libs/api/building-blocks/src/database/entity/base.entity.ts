@@ -5,7 +5,7 @@ import DomainEventableEntity from "./domain-eventable.entity";
 export default class BaseEntity extends DomainEventableEntity implements Timestampable {
     id: string;
 
-    createdAt: Date;
+    createdAt: string;
 
-    updatedAt: Date;
+    updatedAt: string;
 }

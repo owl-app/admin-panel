@@ -5187,11 +5187,6 @@ colorspace@1.1.x:
     color "^3.1.3"
     text-hex "1.0.x"
 
-colortranslator@^1.9.2:
-  version "1.10.2"
-  resolved "https://registry.yarnpkg.com/colortranslator/-/colortranslator-1.10.2.tgz#0a02b75f8c6cf50b50feb119ddccfbce1111f7f7"
-  integrity sha512-+vAnjWTdI0Vh6fT3I+dA6DAtnLfo91TzYKjewYeZ2dHdhF8Yo5OMo47inNJdJOXwjJ9lPD0LkNeQOLU/8yyfZA==
-
 columnify@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/columnify/-/columnify-1.6.0.tgz#6989531713c9008bb29735e61e37acf5bd553cf3"
@@ -13104,15 +13099,14 @@ vue@^3.3.4:
     "@vue/server-renderer" "3.4.34"
     "@vue/shared" "3.4.34"
 
-vuestic-ui@^1.9.12:
-  version "1.9.12"
-  resolved "https://registry.yarnpkg.com/vuestic-ui/-/vuestic-ui-1.9.12.tgz#fce6aea6b46595d866a08975645ec2df057969ad"
-  integrity sha512-YIcNBLbpryIQS8dGyNnxQ+1RgTPbm0rJ9biywei4+fVxMIcNGVs/qC2muAKwd9Od3GCJVbx/+uGxedjxXV1vLA==
+vuestic-ui@^1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/vuestic-ui/-/vuestic-ui-1.10.0.tgz#7b1527b9b607848a4028132238cbc2dbcf4c675c"
+  integrity sha512-IDcy9rUiXIda+F2GrEpIWLJ9sCBCDrus54zCUFu2WaurjyKnKKg7mleFHylQKJB8n4LLcbeUNKh2lJEuUNql4Q==
   dependencies:
     "@floating-ui/vue" "^1.0.1"
     "@types/lodash" "^4.14.161"
     cleave.js "^1.6.0"
-    colortranslator "^1.9.2"
     lodash "^4.17.21"
 
 w3c-xmlserializer@^4.0.0:

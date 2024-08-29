@@ -1,8 +1,8 @@
 <template>
   <VaSidebar v-model="writableVisible" :width="sidebarWidth" :color="color" minimized-width="0">
       <tempalte v-for="(route, index) in navigationRoutes.routes" :key="index">
-        <VaSidebarItemContent v-if="route.children">
-          <VaSidebarItemTitle class="title-section">
+        <VaSidebarItemContent v-if="route.children" class="title-section">
+          <VaSidebarItemTitle>
             {{ t(route.displayName) }}
           </VaSidebarItemTitle>
         </VaSidebarItemContent>
@@ -16,14 +16,16 @@
           :icon-color="iconColor(route)"
         />
 
-        <div v-for="(childRoute, index2) in route.children" :key="index2">
-          <SidebarItem
-            :route="childRoute"
-            :active="isActiveChildRoute(childRoute)"
-            :active-color="activeColor"
-            :text-color="textColor(childRoute)"
-            :icon-color="iconColor(childRoute)"
-          />
+        <div class="wrap-section-children">
+          <div v-for="(childRoute, index2) in route.children" :key="index2">
+            <SidebarItem
+              :route="childRoute"
+              :active="isActiveChildRoute(childRoute)"
+              :active-color="activeColor"
+              :text-color="textColor(childRoute)"
+              :icon-color="iconColor(childRoute)"
+            />
+          </div>
         </div>
       </tempalte>
   </VaSidebar>
@@ -101,10 +103,18 @@ watch(() => route.fullPath, setActiveExpand, { immediate: true })
 .va-sidebar {
   padding-top: 1rem;
 
-  .title-section {
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #b4b7be;
+  .va-sidebar__item__content {
+    --va-sidebar-item-content-padding: 0.8rem 1rem 0.8rem 1rem;
+ 
+    &.title-section {
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #b4b7be;
+      min-height: 24px;
+    }
+  }
+  .wrap-section-children {
+    margin-bottom: 0.8rem;
   }
 }
 </style>
