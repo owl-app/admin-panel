@@ -1,6 +1,6 @@
 <template>
   <VaSidebar v-model="writableVisible" :width="sidebarWidth" :color="color" minimized-width="0">
-      <tempalte v-for="(route, index) in navigationRoutes.routes" :key="index">
+      <slot v-for="(route, index) in navigationRoutes.routes" :key="index">
         <VaSidebarItemContent v-if="route.children" class="title-section">
           <VaSidebarItemTitle>
             {{ t(route.displayName) }}
@@ -16,7 +16,7 @@
           :icon-color="iconColor(route)"
         />
 
-        <div class="wrap-section-children">
+        <div v-if="route.children" class="wrap-section-children">
           <div v-for="(childRoute, index2) in route.children" :key="index2">
             <SidebarItem
               :route="childRoute"
@@ -27,7 +27,7 @@
             />
           </div>
         </div>
-      </tempalte>
+      </slot>
   </VaSidebar>
 </template>
 <script lang="ts" setup>
