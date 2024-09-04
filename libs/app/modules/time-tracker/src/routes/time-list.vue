@@ -1,142 +1,110 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue';
+import { DateTime } from 'luxon'
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import { Client } from "@owl-app/lib-contracts";
+import { Time } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
-import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
 
 import CreateInline from '../components/create-inline.vue';
 
+type GroupedWeeksAndDays = Record<string, Record<string, Time[]>>;
+
 const { t } = useI18n();
 
-const showModalUser = ref(false);
-const showDeleteModal = ref(false);
-const editClient = ref<Client | null>();
-const deleteClient = ref<Client>();
 const gridRef = ref<InstanceType<typeof Grid>>();
 
 const columns = defineVaDataTableColumns([
   { label: 'Name', key: 'name', sortable: true },
   { label: ' ', key: 'actions' },
 ])
-function groupByWeek(items: Client[]) {
-  const groups: Record<string, any> = {};
 
-  for (const obj of items) {
-    const startOfWeek = new Date(obj.createdAt);
-    startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() || 7) + 1);
+function groupByWeek(items: Time[]) {
+  function getWeekRange(date: string | Date) {
+    const curr = new Date(DateTime.fromISO(date).toLocaleString(DateTime.DATE_SHORT));
+    const first = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1));
+    const last = new Date(curr.setDate(curr.getDate() - curr.getDay() + 7));
 
-    const endOfWeek = new Date(obj.createdAt);
-    endOfWeek.setDate(endOfWeek.getDate() + 6);
-
-    const weekRange = `${startOfWeek.toISOString().split('T')[0]} to ${endOfWeek.toISOString().split('T')[0]}`;
-
-    if (!groups[weekRange]) {
-      groups[weekRange] = [];
-    }
-
-    groups[weekRange].push(obj);
+    return {
+      from: first.toISOString().split('T')[0],
+      to: last.toISOString().split('T')[0]
+    };
   }
 
-  // Sort the groups in ascending order of the week range
-  const sortedGroups: Record<string, any>  = {};
+  const groupedWeeks: GroupedWeeksAndDays = items.reduce((acc, obj) => {
+    const { from, to } = getWeekRange(obj.timeIntervalStart);
 
-  Object.keys(groups).sort().forEach(key => {
-    sortedGroups[key] = groups[key];
-  });
+    const weekKey = `${from} - ${to}`;
+    const dateKey = DateTime.fromISO(obj.timeIntervalStart).toLocaleString(DateTime.DATE_FULL);
 
-  return sortedGroups;
+    if (!acc[weekKey]) {
+      acc[weekKey] = {} as Record<string, Time[]>;
+    }
+
+    if (!acc[weekKey][dateKey as string]) {
+      acc[weekKey][dateKey as string] = [];
+    }
+
+    acc[weekKey][dateKey as string].push({
+      ...obj,
+      ...{
+        timeIntervalStart: new Date(obj.timeIntervalStart),
+        timeIntervalEnd: new Date(obj.timeIntervalEnd)
+      }
+    });
+
+    return acc;
+  }, {} as GroupedWeeksAndDays);
+
+  for (const weekKey in groupedWeeks) {
+    groupedWeeks[weekKey] = Object.keys(groupedWeeks[weekKey])
+      .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+      .reduce((sortedAcc: { [date: string]: Time[] }, dateKey: string) => {
+          sortedAcc[dateKey] = groupedWeeks[weekKey][dateKey];
+          return sortedAcc;
+      }, {});
+
+    for (const dateKey in groupedWeeks[weekKey]) {
+      groupedWeeks[weekKey][dateKey].sort(
+          (a, b) => DateTime.fromJSDate(b.timeIntervalStart) - DateTime.fromJSDate(a.timeIntervalStart)
+      );
+    }
+  }
+
+  return groupedWeeks;
 }
 </script>
 
 <template>
   <panel-layout>
-    <create-inline @saved="gridRef?.addItem" />
-
-    <grid
-      ref="gridRef"
-      :columns="columns"
-      defaultSort="id"
-      url="clients"
-      layout="custom"
-    >
+    <create-inline @saved="gridRef?.addItem" :is-manual="true" manual-name-storage="time-is-manual" />
+    <div class="mb-10" />
+    <grid ref="gridRef" :columns="columns" defaultSort="id" url="times" layout="custom">
       <template #filters="{ filters, changeFilter, removeFilter }">
         <div class="grid grid-cols-3 gap-4">
-          <string-filter 
-            :data="filters?.search"
-            :change-filter="changeFilter"
-            :remove-filter="removeFilter"
-          />
+          <string-filter :data="filters?.search" :change-filter="changeFilter" :remove-filter="removeFilter" />
         </div>
-      </template>
-      
-      <template #custom="{items}">
-        <div
-          v-for="(group, start) in groupByWeek(items as Client[])" :key="start"
-        >
-        <va-chip>{{ start }}</va-chip>
-          <div>
-          <div class="grid grid-cols-5 gap-4">
-              <div
-                v-for="client in group"
-                :key="client.id"
-              >
-                <VaValue v-slot="doShowInput">
-                <div style="height: 40px; width: 200px;"  @mouseover="doShowInput.value = true" @mouseleave="doShowInput.value = false">
-                    <VaInput
-                      :model-value="client.name"
-                      @change="($event) => {
-                        row.rowData[item.key] = $event.target.value
-                        doShowInput.value = false
-                      }"
-                      @blur="doShowInput.value = false"
-                      autofocus
-                    />
-                </div>
-                </VaValue>
-            </div>
-          </div>
-        </div>
-      </div>
       </template>
 
-      <template #cell(actions)="{ rowData: client }">
-        <div class="flex gap-2 justify-end">
-          <VaButton
-            preset="primary"
-            size="small"
-            color="primary"
-            icon="mso-edit"
-            aria-label="Edit project"
-            @click="
-              editClient = client as Client;
-              showModalUser = true;
-            "
-          />
-          <VaButton
-            preset="primary"
-            size="small"
-            icon="mso-delete"
-            color="danger"
-            aria-label="Delete project"
-            @click="
-              showDeleteModal = true;
-              deleteClient = client as Client;
-            "
-          />
-        </div>
+      <template #custom="{ items, loading }">
+        <va-inner-loading :loading="loading">
+          <div v-for="(groupWeek, startWeek) in groupByWeek(items as Time[])" :key="startWeek">
+            <va-chip class="mb-4">{{ startWeek }}</va-chip>
+            <va-card v-for="(groupDay, startDay) in groupWeek" class="card-time mb-4" square outlined bordered
+              :key="startDay">
+              <va-card-title>{{ startDay }}</va-card-title>
+              <va-card-content>
+                <create-inline v-for="(time, index) in groupDay" :key="time.id" :index="index" @saved="gridRef?.addItem"
+                  :default-value="time" />
+              </va-card-content>
+            </va-card>
+          </div>
+        </va-inner-loading>
       </template>
     </grid>
-    <delete-modal 
-      collection="clients"
-      v-model="showDeleteModal"
-      :primaryKey="deleteClient?.id"
-      @deleted="gridRef?.reloadGrid"
-    />
   </panel-layout>
 </template>
 
@@ -146,6 +114,26 @@ function groupByWeek(items: Client[]) {
     .header-actions {
       align-self: center;
       justify-self: end;
+    }
+
+    .va-card {
+      .card-time {
+        --va-card-padding: 0px;
+        --va-card-outlined-border: thin solid #e0e0e0;
+
+        .va-card-title {
+          font-size: 0.75rem;
+          font-weight: bold;
+          padding: 0.75rem !important;
+          background-color: #f5f5f5;
+          border-bottom: var(--va-card-outlined-border);
+          border-radius: 0;
+        }
+
+        .time-tracker-inline {
+          border-bottom: var(--va-card-outlined-border);
+        }
+      }
     }
   }
 }

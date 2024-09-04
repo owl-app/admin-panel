@@ -2,11 +2,11 @@ import { Assembler, ClassTransformerAssembler } from '@owl-app/crud-core'
 
 import { TimeEntity } from '../../../../domain/entity/time.entity'
 
-import { ClientResponse } from '../../../dto/client.response'
+import { TimeResponse } from '../../../dto/time.response'
 
-@Assembler(ClientResponse, TimeEntity)
+@Assembler(TimeResponse, TimeEntity)
 export class TimeAssembler extends ClassTransformerAssembler<
-  ClientResponse,
+TimeResponse,
   TimeEntity
 > {
 

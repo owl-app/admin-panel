@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PaginatedResponse } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.response'
 
-import { ClientResponse } from '../../../../dto/client.response';
+import { TimeResponse } from '../../../../dto/time.response';
 
-export class ClientPaginatedResponseDto extends PaginatedResponse<ClientResponse> {
+export class ClientPaginatedResponseDto extends PaginatedResponse<TimeResponse> {
 
-  @ApiProperty({ type: ClientResponse, isArray: true })
-  readonly items: readonly ClientResponse[];
+  @ApiProperty({ type: TimeResponse, isArray: true })
+  readonly items: readonly TimeResponse[];
 
 }

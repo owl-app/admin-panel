@@ -3,6 +3,11 @@ import { ApiProperty } from "@nestjs/swagger";
 export class CreateClientRequest{
 
     @ApiProperty({ type: () => String })
-    name: string;
+    description: string;
 
+    @ApiProperty({ type: () => Date })
+    timeIntervalStart: Date;
+
+    @ApiProperty({ type: () => Date })
+    timeIntervalEnd: Date;
 }

@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
-import { AvalilableCollections, CrudActions, clientValidationSchema } from '@owl-app/lib-contracts'
+import { AvalilableCollections, CrudActions, timeValidationSchema } from '@owl-app/lib-contracts'
 
 import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
 import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core'
@@ -26,7 +26,7 @@ import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorator
 import { ValibotValidationPipe } from '@owl-app/lib-api-bulding-blocks/validation/valibot.pipe';
 
 import { TimeEntity } from '../../../../domain/entity/time.entity'
-import { ClientResponse } from '../../../dto/client.response'
+import { TimeResponse } from '../../../dto/time.response'
 
 import { CreateClientRequest, UpdateClientDto, FilterClientDto, ClientPaginatedResponseDto } from './dto'
 import { TimeAssembler } from './time.assembler'
@@ -37,7 +37,7 @@ import { TimeAssembler } from './time.assembler'
 @Injectable()
 export class TimeCrudController {
   constructor(
-    @InjectAssemblerQueryService(TimeAssembler) readonly service: AssemblerQueryService<ClientResponse, TimeEntity>,
+    @InjectAssemblerQueryService(TimeAssembler) readonly service: AssemblerQueryService<TimeResponse, TimeEntity>,
     @InjectPaginatedQueryService(TimeEntity) readonly paginatedService: DataProvider<Paginated<TimeEntity>, FilterClientDto>
   ) {}
 
@@ -45,7 +45,7 @@ export class TimeCrudController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Found one time record',
-    type: ClientResponse,
+    type: TimeResponse,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -54,14 +54,14 @@ export class TimeCrudController {
   })
   @Get(':id')
   @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.READ)
-  findOne(@Param('id') id: string): Promise<ClientResponse> {
+  findOne(@Param('id') id: string): Promise<TimeResponse> {
     return this.service.getById(id, { relations: [{ name: 'users', query: {}}]});
   }
 
   @ApiOperation({ summary: 'Create new time' })
     @ApiCreatedResponse({
       description: 'The time has been successfully created.',
-      type: ClientResponse,
+      type: TimeResponse,
     })
     @ApiResponse({
       status: HttpStatus.BAD_REQUEST,
@@ -70,7 +70,7 @@ export class TimeCrudController {
     })
   @Post()
   @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.CREATE)
-  async create(@Body(new ValibotValidationPipe(clientValidationSchema)) createClientRequest: CreateClientRequest) {
+  async create(@Body(new ValibotValidationPipe(timeValidationSchema)) createClientRequest: CreateClientRequest) {
     const createdClient = await this.service.createOne(createClientRequest);
 
     return createdClient;
@@ -79,7 +79,7 @@ export class TimeCrudController {
   @ApiOperation({ summary: 'Update time' })
     @ApiAcceptedResponse({
       description: 'Time has been successfully updated.',
-      type: ClientResponse,
+      type: TimeResponse,
     })
     @ApiResponse({
       status: HttpStatus.NOT_FOUND,
@@ -95,8 +95,8 @@ export class TimeCrudController {
   @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.UPDATE)
   async update(
     @Param('id', UUIDValidationPipe) id: string,
-    @Body(new ValibotValidationPipe(clientValidationSchema)) updateClientDto: UpdateClientDto,
-  ): Promise<ClientResponse> {
+    @Body(new ValibotValidationPipe(timeValidationSchema)) updateClientDto: UpdateClientDto,
+  ): Promise<TimeResponse> {
     const updatedClient = await this.service.updateOne(id, updateClientDto);
 
     return updatedClient;
