@@ -8,12 +8,14 @@ import { Time } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
+import { useApi } from '@owl-app/lib-app-core/composables/use-system'
 
 import CreateInline from '../components/create-inline.vue';
 
 type GroupedWeeksAndDays = Record<string, Record<string, Time[]>>;
 
 const { t } = useI18n();
+const api = useApi();
 
 const gridRef = ref<InstanceType<typeof Grid>>();
 
@@ -80,7 +82,12 @@ function groupByWeek(items: Time[]) {
 
 <template>
   <panel-layout>
-    <create-inline @saved="gridRef?.addItem" :is-manual="true" manual-name-storage="time-is-manual" />
+    <create-inline
+      url="times"
+      manual-name-storage="time-is-manual"
+      :is-manual="true"
+      @saved="gridRef?.addItem"
+    />
     <div class="mb-10" />
     <grid ref="gridRef" :columns="columns" defaultSort="id" url="times" layout="custom">
       <template #filters="{ filters, changeFilter, removeFilter }">
@@ -97,8 +104,15 @@ function groupByWeek(items: Time[]) {
               :key="startDay">
               <va-card-title>{{ startDay }}</va-card-title>
               <va-card-content>
-                <create-inline v-for="(time, index) in groupDay" :key="time.id" :index="index" @saved="gridRef?.addItem"
-                  :default-value="time" />
+                <create-inline
+                  v-for="(time, index) in groupDay"
+                  :url="`times/${time.id}`"
+                  :key="time.id"
+                  :index="index"
+                  :default-value="time"
+                  :save-after-change="true"
+                  @saved="gridRef?.addItem"
+                />
               </va-card-content>
             </va-card>
           </div>

@@ -6,13 +6,6 @@ access_control: Access control
 permissions: Permissions
 logout: Logout
 select_option: Select an option
-vuestic:
-  sortColumnBy: Sort column by
-  toggleDropdown: Toggle dropdown
-  breadcrumbs: Breadcrumbs
-  pagination: Pagination
-  goToSpecificPage: Go to specific page
-  select: Select
 auth_module: Auth module
 user_module: User module
 client_module: Client module
@@ -24,3 +17,12 @@ validation:
   please_select_option: Please select an option
 item_delete_success: Item deleted successfully
 item_create_success: Item created successfully
+item_update_success: Item updated successfully
+vuestic:
+  sortColumnBy: Sort column by
+  toggleDropdown: Toggle dropdown
+  breadcrumbs: Breadcrumbs
+  pagination: Pagination
+  goToSpecificPage: Go to specific page
+  select: Select
+  selectedTime: Selected time

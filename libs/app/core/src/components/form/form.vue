@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch, VNode, Fragment } from 'vue'
+import { computed, ref, watch, VNode, Fragment, Ref } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { debounce, DebouncedFunc, snakeCase } from 'lodash';
 import * as v from 'valibot'
@@ -11,16 +11,21 @@ import { isEmpty } from '@owl-app/utils';
 import type { Item, PrimaryKey } from '../../types/item';
 import { useItem } from '../../composables/use-item';
 
-const props = defineProps<{
+interface Props {
   collection: string,
   schema?: BaseSchema<unknown, unknown, BaseIssue<unknown>> | null,
   primaryKey?: PrimaryKey | undefined,
   defaultValue?: Item | null,
   classForm?: string,
-}>()
+  clearFormAfterSave?: boolean,
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  clearFormAfterSave: true
+})
 
 const emit = defineEmits<{
-  (event: 'saved', dataSaved: any): void
+  (event: 'saved', dataSaved: any, dataForm: Ref): void
 }>()
 
 const { t } = useI18n();
@@ -122,7 +127,9 @@ const getVNodeKey = (node: VNode): string => {
 }
 
 function validate(showAllErrors = false): boolean {
-  if(!props.schema) return true;
+  clearServerValidationErrors();
+
+  if (!props.schema) return true;
 
   if(textDebounce) {
     textDebounce.cancel();
@@ -187,11 +194,27 @@ function debouceValidate(time: number) {
 const saveForm = async () => {
   const savedData = await save(dataForm.value);
 
-  if(isValid.value) {
-    dataForm.value = {}
-    emit('saved', savedData);
+  if (isValid.value) {
+    emit('saved', savedData, dataForm);
+    validationErrors.value = {};
+
+    if (props.clearFormAfterSave) {
+      dataForm.value = {}
+    }
   }
 }
+
+function clearServerValidationErrors() {
+  fields.value.map((field) => {
+    Object.keys(validationServerErrors.value).forEach((key) => {
+      console.log(key, field.name, field.isDirty)
+      if (field.name === key && field.isDirty) {
+        delete validationErrors.value[key];
+      }
+    })
+  })
+}
+
 const makeSlotRef = () => {
   return new Proxy(dataForm, {
     get (v, key) {
@@ -229,7 +252,7 @@ const makeSlotRef = () => {
         :save="saveForm"
         :is-valid="isValid"
         :is-loading="loading || saving"
-        :data="dataForm"
+        :data="makeSlotRef()"
       />
     </va-form>
   </VaInnerLoading>

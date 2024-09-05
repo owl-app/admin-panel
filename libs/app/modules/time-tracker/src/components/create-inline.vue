@@ -1,9 +1,11 @@
 <template>
   <div class="time-tracker-inline">
-    <owl-form collection="times" 
+    <owl-form
+      :collection="url" 
       class-form="flex bg-white p-3"
       :default-value="defaultValue"
-      @saved="$emit('saved', $event)"
+      :clear-form-after-save="false"
+      @saved="afterSave"
     >
       <template #fields="{ data, validation }">
         <div class="flex flex-row justify-center">
@@ -35,6 +37,7 @@
               name="description"
               background="#fff"
               :error="!!validation['description']"
+              @change="() => savedAfterChange(data.ref)"
             />
             <va-time-input 
               class="w-24"
@@ -46,7 +49,6 @@
             />
             <va-badge 
               overlap
-              :offset="[0, 1]"
               :text="diffDays(data.ref.timeIntervalStart, data.ref.timeIntervalEnd)"
               v-if="isManual"
             >
@@ -58,6 +60,14 @@
                 @update:modelValue="() => changeTime(data)"
               />
             </va-badge>
+            <va-date-input
+              class="w-36"
+              inputClass="text-center font-bold input-time"
+              v-model="date"
+              :format="(date: Date) => (DateTime.fromJSDate(new Date(date))).toFormat('dd-MM-yyyy')"
+              @update:modelValue="(value: string) => changeDate(value, data)"
+              v-if="isManual"
+            />
             <va-divider vertical />
             <va-input
               class="w-28"
@@ -67,22 +77,14 @@
               placeholder="00:00:00"
               @update:modelValue="(value: string) => changeTimeSum(value, data)"
             />
-            <va-date-input
-              class="w-240"
-              inputClass="text-center font-bold input-time"
-              v-model="date"
-              :format="(date: Date) => (DateTime.fromJSDate(new Date(date))).toFormat('dd-MM-yyyy')"
-              @update:modelValue="(value: string) => changeDate(value, data)"
-              v-if="isManual"
-            />
           </div>
         </div>
       </template>
 
-      <template #actions="{ save, data }">
+      <template #actions="{ save }">
         <div class="flex justify-end flex-col-reverse sm:flex-row w-24">
-          <va-button v-if="isManual" @click="save()" class="w-full">START</va-button>
-          <va-button v-if="!isManual" @click="saveManual();" class="w-full">ADD</va-button>
+          <va-button v-if="!isManual" @click="save()" class="w-full">START</va-button>
+          <va-button v-if="isManual" @click="save()" class="w-full">ADD</va-button>
         </div>
       </template>
     </owl-form>
@@ -90,27 +92,38 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, defineProps } from 'vue'
+import { computed, ref, defineProps, Ref } from 'vue'
+import { useI18n } from 'vue-i18n';
 import { DateTime } from 'luxon'
 import { useInputMask, createRegexMask } from 'vuestic-ui'
+import { useToast } from 'vuestic-ui/web-components';
 import { useLocalStorage } from '@vueuse/core';
 
-import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
 import { Time } from '@owl-app/lib-contracts';
 
+import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
+import { useApi } from '@owl-app/lib-app-core/composables/use-system'
+
 interface Props {
+  url: string,
   defaultValue?: Time
   isManual?: boolean,
   manualNameStorage?: string
+  isSavedAfterChange?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  isManual: true
+  isManual: true,
+  isSavedAfterChange: false
 })
 
 const emit = defineEmits<{
-  (event: 'saved', clientSaved: Time): void
+  (event: 'saved', clientSaved: Time): void,
 }>()
+
+const api = useApi();
+const { init: notify } = useToast();
+const { t } = useI18n();
 
 const now = DateTime.now().set({ second: 0, millisecond: 0.00 });
 const defaultValue = props.defaultValue || {
@@ -124,6 +137,7 @@ const inputTimeSum = ref();
 const isManual = props.manualNameStorage ? useLocalStorage(props.manualNameStorage, false) : ref(props.isManual);
 const iconColorManual = computed(() => isManual.value ? 'primary' : 'secondary');
 const iconColorTimer = computed(() => isManual.value ? 'secondary' : 'primary');
+
 let oldDate = DateTime.now().set({ hours: 0, minute: 0, second: 0, millisecond: 0.00 });
 let hasChangedScope = false;
 
@@ -189,6 +203,12 @@ function changeTime(data: any) {
   timeSum.value = dateTo
     .diff(dateFrom, ["hours", "minutes", "seconds"])
     .toFormat('hh:mm:ss');
+
+  console.log(props.isSavedAfterChange)
+
+  if(props.isSavedAfterChange) {
+    savedAfterChange(data.ref)
+  }
 }
 
 function changeDate(value: string, data: any) {
@@ -209,9 +229,42 @@ function diffDays(timeIntervalStart: string, timeIntervalEnd: string) {
   const dateFrom = (DateTime.fromJSDate(new Date(timeIntervalStart)))
   const dateTo = (DateTime.fromJSDate(new Date(timeIntervalEnd)))
 
-  console.log('diffDays', dateTo.startOf("day").diff(dateFrom.startOf("day"), "days").days)
-
   return dateTo.startOf("day").diff(dateFrom.startOf("day"), "days").days;
+}
+
+function afterSave(savedData: Time, dataForm: Ref) {
+  const [hours = 0, minutes = 0, seconds = 0] = parseTime(timeSum.value);
+  const timeIntervalStart = DateTime
+    .fromJSDate(new Date(savedData.timeIntervalStart))
+    .plus({ hours, minutes, seconds });
+  const timeIntervalEnd = DateTime
+    .fromJSDate(new Date(savedData.timeIntervalEnd))
+    .plus({ hours, minutes, seconds });
+
+  dataForm.value = {
+    timeIntervalStart: timeIntervalStart.toJSDate(),
+    timeIntervalEnd: timeIntervalEnd.toJSDate()
+  }
+
+  date.value = timeIntervalEnd
+    .set({ hours: 0, minute: 0, second: 0, millisecond: 0.00 })
+    .toJSDate();
+
+  notify({
+    message: t('item_create_success', 1),
+    color: 'success',
+  })
+
+  emit('saved', savedData);
+}
+
+async function savedAfterChange(data: any) {
+  await api.put(`${props.url}`, data);
+
+  notify({
+    message: t('item_update_success', 1),
+    color: 'success',
+  })
 }
 </script>
 
@@ -220,16 +273,27 @@ function diffDays(timeIntervalStart: string, timeIntervalEnd: string) {
   --va-input-wrapper-horizontal-padding: 0.6rem;
   --va-input-wrapper-border-color-hover: transparent;
   --va-input-wrapper-border-color: transparent;
+  
 
   :deep() {
     .input-time {
       --va-input-font-weight: bold;
       --va-input-font-size: 1rem;
     }
+
+    .va-date-input {
+      .va-input-wrapper {
+        &__field {
+          flex-direction: row-reverse;
+        }
+      }
+    }
   }
 
   &:hover {
     --va-input-wrapper-border-color: var(--va-background-border);
   }
+
+
 }
 </style>
