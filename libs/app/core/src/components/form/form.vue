@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch, VNode, Fragment, Ref } from 'vue'
+import { computed, ref, watch, VNode, Fragment, Ref, defineExpose } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { debounce, DebouncedFunc, snakeCase } from 'lodash';
 import * as v from 'valibot'
@@ -25,11 +25,11 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (event: 'saved', dataSaved: any, dataForm: Ref): void
+  (event: 'saved', dataSaved: any, formData: Ref): void
 }>()
 
 const { t } = useI18n();
-const dataForm = ref({ ...props.defaultValue ?? {} })
+const formData = ref({ ...props.defaultValue ?? {} })
 const validationErrors = ref<any>({})
 const { 
     primaryKey,
@@ -45,9 +45,9 @@ const { fields } = useForm('owl-form')
 const isValid = ref(!props?.schema);
 
 const isFormHasUnsavedChanges = computed(() => {
-  return Object.keys(dataForm.value).some((key) => {
+  return Object.keys(formData.value).some((key) => {
     return (
-      dataForm.value[key as keyof Item] !== (item.value ?? props.defaultValue)?.[key as keyof Item]
+      formData.value[key as keyof Item] !== (item.value ?? props.defaultValue)?.[key as keyof Item]
     )
   })
 })
@@ -57,6 +57,7 @@ let textDebounce: DebouncedFunc<(...args: any[]) => any>;
 
 defineExpose({
   isFormHasUnsavedChanges,
+  formData
 })
 
 watch(
@@ -73,7 +74,7 @@ watch(
 
     immediateValidation = true;
 
-    dataForm.value = {
+    formData.value = {
       ...item.value,
     }
   },
@@ -81,7 +82,7 @@ watch(
 )
 
 watch(
-  [dataForm],
+  [formData],
   () => {
     if (immediateValidation) {
       validate();
@@ -135,7 +136,7 @@ function validate(showAllErrors = false): boolean {
     textDebounce.cancel();
   }
 
-  const result = v.safeParse(props.schema, { ...dataForm.value });
+  const result = v.safeParse(props.schema, { ...formData.value });
 
   if (result.issues) {
     const flattenResult = v.flatten(result.issues)?.nested ?? {}
@@ -192,14 +193,14 @@ function debouceValidate(time: number) {
 }
 
 const saveForm = async () => {
-  const savedData = await save(dataForm.value);
+  const savedData = await save(formData.value);
 
   if (isValid.value) {
-    emit('saved', savedData, dataForm);
+    emit('saved', savedData, formData);
     validationErrors.value = {};
 
     if (props.clearFormAfterSave) {
-      dataForm.value = {}
+      formData.value = {}
     }
   }
 }
@@ -216,21 +217,21 @@ function clearServerValidationErrors() {
 }
 
 const makeSlotRef = () => {
-  return new Proxy(dataForm, {
+  return new Proxy(formData, {
     get (v, key) {
       if (key === 'ref') {
-        return dataForm.value
+        return formData.value
       }
 
       return Reflect.get(v, key)
     },
     set (_, key, value) {
       if (key === 'ref') {
-        dataForm.value = value
+        formData.value = value
         return true
       }
 
-      return Reflect.set(dataForm, key, value)
+      return Reflect.set(formData, key, value)
     },
   })
 }

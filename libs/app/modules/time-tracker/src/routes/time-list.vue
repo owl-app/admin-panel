@@ -8,14 +8,12 @@ import { Time } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
-import { useApi } from '@owl-app/lib-app-core/composables/use-system'
 
 import CreateInline from '../components/create-inline.vue';
 
 type GroupedWeeksAndDays = Record<string, Record<string, Time[]>>;
 
 const { t } = useI18n();
-const api = useApi();
 
 const gridRef = ref<InstanceType<typeof Grid>>();
 
@@ -26,20 +24,18 @@ const columns = defineVaDataTableColumns([
 
 function groupByWeek(items: Time[]) {
   function getWeekRange(date: string | Date) {
-    const curr = new Date(DateTime.fromISO(date).toLocaleString(DateTime.DATE_SHORT));
-    const first = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1));
-    const last = new Date(curr.setDate(curr.getDate() - curr.getDay() + 7));
+    const curr = DateTime.fromISO(date);
 
     return {
-      from: first.toISOString().split('T')[0],
-      to: last.toISOString().split('T')[0]
-    };
+      from: curr.startOf('week').toFormat('yyyy-MM-dd').toString(),
+      to: curr.endOf('week').toFormat('yyyy-MM-dd').toString()
+    }
   }
 
   const groupedWeeks: GroupedWeeksAndDays = items.reduce((acc, obj) => {
     const { from, to } = getWeekRange(obj.timeIntervalStart);
 
-    const weekKey = `${from} - ${to}`;
+    const weekKey = `${from} / ${to}`;
     const dateKey = DateTime.fromISO(obj.timeIntervalStart).toLocaleString(DateTime.DATE_FULL);
 
     if (!acc[weekKey]) {
@@ -76,7 +72,19 @@ function groupByWeek(items: Time[]) {
     }
   }
 
-  return groupedWeeks;
+  const sortedByWeeks = Object.entries(groupedWeeks)
+    .sort((a, b) => {
+      const [fromA] = a[0].split('/');
+      const [fromB] = b[0].split('/');
+
+      return new Date(fromB).getTime() - new Date(fromA).getTime();
+    })
+    .reduce((acc: GroupedWeeksAndDays, [week, items]) => {
+      acc[week] = items;
+      return acc;
+    }, {});
+
+  return sortedByWeeks;
 }
 </script>
 
@@ -110,8 +118,8 @@ function groupByWeek(items: Time[]) {
                   :key="time.id"
                   :index="index"
                   :default-value="time"
-                  :save-after-change="true"
-                  @saved="gridRef?.addItem"
+                  :is-saved-after-change="true"
+                  @saved="gridRef?.reloadGrid"
                 />
               </va-card-content>
             </va-card>
