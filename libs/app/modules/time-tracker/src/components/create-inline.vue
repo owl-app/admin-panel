@@ -1,6 +1,7 @@
 <template>
   <div class="time-tracker-inline">
     <owl-form
+      ref="timerForm"
       :collection="url" 
       class-form="flex bg-white p-3"
       :default-value="defaultValue"
@@ -8,23 +9,23 @@
       @saved="afterSave"
     >
       <template #fields="{ data, validation }">
-        <div class="flex flex-row justify-center">
+        <div class="flex flex-row justify-center" v-if="!isTimerStart && !isManualOnly">
           <div class="flex flex-col">
-          <va-icon
-            class="material-symbols-outlined cursor-pointer"
-            name="handyman"
-            :size="17"
-            :color="iconColorManual"
-            @click="isManual = true"
-          />
-          <va-icon
-            class="material-symbols-outlined cursor-pointer mt-1"
-            name="timer"
-            :size="17"
-            :color="iconColorTimer"
-            @click="isManual = false"
-          />
-        </div>
+            <va-icon
+              class="material-symbols-outlined cursor-pointer"
+              name="handyman"
+              :size="17"
+              :color="iconColorManual"
+              @click="isManual = true"
+            />
+            <va-icon
+              class="material-symbols-outlined cursor-pointer mt-1"
+              name="timer"
+              :size="17"
+              :color="iconColorTimer"
+              @click="isManual = false"
+            />
+          </div>
           <va-divider vertical />
         </div>
         
@@ -39,7 +40,7 @@
               :error="!!validation['description']"
               @change="() => savedAfterChange(data.ref)"
             />
-            <div @focusout="() => changeTime(data)">
+            <div @focusout="() => changeTime(data)" v-if="isManual">
               <va-time-input 
                 class="w-24"
                 v-model="data.ref.timeIntervalStart"
@@ -47,18 +48,16 @@
                 :parse="(value: string) => parseInputTime(value, data.ref.timeIntervalStart)"
               />
             </div>
-            <div @focusout="() => changeTime(data)">
+            <div @focusout="() => changeTime(data)" v-if="isManual">
               <va-badge 
                 overlap
                 :text="diffDays(data.ref.timeIntervalStart, data.ref.timeIntervalEnd)"
-                v-if="isManual"
               >
                 <va-time-input
                   class="w-24"
                   v-model="data.ref.timeIntervalEnd"
                   manual-input
                   :parse="(value: string) => parseInputTime(value, data.ref.timeIntervalEnd)"
-                  v-on:blur="() => changeTime(data)"
                 />
               </va-badge>
             </div>
@@ -79,6 +78,15 @@
               ref="inputTimeSum"
               placeholder="00:00:00"
               @blur="() => changeTimeSum(data)"
+              v-if="isManual"
+            />
+            <va-input
+              class="w-28"
+              inputClass="text-center font-bold input-time"
+              v-model="timeStore.timer"
+              readonly
+              placeholder="00:00:00"
+               v-if="!isManual"
             />
           </div>
         </div>
@@ -86,8 +94,21 @@
 
       <template #actions="{ save }">
         <div class="flex justify-end flex-col-reverse sm:flex-row w-24">
-          <va-button v-if="!isManual" @click="save()" class="w-full">START</va-button>
-          <va-button v-if="isManual" @click="save()" class="w-full">ADD</va-button>
+          <slot
+            name="actions"
+            :save="save"
+            :is-manual="isManual"
+            :start-timer="startTimer"
+            :is-timer-start="isTimerStart"
+          />
+          <va-button
+            @click="endTimer"
+            class="w-full"
+            color="danger"
+            v-if="isTimerStart && !isManualOnly"
+          >
+            STOP
+          </va-button>
         </div>
       </template>
     </owl-form>
@@ -106,6 +127,7 @@ import { Time } from '@owl-app/lib-contracts';
 
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
 import { useApi } from '@owl-app/lib-app-core/composables/use-system'
+import { useStores } from '@owl-app/lib-app-core/composables/use-system'
 
 interface Props {
   url: string,
@@ -113,11 +135,13 @@ interface Props {
   isManual?: boolean,
   manualNameStorage?: string
   isSavedAfterChange?: boolean
+  isManualOnly?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isManual: true,
-  isSavedAfterChange: false
+  isSavedAfterChange: false,
+  isManualOnly: true
 })
 
 const emit = defineEmits<{
@@ -125,8 +149,10 @@ const emit = defineEmits<{
 }>()
 
 const api = useApi();
-const { init: notify } = useToast();
 const { t } = useI18n();
+const { init: notify } = useToast();
+const { useTimeStore } = useStores();
+const timeStore = useTimeStore();
 
 const now = DateTime.now().set({ second: 0, millisecond: 0.00 });
 const defaultValue = props.defaultValue || {
@@ -134,12 +160,14 @@ const defaultValue = props.defaultValue || {
   timeIntervalEnd: now.toJSDate(),
 }
 
+const timerForm = ref(null)
 const timeSum = ref(initialTimeSum());
 const date = ref(props.defaultValue?.timeIntervalStart ?? new Date());
 const inputTimeSum = ref();
 const isManual = props.manualNameStorage ? useLocalStorage(props.manualNameStorage, false) : ref(props.isManual);
 const iconColorManual = computed(() => isManual.value ? 'primary' : 'secondary');
 const iconColorTimer = computed(() => isManual.value ? 'secondary' : 'primary');
+const isTimerStart = ref(timeStore.active ?? false);
 
 let oldData = {
   timeIntervalStart: new Date(defaultValue.timeIntervalStart), 
@@ -187,8 +215,8 @@ function changeTimeSum(data: any) {
 function changeTime(data: any) {
   const currentDate = DateTime.fromJSDate(new Date(date.value));
   const dateFrom = DateTime.fromJSDate(new Date(data.ref.timeIntervalStart)).set({ millisecond: 0.00 });
-  let dateTo = DateTime.fromJSDate(new Date(data.ref.timeIntervalEnd)).set({ millisecond: 0.00 });
   const [hours = 0] = parseTime(timeSum.value);
+  let dateTo = DateTime.fromJSDate(new Date(data.ref.timeIntervalEnd)).set({ millisecond: 0.00 });
 
   if (hours < 24 && !hasChangedScope) {
     dateTo = currentDate.set({ hours: dateTo.hour, minutes: dateTo.minute, seconds: dateTo.second });
@@ -278,6 +306,18 @@ async function savedAfterChange(data: any) {
   })
 }
 
+function startTimer() {
+  if (timeStore.intervalTimer) return;
+
+  timeStore.startTimer();
+  isTimerStart.value = true;
+}
+
+function endTimer() {
+  timeStore.stopTimer();
+  isTimerStart.value = false;
+};
+
 function parseInputTime(value: string, date: Date): Date {
   const dateTimeTo = DateTime.fromJSDate(new Date(date));
   const [hours = 0, minutes = 0, seconds = 0] = parseTime(value);
@@ -315,7 +355,5 @@ function parseTime(text: string) {
   &:hover {
     --va-input-wrapper-border-color: var(--va-background-border);
   }
-
-
 }
 </style>

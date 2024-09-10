@@ -90,13 +90,22 @@ function groupByWeek(items: Time[]) {
 
 <template>
   <panel-layout>
+
     <create-inline
       url="times"
       manual-name-storage="time-is-manual"
       :is-manual="true"
+      :is-manual-only="false"
       @saved="gridRef?.addItem"
-    />
+    >
+      <template #actions="{ save, isManual, startTimer, isTimerStart }">
+          <va-button v-if="!isManual && !isTimerStart" @click="startTimer()" class="w-full">START</va-button>
+          <va-button v-if="isManual" @click="save()" class="w-full">ADD</va-button>
+      </template>
+    </create-inline>
+
     <div class="mb-10" />
+
     <grid ref="gridRef" :columns="columns" defaultSort="id" url="times" layout="custom">
       <template #filters="{ filters, changeFilter, removeFilter }">
         <div class="grid grid-cols-3 gap-4">

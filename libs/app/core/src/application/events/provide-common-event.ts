@@ -3,10 +3,12 @@ import { App } from "vue";
 import { API_INJECT, LIFECYCLE_EVENTS, STORES_INJECT } from "../contants";
 import { defineRequestEvent } from "../defines/events";
 import { useUserStore } from "../../stores/user";
+import { useTimeStore } from "../../stores/time";
 import { useAppStore } from "../../stores/app";
 import { useRequestsStore } from "../../stores/requests";
 import api from "../../services/api";
 import { RequestEvent } from "../types/lifecycle";
+
 
 export default function provideCommonEvent(app: App): RequestEvent {
   return defineRequestEvent({
@@ -22,6 +24,7 @@ export default function provideCommonEvent(app: App): RequestEvent {
           useAppStore,
           useRequestsStore,
           useUserStore,
+          useTimeStore
         });
       
         app.provide(API_INJECT, api);

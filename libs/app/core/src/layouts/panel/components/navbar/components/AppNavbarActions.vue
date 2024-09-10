@@ -1,11 +1,25 @@
 <template>
   <div class="app-navbar-actions">
+    <div>
+      <VaButton
+      icon="schedule"
+      color="danger"
+      class="mr-4 w-36"
+      v-if="timeStore.intervalTimer"
+    >
+      {{ timeStore.timer }}
+    </VaButton>
+    </div>
     <NotificationDropdown class="app-navbar-actions__item" />
     <ProfileDropdown class="app-navbar-actions__item app-navbar-actions__item--profile mr-1" />
   </div>
 </template>
 
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n'
+
+import { useTimeStore } from '../../../../../stores/time'
+
 import ProfileDropdown from './dropdowns/ProfileDropdown.vue'
 import NotificationDropdown from './dropdowns/NotificationDropdown.vue'
 
@@ -13,8 +27,9 @@ defineProps({
   isMobile: { type: Boolean, default: false },
 })
 
-import { useI18n } from 'vue-i18n'
+
 const { t } = useI18n()
+const timeStore = useTimeStore();
 </script>
 
 <style lang="scss">
