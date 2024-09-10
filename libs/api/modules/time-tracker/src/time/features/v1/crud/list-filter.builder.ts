@@ -9,7 +9,7 @@ export class ListFilterBuilder extends QueryFilterBuilder<Time, FilterClientDto>
   {
     const filters: Filter<Time>[] = []
 
-    filters.push(this.filterRegistry.get('string').apply(['name'], data?.search));
+    filters.push(this.filterRegistry.get('string').apply(['description'], data?.search));
 
     return {
       or: filters

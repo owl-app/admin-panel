@@ -8,7 +8,7 @@
 
     <template #actions="{ save, data }">
       <div class="flex justify-end flex-col-reverse sm:flex-row col-span-2">
-        <va-button :disabled="isEmpty(data.name)" @click="!isEmpty(data.name) && save()">Add</va-button>
+        <va-button :disabled="isEmpty(data.ref.name)" @click="!isEmpty(data.ref.name) && save()">Add</va-button>
       </div>
     </template>
   </owl-form>

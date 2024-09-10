@@ -95,6 +95,8 @@ export function useItem<T extends Item>(
         notify({
           message: i18n.global.t('item_create_success', 1),
           color: 'success',
+          position: 'bottom-right',
+          offsetY: 30
         })
       } else {
         response = await api.put(endpoint.value, data);
@@ -102,6 +104,8 @@ export function useItem<T extends Item>(
         notify({
           message: i18n.global.t('item_update_success', 1),
           color: 'success',
+          position: 'bottom-right',
+          offsetY: 30
         })
       }
 
@@ -128,6 +132,8 @@ export function useItem<T extends Item>(
       notify({
         message: i18n.global.t('item_delete_success', 1),
         color: 'success',
+        position: 'bottom-right',
+        offsetY: 30
       })
     } catch (errorResponse) {
       error.value = errorResponse;

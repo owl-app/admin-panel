@@ -8,7 +8,7 @@ import { defineStore } from 'pinia';
 export const useTimeStore = defineStore({
   id: 'timeStore',
   state: () => ({
-    active: null as Time | string | null,
+    active: null as Time | null,
     loading: false,
     intervalTimer: null as ReturnType<typeof setInterval> | null,
     timer: '00:00:00',
@@ -42,7 +42,6 @@ export const useTimeStore = defineStore({
       const startTime = DateTime.now();
 
       this.timer = '00:00:00';
-      this.active = 'test';
 
       this.intervalTimer = setInterval(() => {
         const now = DateTime.now();

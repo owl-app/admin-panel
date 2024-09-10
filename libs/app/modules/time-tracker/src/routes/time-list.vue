@@ -8,14 +8,22 @@ import { Time } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
+import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
+import { useStores } from '@owl-app/lib-app-core/composables/use-system';
 
 import CreateInline from '../components/create-inline.vue';
 
 type GroupedWeeksAndDays = Record<string, Record<string, Time[]>>;
 
 const { t } = useI18n();
+const { useTimeStore } = useStores();
 
 const gridRef = ref<InstanceType<typeof Grid>>();
+const showDeleteModal = ref(false);
+const deleteTime = ref<Time>();
+const deleteModal = ref<InstanceType<typeof DeleteModal>>();
+const timeStore = useTimeStore();
+const timerCreateInline = ref<InstanceType<typeof CreateInline>>();
 
 const columns = defineVaDataTableColumns([
   { label: 'Name', key: 'name', sortable: true },
@@ -92,6 +100,7 @@ function groupByWeek(items: Time[]) {
   <panel-layout>
 
     <create-inline
+      ref="timerCreateInline"
       url="times"
       manual-name-storage="time-is-manual"
       :is-manual="true"
@@ -129,13 +138,40 @@ function groupByWeek(items: Time[]) {
                   :default-value="time"
                   :is-saved-after-change="true"
                   @saved="gridRef?.reloadGrid"
-                />
+                >
+                <template #actions="{ save, isManual, startTimer, isTimerStart }">
+                  <va-divider vertical />
+                  <va-icon
+                    name="play_arrow"
+                    :size="44"
+                    class="material-symbols-outlined"
+                    @click="() => timerCreateInline?.startTimer(time)"
+                  />
+                  <va-divider vertical />
+                  <div class="flex items-center w-24">
+                  <va-button
+                    color="danger"
+                    icon="delete"
+                    aria-label="Delete project"
+                    @click="deleteModal?.show(time?.id)"
+                    size="small"
+                  />
+                </div>
+                </template>
+                </create-inline>
               </va-card-content>
             </va-card>
           </div>
         </va-inner-loading>
       </template>
     </grid>
+    <delete-modal 
+      ref="deleteModal"
+      collection="times"
+      v-model="showDeleteModal"
+      :primaryKey="deleteTime?.id"
+      @deleted="gridRef?.reloadGrid"
+    />
   </panel-layout>
 </template>
 

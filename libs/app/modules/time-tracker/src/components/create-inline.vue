@@ -116,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, defineProps, Ref } from 'vue'
+import { computed, ref, defineProps, Ref, defineExpose } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { DateTime } from 'luxon'
 import { useInputMask, createRegexMask } from 'vuestic-ui'
@@ -148,6 +148,10 @@ const emit = defineEmits<{
   (event: 'saved', clientSaved: Time): void,
 }>()
 
+defineExpose({
+  startTimer
+})
+
 const api = useApi();
 const { t } = useI18n();
 const { init: notify } = useToast();
@@ -160,7 +164,7 @@ const defaultValue = props.defaultValue || {
   timeIntervalEnd: now.toJSDate(),
 }
 
-const timerForm = ref(null)
+const timerForm = ref<any>(null)
 const timeSum = ref(initialTimeSum());
 const date = ref(props.defaultValue?.timeIntervalStart ?? new Date());
 const inputTimeSum = ref();
@@ -206,7 +210,7 @@ function changeTimeSum(data: any) {
     seconds: seconds
   }).toJSDate();
 
-  if(props.isSavedAfterChange && oldData.timeSum !== timeSum.value) {
+  if (props.isSavedAfterChange && oldData.timeSum !== timeSum.value) {
     savedAfterChange(data.ref)
     oldData.timeSum = timeSum.value;
   }
@@ -290,8 +294,10 @@ function afterSave(savedData: Time, dataForm: Ref) {
     .toJSDate();
 
   notify({
-    message: t('item_create_success', 1),
+    message: t('item_create_success'),
     color: 'success',
+    position: 'bottom-right',
+    offsetY: 30
   })
 
   emit('saved', savedData);
@@ -301,16 +307,29 @@ async function savedAfterChange(data: any) {
   await api.put(`${props.url}`, data);
 
   notify({
-    message: t('item_update_success', 1),
+    message: t('item_update_success'),
     color: 'success',
+    position: 'bottom-right',
+    offsetY: 30
   })
+
+  emit('saved', data);
 }
 
-function startTimer() {
-  if (timeStore.intervalTimer) return;
+function startTimer(time?: Time) {
+  if (timeStore.intervalTimer) {
+    timeStore.stopTimer();
+  };
+
+  if (time) {
+    timerForm.value.formData = {
+      description: time.description
+    }
+  }
 
   timeStore.startTimer();
   isTimerStart.value = true;
+  isManual.value = false;
 }
 
 function endTimer() {
