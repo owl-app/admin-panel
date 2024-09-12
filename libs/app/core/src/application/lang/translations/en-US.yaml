@@ -4,6 +4,7 @@ users: Users
 roles: Roles
 access_control: Access control
 permissions: Permissions
+time_tracker: Time tracker
 logout: Logout
 select_option: Select an option
 auth_module: Auth module

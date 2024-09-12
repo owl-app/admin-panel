@@ -3,6 +3,7 @@ export enum AvalilableCollections {
   CLIENT = 'Client',
   ROLE = 'Role',
   PERMISSION = 'Permission',
+  TIME = 'Time',
 }
 
 export enum CrudActions {
@@ -30,4 +31,5 @@ export enum AvalilableRouteCollections {
   CLIENT = 'Client',
   ROLE = 'Role',
   PERMISSION = 'Permission',
+  TIME = 'Time',
 }

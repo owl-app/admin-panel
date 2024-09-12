@@ -53,7 +53,7 @@ export class TimeCrudController {
     type: ApiErrorResponse
   })
   @Get(':id')
-  @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.READ)
+  @RoutePermissions(AvalilableCollections.TIME, CrudActions.READ)
   findOne(@Param('id') id: string): Promise<TimeResponse> {
     return this.service.getById(id, { relations: [{ name: 'users', query: {}}]});
   }
@@ -69,7 +69,7 @@ export class TimeCrudController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Post()
-  @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.CREATE)
+  @RoutePermissions(AvalilableCollections.TIME, CrudActions.CREATE)
   async create(@Body(new ValibotValidationPipe(timeValidationSchema)) createClientRequest: CreateClientRequest) {
     const createdClient = await this.service.createOne(createClientRequest);
 
@@ -92,7 +92,7 @@ export class TimeCrudController {
     })
     @HttpCode(HttpStatus.ACCEPTED)
   @Put(':id')
-  @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.UPDATE)
+  @RoutePermissions(AvalilableCollections.TIME, CrudActions.UPDATE)
   async update(
     @Param('id', UUIDValidationPipe) id: string,
     @Body(new ValibotValidationPipe(timeValidationSchema)) updateClientDto: UpdateClientDto,
@@ -113,7 +113,7 @@ export class TimeCrudController {
     })
     @HttpCode(HttpStatus.ACCEPTED)
   @Delete(':id')
-  @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.DELETE)
+  @RoutePermissions(AvalilableCollections.TIME, CrudActions.DELETE)
   async remove(@Param('id') id: string): Promise<void> {
     await this.service.deleteOne(id);
   }
@@ -130,7 +130,7 @@ export class TimeCrudController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Get()
-  @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.LIST)
+  @RoutePermissions(AvalilableCollections.TIME, CrudActions.LIST)
   async paginated(
     @Query('filters') filters: FilterClientDto,
     @Query() pagination: PaginatedQuery

@@ -3,7 +3,7 @@
     <owl-form
       ref="timerForm"
       :collection="url" 
-      class-form="flex bg-white p-3"
+      class-form="flex space-x-4 items-center bg-white p-3"
       :default-value="defaultValue"
       :clear-form-after-save="false"
       @saved="afterSave"
@@ -28,68 +28,63 @@
           </div>
           <va-divider vertical />
         </div>
-        
-        <div class="flex-1 pl-0 pr-4">
-          <div class="flex space-x-4">
-            <va-input
-              label=""
-              placeholder="What are you working on ?"
-              v-model="data.ref.description"
-              name="description"
-              background="#fff"
-              :error="!!validation['description']"
-              @change="() => savedAfterChange(data.ref)"
-            />
-            <div @focusout="() => changeTime(data)" v-if="isManual">
-              <va-time-input 
-                class="w-24"
-                v-model="data.ref.timeIntervalStart"
-                manual-input
-                :parse="(value: string) => parseInputTime(value, data.ref.timeIntervalStart)"
-              />
-            </div>
-            <div @focusout="() => changeTime(data)" v-if="isManual">
-              <va-badge 
-                overlap
-                :text="diffDays(data.ref.timeIntervalStart, data.ref.timeIntervalEnd)"
-              >
-                <va-time-input
-                  class="w-24"
-                  v-model="data.ref.timeIntervalEnd"
-                  manual-input
-                  :parse="(value: string) => parseInputTime(value, data.ref.timeIntervalEnd)"
-                />
-              </va-badge>
-            </div>
-            <va-date-input
-              class="w-36"
-              inputClass="text-center font-bold input-time"
-              v-model="date"
-              :format="(date: Date) => (DateTime.fromJSDate(new Date(date))).toFormat('dd-MM-yyyy')"
-              firstWeekday="Monday"
-              @update:modelValue="(value: string) => changeDate(value, data)"
-              v-if="isManual"
-            />
-            <va-divider vertical />
-            <va-input
-              class="w-28"
-              inputClass="text-center font-bold input-time"
-              v-model="timeSum"
-              ref="inputTimeSum"
-              placeholder="00:00:00"
-              @blur="() => changeTimeSum(data)"
-              v-if="isManual"
-            />
-            <va-input
-              class="w-28"
-              inputClass="text-center font-bold input-time"
-              v-model="timeStore.timer"
-              readonly
-              placeholder="00:00:00"
-               v-if="!isManual"
-            />
-          </div>
+        <va-input
+          label=""
+          placeholder="What are you working on ?"
+          v-model="data.ref.description"
+          name="description"
+          background="#fff"
+          :error="!!validation['description']"
+          @change="() => { if (isSavedAfterChange) savedAfterChange(data.ref) }"
+        />
+        <div @focusout="() => changeTime(data)" v-if="isManual">
+          <va-time-input 
+            class="w-24"
+            v-model="data.ref.timeIntervalStart"
+            manual-input
+            :parse="(value: string) => parseInputTime(value, data.ref.timeIntervalStart)"
+          />
         </div>
+        <div @focusout="() => changeTime(data)" v-if="isManual">
+          <va-badge 
+            overlap
+            :text="diffDays(data.ref.timeIntervalStart, data.ref.timeIntervalEnd)"
+          >
+            <va-time-input
+              class="w-24"
+              v-model="data.ref.timeIntervalEnd"
+              manual-input
+              :parse="(value: string) => parseInputTime(value, data.ref.timeIntervalEnd)"
+            />
+          </va-badge>
+        </div>
+        <va-date-input
+          class="w-36"
+          inputClass="text-center font-bold input-time"
+          v-model="date"
+          :format="(date: Date) => (DateTime.fromJSDate(new Date(date))).toFormat('dd-MM-yyyy')"
+          firstWeekday="Monday"
+          @update:modelValue="(value: string) => changeDate(value, data)"
+          v-if="isManual"
+        />
+        <va-divider vertical class="self-stretch" />
+        <va-input
+          class="w-28"
+          inputClass="text-center font-bold input-time"
+          v-model="timeSum"
+          ref="inputTimeSum"
+          placeholder="00:00:00"
+          @blur="() => changeTimeSum(data)"
+          v-if="isManual"
+        />
+        <va-input
+          class="w-28"
+          inputClass="text-center font-bold input-time"
+          v-model="timeStore.timer"
+          readonly
+          placeholder="00:00:00"
+            v-if="!isManual"
+        />
       </template>
 
       <template #actions="{ save }">
@@ -292,13 +287,6 @@ function afterSave(savedData: Time, dataForm: Ref) {
   date.value = timeIntervalEnd
     .set({ hours: 0, minute: 0, second: 0, millisecond: 0.00 })
     .toJSDate();
-
-  notify({
-    message: t('item_create_success'),
-    color: 'success',
-    position: 'bottom-right',
-    offsetY: 30
-  })
 
   emit('saved', savedData);
 }

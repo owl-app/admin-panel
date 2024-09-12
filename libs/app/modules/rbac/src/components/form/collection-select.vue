@@ -23,6 +23,7 @@ const options = [
     AvalilableCollections.USER,
     AvalilableCollections.ROLE,
     AvalilableCollections.PERMISSION,
+    AvalilableCollections.TIME,
 ];
 </script>
 

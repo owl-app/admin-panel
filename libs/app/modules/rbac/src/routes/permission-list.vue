@@ -20,6 +20,7 @@ const showDeleteModal = ref(false);
 const editPermission = ref<Permission | null>();
 const deletePermission = ref<Permission>();
 const gridRef = ref<InstanceType<typeof Grid>>();
+const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 
 const headerBar = {
   title: t('permissions'),
@@ -108,10 +109,7 @@ const columns = defineVaDataTableColumns([
             icon="mso-delete"
             color="danger"
             aria-label="Delete project"
-            @click="
-              showDeleteModal = true;
-              deletePermission = permission as Permission;
-            "
+            @click="deleteModal?.show(permission?.name)"
           />
         </div>
       </template>
@@ -121,7 +119,9 @@ const columns = defineVaDataTableColumns([
       :permission="editPermission"
       @saved="gridRef?.reloadGrid()"
     />
+    {{ deletePermission }}
     <delete-modal 
+      ref="deleteModal"
       collection="rbac/permissions"
       v-model="showDeleteModal"
       :primaryKey="deletePermission?.name"
