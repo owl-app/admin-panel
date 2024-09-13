@@ -163,6 +163,7 @@ const { init: notify } = useToast();
 const { useTimeStore } = useStores();
 const timeStore = useTimeStore();
 
+let hasChangedScope = false;
 const now = DateTime.now().set({ second: 0, millisecond: 0.00 });
 const defaultValue: TimeFormData = parseDefaultValue(props.defaultValue);
 
@@ -179,7 +180,6 @@ let oldData: TimeFormData = {
   date: new Date(defaultValue.date),
   timeSum: defaultValue.timeSum
 };
-let hasChangedScope = false;
 
 useInputMask(createRegexMask(/(\d){2}:(\d){2}:(\d){2}/), inputTimeSum)
 
@@ -195,6 +195,14 @@ function parseDefaultValue(value?: Time): TimeFormData {
 
   const timeIntervalStart = DateTime.fromJSDate(new Date(value.timeIntervalStart));
   const timeIntervalEnd = DateTime.fromJSDate(new Date(value.timeIntervalEnd));
+  const timeSum = timeIntervalEnd
+      .diff(timeIntervalStart, ["hours", "minutes", "seconds"])
+      .toFormat('hh:mm:ss');
+  const [hours = 0] = parseTime(timeSum);
+
+  if (timeIntervalEnd.startOf("day").diff(timeIntervalStart.startOf("day"), "days").days > Math.floor(hours / 24)) {
+    hasChangedScope = true;
+  }
 
   return {
     description: value.description,
@@ -204,9 +212,7 @@ function parseDefaultValue(value?: Time): TimeFormData {
       .fromJSDate(new Date(value.timeIntervalStart))
       .set({ hours: 0, minute: 0, second: 0, millisecond: 0.00 })
       .toJSDate(),
-    timeSum: timeIntervalEnd
-      .diff(timeIntervalStart, ["hours", "minutes", "seconds"])
-      .toFormat('hh:mm:ss')
+    timeSum: timeSum
   }
 }
 
