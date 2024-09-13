@@ -102,6 +102,7 @@ function groupByWeek(items: Time[]) {
     <create-inline
       ref="timerCreateInline"
       url="times"
+      key="main-create"
       manual-name-storage="time-is-manual"
       :is-manual="true"
       :is-manual-only="false"
@@ -126,38 +127,44 @@ function groupByWeek(items: Time[]) {
         <va-inner-loading :loading="loading">
           <div v-for="(groupWeek, startWeek) in groupByWeek(items as Time[])" :key="startWeek">
             <va-chip class="mb-4">{{ startWeek }}</va-chip>
-            <va-card v-for="(groupDay, startDay) in groupWeek" class="card-time mb-4" square outlined bordered
-              :key="startDay">
+            <va-card 
+              v-for="(groupDay, startDay) in groupWeek"
+              :key="startDay"
+              class="card-time mb-4"
+              square
+              outlined
+              bordered
+              
+            >
               <va-card-title>{{ startDay }}</va-card-title>
               <va-card-content>
                 <create-inline
-                  v-for="(time, index) in groupDay"
+                  v-for="(time) in groupDay"
                   :url="`times/${time.id}`"
                   :key="time.id"
-                  :index="index"
                   :default-value="time"
                   :is-saved-after-change="true"
                   @saved="gridRef?.reloadGrid"
                 >
-                <template #actions="{ save, isManual, startTimer, isTimerStart }">
-                  <va-divider vertical />
-                  <va-icon
-                    name="play_arrow"
-                    :size="44"
-                    class="material-symbols-outlined"
-                    @click="() => timerCreateInline?.startTimer(time)"
-                  />
-                  <va-divider vertical />
-                  <div class="flex items-center w-24">
-                  <va-button
-                    color="danger"
-                    icon="delete"
-                    aria-label="Delete project"
-                    @click="deleteModal?.show(time?.id)"
-                    size="small"
-                  />
-                </div>
-                </template>
+                  <template #actions="{ save, isManual, startTimer, isTimerStart }">
+                    <va-divider vertical />
+                    <va-icon
+                      name="play_arrow"
+                      :size="44"
+                      class="material-symbols-outlined"
+                      @click="() => timerCreateInline?.startTimer(time)"
+                    />
+                    <va-divider vertical />
+                    <div class="flex items-center w-24">
+                      <va-button
+                        color="danger"
+                        icon="delete"
+                        aria-label="Delete project"
+                        @click="deleteModal?.show(time?.id)"
+                        size="small"
+                      />
+                    </div>
+                  </template>
                 </create-inline>
               </va-card-content>
             </va-card>

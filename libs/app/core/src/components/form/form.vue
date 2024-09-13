@@ -54,6 +54,7 @@ const isFormHasUnsavedChanges = computed(() => {
 
 let immediateValidation = false;
 let textDebounce: DebouncedFunc<(...args: any[]) => any>;
+let vNodeKeys: string[] = [];
 
 defineExpose({
   isFormHasUnsavedChanges,
@@ -113,18 +114,6 @@ const getUnSlottedVNodes = (nodes: VNode[]) => {
   }
 
   return nodes
-}
-
-const getVNodeKey = (node: VNode): string => {
-  if (typeof node.type === 'string') {
-    return node.type
-  }
-
-  if (typeof node.type === 'object' && 'name' in node.type && typeof node.type.name === 'string') {
-    return node.type.name
-  }
-
-  return String(node.key)
 }
 
 function validate(showAllErrors = false): boolean {
@@ -208,7 +197,6 @@ const saveForm = async () => {
 function clearServerValidationErrors() {
   fields.value.map((field) => {
     Object.keys(validationServerErrors.value).forEach((key) => {
-      console.log(key, field.name, field.isDirty)
       if (field.name === key && field.isDirty) {
         delete validationErrors.value[key];
       }
@@ -243,7 +231,7 @@ const makeSlotRef = () => {
       ref="owl-form"
       :class="classForm"
     >
-      <template v-for="child in getUnSlottedVNodes($slots.fields({data: makeSlotRef(), validation: validationErrors }))" :key="getVNodeKey(child)">
+      <template v-for="child in getUnSlottedVNodes($slots.fields({data: makeSlotRef(), validation: validationErrors }))" :key="child.key">
         <component :is="child" @focusout="$event.stopPropagation(); validate();" />
       </template>
 
