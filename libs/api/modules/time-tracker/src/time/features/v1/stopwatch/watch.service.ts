@@ -1,10 +1,15 @@
+import { NotImplementedException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { IsNull } from 'typeorm';
 
 import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
 import { BaseRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/base.repository';
+import { InjectableRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/injectable.repository'
 
 import { TimeResponse } from '../../../dto/time.response';
 import { TimeEntity } from '../../../../domain/entity/time.entity';
+import { mapperTime } from '../../../mapping';
+
 
 export class Watch {
 
@@ -19,24 +24,28 @@ export class Watch {
 export class WatchHandler implements ICommandHandler<Watch> {
   constructor(
     @InjectRepository(TimeEntity)
-    private readonly userRepository: BaseRepository<TimeEntity>
-  ) {}
+    private readonly timeRepository: InjectableRepository<TimeEntity>
+  ) {
+    console.log(timeRepository)
+  }
 
   async execute(command: Watch): Promise<TimeResponse> {
-    // await loginValidation.validateAsync(command, { abortEarly: false });
+    const existingTime = await this.timeRepository.findOne({
+      where: { 
+        timeIntervalEnd: IsNull()
+      }
+    });
 
-    // const user = await this.userRepository.getUserByEmail(command.email);
+    if (existingTime) {
+      throw new NotImplementedException('Another time is running');
+    }
 
-    // if (!user || !await this.jwtTokenService.validateToken(command.password, user.passwordHash)
-    // ) {
-    //   throw new InvalidAuthenticationError();
-    // }
+    const newTime = new TimeEntity();
+    newTime.description = command.description;
+    newTime.timeIntervalStart = new Date();
 
-    // await this.userRepository.updateLastLogin(user.email);
+    const createTime = await this.timeRepository.save(newTime);
 
-    // const accessToken = await this.jwtTokenService.getJwtToken(command.email);
-    // const refreshToken = await this.jwtTokenService.getJwtRefreshToken(command.email);
-
-    return new TimeResponse()
+    return mapperTime.map<TimeEntity, TimeResponse>(createTime, new TimeResponse());
   }
 }

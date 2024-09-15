@@ -90,7 +90,7 @@
       </template>
 
       <template #actions="{ save }">
-        <div class="flex justify-end flex-col-reverse sm:flex-row w-24">
+        <div class="flex justify-end flex-col-reverse sm:flex-row min-w-24">
           <slot
             name="actions"
             :save="save"
@@ -186,6 +186,7 @@ useInputMask(createRegexMask(/(\d){2}:(\d){2}:(\d){2}/), inputTimeSum)
 function parseDefaultValue(value?: Time): TimeFormData {
   if(!value) {
     return {
+      description: '',
       timeIntervalStart: now.toJSDate(),
       timeIntervalEnd: now.toJSDate(),
       date: now.set({ hours: 0, minute: 0, second: 0, millisecond: 0.00 }).toJSDate(),
@@ -200,9 +201,7 @@ function parseDefaultValue(value?: Time): TimeFormData {
       .toFormat('hh:mm:ss');
   const [hours = 0] = parseTime(timeSum);
 
-  if (timeIntervalEnd.startOf("day").diff(timeIntervalStart.startOf("day"), "days").days > Math.floor(hours / 24)) {
-    hasChangedScope = true;
-  }
+  setChangedScope(timeIntervalStart, timeIntervalEnd, hours);
 
   return {
     description: value.description,
@@ -240,11 +239,7 @@ function changeTimeSum(data: { ref: TimeFormData }) {
 
   oldData.timeIntervalEnd = data.ref.timeIntervalEnd = dateTo.toJSDate();
 
-  if (dateTo.startOf("day").diff(dateFrom.startOf("day"), "days").days > Math.floor(hours / 24)) {
-    hasChangedScope = true;
-  } else {
-    hasChangedScope = false;
-  }
+  setChangedScope(dateFrom, dateTo, hours);
 
   if (props.isSavedAfterChange && oldData.timeSum !== data.ref.timeSum) {
     savedAfterChange(data.ref)
@@ -348,7 +343,7 @@ async function savedAfterChange(data: any) {
   emit('saved', data);
 }
 
-function startTimer(time?: Time) {
+async function startTimer(time?: Time) {
   if (timeStore.intervalTimer) {
     timeStore.stopTimer();
   };
@@ -359,7 +354,14 @@ function startTimer(time?: Time) {
     }
   }
 
-  timeStore.startTimer();
+  if (time) {
+    await timeStore.continueTimer(time.id);
+  } else {
+    await timeStore.startTimer(
+      timerForm.value.formData.description
+    );
+  }
+
   isTimerStart.value = true;
   isManual.value = false;
 }
@@ -378,6 +380,14 @@ function parseInputTime(value: string, date: Date): Date {
 
 function parseTime(text: string) {
   return text.match(/[0-9]{1,2}/g)?.map(Number) || [];
+}
+
+function setChangedScope(dateFrom: DateTime, dateTo: DateTime, hours: number) {
+  if (dateTo.startOf("day").diff(dateFrom.startOf("day"), "days").days > Math.floor(hours / 24)) {
+    hasChangedScope = true;
+  } else {
+    hasChangedScope = false;
+  }
 }
 </script>
 

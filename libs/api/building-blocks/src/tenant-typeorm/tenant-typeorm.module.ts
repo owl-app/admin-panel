@@ -13,6 +13,8 @@ import { CompanySetter } from './setters/company.setter';
 import { TenantRelationFilter } from './filters/tenant-relation.filter';
 import { FilterQuery } from '../registry/interfaces/filter-query';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { TenantRelationSetter } from './setters/tenant-relation.setter';
+import { EntitySetter } from '../registry/interfaces/entity-setter';
 
 @Module({})
 export class TenantTypeOrmModule {
@@ -42,10 +44,11 @@ export class TenantTypeOrmModule {
             tenant: TenantRelationFilter<TenantAware>
           }
         }),
-        RegistryServiceModule.forFeature({
+        RegistryServiceModule.forFeature<EntitySetter<ObjectLiteral>>({
           name: SETTER_REGISTRY_TENANT,
           services: {
-            company: CompanySetter<CompanyAware>
+            company: CompanySetter<CompanyAware>,
+            tenant: TenantRelationSetter<TenantAware>
           }
         }),
         EventEmitter2

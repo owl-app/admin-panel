@@ -26,11 +26,15 @@ export const useTimeStore = defineStore({
     async dehydrate() {
       this.$reset();
     },
-    async stopWatch() {
+    async startTimer(description: string) {
       this.loading = true;
 
       try {
-        const { data } = await api.post('/auth/login');
+        const { data } = await api.post('/times/stopwatch', {
+          description
+        });
+
+        this.startInteval();
 
       } catch (error: any) {
         throw error.response?.data?.message ?? error.message;
@@ -38,7 +42,21 @@ export const useTimeStore = defineStore({
         this.loading = false;
       }
     },
-    async startTimer() {
+
+    async continueTimer(id: string) {
+      try {
+        const { data } = await api.post(`/times/stopwatch/${id}`);
+
+        this.startInteval();
+
+      } catch (error: any) {
+        throw error.response?.data?.message ?? error.message;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    startInteval() {
       const startTime = DateTime.now();
 
       this.timer = '00:00:00';
@@ -51,6 +69,7 @@ export const useTimeStore = defineStore({
           .toFormat('hh:mm:ss');
       }, 1000);
     },
+
     async stopTimer() {
       if(this.intervalTimer) {
         clearInterval(this.intervalTimer);

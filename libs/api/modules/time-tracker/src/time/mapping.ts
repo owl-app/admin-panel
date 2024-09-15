@@ -1,28 +1,28 @@
 import { TypeMapper } from 'ts-mapper'
 
-import { ClientResponse } from './dto/client.response'
-import { ClientEntity } from '../domain/entity/time.entity';
+import { TimeEntity } from '../domain/entity/time.entity';
+import { TimeResponse } from './dto/time.response';
 
 
-export class MapperClient extends TypeMapper {
+export class MapperTime extends TypeMapper {
   constructor() {
     super();
     this.config();
   }
 
   private config(): void {
-    this.createMap<ClientEntity, ClientResponse>()
+    this.createMap<TimeEntity, TimeResponse>()
       .map(
         (src) => src.id,
         (dest) => dest.id
       )
       .map(
-        (src) => src.name,
-        (dest) => dest.name
+        (src) => src.description,
+        (dest) => dest.description
       )
   }
 }
 
-const mapperClient = new MapperClient();
+const mapperTime = new MapperTime();
 
-export { mapperClient };
+export { mapperTime };

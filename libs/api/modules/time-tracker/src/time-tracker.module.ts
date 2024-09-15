@@ -4,7 +4,9 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { CqrsModule } from '@nestjs/cqrs'
 
 import { CrudTenantTypeOrmQueryModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/crud-tenant-typeorm-query.module'
+import { TenantTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant-typeorm.module'
 import { BaseRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/base.repository'
+import { InjectableRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/injectable.repository'
 
 import { TimeEntitySchema } from './database/entity-schema/time.entity-schema'
 
@@ -18,6 +20,14 @@ import { ContinueWatchHandler } from './time/features/v1/stopwatch/continue-watc
 @Module({
   imports: [
     CqrsModule,
+    TenantTypeOrmModule.forFeature({
+      entities: [
+        {
+          entity: TimeEntitySchema,
+          repository: InjectableRepository,
+        }
+      ]
+    }),
     CrudTenantTypeOrmQueryModule.forFeature({
       entities: [
         {

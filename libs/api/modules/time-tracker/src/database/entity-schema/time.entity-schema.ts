@@ -22,12 +22,11 @@ export const TimeEntitySchema = new EntitySchema<TimeEntity>({
     timeIntervalStart: {
       name: "time_interval_start",
       type: "datetime",
-      createDate: true,
     } as EntitySchemaColumnOptions,
     timeIntervalEnd: {
       name: "time_interval_end",
       type: "datetime",
-      createDate: true,
+      nullable: true,
     } as EntitySchemaColumnOptions,
     ...TimestampableSchemaPart
   },

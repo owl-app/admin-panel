@@ -26,6 +26,11 @@ export enum RoleActions {
   ASSIGNED_PERMISSIONS = 'ASSIGNED_PERMISSIONS',
 }
 
+export enum TimeActions {
+  START_WATCH = 'START_WATCH',
+  CONTINUE_WATCH = 'CONTINUE_WATCH',
+}
+
 export enum AvalilableRouteCollections {
   USER = 'User',
   CLIENT = 'Client',
