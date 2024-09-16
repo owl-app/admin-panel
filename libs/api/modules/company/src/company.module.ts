@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
 import { CrudTenantTypeOrmQueryModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/crud-tenant-typeorm-query.module'
-import { InjectableRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/injectable.repository'
+import { BaseRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/base.repository'
 
 import { CompanyEntitySchema } from './database/entity-schema/company.entity-schema'
 
@@ -18,7 +18,7 @@ import { ListFilterBuilder } from './company/features/v1/crud/list-filter.builde
       entities: [
         {
           entity: CompanyEntitySchema,
-          repository: InjectableRepository,
+          repository: BaseRepository,
           dataProvider: {
             filterBuilder: ListFilterBuilder,
           },

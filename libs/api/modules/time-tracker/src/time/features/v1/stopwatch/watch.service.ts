@@ -25,9 +25,7 @@ export class WatchHandler implements ICommandHandler<Watch> {
   constructor(
     @InjectRepository(TimeEntity)
     private readonly timeRepository: InjectableRepository<TimeEntity>
-  ) {
-    console.log(timeRepository)
-  }
+  ) { }
 
   async execute(command: Watch): Promise<TimeResponse> {
     const existingTime = await this.timeRepository.findOne({

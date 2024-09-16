@@ -3,6 +3,7 @@ import {
   DeepPartial,
   EntityManager,
   EntityTarget,
+  ObjectLiteral,
   QueryRunner,
   SaveOptions,
   SelectQueryBuilder,
@@ -15,6 +16,32 @@ import { EntitySetter } from '../../registry/interfaces/entity-setter';
 
 import { BaseRepository } from './base.repository';
 import BaseEntity from '../entity/base.entity';
+import { cloneDeep } from 'lodash';
+
+function extendEntityManager<Entity>(manager: EntityManager, filters?: Registry<FilterQuery<Entity>>) {
+  return (
+    entityClass?: EntityTarget<Entity>,
+    alias?: string,
+    queryRunner?: QueryRunner,
+  ): SelectQueryBuilder<Entity> => {
+    const qb = manager.createQueryBuilder<Entity>(entityClass, alias, queryRunner);
+
+    if (alias) {
+      const allFilters = filters?.all();
+
+      if (allFilters) {
+        Object.entries(allFilters).forEach((filter) => {
+          if (filter[1].supports(manager.connection.getMetadata(entityClass))) {
+            filter[1].execute(qb);
+          } 
+          
+        })
+      }
+    }
+
+    return qb;
+  }
+}
 
 export class InjectableRepository<Entity extends BaseEntity> extends BaseRepository<Entity> {
 
@@ -26,27 +53,22 @@ export class InjectableRepository<Entity extends BaseEntity> extends BaseReposit
     readonly setters?: Registry<EntitySetter<Entity>>,
     readonly eventEmitter?: EventEmitter2
   ) {
-    super(target, manager, queryRunner, eventEmitter);
-  }
-
-  override createQueryBuilder(
-    alias?: string,
-    queryRunner?: QueryRunner
-  ): SelectQueryBuilder<Entity> {
-    const qb = super.createQueryBuilder(alias, queryRunner);
-
-    const filters = this.filters?.all();
-
-    if (filters) {
-      Object.entries(filters).forEach((filter) => {
-        if (filter[1].supports(this.metadata)) {
-          filter[1].execute(qb);
-        } 
-        
-      })
-    }
-
-    return qb;
+    super(
+      target,
+      // replace createQueryBuilder with extended version
+      Object.assign(
+        cloneDeep(manager),
+        manager,
+        {
+          createQueryBuilder: extendEntityManager<Entity>(
+            Object.assign({}, { ...manager, createQueryBuilder: manager.createQueryBuilder }) as EntityManager,
+            filters
+          )
+        }
+      ),
+      queryRunner,
+      eventEmitter
+    );
   }
 
   /**

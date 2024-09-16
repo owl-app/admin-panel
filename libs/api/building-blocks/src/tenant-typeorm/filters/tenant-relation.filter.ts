@@ -20,6 +20,7 @@ export class TenantRelationFilter<Entity extends TenantAware> implements FilterQ
   {
     return !!metadata
       .relations.find(r => r.type === TENANT_ENTITY && r.propertyName === 'tenant') &&
+      RequestContextService.getCurrentUser() &&
       RequestContextService.getCurrentUser().roles.includes(RolesEnum.ROLE_ADMIN_COMPANY);
   }
 
