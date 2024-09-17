@@ -4,9 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { DataSource } from 'typeorm'
 
-import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
-import { CrudTypeOrmQueryModule } from '@owl-app/lib-api-bulding-blocks/crud/crud-typeorm-query.module'
-import { BaseRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/base.repository'
+import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
+import { CrudTypeOrmQueryModule } from '@owl-app/lib-api-core/crud/crud-typeorm-query.module'
+import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository'
 
 import { CrudController } from './features/v1/crud/crud.http.controller'
 import { AssignController } from './features/v1/assign/assign.http.controller'

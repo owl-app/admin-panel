@@ -2,9 +2,8 @@ import { NotImplementedException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { IsNull } from 'typeorm';
 
-import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
-import { BaseRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/base.repository';
-import { InjectableRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/injectable.repository'
+import { InjectRepository } from '@owl-app/lib-api-core/typeorm/common/typeorm.decorators';
+import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository'
 
 import { TimeResponse } from '../../../dto/time.response';
 import { TimeEntity } from '../../../../domain/entity/time.entity';
@@ -35,7 +34,7 @@ export class WatchHandler implements ICommandHandler<Watch> {
     });
 
     if (existingTime) {
-      throw new NotImplementedException('Another time is running');
+      throw new NotImplementedException('Another timer is running');
     }
 
     const newTime = new TimeEntity();

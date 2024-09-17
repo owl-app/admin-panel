@@ -17,12 +17,12 @@ import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResp
 
 import { AvalilableCollections, CrudActions, permissionValidationSchema } from '@owl-app/lib-contracts';
 import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core';
-import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination';
-import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
-import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator';
-import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission'
-import { ValibotValidationPipe } from '@owl-app/lib-api-bulding-blocks/validation/valibot.pipe';
-import { ApiErrorValidationResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error-validation.response';
+import { Paginated } from '@owl-app/lib-api-core/pagination/pagination';
+import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider'
+import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider/query/decorators/inject-paginated-query.decorator';
+import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission'
+import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
+import { ApiErrorValidationResponse } from '@owl-app/lib-api-core/api/api-error-validation.response';
 
 import { PermissionEntity } from '../../../../domain/entity/permission.entity';
 
@@ -40,8 +40,10 @@ import { PermissionPaginatedQuery } from './dto/permission-paginated.query';
 export class RbacPermissionCrudController {
 
   constructor(
-    @InjectAssemblerQueryService(PermissionAssembler) readonly service: AssemblerQueryService<PermissionResponse, PermissionEntity>,
-    @InjectPaginatedQueryService(PermissionEntity) readonly paginatedService: DataProvider<Paginated<PermissionResponse>, FilterPermissionDto>
+    @InjectAssemblerQueryService(PermissionAssembler)
+    readonly service: AssemblerQueryService<PermissionResponse, PermissionEntity>,
+    @InjectPaginatedQueryService(PermissionEntity)
+    readonly paginatedService: DataProvider<Paginated<PermissionResponse>, FilterPermissionDto, PermissionEntity>
   ) {}
 
   @ApiOperation({ summary: 'Find permission by id' })
@@ -145,7 +147,6 @@ export class RbacPermissionCrudController {
     @Query('filters') filters: FilterPermissionDto,
     @Query(new ValidationPipe({ transform: true })) pagination: PermissionPaginatedQuery,
   ): Promise<PermissionPaginatedResponseDto> {
-    console.log(pagination)
     const paginated = await this.paginatedService.getData(filters, (pagination.pageable === 0 ? null : pagination));
 
     return new PermissionPaginatedResponseDto(paginated);

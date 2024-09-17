@@ -15,15 +15,15 @@ import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResp
 
 import { AvalilableCollections, CrudActions } from '@owl-app/lib-contracts'
 import { InjectAssemblerQueryService, QueryService } from '@owl-app/crud-core'
-import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
-import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
-import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
-import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
-import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
-import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
-import { ApiFilterQuery } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/api-filter-query.decorator'
-import { FilterStringApiProperty } from '@owl-app/lib-api-bulding-blocks/data-provider/query/filters/string'
-import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission'
+import { Paginated } from '@owl-app/lib-api-core/pagination/pagination'
+import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider'
+import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query'
+import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe'
+import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response'
+import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider/query/decorators/inject-paginated-query.decorator'
+import { ApiFilterQuery } from '@owl-app/lib-api-core/data-provider/query/decorators/api-filter-query.decorator'
+import { FilterStringApiProperty } from '@owl-app/lib-api-core/data-provider/query/filters/string'
+import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission'
 
 import { UserEntity } from '../../../../domain/entity/user.entity'
 import { UserDto } from '../../../dto/user.dto'
@@ -38,8 +38,10 @@ import { UserAssembler } from './user.assembler'
 @Injectable()
 export class UserCrudController {
   constructor(
-    @InjectAssemblerQueryService(UserAssembler) readonly service: QueryService<UserEntity>,
-    @InjectPaginatedQueryService(UserEntity) readonly paginatedService: DataProvider<Paginated<UserEntity>, FilterUserDto>
+    @InjectAssemblerQueryService(UserAssembler)
+    readonly service: QueryService<UserEntity>,
+    @InjectPaginatedQueryService(UserEntity)
+    readonly paginatedService: DataProvider<Paginated<UserEntity>, FilterUserDto, UserEntity>
   ) {}
 
   @ApiOperation({ summary: 'Find user by id' })

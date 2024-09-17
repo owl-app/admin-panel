@@ -1,6 +1,6 @@
 import { EntitySchema } from 'typeorm';
 
-import { ROLE_SETTING_ENTITY, ROLE_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
+import { ROLE_SETTING_ENTITY, ROLE_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
 
 import { RoleSettingEntity } from '../../domain/entity/role-setting.entity';
 

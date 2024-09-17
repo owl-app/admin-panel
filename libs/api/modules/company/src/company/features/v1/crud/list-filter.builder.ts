@@ -1,7 +1,7 @@
 import { Client } from '@owl-app/lib-contracts';
 import { Filter } from '@owl-app/crud-core';
 import { isEmpty } from '@owl-app/utils';
-import { FilterBuilder } from '@owl-app/lib-api-bulding-blocks/data-provider/filter.builder';
+import { FilterBuilder } from '@owl-app/lib-api-core/data-provider/filter.builder';
 
 import { FilterCompanyDto } from './dto';
 

@@ -1,14 +1,13 @@
 <template>
   <div class="app-navbar-actions">
-    <div>
-      <VaButton
-      icon="schedule"
-      color="danger"
-      class="mr-4 w-36"
-      v-if="timeStore.intervalTimer"
-    >
-      {{ timeStore.timer }}
-    </VaButton>
+    <div v-if="timeStore.active">
+      <VaInnerLoading size="1.4rem" :loading="timeStore.loading" color="#fff">
+        <VaButton :visible="false" icon="schedule" color="danger" class="mr-4 w-36">
+          <span :class="{ invisible: timeStore.loading }"> 
+            {{ timeStore.timer }}
+          </span>
+        </VaButton>
+      </VaInnerLoading>
     </div>
     <NotificationDropdown class="app-navbar-actions__item" />
     <ProfileDropdown class="app-navbar-actions__item app-navbar-actions__item--profile mr-1" />

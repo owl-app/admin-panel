@@ -12,8 +12,8 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 
 import { AuthUserData, AvalilableCollections, UserActions } from '@owl-app/lib-contracts';
 
-import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response';
-import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission';
+import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response';
+import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
 
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 

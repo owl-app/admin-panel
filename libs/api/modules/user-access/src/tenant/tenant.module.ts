@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common'
 
 import { WinstonLoggerModule } from '@owl-app/winston-logger-nestjs'
 
-import { TenantTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/tenant-typeorm.module'
-import { InjectableRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/injectable.repository'
+import { TenantTypeOrmModule } from '@owl-app/lib-api-core/tenant-typeorm/tenant-typeorm.module'
+import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository'
 
 import { TenantEntitySchema } from '../database/entity-schema/tenant.entity-schema'
 

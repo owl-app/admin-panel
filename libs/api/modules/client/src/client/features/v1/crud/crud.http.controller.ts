@@ -15,15 +15,15 @@ import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResp
 
 import { AvalilableCollections, CrudActions, clientValidationSchema } from '@owl-app/lib-contracts'
 
-import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
+import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query'
 import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core'
-import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
-import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
-import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
-import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
-import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
-import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission';
-import { ValibotValidationPipe } from '@owl-app/lib-api-bulding-blocks/validation/valibot.pipe';
+import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe'
+import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response'
+import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider'
+import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider/query/decorators/inject-paginated-query.decorator'
+import { Paginated } from '@owl-app/lib-api-core/pagination/pagination'
+import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
+import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
 
 import { ClientEntity } from '../../../../domain/entity/client.entity'
 import { ClientResponse } from '../../../dto/client.response'
@@ -37,8 +37,10 @@ import { ClientAssembler } from './client.assembler'
 @Injectable()
 export class ClientCrudController {
   constructor(
-    @InjectAssemblerQueryService(ClientAssembler) readonly service: AssemblerQueryService<ClientResponse, ClientEntity>,
-    @InjectPaginatedQueryService(ClientEntity) readonly paginatedService: DataProvider<Paginated<ClientEntity>, FilterClientDto>
+    @InjectAssemblerQueryService(ClientAssembler)
+    readonly service: AssemblerQueryService<ClientResponse, ClientEntity>,
+    @InjectPaginatedQueryService(ClientEntity)
+    readonly paginatedService: DataProvider<Paginated<ClientEntity>, FilterClientDto, ClientEntity>
   ) {}
 
 @ApiOperation({ summary: 'Find client by id' })

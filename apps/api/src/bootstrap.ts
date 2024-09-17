@@ -9,9 +9,9 @@ import chalk from 'chalk'
 import { urlencoded, json, Request, Response, NextFunction } from 'express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config'
-import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-bulding-blocks/config'
-import { JwtAuthGuard } from '@owl-app/lib-api-bulding-blocks/passport/jwt.guard'
-import { RoutePermissionGuard } from '@owl-app/lib-api-bulding-blocks/rbac/guards/route-permission.guard'
+import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-core/config'
+import { JwtAuthGuard } from '@owl-app/lib-api-core/passport/jwt.guard'
+import { RoutePermissionGuard } from '@owl-app/lib-api-core/rbac/guards/route-permission.guard'
 import cookieParser from 'cookie-parser'
 // import { HttpExceptionsFilter } from '../http';
 // import { EntitySubscriberInterface } from 'typeorm';

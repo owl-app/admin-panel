@@ -1,9 +1,10 @@
-import { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
+import { RouteLocationNormalized } from 'vue-router';
 
 import { LIFECYCLE_EVENTS } from '../contants';
 import { defineRequestEvent } from '../defines/events';
 import { useAppStore } from '../../stores/app';
 import { useUserStore } from '../../stores/user';
+import { useTimeStore } from "../../stores/time";
 
 type GenericStore = {
   $id: string;
@@ -13,7 +14,7 @@ type GenericStore = {
   [key: string]: any;
 };
 
-export function useStores(stores = [useUserStore]): GenericStore[] {
+export function useStores(stores = [useUserStore, useTimeStore]): GenericStore[] {
   return stores.map((useStore) => useStore()) as GenericStore[];
 }
 
@@ -38,19 +39,15 @@ export default defineRequestEvent({
 
     appStore.initializing = true;
 
-    console.log('run initialize stores');
-
     try {
       const currentUser = userStore.currentUser;
 
-      if (currentUser?.role) {
-        const hydratedStores = ['userStore'];
-        await Promise.all(
-          stores
-            .filter(({ $id }) => !hydratedStores.includes($id))
-            .map((store) => store.initialize?.())
-        );
-      }
+      const hydratedStores = ['userStore'];
+      await Promise.all(
+        stores
+          .filter(({ $id }) => !hydratedStores.includes($id))
+          .map((store) => store.hydrate?.())
+      );
 
     } catch (error: any) {
       appStore.error = error;

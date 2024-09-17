@@ -1,4 +1,4 @@
-import { ExceptionBase } from '@owl-app/lib-api-bulding-blocks/exceptions/exception.base';
+import { ExceptionBase } from '@owl-app/lib-api-core/exceptions/exception.base';
 
 export class InvalidAuthenticationError extends ExceptionBase {
   static readonly message = 'Invalid login or email';

@@ -1,6 +1,6 @@
 import { Company, Tenant, Time, User } from '@owl-app/lib-contracts';
 
-import BaseEntity from '@owl-app/lib-api-bulding-blocks/database/entity/base.entity';
+import BaseEntity from '@owl-app/lib-api-core/database/entity/base.entity';
 
 import { UserRegisteredDomainEvent } from '../events/user-registered.domain-event';
 

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 
-import config from '@owl-app/lib-api-bulding-blocks/config'
-import { DatabaseModule } from '@owl-app/lib-api-bulding-blocks/database/database.module'
+import config from '@owl-app/lib-api-core/config'
+import { DatabaseModule } from '@owl-app/lib-api-core/database/database.module'
 
 import { AuthModule } from './auth/auth.module'
 import { UserModule } from './user/user.module'

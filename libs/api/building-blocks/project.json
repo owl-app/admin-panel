@@ -1,9 +1,0 @@
-{
-  "name": "@owl-app/lib-api-building-blocks",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/api/building-blocks/src",
-  "projectType": "library",
-  "tags": [],
-  "// targets": "to see all targets run: nx show project test --web",
-  "targets": {}
-}

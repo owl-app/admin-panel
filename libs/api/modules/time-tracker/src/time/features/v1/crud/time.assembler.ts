@@ -6,7 +6,7 @@ import { TimeResponse } from '../../../dto/time.response'
 
 @Assembler(TimeResponse, TimeEntity)
 export class TimeAssembler extends ClassTransformerAssembler<
-TimeResponse,
+  TimeResponse,
   TimeEntity
 > {
 

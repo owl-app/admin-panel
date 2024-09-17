@@ -3,9 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { User } from '@owl-app/lib-contracts';
-import { type IJwtConfig } from '@owl-app/lib-api-bulding-blocks/config/jwt';
-import { IJwtTokenService, IJwtTokenPayload, Token } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
-import { getMilliseconds } from '@owl-app/lib-api-bulding-blocks/utils/get-milliseconds';
+import { type IJwtConfig } from '@owl-app/lib-api-core/config/jwt';
+import { IJwtTokenService, IJwtTokenPayload, Token } from '@owl-app/lib-api-core/passport/jwt-token.interface';
+import { getMilliseconds } from '@owl-app/lib-api-core/utils/get-milliseconds';
 
 import type { IUserRepository } from '../database/repository/user-repository.interface';
 

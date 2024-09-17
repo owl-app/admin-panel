@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PaginatedResponse } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.response';
+import { PaginatedResponse } from '@owl-app/lib-api-core/pagination/paginated.response';
 
 import { UserDto } from '../../../../dto/user.dto';
 

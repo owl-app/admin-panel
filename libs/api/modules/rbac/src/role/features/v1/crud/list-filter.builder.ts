@@ -1,5 +1,5 @@
 import { Role } from '@owl-app/lib-contracts';
-import { QueryFilterBuilder } from '@owl-app/lib-api-bulding-blocks/data-provider/query/query-filter.builder';
+import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/query-filter.builder';
 import { Filter, SelectRelation } from '@owl-app/crud-core';
 
 import { FilterRoleDto } from './dto';

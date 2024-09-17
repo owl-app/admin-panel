@@ -12,9 +12,9 @@ import { ApiTags, ApiOperation, ApiResponse, ApiAcceptedResponse, ApiBearerAuth 
 import { Manager } from '@owl-app/rbac-manager'
 
 import { AvalilableCollections, UserActions } from '@owl-app/lib-contracts'
-import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
-import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators'
-import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission'
+import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe'
+import { InjectQueryServiceRepository } from '@owl-app/lib-api-core/crud/common/repository.decorator'
+import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission'
 
 import type { IUserRepository } from '../../../../database/repository/user-repository.interface'
 import { UserEntity } from '../../../../domain/entity/user.entity'
@@ -25,7 +25,7 @@ import { UserEntity } from '../../../../domain/entity/user.entity'
 @Injectable()
 export class AssignAccessController {
   constructor(
-    @InjectRepository(UserEntity)
+    @InjectQueryServiceRepository(UserEntity)
     private readonly userRepository: IUserRepository,
     @Inject('RBAC_MANAGER') readonly rbacManager: Manager
   ) {}

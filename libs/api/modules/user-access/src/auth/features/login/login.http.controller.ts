@@ -11,10 +11,10 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { Public } from '@owl-app/lib-api-bulding-blocks/metadata/route';
-import { ApiErrorValidationResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error-validation.response';
-import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response';
-import { Token } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
+import { Public } from '@owl-app/lib-api-core/metadata/route';
+import { ApiErrorValidationResponse } from '@owl-app/lib-api-core/api/api-error-validation.response';
+import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response';
+import { Token } from '@owl-app/lib-api-core/passport/jwt-token.interface';
 
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 

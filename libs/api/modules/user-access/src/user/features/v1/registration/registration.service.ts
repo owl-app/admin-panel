@@ -3,8 +3,8 @@ import { Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-bulding-blocks/config';
-import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
+import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-core/config';
+import { InjectQueryServiceRepository } from '@owl-app/lib-api-core/crud/common/repository.decorator'
 
 import { UserEntity } from '../../../../domain/entity/user.entity';
 import type { IUserRepository } from '../../../../database/repository/user-repository.interface';
@@ -24,7 +24,7 @@ export class RegistrationCommand {
 @CommandHandler(RegistrationCommand)
 export class RegistrationHandler implements ICommandHandler<RegistrationCommand> {
   constructor(
-    @InjectRepository(UserEntity)
+    @InjectQueryServiceRepository(UserEntity)
     readonly userRepository: IUserRepository,
     @Inject(ConfigService)
     readonly configService: ConfigService

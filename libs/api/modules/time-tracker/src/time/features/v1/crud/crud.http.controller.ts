@@ -15,20 +15,20 @@ import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResp
 
 import { AvalilableCollections, CrudActions, timeValidationSchema } from '@owl-app/lib-contracts'
 
-import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
-import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core'
-import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
-import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
-import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
-import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
-import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
-import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission';
-import { ValibotValidationPipe } from '@owl-app/lib-api-bulding-blocks/validation/valibot.pipe';
+import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query'
+import { AssemblerQueryService, InjectAssemblerQueryService, SortDirection } from '@owl-app/crud-core'
+import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe'
+import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response'
+import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider'
+import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider/query/decorators/inject-paginated-query.decorator'
+import { Paginated } from '@owl-app/lib-api-core/pagination/pagination'
+import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
+import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
 
 import { TimeEntity } from '../../../../domain/entity/time.entity'
 import { TimeResponse } from '../../../dto/time.response'
 
-import { CreateClientRequest, UpdateClientDto, FilterClientDto, ClientPaginatedResponseDto } from './dto'
+import { CreateTimeRequest, UpdateTimeRequest, FilterTimeRequest, TimePaginatedResponse } from './dto'
 import { TimeAssembler } from './time.assembler'
 
 @ApiTags('Time Tracker Manage')
@@ -37,8 +37,10 @@ import { TimeAssembler } from './time.assembler'
 @Injectable()
 export class TimeCrudController {
   constructor(
-    @InjectAssemblerQueryService(TimeAssembler) readonly service: AssemblerQueryService<TimeResponse, TimeEntity>,
-    @InjectPaginatedQueryService(TimeEntity) readonly paginatedService: DataProvider<Paginated<TimeEntity>, FilterClientDto>
+    @InjectAssemblerQueryService(TimeAssembler)
+    readonly service: AssemblerQueryService<TimeResponse, TimeEntity>,
+    @InjectPaginatedQueryService(TimeEntity)
+    readonly paginatedService: DataProvider<Paginated<TimeResponse>, FilterTimeRequest, TimeEntity>
   ) {}
 
 @ApiOperation({ summary: 'Find time by id' })
@@ -70,7 +72,7 @@ export class TimeCrudController {
     })
   @Post()
   @RoutePermissions(AvalilableCollections.TIME, CrudActions.CREATE)
-  async create(@Body(new ValibotValidationPipe(timeValidationSchema)) createClientRequest: CreateClientRequest) {
+  async create(@Body(new ValibotValidationPipe(timeValidationSchema)) createClientRequest: CreateTimeRequest) {
     const createdClient = await this.service.createOne(createClientRequest);
 
     return createdClient;
@@ -95,7 +97,7 @@ export class TimeCrudController {
   @RoutePermissions(AvalilableCollections.TIME, CrudActions.UPDATE)
   async update(
     @Param('id', UUIDValidationPipe) id: string,
-    @Body(new ValibotValidationPipe(timeValidationSchema)) updateClientDto: UpdateClientDto,
+    @Body(new ValibotValidationPipe(timeValidationSchema)) updateClientDto: UpdateTimeRequest,
   ): Promise<TimeResponse> {
     const updatedClient = await this.service.updateOne(id, updateClientDto);
 
@@ -122,7 +124,7 @@ export class TimeCrudController {
     @ApiResponse({
       status: HttpStatus.OK,
       description: 'Found records.',
-      type: ClientPaginatedResponseDto,
+      type: TimePaginatedResponse,
     })
     @ApiResponse({
       status: HttpStatus.BAD_REQUEST,
@@ -132,11 +134,15 @@ export class TimeCrudController {
   @Get()
   @RoutePermissions(AvalilableCollections.TIME, CrudActions.LIST)
   async paginated(
-    @Query('filters') filters: FilterClientDto,
+    @Query('filters') filters: FilterTimeRequest,
     @Query() pagination: PaginatedQuery
-  ): Promise<ClientPaginatedResponseDto> {
-    const paginated = await this.paginatedService.getData(filters, pagination);
+  ): Promise<TimePaginatedResponse> {
+    const paginated = await this.paginatedService.getData(
+      filters,
+      pagination,
+      { field: 'createdAt', direction: SortDirection.DESC }
+    );
 
-    return new ClientPaginatedResponseDto(paginated);
+    return new TimePaginatedResponse(paginated);
   }
 }

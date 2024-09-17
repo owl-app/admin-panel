@@ -1,18 +1,21 @@
 import { Time } from '@owl-app/lib-contracts';
-import { QueryFilterBuilder } from '@owl-app/lib-api-bulding-blocks/data-provider/query/query-filter.builder';
+import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/query-filter.builder';
 import { Filter } from '@owl-app/crud-core';
 
-import { FilterClientDto } from './dto';
+import { FilterTimeRequest } from './dto';
 
-export class ListFilterBuilder extends QueryFilterBuilder<Time, FilterClientDto> {
-  build(data: FilterClientDto): Filter<Time>
+export class ListFilterBuilder extends QueryFilterBuilder<Time, FilterTimeRequest> {
+  build(data: FilterTimeRequest): Filter<Time>
   {
     const filters: Filter<Time>[] = []
 
     filters.push(this.filterRegistry.get('string').apply(['description'], data?.search));
 
     return {
-      or: filters
+      or: filters,
+      and: [
+        { timeIntervalEnd: { isNot: null }}
+      ]
     }
   }
 }

@@ -1,10 +1,12 @@
+import { IsNull } from 'typeorm';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
-import { BaseRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/base.repository';
+import { InjectRepository } from '@owl-app/lib-api-core/typeorm/common/typeorm.decorators';
+import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository';
 
 import { TimeResponse } from '../../../dto/time.response';
 import { TimeEntity } from '../../../../domain/entity/time.entity';
+import { mapperTime } from '../../../mapping';
 
 export class ContinueWatch {
 
@@ -19,24 +21,33 @@ export class ContinueWatch {
 export class ContinueWatchHandler implements ICommandHandler<ContinueWatch> {
   constructor(
     @InjectRepository(TimeEntity)
-    private readonly userRepository: BaseRepository<TimeEntity>
-  ) {}
+    private readonly timeRepository: InjectableRepository<TimeEntity>
+  ) { }
 
   async execute(command: ContinueWatch): Promise<TimeResponse> {
-    // await loginValidation.validateAsync(command, { abortEarly: false });
+    const createTime = await this.timeRepository.transaction(async () => {
+      const existingTime = await this.timeRepository.findOne({
+        where: { 
+          timeIntervalEnd: IsNull()
+        }
+      });
 
-    // const user = await this.userRepository.getUserByEmail(command.email);
+      if (existingTime) {
+        existingTime.timeIntervalEnd = new Date();
+        await this.timeRepository.save(existingTime);
+      }
 
-    // if (!user || !await this.jwtTokenService.validateToken(command.password, user.passwordHash)
-    // ) {
-    //   throw new InvalidAuthenticationError();
-    // }
+      const copyTime = await this.timeRepository.findOneBy({ id: command.id });
 
-    // await this.userRepository.updateLastLogin(user.email);
+      const newTime = new TimeEntity();
+      newTime.description = copyTime.description;
+      newTime.timeIntervalStart = new Date();
+  
+      const createdTime = await this.timeRepository.save(newTime);
+  
+      return createdTime;
+    })
 
-    // const accessToken = await this.jwtTokenService.getJwtToken(command.email);
-    // const refreshToken = await this.jwtTokenService.getJwtRefreshToken(command.email);
-
-    return new TimeResponse()
+    return mapperTime.map<TimeEntity, TimeResponse>(createTime, new TimeResponse());
   }
 }

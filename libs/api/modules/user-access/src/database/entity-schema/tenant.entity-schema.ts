@@ -1,7 +1,7 @@
 import { EntitySchema } from 'typeorm';
 
-import { TENANT_ENTITY, USER_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
-import { TimestampableSchemaPart } from '@owl-app/lib-api-bulding-blocks/database/entity-schema/timestampable.schemat';
+import { TENANT_ENTITY, USER_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
+import { TimestampableSchemaPart } from '@owl-app/lib-api-core/database/entity-schema/timestampable.schemat';
 
 import { TenantEntity } from '../../domain/entity/tenant.entity';
 

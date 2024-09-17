@@ -15,11 +15,11 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthUserData } from '@owl-app/lib-contracts';
 
-import { Public } from '@owl-app/lib-api-bulding-blocks/metadata/route';
-import { ApiErrorValidationResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error-validation.response';
-import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response';
-import { Token } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
-import { JwtRefreshGuard } from '@owl-app/lib-api-bulding-blocks/passport/guards/jwt-refresh.guard';
+import { Public } from '@owl-app/lib-api-core/metadata/route';
+import { ApiErrorValidationResponse } from '@owl-app/lib-api-core/api/api-error-validation.response';
+import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response';
+import { Token } from '@owl-app/lib-api-core/passport/jwt-token.interface';
+import { JwtRefreshGuard } from '@owl-app/lib-api-core/passport/guards/jwt-refresh.guard';
 
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 

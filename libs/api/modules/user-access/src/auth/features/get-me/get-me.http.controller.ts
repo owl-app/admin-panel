@@ -2,9 +2,9 @@ import { Controller, Get, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/c
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AvalilableCollections, User, UserActions } from '@owl-app/lib-contracts';
-import { RequestContextService } from '@owl-app/lib-api-bulding-blocks/context/app-request-context';
-import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
-import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission';
+import { RequestContextService } from '@owl-app/lib-api-core/context/app-request-context';
+import { InjectRepository } from '@owl-app/lib-api-core/typeorm/common/typeorm.decorators';
+import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
 
 import { UserEntity } from '../../../domain/entity/user.entity'
 import {type  IUserRepository } from '../../../database/repository/user-repository.interface';

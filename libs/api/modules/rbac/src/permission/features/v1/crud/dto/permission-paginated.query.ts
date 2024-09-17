@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsIn, IsOptional } from 'class-validator';
 
-import { PaginatedQuery } from "@owl-app/lib-api-bulding-blocks/pagination/paginated.query";
+import { PaginatedQuery } from "@owl-app/lib-api-core/pagination/paginated.query";
 
 export class PermissionPaginatedQuery extends PaginatedQuery {
   @IsOptional()

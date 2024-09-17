@@ -1,6 +1,6 @@
 import { EntitySchema } from 'typeorm';
 
-import { ROLE_ENTITY, ROLE_SETTING_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
+import { ROLE_ENTITY, ROLE_SETTING_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
 
 import { RoleEntity } from "../../domain/entity/role.entity";
 import { BaseAuthEntitySchema } from './base-auth.entity-schema';

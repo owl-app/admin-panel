@@ -54,7 +54,6 @@ const isFormHasUnsavedChanges = computed(() => {
 
 let immediateValidation = false;
 let textDebounce: DebouncedFunc<(...args: any[]) => any>;
-let vNodeKeys: string[] = [];
 
 defineExpose({
   isFormHasUnsavedChanges,

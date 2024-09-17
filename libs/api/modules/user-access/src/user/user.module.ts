@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common'
 import { CqrsModule } from '@nestjs/cqrs'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 
-import { RbacTypeOrmModule } from '@owl-app/lib-api-bulding-blocks/rbac/rbac-typeorm.module'
-import { CrudTenantTypeOrmQueryModule } from '@owl-app/lib-api-bulding-blocks/tenant-typeorm/crud-tenant-typeorm-query.module'
+import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
+import { CrudTenantTypeOrmQueryModule } from '@owl-app/lib-api-core/tenant-typeorm/crud-tenant-typeorm-query.module'
 
 import { UserEntitySchema } from '../database/entity-schema/user.entity-schema'
 import { UserRepository } from '../database/repository/user.repository'

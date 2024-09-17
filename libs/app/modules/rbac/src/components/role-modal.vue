@@ -21,6 +21,7 @@
         @saved="ok(); $emit('saved');"
       >
         <template #fields="{ data, validation }">
+          {{ validation }}
           <va-input
             v-model="data.ref.setting.displayName"
             label="Display name"
@@ -54,7 +55,7 @@
           />
         </template>
 
-        <template #actions="{ validate, save, isLoading, isValid }">
+        <template #actions="{ validate, save, isLoading }">
           <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">
             <va-button :disabled="isLoading" preset="secondary" color="secondary" @click="cancel">Cancel</va-button>
             <va-button @click="validate(true) && save()">Save</va-button>

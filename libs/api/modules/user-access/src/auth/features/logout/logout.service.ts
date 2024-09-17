@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { IJwtTokenService } from '@owl-app/lib-api-bulding-blocks/passport/jwt-token.interface';
+import { IJwtTokenService } from '@owl-app/lib-api-core/passport/jwt-token.interface';
 
 import { UserEntity } from '../../../domain/entity/user.entity';
 

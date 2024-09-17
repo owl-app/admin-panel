@@ -14,12 +14,12 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
 import { InjectQueryService, QueryService } from '@owl-app/crud-core'
-import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
-import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
-import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
-import { UUIDValidationPipe } from '@owl-app/lib-api-bulding-blocks/pipes/uuid-validation.pipe'
-import { ApiErrorResponse } from '@owl-app/lib-api-bulding-blocks/api/api-error.response'
-import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
+import { Paginated } from '@owl-app/lib-api-core/pagination/pagination'
+import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider'
+import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query'
+import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe'
+import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response'
+import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider/query/decorators/inject-paginated-query.decorator'
 
 import { CompanyResponse } from '../../../dto/company.response'
 import { CompanyEntity } from '../../../../domain/entity/company.entity'
@@ -34,8 +34,10 @@ import { createCompanyValidation } from './validation'
 @Injectable()
 export class CompanyCrudController {
   constructor(
-    @InjectQueryService(CompanyEntity) readonly service: QueryService<CompanyEntity>,
-    @InjectPaginatedQueryService(CompanyEntity) readonly paginatedService: DataProvider<Paginated<CompanyEntity>, FilterCompanyDto>
+    @InjectQueryService(CompanyEntity)
+    readonly service: QueryService<CompanyEntity>,
+    @InjectPaginatedQueryService(CompanyEntity)
+    readonly paginatedService: DataProvider<Paginated<CompanyEntity>, FilterCompanyDto, CompanyEntity>
   ) {}
 
 	@ApiOperation({ summary: 'Find company by id' })

@@ -9,20 +9,17 @@ import { Time } from "@owl-app/lib-contracts";
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
-import { useStores } from '@owl-app/lib-app-core/composables/use-system';
 
 import CreateInline from '../components/create-inline.vue';
 
 type GroupedWeeksAndDays = Record<string, Record<string, Time[]>>;
 
 const { t } = useI18n();
-const { useTimeStore } = useStores();
 
 const gridRef = ref<InstanceType<typeof Grid>>();
 const showDeleteModal = ref(false);
 const deleteTime = ref<Time>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
-const timeStore = useTimeStore();
 const timerCreateInline = ref<InstanceType<typeof CreateInline>>();
 
 const columns = defineVaDataTableColumns([
@@ -31,7 +28,7 @@ const columns = defineVaDataTableColumns([
 ])
 
 function groupByWeek(items: Time[]) {
-  function getWeekRange(date: string | Date) {
+  function getWeekRange(date: string) {
     const curr = DateTime.fromISO(date);
 
     return {
@@ -41,10 +38,10 @@ function groupByWeek(items: Time[]) {
   }
 
   const groupedWeeks: GroupedWeeksAndDays = items.reduce((acc, obj) => {
-    const { from, to } = getWeekRange(obj.timeIntervalStart);
+    const { from, to } = getWeekRange(obj.timeIntervalStart as string);
 
     const weekKey = `${from} / ${to}`;
-    const dateKey = DateTime.fromISO(obj.timeIntervalStart).toLocaleString(DateTime.DATE_FULL);
+    const dateKey = DateTime.fromISO(obj.timeIntervalStart as string).toLocaleString(DateTime.DATE_FULL);
 
     if (!acc[weekKey]) {
       acc[weekKey] = {} as Record<string, Time[]>;
@@ -75,7 +72,7 @@ function groupByWeek(items: Time[]) {
 
     for (const dateKey in groupedWeeks[weekKey]) {
       groupedWeeks[weekKey][dateKey].sort(
-          (a, b) => DateTime.fromJSDate(b.timeIntervalStart) - DateTime.fromJSDate(a.timeIntervalStart)
+          (a, b) => (b.timeIntervalStart as Date).getTime() - (a.timeIntervalStart as Date).getTime()
       );
     }
   }
@@ -106,7 +103,7 @@ function groupByWeek(items: Time[]) {
       manual-name-storage="time-is-manual"
       :is-manual="true"
       :is-manual-only="false"
-      @saved="gridRef?.addItem"
+      @saved="gridRef?.reloadGrid"
     >
       <template #actions="{ save, isManual, startTimer, isTimerStart }">
           <va-button v-if="!isManual && !isTimerStart" @click="startTimer()" class="w-full">START</va-button>
@@ -134,19 +131,18 @@ function groupByWeek(items: Time[]) {
               square
               outlined
               bordered
-              
             >
               <va-card-title>{{ startDay }}</va-card-title>
               <va-card-content>
                 <create-inline
                   v-for="(time) in groupDay"
                   :url="`times/${time.id}`"
-                  :key="time.id"
+                  :key="`${time.id}-${time.timeIntervalStart}-${time.timeIntervalEnd}`"
                   :default-value="time"
                   :is-saved-after-change="true"
                   @saved="gridRef?.reloadGrid"
                 >
-                  <template #actions="{ save, isManual, startTimer, isTimerStart }">
+                  <template #actions>
                     <va-divider vertical />
                     <va-icon
                       name="play_arrow"

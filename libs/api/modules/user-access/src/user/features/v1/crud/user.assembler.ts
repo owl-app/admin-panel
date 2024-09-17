@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import * as bcrypt from 'bcrypt'
 
-import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-bulding-blocks/config'
+import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-core/config'
 import { Assembler, ClassTransformerAssembler, DeepPartial } from '@owl-app/crud-core'
 
 import { UserEntity } from '../../../../domain/entity/user.entity'

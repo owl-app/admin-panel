@@ -11,7 +11,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
 import { AvalilableCollections, RoleActions } from '@owl-app/lib-contracts';
-import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission';
+import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
 import { Manager } from '@owl-app/rbac-manager';
 
 @ApiTags('Rbac Role')

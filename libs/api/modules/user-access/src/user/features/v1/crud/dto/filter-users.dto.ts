@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { FilterStringQuery } from "@owl-app/lib-api-bulding-blocks/data-provider/query/filters/string";
+import { FilterStringQuery } from "@owl-app/lib-api-core/data-provider/query/filters/string";
 import { Transform, TransformFnParams } from "class-transformer";
 
 

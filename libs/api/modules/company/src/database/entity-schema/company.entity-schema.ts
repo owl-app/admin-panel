@@ -1,6 +1,6 @@
 import { EntitySchema } from 'typeorm';
 
-import { USER_ENTITY, COMPANY_ENTITY } from '@owl-app/lib-api-bulding-blocks/entity-tokens';
+import { USER_ENTITY, COMPANY_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
 
 import { CompanyEntity } from '../../domain/entity/company.entity';
 

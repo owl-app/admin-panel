@@ -12,6 +12,9 @@ export class TimeResponse {
     @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
     description?: string;
 
+    @ApiProperty({ type: () => String })
+    timeIntervalStart?: string;
+
     @Exclude()
     tenant?: Tenant;
 

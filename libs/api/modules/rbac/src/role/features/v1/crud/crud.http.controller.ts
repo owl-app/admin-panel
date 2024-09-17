@@ -3,7 +3,6 @@ import {
   HttpStatus,
   Post,
   Body,
-  Inject,
   Injectable,
   Put,
   HttpCode,
@@ -16,13 +15,13 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
 import { AvalilableCollections, CrudActions, roleValidationSchema } from '@owl-app/lib-contracts'
-import { RoutePermissions } from '@owl-app/lib-api-bulding-blocks/rbac/decorators/route-permission'
-import { PaginatedQuery } from '@owl-app/lib-api-bulding-blocks/pagination/paginated.query'
-import type { DataProvider } from '@owl-app/lib-api-bulding-blocks/data-provider/data.provider'
-import { InjectPaginatedQueryService } from '@owl-app/lib-api-bulding-blocks/data-provider/query/decorators/inject-paginated-query.decorator'
-import { Paginated } from '@owl-app/lib-api-bulding-blocks/pagination/pagination'
+import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission'
+import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query'
+import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider'
+import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider/query/decorators/inject-paginated-query.decorator'
+import { Paginated } from '@owl-app/lib-api-core/pagination/pagination'
 import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core'
-import { ValibotValidationPipe } from '@owl-app/lib-api-bulding-blocks/validation/valibot.pipe'
+import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe'
 
 import { RoleResponse } from '../../../dto/role.response.dto'
 import { CreateRoleRequest } from '../../../dto/create-role.request.dto'
@@ -40,7 +39,7 @@ import { RoleAssembler } from './role.assembler'
 export class CrudController {
   constructor(
     @InjectAssemblerQueryService(RoleAssembler) readonly service: AssemblerQueryService<RoleResponse, RoleEntity>,
-    @InjectPaginatedQueryService(RoleEntity) readonly paginatedService: DataProvider<Paginated<RoleResponse>, FilterRoleDto>
+    @InjectPaginatedQueryService(RoleEntity) readonly paginatedService: DataProvider<Paginated<RoleResponse>, FilterRoleDto, RoleEntity>
   ) {}
 
   @ApiOperation({ summary: 'Find role by id' })

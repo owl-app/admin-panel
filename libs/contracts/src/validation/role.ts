@@ -11,11 +11,6 @@ export const roleValidationSchema = v.object({
       v.string(),
       v.nonEmpty('Field is required')
     ), ''),
-  collection: v.optional(
-    v.pipe(
-      v.string(),
-      v.nonEmpty('Field is required')
-    ), ''),
   setting: v.object({
     displayName: v.optional(
       v.pipe(

@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon'
+import { debounce } from 'lodash';
 
 import { Time } from '@owl-app/lib-contracts';
 
@@ -18,46 +19,67 @@ export const useTimeStore = defineStore({
       this.loading = true;
 
       try {
-        const { data } = await api.get(`/user/me`);
+        const { data } = await api.get(`/times/in-progress`);
+
+        if (data) {
+          this.active = data;
+          this.startInterval();
+        }
+
       } finally {
-        this.loading = false;
+        debounce(() => {
+          this.loading = false;
+        }, 500)();
       }
     },
     async dehydrate() {
       this.$reset();
     },
     async startTimer(description: string) {
-      this.loading = true;
-
       try {
-        const { data } = await api.post('/times/stopwatch', {
+        this.startInterval();
+
+        const { data }  = await api.post('/times/stopwatch', {
           description
         });
 
-        this.startInteval();
+        this.active = data;
 
       } catch (error: any) {
         throw error.response?.data?.message ?? error.message;
-      } finally {
-        this.loading = false;
       }
     },
 
     async continueTimer(id: string) {
       try {
-        const { data } = await api.post(`/times/stopwatch/${id}`);
+        this.startInterval();
 
-        this.startInteval();
+        const { data }  = await api.post(`/times/stopwatch/${id}`);
+
+        this.active = data;
 
       } catch (error: any) {
         throw error.response?.data?.message ?? error.message;
-      } finally {
-        this.loading = false;
       }
     },
 
-    startInteval() {
-      const startTime = DateTime.now();
+    async stopTimer(description: string) {
+      try {
+        const { data } = await api.put('/times/stopwatch', {
+          description
+        });
+
+        this.active = null;
+        this.stopInterval();
+
+        return data;
+      } catch (error: any) {
+        throw error.response?.data?.message ?? error.message;
+      }
+    },
+
+    startInterval() {
+      const startTime = DateTime.fromJSDate(new Date(this.active?.timeIntervalStart ||  new Date()));
 
       this.timer = '00:00:00';
 
@@ -70,7 +92,7 @@ export const useTimeStore = defineStore({
       }, 1000);
     },
 
-    async stopTimer() {
+    stopInterval() {
       if(this.intervalTimer) {
         clearInterval(this.intervalTimer);
         this.intervalTimer = null;

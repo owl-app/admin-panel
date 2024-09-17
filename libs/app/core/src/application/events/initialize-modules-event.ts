@@ -67,8 +67,6 @@ export function defineModuleRequestEvent(
         )
           return;
 
-        console.log('deinitialized-modules')
-
         registeredModules.value = [];
 
         for (const module of modules) {

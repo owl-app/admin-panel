@@ -4,6 +4,6 @@
   "sourceRoot": "libs/api/core/src",
   "projectType": "library",
   "tags": [],
-  "// targets": "to see all targets run: nx show project test --web",
+  "// targets": "to see all targets run: nx show project @owl-app/lib-api-core --web",
   "targets": {}
 }

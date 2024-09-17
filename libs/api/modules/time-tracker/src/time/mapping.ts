@@ -20,6 +20,10 @@ export class MapperTime extends TypeMapper {
         (src) => src.description,
         (dest) => dest.description
       )
+      .map(
+        (src) => src.timeIntervalStart,
+        (dest) => dest.timeIntervalStart
+      )
   }
 }
 

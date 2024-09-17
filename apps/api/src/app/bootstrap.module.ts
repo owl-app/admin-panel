@@ -14,7 +14,7 @@ import { WinstonLoggerModule, WINSTON_MODULE_NEST_PROVIDER } from '@owl-app/wins
 
 import { AppModule } from './app.module'
 import loggerFactory from './logger.factory'
-import { ErrorHandlersFilter } from '@owl-app/lib-api-bulding-blocks/filters/error-handlers.filter'
+import { ErrorHandlersFilter } from '@owl-app/lib-api-core/filters/error-handlers.filter'
 
 @Module({
   imports: [

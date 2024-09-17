@@ -116,6 +116,7 @@
 import { computed, ref, defineProps, Ref, defineExpose } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { DateTime } from 'luxon'
+import { snakeCase } from 'lodash';
 import { useInputMask, createRegexMask } from 'vuestic-ui'
 import { useToast } from 'vuestic-ui/web-components';
 import { useLocalStorage } from '@vueuse/core';
@@ -150,7 +151,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (event: 'saved', clientSaved: Time): void,
+  (event: 'saved', timeSaved: Time): void,
 }>()
 
 defineExpose({
@@ -189,7 +190,7 @@ function parseDefaultValue(value?: Time): TimeFormData {
       description: '',
       timeIntervalStart: now.toJSDate(),
       timeIntervalEnd: now.toJSDate(),
-      date: now.set({ hours: 0, minute: 0, second: 0, millisecond: 0.00 }).toJSDate(),
+      date: now.set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 }).toJSDate(),
       timeSum: '00:00:00'
     }
   };
@@ -199,9 +200,9 @@ function parseDefaultValue(value?: Time): TimeFormData {
   const timeSum = timeIntervalEnd
       .diff(timeIntervalStart, ["hours", "minutes", "seconds"])
       .toFormat('hh:mm:ss');
-  const [hours = 0] = parseTime(timeSum);
+  const [hour = 0] = parseTime(timeSum);
 
-  setChangedScope(timeIntervalStart, timeIntervalEnd, hours);
+  setChangedScope(timeIntervalStart, timeIntervalEnd, hour);
 
   return {
     description: value.description,
@@ -209,7 +210,7 @@ function parseDefaultValue(value?: Time): TimeFormData {
     timeIntervalEnd: timeIntervalEnd.toJSDate(),
     date: DateTime
       .fromJSDate(new Date(value.timeIntervalStart))
-      .set({ hours: 0, minute: 0, second: 0, millisecond: 0.00 })
+      .set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 })
       .toJSDate(),
     timeSum: timeSum
   }
@@ -221,7 +222,7 @@ function changeManual(value: boolean, data: { ref: TimeFormData }) {
   if (value) {
     data.ref.timeIntervalStart = now.toJSDate();
     data.ref.timeIntervalEnd = now.toJSDate();
-    data.ref.date = DateTime.fromJSDate(new Date()).set({ hours: 0, minute: 0, second: 0, millisecond: 0.00 })
+    data.ref.date = DateTime.fromJSDate(new Date()).set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 }).toJSDate()
   }
 }
 
@@ -256,10 +257,10 @@ function changeTime(data: { ref: TimeFormData }) {
     let dateTo = DateTime.fromJSDate(new Date(data.ref.timeIntervalEnd));
 
     if (hasChangedScope) {
-      const currentDateTo = dateTo.set({ hours: dateFrom.hour, minutes: dateFrom.minute, seconds: dateFrom.second });
+      const currentDateTo = dateTo.set({ hour: dateFrom.hour, minute: dateFrom.minute, second: dateFrom.second });
 
       if (dateTo >= currentDateTo) {
-        dateTo = dateTo.minus({ days: 1 }).set({ hours: dateTo.hour, minutes: dateTo.minute, seconds: dateTo.second });
+        dateTo = dateTo.minus({ days: 1 }).set({ hour: dateTo.hour, minute: dateTo.minute, second: dateTo.second });
         hasChangedScope = false;
       }
     } else if (dateTo < dateFrom) {
@@ -308,19 +309,19 @@ function diffDays(timeIntervalStart: string, timeIntervalEnd: string) {
 }
 
 function afterSave(savedData: Time, dataForm: Ref<TimeFormData>) {
-  const [hours = 0, minutes = 0, seconds = 0] = parseTime(dataForm.value.timeSum);
+  const [hour = 0, minutes = 0, seconds = 0] = parseTime(dataForm.value.timeSum);
   const timeIntervalStart = DateTime
     .fromJSDate(new Date(savedData.timeIntervalStart))
-    .plus({ hours, minutes, seconds });
+    .plus({ hour, minutes, seconds });
   const timeIntervalEnd = DateTime
     .fromJSDate(new Date(savedData.timeIntervalEnd))
-    .plus({ hours, minutes, seconds });
+    .plus({ hour, minutes, seconds });
 
   dataForm.value = {
     timeIntervalStart: timeIntervalStart.toJSDate(),
     timeIntervalEnd: timeIntervalEnd.toJSDate(),
     date: timeIntervalEnd
-      .set({ hours: 0, minute: 0, second: 0, millisecond: 0.00 })
+      .set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 })
       .toJSDate(),
     timeSum: timeIntervalEnd
       .diff(timeIntervalStart, ["hours", "minutes", "seconds"])
@@ -344,8 +345,10 @@ async function savedAfterChange(data: any) {
 }
 
 async function startTimer(time?: Time) {
+  const oldTime = timeStore.active;
+
   if (timeStore.intervalTimer) {
-    timeStore.stopTimer();
+    timeStore.stopInterval();
   };
 
   if (time) {
@@ -354,28 +357,53 @@ async function startTimer(time?: Time) {
     }
   }
 
-  if (time) {
-    await timeStore.continueTimer(time.id);
-  } else {
-    await timeStore.startTimer(
-      timerForm.value.formData.description
-    );
-  }
+  try {
+    if (time) {
+      await timeStore.continueTimer(time.id);
 
-  isTimerStart.value = true;
-  isManual.value = false;
+      if (oldTime) {
+        emit('saved', oldTime);
+      }
+
+    } else {
+      await timeStore.startTimer(
+        timerForm.value.formData.description
+      );
+    }
+
+    isTimerStart.value = true;
+    isManual.value = false;
+  } catch (error) {
+    notify({
+      message: t(`error.timer.${snakeCase((error as string).replace(/\s+/g,"_"))}`),
+      color: 'danger',
+      position: 'bottom-right',
+      offsetY: 30
+    })
+  }
 }
 
-function endTimer() {
-  timeStore.stopTimer();
-  isTimerStart.value = false;
+async function endTimer() {
+  try {
+    const time = await timeStore.stopTimer(timerForm.value.formData.description);
+    isTimerStart.value = false;
+
+    emit('saved', time);
+  } catch (error) {
+    notify({
+      message: t(`error.timer.${snakeCase((error as string).replace(/\s+/g,"_"))}`),
+      color: 'danger',
+      position: 'bottom-right',
+      offsetY: 30
+    })
+  }
 };
 
 function parseInputTime(value: string, date: Date): Date {
   const dateTimeTo = DateTime.fromJSDate(new Date(date));
-  const [hours = 0, minutes = 0, seconds = 0] = parseTime(value);
+  const [hour = 0, minute = 0, second = 0] = parseTime(value);
 
-  return dateTimeTo.set({ hours, minutes, seconds }).toJSDate();
+  return dateTimeTo.set({ hour, minute, second }).toJSDate();
 }
 
 function parseTime(text: string) {

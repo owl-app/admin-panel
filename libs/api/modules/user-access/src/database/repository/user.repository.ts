@@ -1,6 +1,6 @@
 import { User } from '@owl-app/lib-contracts';
 
-import { BaseRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/base.repository';
+import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository';
 
 import { UserEntity } from '../../domain/entity/user.entity';
 

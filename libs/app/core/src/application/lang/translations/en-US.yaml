@@ -27,3 +27,7 @@ vuestic:
   goToSpecificPage: Go to specific page
   select: Select
   selectedTime: Selected time
+error:
+  timer:
+    another_timer_is_running: Another timer is running
+    timer_is_not_running: Timer is not running

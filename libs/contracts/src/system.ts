@@ -28,7 +28,9 @@ export enum RoleActions {
 
 export enum TimeActions {
   START_WATCH = 'START_WATCH',
+  STOP_WATCH = 'STOP_WATCH',
   CONTINUE_WATCH = 'CONTINUE_WATCH',
+  IN_PROGRESS = 'IN_PROGRESS',
 }
 
 export enum AvalilableRouteCollections {

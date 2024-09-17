@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
-import { InjectRepository } from '@owl-app/lib-api-bulding-blocks/typeorm/common/tenant-typeorm.decorators';
-import { InjectableRepository } from '@owl-app/lib-api-bulding-blocks/database/repository/injectable.repository';
+import { InjectRepository } from '@owl-app/lib-api-core/typeorm/common/typeorm.decorators';
+import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository';
 
 import { UserRegisteredDomainEvent } from '../../domain/events/user-registered.domain-event'
 import { TenantEntity } from '../../domain/entity/tenant.entity';

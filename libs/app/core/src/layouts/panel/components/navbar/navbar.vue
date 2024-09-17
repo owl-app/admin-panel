@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useAppStore } from '../../../../stores/app'
-import VuesticLogo from '../../../../components/logo.vue'
+import VuesticLogo from '../../../../components/logo-black.vue'
 import AppNavbarActions from './components/AppNavbarActions.vue'
 
 defineProps({

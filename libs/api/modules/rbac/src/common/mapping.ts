@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import { Item } from '@owl-app/rbac-manager';
 
-import { Mapper } from '@owl-app/lib-api-bulding-blocks/types/mapper.interface';
+import { Mapper } from '@owl-app/lib-api-core/types/mapper.interface';
 
 import { BaseAuthItemEntity } from '../domain/entity/base-auth.entity';
 

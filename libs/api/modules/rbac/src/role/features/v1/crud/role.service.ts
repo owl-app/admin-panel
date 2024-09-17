@@ -1,7 +1,7 @@
 import { DataSource, Repository } from "typeorm";
 
 import { Manager } from "@owl-app/rbac-manager";
-import { CrudTypeOrmQueryService, CrudTypeOrmQueryServiceOpts } from "@owl-app/lib-api-bulding-blocks/crud/service/crud-typeorm-query.service";
+import { CrudTypeOrmQueryService, CrudTypeOrmQueryServiceOpts } from "@owl-app/lib-api-core/crud/service/crud-typeorm-query.service";
 import { DeepPartial } from "@owl-app/crud-core";
 
 import { RoleEntity } from "../../../../domain/entity/role.entity";

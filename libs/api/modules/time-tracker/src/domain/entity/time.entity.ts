@@ -1,6 +1,6 @@
 import type { Time, User, Tenant } from '@owl-app/lib-contracts';
 
-import BaseEntity from '@owl-app/lib-api-bulding-blocks/database/entity/base.entity';
+import BaseEntity from '@owl-app/lib-api-core/database/entity/base.entity';
 
 export class TimeEntity extends BaseEntity implements Time {
 
