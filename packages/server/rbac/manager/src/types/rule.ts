@@ -3,7 +3,7 @@ import { Item } from "./base.item";
 /**
  * Rule represents a business constraint that may be associated with a role or a permission.
  */
-export interface IRuleInterface
+export interface Rule
 {
     /**
      * Executes the rule.
@@ -14,5 +14,5 @@ export interface IRuleInterface
      *
      * @return bool Whether the rule permits the auth item it is associated with.
      */
-    execute(userId: string, item:Item, parameters?: Array<any>): boolean;
+    execute(userId: string, item: Item, parameters?: Array<any>): boolean;
 }

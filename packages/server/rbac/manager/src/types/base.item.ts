@@ -53,6 +53,17 @@ export abstract class Item {
     this._updatedAt = updatedAt;
   }
 
+  /**
+   * @return string Type of the item.
+   */
+  abstract getType(): string;
+
+  getName(): string
+  {
+    return this.name;
+  }
+
+
   public get createdAt(): Date | null {
     return this._createdAt;
   }
