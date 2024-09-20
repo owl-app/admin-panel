@@ -4,7 +4,7 @@ import moment from 'moment'
 import {
   AllItemTypes,
   Assignment,
-  IAssignmentsStorageInterface
+  AssignmentsStorage
 } from '@owl-app/rbac-manager';
 import { isEmpty } from '@owl-app/utils';
 
@@ -16,13 +16,13 @@ type RawAssignment = {
   created_at: string,
 };
 
-export class AssignmentsStorage extends BaseStorage implements IAssignmentsStorageInterface {
+export class TypeOrmAssignmentsStorage extends BaseStorage implements AssignmentsStorage {
   constructor(dataSource: DataSource, readonly tableName: string) {
     super(dataSource)
   }
 
-  async getAll(): Promise<AllItemTypes> {
-
+  async getAll(): Promise<AllItemTypes>
+  {
     const rawAssignments: Array<RawAssignment> = await this.singleQuery(`SELECT * FROM ${this.tableName}`);
     const assignments: AllItemTypes = {};
 
@@ -45,6 +45,31 @@ export class AssignmentsStorage extends BaseStorage implements IAssignmentsStora
     return assignments;
   }
 
+  async getByItemNames(itemNames: string[]): Promise<Assignment[]>
+  {
+    if (!itemNames) {
+      return [];
+    }
+
+    const rawAssignments = await this.dataSource.createQueryBuilder()
+      .select()
+      .from(this.tableName, this.tableName)
+      .where('item_name IN (:...names)', { itemNames })
+      .getRawMany();
+
+    const assignments: Assignment[] = [];
+
+    rawAssignments.forEach((rawAssignment) => {
+      assignments.push(new Assignment(
+        rawAssignment.user_id,
+        rawAssignment.item_name,
+        new Date(rawAssignment.created_at),
+      ));
+    })
+
+    return assignments;
+  }
+
   async get(item_name: string, userId: string): Promise<Assignment | null>
   {
     const rawAssignment: RawAssignment = await this.singleQuery(`
@@ -53,6 +78,46 @@ export class AssignmentsStorage extends BaseStorage implements IAssignmentsStora
     `, [item_name, userId]);
 
     return isEmpty(rawAssignment) ? null : new Assignment(rawAssignment.user_id, rawAssignment.item_name, new Date(rawAssignment.created_at));
+  }
+
+  async exists(itemName: string, userId: string): Promise<boolean>
+  {
+    const result = await this.dataSource.createQueryBuilder()
+      .select('1 AS item_exists')
+      .from(this.tableName, this.tableName)
+      .where('item_name := itemName', { itemName })
+      .andWhere('user_id := userId', { userId })
+      .getRawOne();
+
+    return result !== false;
+  }
+
+  async userHasItem(userId: string, itemNames: string[]): Promise<boolean>
+  {
+    if (!itemNames) {
+        return false;
+    }
+
+    const result = await this.dataSource.createQueryBuilder()
+      .select('1 AS assignment_exists')
+      .from(this.tableName, this.tableName)
+      .where('user_id = :userId', { userId })
+      .andWhere('item_name IN (:...itemNames)', { itemNames })
+      .getRawOne();
+
+    return result !== false;
+  }
+
+  async filterUserItemNames(userId: string, itemNames: string[]): Promise<string[]>
+  {
+    const rows = await this.dataSource.createQueryBuilder()
+      .select('item_name')
+      .from(this.tableName, this.tableName)
+      .where('user_id = :userId', { userId })
+      .andWhere('item_name IN (:...itemNames)', { itemNames })
+      .getRawMany();
+
+    return rows.map(row => row.item_name);
   }
 
   async add(item_name: string, userId: string): Promise<void> {
@@ -69,7 +134,7 @@ export class AssignmentsStorage extends BaseStorage implements IAssignmentsStora
   {
     const result: Array<RawAssignment> = await this.singleQuery(`SELECT * FROM ${this.tableName} WHERE item_name = ? LIMIT 1`, [itemName]);
   
-    return result.length > 0 ? true : false;
+    return result.length > 0;
   }
 
   renameItem(oldName: string, newName: string): void

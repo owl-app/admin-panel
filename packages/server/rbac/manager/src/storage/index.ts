@@ -1,2 +1,2 @@
 export * from './item-storage';
-export * from './assigments-storage.interface';
+export * from './assigments-storage';

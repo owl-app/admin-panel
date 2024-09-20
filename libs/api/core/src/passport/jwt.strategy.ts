@@ -1,12 +1,12 @@
-import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 
-import { AuthUserData, Permission, User } from '@owl-app/lib-contracts';
-import { Manager } from '@owl-app/rbac-manager';
+import { AuthUserData, PermissionReferType, User } from '@owl-app/lib-contracts';
+import { RbacManager, Role } from '@owl-app/rbac-manager';
 
 import { JWT_CONFIG_PROVIDER, type IJwtConfig } from '../config/jwt';
+import { Permission } from '../rbac/types/permission';
 import { IJwtTokenPayload, IJwtTokenService } from './jwt-token.interface';
 import { extractJWT } from './extract-jwt';
 
@@ -18,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     @Inject(IJwtTokenService)
     private jwtTokenService: IJwtTokenService<User>,
     @Inject('RBAC_MANAGER')
-    readonly rbacManager: Manager
+    readonly rbacManager: RbacManager<Permission, Role>
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -39,6 +39,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
 
+    const userPermissions = await this.rbacManager.getPermissionsByUserId(user.id)
+
     return {
       id: user.id,
       username: user.username,
@@ -47,9 +49,24 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       roles: (await this.rbacManager.getRolesByUserId(user.id)).map(
         (role) => role.name
       ),
-      permissions: Object.keys(
-        await this.rbacManager.getPermissionsByUserId(user.id)
-      ),
+      permissions: {
+        routes: userPermissions
+          .reduce((permissions: string[], item) => {
+            if(item.refer === PermissionReferType.ROUTE) {
+              permissions.push(item.name);
+            }
+
+            return permissions;
+          }, []),
+        fields: userPermissions
+          .reduce((permissions: string[], item) => {
+            if(item.refer === PermissionReferType.FIELD) {
+              permissions.push(item.name);
+            }
+
+            return permissions;
+          }, [])
+      }
     };
   }
 }

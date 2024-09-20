@@ -21,7 +21,7 @@ export class RoutePermissionGuard implements CanActivate {
         .switchToHttp()
         .getRequest();
 
-      return user.permissions?.includes(permission);
+      return user.permissions?.routes.includes(permission);
     }
 
     return true;

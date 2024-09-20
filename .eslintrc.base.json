@@ -20,7 +20,8 @@
           }
         ],
         "lines-between-class-members": "off",
-        "@typescript-eslint/lines-between-class-members": "off"
+        "@typescript-eslint/lines-between-class-members": "off",
+        "no-param-reassign": [2, {"props": false}]
       }
     },
     {

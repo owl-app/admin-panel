@@ -14,6 +14,7 @@ import { UserAssembler } from './features/v1/crud/user.assembler'
 import { ListFilterBuilder } from './features/v1/crud/list-filter.builder'
 import { RegistrationController } from './features/v1/registration/registration.http.controller'
 import { RegistrationHandler } from './features/v1/registration/registration.service'
+import { UserPermissionsController } from './features/v1/permissions/user-permisssions.http.controller'
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { RegistrationHandler } from './features/v1/registration/registration.ser
   controllers: [
     UserCrudController,
     AssignAccessController,
-    RegistrationController
+    RegistrationController,
+    UserPermissionsController,
   ],
   providers: [
     RegistrationHandler,

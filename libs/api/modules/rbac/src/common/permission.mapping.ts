@@ -1,17 +1,14 @@
 import { Type } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
-import moment from 'moment';
-
-import { Item } from '@owl-app/rbac-manager';
 
 import { Mapper } from '@owl-app/lib-api-core/types/mapper.interface';
 
-import { BaseAuthItemEntity } from '../domain/entity/base-auth.entity';
+import { PermissionEntity } from '../domain/entity/permission.entity';
 
-export class RbacItemMapper<
-  Entity extends DeepPartial<BaseAuthItemEntity>,
-  BaseItem extends DeepPartial<BaseAuthItemEntity>,
-  Response extends DeepPartial<BaseAuthItemEntity>
+export class RbacPermissionMapper<
+  Entity extends DeepPartial<PermissionEntity>,
+  BaseItem extends DeepPartial<PermissionEntity>,
+  Response extends DeepPartial<PermissionEntity>
 > implements Mapper<Entity, BaseItem, Response>
 {
   constructor(private response: Type<Response>, private item: Type<BaseItem>) {}
@@ -20,18 +17,20 @@ export class RbacItemMapper<
     return new (this.item)(
       request.name,
       request.description,
-      request.ruleName
+      request.ruleName,
+      request.createdAt || new Date(),
+      request.updatedAt || new Date(),
     );
   }
 
-  toResponse(item: DeepPartial<BaseAuthItemEntity>): Response
+  toResponse(item: DeepPartial<PermissionEntity>): Response
   {
     const role = new (this.response);
     role.name = item.name;
     role.description = item.description;
     role.ruleName = item.ruleName;
-    role.createdAt = item.createdAt;
-    role.updatedAt = item.updatedAt; 
+    role.refer = item.refer;
+    role.collection = item.collection;
 
     return role;
   }

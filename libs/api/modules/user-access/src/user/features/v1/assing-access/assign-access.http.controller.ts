@@ -9,9 +9,10 @@ import {
   Inject
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
-import { Manager } from '@owl-app/rbac-manager'
+import { RbacManager, Role } from '@owl-app/rbac-manager'
 
 import { AvalilableCollections, UserActions } from '@owl-app/lib-contracts'
+import { Permission } from '@owl-app/lib-api-core/rbac/types/permission'
 import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe'
 import { InjectQueryServiceRepository } from '@owl-app/lib-api-core/crud/common/repository.decorator'
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission'
@@ -27,7 +28,7 @@ export class AssignAccessController {
   constructor(
     @InjectQueryServiceRepository(UserEntity)
     private readonly userRepository: IUserRepository,
-    @Inject('RBAC_MANAGER') readonly rbacManager: Manager
+    @Inject('RBAC_MANAGER') readonly rbacManager: RbacManager<Permission, Role>
   ) {}
 
 	@ApiOperation({ summary: 'Assign permission or roles to user' })

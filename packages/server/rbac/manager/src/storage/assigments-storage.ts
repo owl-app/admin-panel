@@ -4,7 +4,7 @@ import { AllItemTypes, Assignment } from "../types";
  * `AssignmentsStorageInterface` represents a storage for assignment of RBAC items (a role or a permission) to a user
  * used in {@see Manager}.
  */
-export interface IAssignmentsStorageInterface
+export interface AssignmentsStorage
 {
     /**
      * Returns all role and permission assignment information.
@@ -24,6 +24,18 @@ export interface IAssignmentsStorageInterface
      */
     getByUserId(userId: string): Promise<Record<string, Assignment>>;
 
+
+    /**
+     * Returns all role or permission assignment information by the specified item names' list.
+     *
+     * @param string[] $itemNames List of item names.
+     *
+     * @return Assignment[] The assignments. An empty array will be returned if there are no users assigned to these
+     * item names.
+     * @psalm-return list<Assignment>
+     */
+    getByItemNames(itemNames: string[]): Promise<Assignment[]>;
+
     /**
      * Returns role or permission assignment for the specified item name that belongs to user with the specified ID.
      *
@@ -35,12 +47,42 @@ export interface IAssignmentsStorageInterface
     get(itemName: string, userId: string): Promise<Assignment | null>;
 
     /**
+     * Whether assignment with a given item name and user id pair exists.
+     *
+     * @param string $itemName Item name.
+     * @param string $userId User id.
+     *
+     * @return bool Whether assignment exists.
+     */
+    exists(itemName: string, userId: string): Promise<boolean>;
+
+    /**
+     * Whether at least one item from the given list is assigned to the user.
+     *
+     * @param string $userId User id.
+     * @param string[] $itemNames List of item names.
+     *
+     * @return bool Whether at least one item from the given list is assigned to the user.
+     */
+    userHasItem(userId: string, $itemNames: string[]): Promise<boolean>;
+
+    /**
+     * Filters item names leaving only the ones that are assigned to specific user.
+     *
+     * @param string $userId User id.
+     * @param string[] $itemNames List of item names.
+     *
+     * @return string[] Filtered item names.
+     */
+    filterUserItemNames(userId: string, itemNames: string[]): Promise<string[]>;
+
+    /**
      * Adds assignment of the role or permission to the user with ID specified.
      *
      * @param string itemName Item name to assign.
      * @param string userId The user ID.
      */
-    add(itemName: string, userId: string): void;
+    add(item_name: string, userId: string): Promise<void>
 
     /**
      * Returns whether there is assignment for a named role or permission.

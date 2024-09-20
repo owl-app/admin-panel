@@ -6,20 +6,22 @@ import {
   Injectable,
   Put,
   HttpCode,
-  Param
+  Param,
+  UnprocessableEntityException,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
 import { AvalilableCollections, RoleActions } from '@owl-app/lib-contracts';
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
-import { Manager } from '@owl-app/rbac-manager';
+import { RbacManager, Role } from '@owl-app/rbac-manager';
+import { Permission } from '@owl-app/lib-api-core/rbac/types/permission';
 
 @ApiTags('Rbac Role')
 @Controller('rbac/roles')
 @ApiBearerAuth()
 @Injectable()
 export class AssignController {
-  constructor(@Inject('RBAC_MANAGER') readonly rbacManager: Manager) {}
+  constructor(@Inject('RBAC_MANAGER') readonly rbacManager: RbacManager<Permission, Role>) {}
 
 	@ApiOperation({ summary: 'Assign to role permissions or other roles' })
     @ApiAcceptedResponse({
@@ -34,8 +36,18 @@ export class AssignController {
   @Put('/assign/:name')
   @RoutePermissions(AvalilableCollections.ROLE, RoleActions.ASSIGN)
   async assign(@Param('name') name: string, @Body() items: Array<string>): Promise<void> {
-    items.map(async (item: string): Promise<void> => {
-      this.rbacManager.addChild(name, item);
-    });
+    const errors: string[] = [];
+
+    await Promise.all(items.map(async (item: string): Promise<void> => {
+      try {
+        await this.rbacManager.addChild(name, item);
+      } catch (error: any) {
+        errors.push(error.message);
+      }
+    }));
+
+    if(errors.length > 0) {
+      throw new UnprocessableEntityException(errors.join(', '));
+    }
   }
 }

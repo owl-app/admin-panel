@@ -24,4 +24,9 @@ export class Assignment
       this.itemName = itemName;
       this.createdAt = createdAt;
     }
+
+    getUserId(): string
+    {
+        return this.userId;
+    }
 }

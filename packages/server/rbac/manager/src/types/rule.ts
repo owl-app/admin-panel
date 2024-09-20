@@ -14,5 +14,5 @@ export interface Rule
      *
      * @return bool Whether the rule permits the auth item it is associated with.
      */
-    execute(userId: string, item: Item, parameters?: Array<any>): boolean;
+    execute(userId: string, item: Item, parameters?: Record<string, any>): boolean;
 }

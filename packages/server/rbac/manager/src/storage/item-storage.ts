@@ -1,11 +1,11 @@
-import { Role, Permission, AccessType } from '../types';
+import { Role as BaseRole, Permission as BasePermission } from '../types';
 
 export type CustomFields = { name: string; value: unknown };
 
 /**
  * A storage for RBAC roles and permissions used in {@see Manager}.
  */
-export interface ItemsStorage
+export interface ItemsStorage<Permission extends BasePermission, Role extends BaseRole, AccessType = Permission | Role>
 {
     /**
      * Removes all roles and permissions.
@@ -27,7 +27,7 @@ export interface ItemsStorage
      * @return array Array of role and permission instances indexed by their corresponding names.
      * @psalm-return ItemsIndexedByName
      */
-    getByNames(names: string[]): Promise<Array<AccessType>>;
+    getByNames(names: string[]): Promise<Record<string, AccessType>>;
 
     /**
      * Returns the named role or permission.
@@ -62,7 +62,7 @@ export interface ItemsStorage
      *
      * @param Permission|Role $item The role or the permission to add.
      */
-    add(item: AccessType): Promise<void>;
+    add(item: AccessType, customFields: CustomFields[]): Promise<void>;
 
     /**
      * Updates the specified role or permission in the system.
@@ -163,7 +163,7 @@ export interface ItemsStorage
      * parents found).
      * @psalm-return Hierarchy
      */
-    getHierarchy(name: string): Promise<Record<string, { item: AccessType, children: AccessType }>>;
+    getHierarchy(name: string): Promise<Record<string, { item: AccessType, children: Record<string, AccessType> }>>;
 
     /**
      * Returns direct child permissions and/or roles.
@@ -222,7 +222,7 @@ export interface ItemsStorage
      *
      * @return bool Whether selected parent has a child with a given name.
      */
-    hasChild(parentName: string, childName: string): boolean;
+    hasChild(parentName: string, childName: string): Promise<boolean>;
 
     /**
      * Returns whether selected parent has a direct child with a given name.
@@ -232,7 +232,7 @@ export interface ItemsStorage
      *
      * @return bool Whether selected parent has a direct child with a given name.
      */
-    hasDirectChild(parentName: string, childName: string): boolean;
+    hasDirectChild(parentName: string, childName: string): Promise<boolean>;
 
     /**
      * Adds a role or a permission as a child of another role or permission.

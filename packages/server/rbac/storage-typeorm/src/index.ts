@@ -1,3 +1,5 @@
 export * from './config.interface'
-export * from './item-storage'
+export * from './items-storage'
 export * from './providers'
+export * from './item.factory'
+export * from './types'

@@ -1,569 +1,356 @@
 import { Registry } from "@owl-app/registry";
-import {
-  isEmpty,
-  isFunction,
-  isNotEmpty,
-  isNumeric,
-  isObject,
-} from '@owl-app/utils';
-import { IAccessCheckerInterface } from './access-checker.interface';
-import {
-  IItemsStorageInterface,
-  IAssignmentsStorageInterface,
-  CustomFields,
-} from './storage';
+
+import { ItemsStorage, AssignmentsStorage, CustomFields } from "./storage";
+
 import {
   Item,
+  Permission as BasePermission,
+  Role as BaseRole,
+  Assignment,
+  AccessType,
+  Rule,
   Permission,
   Role,
-  Assignment,
-  TypesItem,
-  CallbackDefaultRoleNames,
-  UserId,
-  AccessType,
-  IRuleInterface,
 } from './types';
-import { InvalidArgumentException } from './exceptions';
-import { RuntimeException } from './exceptions/runtime.exception';
-import { ItemAlreadyExistsException } from './exceptions/item-alredy-exists.exception';
-import { DefaultRoleNotFoundException } from './exceptions/default-role-not-found.exception';
+import { ItemAlreadyExistsException } from "./exceptions/item-alredy-exists.exception";
+import { RuntimeException } from "./exceptions/runtime.exception";
 
-/**
- * An authorization manager that helps with building RBAC hierarchy and check for permissions.
- */
-export class Manager implements IAccessCheckerInterface {
-  /**
-   * A list of role names that are assigned to every user automatically without calling {@see assign()}.
-   * Note that these roles are applied to users, regardless of their state of authentication.
-   */
-  private defaultRoleNames: Array<string> = [];
-
+export class RbacManager<Permission extends BasePermission, Role extends BaseRole> {
+  private defaultRoleNames: string[] = [];
   private guestRoleName: string | null = null;
 
   constructor(
-    readonly itemsStorage: IItemsStorageInterface,
-    readonly assignmentsStorage: IAssignmentsStorageInterface,
-    readonly serviceRegistryRules: Registry<IRuleInterface>,
-    readonly enableDirectPermissions = false
-  ) {}
+      readonly itemsStorage: ItemsStorage<Permission, Role>,
+      readonly assignmentsStorage: AssignmentsStorage,
+      readonly serviceRegistryRules: Registry<Rule>,
+      readonly enableDirectPermissions = false,
+      readonly includeRolesInAccessChecks = false,
+  ) {
+
+  }
 
   async userHasPermission(
-    userId: UserId | null,
-    permissionName: string,
-    $parameters: Array<any>
+      userId: string | number | null,
+      permissionName: string,
+      parameters: Record<string, any> = {},
   ): Promise<boolean> {
-    if (userId === null) {
-      return this.guestHasPermission(permissionName);
-    }
+    const item = await this.itemsStorage.get(permissionName);
+    if (!item) return false;
 
-    const parsedUserId = this.ensureStringUserId(userId);
-    const assignments: Record<string, Assignment> =
-      await this.assignmentsStorage.getByUserId(parsedUserId);
+    if (!this.includeRolesInAccessChecks && item.type === 'role') return false;
 
-    if (isEmpty(assignments)) {
-      return false;
-    }
+    const guestRole = userId === null ? await this.getGuestRole() : null;
+    if (userId === null && guestRole === null) return false;
 
-    return this.userHasItem(
-      parsedUserId,
-      await this.itemsStorage.getPermission(permissionName),
-      $parameters,
-      assignments
-    );
-  }
+    const hierarchy = await this.itemsStorage.getHierarchy(item.getName());
+    const hierarchyValues = Object.values(hierarchy);
 
-  /**
-   * Checks the possibility of adding a child to parent.
-   *
-   * @param string parentName The name of the parent item.
-   * @param string childName The name of the child item to be added to the hierarchy.
-   *
-   * @return bool Whether it is possible to add the child to the parent.
-   */
-  async canAddChild(parentName: string, childName: string): Promise<boolean> {
-    return (
-      (await this.canBeParent(parentName, childName)) &&
-      !this.hasLoop(parentName, childName)
-    );
-  }
+    const itemNames: string[] = [];
 
-  /**
-   * Adds an item as a child of another item.
-   *
-   * @param string parentName The name of the parent item.
-   * @param string childName The name of the child item.
-   *
-   * @throws RuntimeException
-   * @throws InvalidArgumentException
-   *
-   * @return self
-   */
-  async addChild(parentName: string, childName: string): Promise<this> {
-    if (!this.hasItem(parentName)) {
-      throw new InvalidArgumentException(
-        `Either ${parentName} does not exist.`
-      );
-    }
-
-    if (!this.hasItem(childName)) {
-      throw new InvalidArgumentException(`Either ${childName} does not exist.`);
-    }
-
-    if (parentName === childName) {
-      throw new InvalidArgumentException(
-        `Cannot add ${parentName} as a child of itself.`
-      );
-    }
-
-    if (!this.canBeParent(parentName, childName)) {
-      throw new InvalidArgumentException(
-        `Can not add ${childName} role as a child of ${parentName} permission.`
-      );
-    }
-
-    if (await this.hasLoop(parentName, childName)) {
-      throw new RuntimeException(
-        `Cannot add ${childName} as a child of ${parentName}. A loop has been detected.`
-      );
-    }
-
-    const children = await this.itemsStorage.getChildren(parentName);
-
-    if (isNotEmpty(children[childName])) {
-      throw new RuntimeException(
-        `The item ${parentName} already has a child ${childName}.`
-      );
-    }
-
-    this.itemsStorage.addChild(parentName, childName);
-
-    return this;
-  }
-
-  /**
-   * Removes a child from its parent.
-   * Note, the child item is not deleted. Only the parent-child relationship is removed.
-   *
-   * @param string parentName The name of the parent item.
-   * @param string childName The name of the child item.
-   *
-   * @return self
-   */
-  async removeChild(parentName: string, childName: string): Promise<this> {
-    const hasChild = await this.hasChild(parentName, childName);
-
-    if (hasChild) {
-      this.itemsStorage.removeChild(parentName, childName);
-    }
-
-    return this;
-  }
-
-  /**
-   * Removes all children form their parent.
-   * Note, the children items are not deleted. Only the parent-child relationships are removed.
-   *
-   * @param string parentName The name of the parent item.
-   *
-   * @return self
-   */
-  async removeChildren(parentName: string): Promise<this> {
-    if (await this.itemsStorage.hasChildren(parentName)) {
-      await this.itemsStorage.removeChildren(parentName);
-    }
-
-    return this;
-  }
-
-  /**
-   * Returns a value indicating whether the child already exists for the parent.
-   *
-   * @param string parentName The name of the parent item.
-   * @param string childName The name of the child item.
-   *
-   * @return bool Whether `$child` is already a child of `$parent`
-   */
-  async hasChild(parentName: string, childName: string): Promise<boolean> {
-    const childrens = await this.itemsStorage.getChildren(parentName);
-
-    return childName in childrens;
-  }
-
-  /**
-   * Assigns a role or permission to a user.
-   *
-   * @param string itemName Name of the role or the permission to be assigned.
-   * @param UserId userId The user ID.
-   *
-   * @throws Exception If the role or permission has already been assigned to the user.
-   *
-   * @return self
-   */
-  async assign(itemName: string, userId: UserId): Promise<this> {
-    const parsedUserId = this.ensureStringUserId(userId);
-
-    const item: AccessType | null = await this.itemsStorage.get(itemName);
-
-    if (item === null) {
-      throw new InvalidArgumentException(`There is no item named ${itemName}.`);
-    }
-
-    if (!this.enableDirectPermissions && item.type === TypesItem.PERMISSION) {
-      throw new InvalidArgumentException(
-        'Assigning permissions directly is disabled. Prefer assigning roles only.'
-      );
-    }
-
-    if (await this.assignmentsStorage.get(itemName, parsedUserId) !== null) {
-      throw new InvalidArgumentException(
-        `${itemName} ${item.type} has already been assigned to user ${parsedUserId}.`
-      );
-    }
-
-    await this.assignmentsStorage.add(itemName, parsedUserId);
-
-    return this;
-  }
-
-  /**
-   * Revokes a role or a permission from a user.
-   *
-   * @param string itemName The name of the role or permission to be revoked.
-   * @param userId userId The user ID.
-   *
-   * @return self
-   */
-  revoke(itemName: string, userId: UserId): this {
-    const parsedUserId = this.ensureStringUserId(userId);
-
-    if (this.assignmentsStorage.get(itemName, parsedUserId) !== null) {
-      this.assignmentsStorage.remove(itemName, parsedUserId);
-    }
-
-    return this;
-  }
-
-  /**
-   * Revokes all roles and permissions from a user.
-   *
-   * @param userId userId The user ID.
-   *
-   * @return self
-   */
-  revokeAll(userId: UserId): this {
-    const parsedUserId = this.ensureStringUserId(userId);
-
-    this.assignmentsStorage.removeByUserId(parsedUserId);
-
-    return this;
-  }
-
-  /**
-   * Returns the roles that are assigned to the user via @see assign().
-   * Note that child roles that are not assigned directly to the user will not be returned.
-   *
-   * @param UserId userId The user ID.
-   *
-   * @return Role[] All roles directly assigned to the user. The array is indexed by the role names.
-   */
-  async getRolesByUserId(userId: UserId): Promise<Array<Role>> {
-    const parsedUserId = this.ensureStringUserId(userId)
-    const assigments: Record<string, Assignment> =
-        await this.assignmentsStorage.getByUserId(parsedUserId)
-    const roles = this.getDefaultRoles();
-    const resultRoles: Array<Promise<Role>> = [];
-
-    Object.keys(assigments).forEach(async (name) => {
-      resultRoles.push(this.itemsStorage.getRole(
-        assigments[name].itemName
-      ))
-    })
-
-    return [...roles, ...await Promise.all(resultRoles)];
-  }
-
-  /**
-   * Returns child roles of the role specified. Depth isn't limited.
-   *
-   * @param string roleName Name of the role to get child roles for.
-   *
-   * @throws InvalidArgumentException If role was not found by `$roleName`.
-   *
-   * @return Role[] Child roles. The array is indexed by the role names. First element is an instance of the parent
-   * role itself.
-   */
-  async getChildRoles(roleName: string): Promise<Array<Role>> {
-    const role = await this.itemsStorage.getRole(roleName);
-    if (role === null) {
-      throw new InvalidArgumentException(`Role ${roleName} not found.`);
-    }
-
-    const result = {};
-
-    await this.getChildrenRecursive(roleName, result);
-
-    return [...[role], ...(await this.getRolesPresentInArray(result))];
-  }
-
-  /**
-   * Returns all permissions that the specified role represents.
-   *
-   * @param string roleName The role name.
-   *
-   * @return Permission[] All permissions that the role represents. The array is indexed by the permission names.
-   */
-  async getPermissionsByRoleName(
-    roleName: string
-  ): Promise<Record<string, Permission>> {
-    const result = {};
-    await this.getChildrenRecursive(roleName, result);
-
-    if (isEmpty(result)) {
-      return {};
-    }
-
-    const normalizedPermissions = await this.normalizePermissions(result);
-
-    return normalizedPermissions;
-  }
-
-  /**
-   * Returns all permissions that the user has.
-   *
-   * @param UserId userId The user ID.
-   *
-   * @return Permission[] All permissions that the user has. The array is indexed by the permission names.
-   */
-  async getPermissionsByUserId(
-    userId: UserId
-  ): Promise<Record<string, Permission>> {
-    const parsedUserId = this.ensureStringUserId(userId);
-
-    return Object.assign(
-      await this.getInheritedPermissionsByUser(parsedUserId)
-    );
-  }
-
-  /**
-   * @param UserId userId
-   *
-   * @return string
-   */
-  ensureStringUserId(userId: UserId): string {
-    if (!(typeof userId === 'string' || userId instanceof String) && !isNumeric(userId) && !isObject(userId)) {
-      throw new InvalidArgumentException(
-        `User ID must be a string, an integer, or an object with id "__toString()", ${userId} given.`
-      );
-    }
-
-    return (typeof userId === 'object' ? userId.id : userId).toString();
-  }
-
-  /**
-   * Returns all user IDs assigned to the role specified.
-   *
-   * @param string roleName The role name.
-   *
-   * @return array Array of user ID strings.
-   */
-  async getUserIdsByRoleName($roleName: string): Promise<Array<string>> {
-    const result: Array<string> = [];
-    const roles = [
-      ...[$roleName],
-      ...Object.keys(this.itemsStorage.getParents($roleName)),
-    ];
-    const userAssignments = await this.assignmentsStorage.getAll();
-
-    Object.keys(userAssignments).forEach(async (userId) => {
-      // eslint-disable-next-line array-callback-return
-      roles.every((role: string): void => {
-        if (role in userAssignments[userId]) {
-          result.push(userId);
-        }
-      });
+    Object.values(hierarchy).forEach((treeItem: { item: AccessType, children: Record<string, AccessType> }) => {
+      itemNames.push(treeItem.item.getName());
     });
 
-    return result;
+    const userItemNames = guestRole
+        ? [guestRole.getName()]
+        : await this.filterUserItemNames(String(userId), itemNames);
+
+    const userItemNamesMap: Record<string, null> = {};
+    
+    userItemNames.forEach(userItemName => {
+        userItemNamesMap[userItemName] = null;
+    });
+
+    for (let i = 0; i <= hierarchyValues.length; i+=1) {
+      if (
+        !(hierarchyValues[i].item.getName() in userItemNamesMap) ||
+        !this.executeRule(userId ? String(userId) : null, hierarchyValues[i].item, parameters)
+      ) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+
+      let hasPermission = true;
+
+      Object.values(hierarchyValues[i].children).forEach((childItem: AccessType) => {
+        if (!this.executeRule(userId ? String(userId) : null, childItem, parameters)) {
+          hasPermission = false;
+          return;
+        }
+      });
+
+      if (hasPermission) {
+          return true;
+      }
+    }
+
+    return false;
   }
 
-  async getAllRoles(): Promise<Role[]>
-  {
-    const roles = await this.itemsStorage.getRoles();
-
-    return roles;
+  async canAddChild(parentName: string, childName: string): Promise<boolean> {
+    try {
+        await this.assertFutureChild(parentName, childName);
+    } catch {
+        return false;
+    }
+    return true;
   }
 
-  /**
-   * @param Role $role
-   *
-   * @throws ItemAlreadyExistsException
-   */
-  async addRole(role: Role, customFields?: CustomFields[]): Promise<Role> {
-    await this.addItem(role, customFields);
+  async addChild(parentName: string, childName: string): Promise<this> {
+    await this.assertFutureChild(parentName, childName);
+    await this.itemsStorage.addChild(parentName, childName);
 
-    return role;
-  }
-
-  /**
-   * @param string name The role name.
-   */
-  async removeRole(name: string): Promise<void> {
-    this.removeItem(name);
-  }
-
-  /**
-   * @param string name The role name.
-   * @param Role role
-   *
-   * @return self
-   */
-  async updateRole(name: string, role: Role): Promise<Role> {
-    await this.checkItemNameForUpdate(role, name);
-
-    await this.itemsStorage.update(name, role);
-    await this.assignmentsStorage.renameItem(name, role.name);
-
-    return role;
-  }
-
-  async getAllPermissions(): Promise<Permission[]>
-  {
-    const itemSorages = await this.itemsStorage.getPermissions();
-
-    return itemSorages;
-  }
-
-  /**
-   * @param Permission permission
-   *
-   * @throws ItemAlreadyExistsException
-   *
-   * @return self
-   */
-  async addPermission(permission: Permission, customField?: CustomFields[]): Promise<Permission> {
-    await this.addItem(permission, customField);
-
-    return permission;
-  }
-
-  /**
-   * @param string permissionName The permission name.
-   *
-   * @return self
-   */
-  async removePermission(permissionName: string): Promise<this> {
-    await this.removeItem(permissionName);
-  
     return this;
   }
 
-  /**
-   * @param string name The permission name.
-   * @param Permission permission
-   *
-   * @return self
-   */
-  async updatePermission(name: string, permission: Permission): Promise<Permission> {
-    await this.checkItemNameForUpdate(permission, name);
+  async removeChild(parentName: string, childName: string): Promise<this> {
+    await this.itemsStorage.removeChild(parentName, childName);
+    return this;
+  }
 
-    await this.itemsStorage.update(name, permission);
-    await this.assignmentsStorage.renameItem(name, permission.name);
+  async removeChildren(parentName: string): Promise<this> {
+    this.itemsStorage.removeChildren(parentName);
+    return this;
+  }
+
+  async hasChild(parentName: string, childName: string): Promise<boolean> {
+    return this.itemsStorage.hasDirectChild(parentName, childName);
+  }
+
+  async hasChildren(parentName: string): Promise<boolean> {
+      return this.itemsStorage.hasChildren(parentName);
+  }
+
+  async assign(itemName: string, userId: string | number, createdAt?: Date): Promise<this> {
+    const parsedUserId = String(userId);
+
+    const item = await this.itemsStorage.get(itemName);
+    if (!item) throw new Error(`There is no item named "${itemName}".`);
+
+    if (!this.enableDirectPermissions && item.type === 'permission') {
+        throw new Error('Assigning permissions directly is disabled. Prefer assigning roles only.');
+    }
+
+    if (this.assignmentsStorage.exists(itemName, parsedUserId)) return this;
+
+    const assignment = new Assignment(parsedUserId, itemName, createdAt instanceof Date ? createdAt : new Date());
+    this.assignmentsStorage.add(assignment.itemName, assignment.getUserId());
+
+    return this;
+  }
+
+  async revoke(itemName: string, userId: string | number): Promise<this> {
+      await this.assignmentsStorage.remove(itemName, String(userId));
+      return this;
+  }
+
+  async revokeAll(userId: string | number): Promise<this> {
+      await this.assignmentsStorage.removeByUserId(String(userId));
+      return this;
+  }
+
+  async getItemsByUserId(userId: string | number): Promise<Item[]> {
+    const parsedUserId = String(userId);
+    const assignments = await this.assignmentsStorage.getByUserId(parsedUserId);
+    const assignmentNames = Object.keys(assignments);
+
+    return [
+        ...Object.values(this.getDefaultRoles()),
+        ...Object.values(await this.itemsStorage.getByNames(assignmentNames)),
+        ...Object.values(await this.itemsStorage.getAllChildren(assignmentNames)),
+    ];
+  }
+
+  async getRolesByUserId(userId: string | number): Promise<Role[]> {
+    const parsedUserId = String(userId);
+    const assignments = await this.assignmentsStorage.getByUserId(parsedUserId);
+    const assignmentNames = Object.keys(assignments);
+
+    return [
+      ...Object.values(this.getDefaultRoles()),
+      ...Object.values(await this.itemsStorage.getRolesByNames(assignmentNames)),
+      ...Object.values(await this.itemsStorage.getAllChildRoles(assignmentNames)),
+    ];
+  }
+
+  async getChildRoles(roleName: string): Promise<Record<string, Role>> {
+    if (!this.itemsStorage.roleExists(roleName)) {
+        throw new Error(`Role "${roleName}" not found.`);
+    }
+
+    const allChildRoles = await this.itemsStorage.getAllChildRoles(roleName)
+
+    return allChildRoles;
+  }
+
+  async getPermissionsByRoleName(roleName: string): Promise<Record<string, Permission>> {
+    const allChildPermissions = await this.itemsStorage.getAllChildPermissions(roleName);
+
+    return allChildPermissions;
+  }
+
+  async getPermissionsByUserId(userId: string | number): Promise<Permission[]> {
+    const parsedUserId = String(userId);
+    const assignments = await this.assignmentsStorage.getByUserId(parsedUserId);
+    if (Object.keys(assignments).length === 0) return [];
+
+    const assignmentNames = Object.keys(assignments);
+
+    return [
+        ...Object.values(await this.itemsStorage.getPermissionsByNames(assignmentNames)),
+        ...Object.values(await this.itemsStorage.getAllChildPermissions(assignmentNames)),
+    ];
+  }
+
+  async getUserIdsByRoleName(roleName: string): Promise<string[]> {
+    const roleNames = [roleName, ...Object.keys(await this.itemsStorage.getParents(roleName))];
+
+    const assigments = await this.assignmentsStorage.getByItemNames(roleNames);
+
+    return assigments.map(assignment => assignment.getUserId());
+  }
+
+  async addRole(role: Role): Promise<this> {
+    await this.addItem(role);
+
+    return this;
+  }
+
+  async getRole(name: string): Promise<Role | null> {
+    const role = await this.itemsStorage.getRole(name);
+
+    return role;
+  }
+
+  async updateRole(name: string, role: Role): Promise<this> {
+    await this.assertItemNameForUpdate(role, name);
+    await this.itemsStorage.update(name, role);
+    await this.assignmentsStorage.renameItem(name, role.getName());
+
+    return this;
+  }
+
+  async removeRole(name: string): Promise<this> {
+    await this.removeItem(name);
+
+    return this;
+  }
+
+  async addPermission(permission: Permission, customField?: CustomFields[]): Promise<this> {
+    await this.addItem(permission, customField);
+
+    return this;
+  }
+
+  async getPermission(name: string): Promise<Permission | null> {
+    const permission = this.itemsStorage.getPermission(name);
 
     return permission;
   }
 
-  /**
-   * Set default role names.
-   *
-   * @param Closure|string[] roleNames Either array of role names or a closure returning it.
-   *
-   * @throws InvalidArgumentException When `$roles` is neither array nor closure.
-   * @throws RuntimeException When callable returns not array.
-   */
-  setDefaultRoleNames(
-    roleNames: CallbackDefaultRoleNames | Array<string>
-  ): this {
-    if (Array.isArray(roleNames)) {
-      this.defaultRoleNames = roleNames;
-      return this;
-    }
+  async updatePermission(name: string, permission: Permission): Promise<this> {
+    await this.assertItemNameForUpdate(permission, name);
+    await this.itemsStorage.update(name, permission);
+    await this.assignmentsStorage.renameItem(name, permission.getName());
 
-    if (isFunction(roleNames)) {
-      const defaultRoleNames = roleNames();
-
-      if (Array.isArray(defaultRoleNames)) {
-        throw new RuntimeException(
-          'Default role names closure must return an array.'
-        );
-      }
-      this.defaultRoleNames = defaultRoleNames;
-      return this;
-    }
-
-    throw new InvalidArgumentException(
-      'Default role names must be either an array or a closure.'
-    );
+    return this;
   }
 
-  /**
-   * Returns default role names.
-   *
-   * @return string[] Default role names.
-   */
-  getDefaultRoleNames(): Array<string> {
+  async removePermission(name: string): Promise<this> {
+    await this.removeItem(name);
+
+    return this;
+  }
+
+  setDefaultRoleNames(roleNames: string[] | (() => string[])): this {
+    this.defaultRoleNames = Array.isArray(roleNames) ? roleNames : roleNames();
+
+    return this;
+  }
+
+  getDefaultRoleNames(): string[] {
     return this.defaultRoleNames;
   }
 
-  /**
-   * Returns default roles.
-   *
-   * @return Role[] Default roles. The array is indexed by the role names.
-   */
-  getDefaultRoles(): Array<Role> {
-    const roles: Array<Role> = [];
-
-    Object.values(this.defaultRoleNames).forEach(async (roleName: string) => {
-      const role = await this.itemsStorage.getRole(roleName);
-
-      if (role === null) {
-        throw new DefaultRoleNotFoundException(
-          `Default role ${roleName} not found.`
-        );
-      }
-
-      roles.push(role);
-    });
-
-    return roles;
-  }
-
-  /**
-   * Set guest role name.
-   *
-   * @param string|null $name The guest role name.
-   */
   setGuestRoleName(name: string | null): this {
     this.guestRoleName = name;
     return this;
   }
 
-  /**
-   * Executes the rule associated with the specified role or permission.
-   *
-   * If the item does not specify a rule, this method will return `true`. Otherwise, it will
-   * return the value of @see RuleInterface::execute().
-   *
-   * @param string user The user ID. This should be a string representing the unique identifier of a user.
-   * @param Item item The role or the permission that needs to execute its rule.
-   * @param array params Parameters passed to @see AccessCheckerInterface::userHasPermission() and will be passed
-   * to the rule.
-   *
-   * @throws RuntimeException If the role or the permission has an invalid rule.
-   *
-   * @return bool The return value of @see RuleInterface::execute(). If the role or the permission does not specify
-   * a rule, `true` will be returned.
-   */
-  private executeRule(user: string, item: Item, params: Array<any>): boolean {
+  getGuestRoleName(): string | null {
+    return this.guestRoleName;
+  }
+
+  async getGuestRole(): Promise<Role | null> {
+    if(!this.guestRoleName) return null;
+
+    const role = await this.getRole(this.guestRoleName);
+
+    return role;
+  }
+
+  private async addItem(item: Role | Permission, customField?: CustomFields[]): Promise<void> {
+    if (await this.itemsStorage.exists(item.getName())) {
+      throw new ItemAlreadyExistsException(item);
+    }
+
+    await this.itemsStorage.add(item, customField);
+  }
+
+  private async removeItem(name: string): Promise<void> {
+    if (!await this.itemsStorage.exists(name)) {
+      return;
+    }
+
+    await this.itemsStorage.remove(name);
+    await this.assignmentsStorage.removeByItemName(name);
+  }
+
+  private async assertItemNameForUpdate(item: Role | Permission, oldName: string): Promise<void> {
+    if (item.getName() === oldName) {
+      return;
+    }
+
+    if (await this.itemsStorage.exists(item.getName())) {
+      throw new ItemAlreadyExistsException(item);
+    }
+  }
+
+  async assertFutureChild(parentName: string, childName: string): Promise<void> {
+    if (parentName === childName) {
+        throw new RuntimeException("Cannot add \"$parentName\" as a child of itself.");
+    }
+
+    const parent = await this.itemsStorage.get(parentName);
+
+    if (parent === null) {
+        throw new RuntimeException(`Parent ${parentName} does not exist.`);
+    }
+
+    const child = await this.itemsStorage.get(childName);
+
+    if (child === null) {
+        throw new RuntimeException(`Child ${childName} does not exist.`);
+    }
+
+    if (parent instanceof Permission && child instanceof Role) {
+        throw new RuntimeException(
+            `Can not add ${childName} role as a child of ${parentName} permission.`,
+        );
+    }
+
+    if (await this.itemsStorage.hasDirectChild(parentName, childName)) {
+        throw new RuntimeException(`The item ${parentName} already has a child ${childName}.`);
+    }
+
+    if (await this.itemsStorage.hasChild(childName, parentName)) {
+        throw new RuntimeException(
+            `Cannot add ${childName} as a child of ${parentName}. A loop has been detected.`,
+        );
+    }
+  }
+
+  private executeRule(user: string, item: Item, params: Record<string, any>): boolean {
     if (
       item.ruleName === null ||
       item.ruleName === null ||
@@ -577,273 +364,20 @@ export class Manager implements IAccessCheckerInterface {
       .execute(user, item, params);
   }
 
-  /**
-   * @throws ItemAlreadyExistsException
-   */
-  private async addItem(item: Item, customField?: CustomFields[]): Promise<void> {
-    if (await this.itemsStorage.exists(item.name)) {
-      throw new ItemAlreadyExistsException(item);
-    }
+  private async getDefaultRoles(): Promise<Record<string, Role | null>> {
+    if (this.defaultRoleNames.length === 0) return null;
 
-    const date = new Date();
-    if (!item.hasCreatedAt()) {
-      item.createdAt = date;
-    }
-    if (!item.hasUpdatedAt()) {
-      item.updatedAt = date;
-    }
+    const roles = await this.itemsStorage.getRolesByNames(this.defaultRoleNames);
 
-    await this.itemsStorage.add(item, customField);
+    return roles;
   }
 
-  private async hasItem(name: string): Promise<boolean> {
-    return (await this.itemsStorage.get(name)) !== null;
-  }
+  async filterUserItemNames(userId: string, itemNames: string[]): Promise<string[]> {
+    const filterUserItemNames = await this.assignmentsStorage.filterUserItemNames(userId, itemNames);
 
-  private async normalizePermissions(
-    permissionNames: Record<string, boolean>
-  ): Promise<Record<string, Permission>> {
-    const normalizePermissions: Record<string, Permission> = {};
-    const resultPermissions: Array<Promise<Permission>> = [];
-  
-    Object.keys(permissionNames).forEach(async (permissionName) => {
-      resultPermissions.push(this.itemsStorage.getPermission(permissionName))
-    })
-
-    const permissions = await Promise.all(resultPermissions);
-
-    permissions.forEach((permission) => { 
-      normalizePermissions[permission.name] = permission
-    })
-
-    return normalizePermissions;
-  }
-
-  /**
-   * Returns all permissions that are directly assigned to user.
-   *
-   * @param string $userId The user ID.
-   *
-   * @return Permission[] All direct permissions that the user has. The array is indexed by the permission names.
-   */
-  private async getDirectPermissionsByUser(
-    userId: string
-  ): Promise<Record<string, Permission>> {
-    const permissions: Record<string, Permission> = {};
-    const assigments = await this.assignmentsStorage.getByUserId(userId);
-
-    Object.keys(assigments).forEach(async (name) => { 
-      const permission = await this.itemsStorage.getPermission(
-        assigments[name].itemName
-      );
-
-      if (permission !== null) {
-        permissions[name] = permission;
-      }
-    });
-
-    return permissions;
-  }
-
-  /**
-   * Returns all permissions that the user inherits from the roles assigned to him.
-   *
-   * @param string $userId The user ID.
-   *
-   * @return Permission[] All inherited permissions that the user has. The array is indexed by the permission names.
-   */
-  private async getInheritedPermissionsByUser(
-    userId: string
-  ): Promise<Record<string, Permission>> {
-    const assignments = await this.assignmentsStorage.getByUserId(userId);
-    const result:Record<string, boolean> = {};
-    const resultChildrenResursive: Promise<void>[] = [];
-
-    Object.keys(assignments).forEach(async (roleName) => { 
-      resultChildrenResursive.push(this.getChildrenRecursive(roleName, result));
-    })
-
-    await Promise.all(resultChildrenResursive);
-
-    if (isEmpty(result)) {
-      return {};
-    }
-
-    const normalizedPermissions = await this.normalizePermissions(result);
-
-    return normalizedPermissions;
-  }
-
-  private async removeItem(name: string): Promise<void> {
-    if (await this.hasItem(name)) {
-      await this.itemsStorage.remove(name);
-      await this.assignmentsStorage.removeByItemName(name);
-    }
-  }
-
-  /**
-   * Performs access check for the specified user.
-   *
-   * @param string $user The user ID. This should be a string representing the unique identifier of a user.
-   * @param Item|null $item The permission or the role that need access check.
-   * @param array $params Name-value pairs that would be passed to rules associated with the permissions and roles
-   * assigned to the user. A param with name 'user' is added to this array, which holds the value of `$userId`.
-   * @param Assignment[] $assignments The assignments to the specified user.
-   *
-   * @throws RuntimeException
-   *
-   * @return bool Whether the operations can be performed by the user.
-   */
-  private userHasItem(
-    user: string,
-    item: Item | null,
-    params: Array<Item>,
-    assignments: Record<string, Assignment>
-  ): boolean {
-    if (item === null) {
-      return false;
-    }
-
-    if (!this.executeRule(user, item, params)) {
-      return false;
-    }
-
-    if (item.name in assignments) {
-      return true;
-    }
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const parentName in this.itemsStorage.getParents(item.name)) {
-      if (parentName in assignments) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private async guestHasPermission(permissionName: string): Promise<boolean> {
-    if (this.guestRoleName === null) {
-      return false;
-    }
-
-    if (
-      this.itemsStorage.getRole(this.guestRoleName) === null ||
-      !this.itemsStorage.hasChildren(this.guestRoleName)
-    ) {
-      return false;
-    }
-
-    const permissions = await this.itemsStorage.getChildren(
-      this.guestRoleName
-    );
-
-    return isNotEmpty(permissions[permissionName]);
-  }
-
-  /**
-   * Checks whether there is a loop in the authorization item hierarchy.
-   *
-   * @param string $parentName Name of the parent item.
-   * @param string $childName Name of the child item that is to be added to the hierarchy.
-   *
-   * @return bool Whether a loop exists.
-   */
-  private async hasLoop(
-    parentName: string,
-    childName: string
-  ): Promise<boolean> {
-    if (childName === parentName) {
-      return true;
-    }
-
-    const children = await this.itemsStorage.getChildren(childName);
-
-    if (isEmpty(children)) {
-      return false;
-    }
-
-    return Object.values(children).every(async (groupChild: Item) => {
-      const hasLoop = await this.hasLoop(parentName, groupChild.name);
-
-      if (hasLoop) {
-        return true;
-      }
-
-      return false;
-    });
-  }
-
-  /**
-   * Recursively finds all children and grand children of the specified item.
-   *
-   * @param string $name The name of the item whose children are to be looked for.
-   * @param array<string, boolean> $result The children and grand children (in array keys).
-   */
-  private async getChildrenRecursive(
-    name: string,
-    result: Record<string, boolean>
-  ): Promise<void> {
-    const children = await this.itemsStorage.getChildren(name);
-    const resultPromise: Array<Promise<void>> = []
-
-    if (isEmpty(children)) {
-      return;
-    }
-
-    Object.keys(children).forEach(async (childName) => {
-      result[childName] = true;
-      resultPromise.push(this.getChildrenRecursive(childName, result));
-    });
-
-    await Promise.all(resultPromise);
-  }
-
-  /**
-   * @param true[] $array
-   *
-   * @return Role[]
-   */
-  private async getRolesPresentInArray(
-    array: Record<string, boolean>
-  ): Promise<Array<Role>> {
-    const roles: Array<Role> = await this.itemsStorage.getRoles();
-
-    return roles.filter((roleItem: Role) => roleItem.name in array);
-  }
-
-  private async canBeParent(
-    parentName: string,
-    childName: string
-  ): Promise<boolean> {
-    const parent: AccessType | null = await this.itemsStorage.get(parentName);
-
-    if (parent === null) {
-      throw new InvalidArgumentException(
-        'There is no item named "$parentName".'
-      );
-    }
-
-    const child: AccessType | null = await this.itemsStorage.get(childName);
-    if (child === null) {
-      throw new InvalidArgumentException(
-        'There is no item named "$childName".'
-      );
-    }
-
-    return (
-      parent.type !== TypesItem.PERMISSION || child.type !== TypesItem.ROLE
-    );
-  }
-
-  private async checkItemNameForUpdate(
-    item: Item,
-    name: string
-  ): Promise<void> {
-    if (item.name === name || !(await this.hasItem(item.name))) {
-      return;
-    }
-
-    throw new InvalidArgumentException(`Unable to change the role or the permission name. The name ${item.name} is already used by another role or permission.`);
+    return [
+      ...filterUserItemNames,
+      ...this.defaultRoleNames,
+    ];
   }
 }

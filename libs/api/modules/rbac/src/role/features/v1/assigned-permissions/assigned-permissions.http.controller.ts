@@ -10,14 +10,15 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagg
 
 import { AvalilableCollections, RoleActions } from '@owl-app/lib-contracts';
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
-import { Manager } from '@owl-app/rbac-manager'
+import { RbacManager, Role } from '@owl-app/rbac-manager'
+import { Permission } from '@owl-app/lib-api-core/rbac/types/permission';
 
 @ApiTags('Rbac Role')
 @Controller('rbac/roles')
 @ApiBearerAuth()
 @Injectable()
 export class AssignedPermissionsController {
-  constructor(@Inject('RBAC_MANAGER') readonly rbacManager: Manager) {}
+  constructor(@Inject('RBAC_MANAGER') readonly rbacManager: RbacManager<Permission, Role>) {}
 
   @ApiOperation({ summary: 'Find all assigned permissions to role' })
     @ApiResponse({

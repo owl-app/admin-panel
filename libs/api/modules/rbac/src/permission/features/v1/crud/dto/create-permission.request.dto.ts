@@ -12,4 +12,9 @@ export class CreatePermissionRequest extends BaseRbacItemRequest implements ICre
   @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
   collection: string;
 
+  @ApiProperty({ type: () => String })
+  @IsNotEmpty()
+  @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
+  refer: string;
+
 }

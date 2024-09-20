@@ -18,6 +18,7 @@ export enum UserActions {
   ME = 'ME',
   LOGOUT = 'LOGOUT',
   ASSIGN_ACCESS = 'ASSIGN_ACCESS',
+  PERMISSIONS = 'PERMISSIONS',
 }
 
 export enum RoleActions {
