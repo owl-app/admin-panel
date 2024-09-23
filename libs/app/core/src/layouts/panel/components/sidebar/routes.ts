@@ -1,9 +1,19 @@
+import { AvalilableCollections, CrudActions } from "@owl-app/lib-contracts";
+
+import { usePermissions } from "../../../../composables/use-permissions";
+
 export interface INavigationRoute {
-  name: string
-  displayName: string
-  meta: { icon: string, untrackedPages?: string[] }
-  children?: INavigationRoute[]
+  name: string;
+  displayName: string;
+  hasPermission: boolean;
+  meta: {
+    icon: string,
+    untrackedPages?: string[],
+  };
+  children?: INavigationRoute[];
 }
+
+const { hasRoutePermission } = usePermissions();
 
 export default {
   root: {
@@ -17,6 +27,7 @@ export default {
       meta: {
         icon: 'vuestic-iconset-dashboard',
       },
+      hasPermission: true
     },
     {
       name: 'time-list',
@@ -24,6 +35,7 @@ export default {
       meta: {
         icon: 'vuestic-iconset-dashboard',
       },
+      hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.TIME),
     },
     {
       name: 'manage',
@@ -35,6 +47,7 @@ export default {
           meta: {
             icon: 'sensor_occupied',
           },
+          hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.CLIENT),
         },
       ]
     },
@@ -49,6 +62,7 @@ export default {
             icon: 'guardian',
             untrackedPages: ['role-permission-assign'],
           },
+          hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.ROLE),
         },
         {
           name: 'permission-list',
@@ -56,6 +70,7 @@ export default {
           meta: {
             icon: 'vpn_key',
           },
+          hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.PERMISSION),
         },
       ],
     },
@@ -69,86 +84,9 @@ export default {
           meta: {
             icon: 'group',
           },
+          hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.USER),
         },
       ]
     },
-    // {
-    //   name: 'dashboard',
-    //   displayName: 'menu.projects',
-    //   meta: {
-    //     icon: 'folder_shared',
-    //   },
-    // },
-    // {
-    //   name: 'dashboard',
-    //   displayName: 'menu.payments',
-    //   meta: {
-    //     icon: 'credit_card',
-    //   },
-    //   children: [
-    //     {
-    //       name: 'dashboard',
-    //       displayName: 'menu.payment-methods',
-    //     },
-    //     {
-    //       name: 'dashboard',
-    //       displayName: 'menu.pricing-plans',
-    //     },
-    //     {
-    //       name: 'dashboard',
-    //       displayName: 'menu.billing',
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: 'dashboard',
-    //   displayName: 'menu.auth',
-    //   meta: {
-    //     icon: 'login',
-    //   },
-    //   children: [
-    //     {
-    //       name: 'dashboard',
-    //       displayName: 'menu.login',
-    //     },
-    //     {
-    //       name: 'dashboard',
-    //       displayName: 'menu.signup',
-    //     },
-    //     {
-    //       name: 'dashboard',
-    //       displayName: 'menu.recover-password',
-    //     },
-    //   ],
-    // },
-
-    // {
-    //   name: 'dashboard',
-    //   displayName: 'menu.faq',
-    //   meta: {
-    //     icon: 'quiz',
-    //   },
-    // },
-    // {
-    //   name: 'dashboard',
-    //   displayName: 'menu.404',
-    //   meta: {
-    //     icon: 'vuestic-iconset-files',
-    //   },
-    // },
-    // {
-    //   name: 'dashboard',
-    //   displayName: 'menu.preferences',
-    //   meta: {
-    //     icon: 'manage_accounts',
-    //   },
-    // },
-    // {
-    //   name: 'dashboard',
-    //   displayName: 'menu.settings',
-    //   meta: {
-    //     icon: 'settings',
-    //   },
-    // },
   ] as INavigationRoute[],
 }

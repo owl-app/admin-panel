@@ -6,6 +6,7 @@
       :text-color="textColor"
       role="button"
       hover-opacity="0.10"
+      v-if="hasPermission"
     >
       <VaSidebarItemContent class="py-3 pr-2 pl-4">
         <VaIcon
@@ -34,6 +35,7 @@ defineProps<{
   activeColor: string,
   textColor: string,
   iconColor: string,
+  hasPermission: boolean,
 }>()
 
 const { t } = useI18n()

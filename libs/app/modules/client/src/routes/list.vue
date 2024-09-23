@@ -3,11 +3,12 @@ import { ref } from 'vue';
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import { Client } from "@owl-app/lib-contracts";
+import { AvalilableCollections, Client, CrudActions } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
+import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 
 import CreateInline from '../components/create-inline.vue';
 import ClientModal from '../components/client-modal.vue'
@@ -21,6 +22,8 @@ const deleteClient = ref<Client>();
 const gridRef = ref<InstanceType<typeof Grid>>();
 const clientModal = ref<InstanceType<typeof ClientModal>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
+
+const { hasRoutePermission } = usePermissions(AvalilableCollections.CLIENT);
 
 const headerBar = {
   title: t('clients'),
@@ -44,7 +47,7 @@ const columns = defineVaDataTableColumns([
       url="clients"
     >
       <template #header-bar-actions>
-        <create-inline @saved="gridRef?.addItem" />
+        <create-inline @saved="gridRef?.addItem" v-if="hasRoutePermission(CrudActions.CREATE)" />
       </template>
 
       <template #filters="{ filters, changeFilter, removeFilter }">
@@ -66,6 +69,7 @@ const columns = defineVaDataTableColumns([
             icon="mso-edit"
             aria-label="Edit project"
             @click="clientModal?.show(client)"
+            v-if="hasRoutePermission(CrudActions.UPDATE)"
           />
           <VaButton
             preset="primary"
@@ -74,6 +78,7 @@ const columns = defineVaDataTableColumns([
             color="danger"
             aria-label="Delete project"
             @click="deleteModal?.show(client?.id)"
+            v-if="hasRoutePermission(CrudActions.DELETE)"
           />
         </div>
       </template>

@@ -1,7 +1,7 @@
 <template>
   <VaSidebar v-model="writableVisible" :width="sidebarWidth" :color="color" minimized-width="0">
-      <slot v-for="(route, index) in navigationRoutes.routes" :key="index">
-        <VaSidebarItemContent v-if="route.children" class="title-section">
+      <slot v-for="(route, index) in availableNavigationRoutes" :key="index">
+        <VaSidebarItemContent v-if="route.children && route.children.length > 0" class="title-section">
           <VaSidebarItemTitle>
             {{ t(route.displayName) }}
           </VaSidebarItemTitle>
@@ -14,9 +14,10 @@
           :active-color="activeColor"
           :text-color="textColor(route)"
           :icon-color="iconColor(route)"
+          :has-permission="route.hasPermission || false"
         />
 
-        <div v-if="route.children" class="wrap-section-children">
+        <div v-if="route.children && route.children.length > 0" class="wrap-section-children">
           <div v-for="(childRoute, index2) in route.children" :key="index2">
             <SidebarItem
               :route="childRoute"
@@ -24,6 +25,7 @@
               :active-color="activeColor"
               :text-color="textColor(childRoute)"
               :icon-color="iconColor(childRoute)"
+              :has-permission="childRoute.hasPermission"
             />
           </div>
         </div>
@@ -86,12 +88,28 @@ const routeHasActiveChild = (section: INavigationRoute) => {
   })
 }
 
+const filterRoutesByPermission = (routes: INavigationRoute[]): INavigationRoute[] => {
+  return routes
+    .filter(route => route.hasPermission || route.children)
+    .map(route => {
+      if (route.children) {
+        return {
+          ...route,
+          children: filterRoutesByPermission(route.children)
+        };
+      }
+
+      return route;
+    });
+}
+
 const setActiveExpand = () =>
   (value.value = navigationRoutes.routes.map((route: INavigationRoute) => routeHasActiveChild(route)))
 
 const sidebarWidth = computed(() => (props.mobile ? '100vw' : '280px'))
 const color = computed(() => getColor('background-secondary'))
 const activeColor = computed(() => colorToRgba(getColor('focus'), 0.1))
+const availableNavigationRoutes = computed(() => filterRoutesByPermission(navigationRoutes.routes));
 
 const iconColor = (route: INavigationRoute) => (routeHasActiveChild(route) ? 'primary' : 'secondary')
 const textColor = (route: INavigationRoute) => (routeHasActiveChild(route) ? 'primary' : 'textPrimary')

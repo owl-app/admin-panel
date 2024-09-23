@@ -4,6 +4,7 @@ import { LIFECYCLE_EVENTS } from '../contants';
 import { defineRequestEvent } from '../defines/events';
 import { useAppStore } from '../../stores/app';
 import { useUserStore } from '../../stores/user';
+import { usePermissionsStore } from '../../stores/permissions';
 import { useTimeStore } from "../../stores/time";
 
 type GenericStore = {
@@ -14,7 +15,13 @@ type GenericStore = {
   [key: string]: any;
 };
 
-export function useStores(stores = [useUserStore, useTimeStore]): GenericStore[] {
+export function useStores(
+  stores = [
+    useUserStore,
+    usePermissionsStore,
+    useTimeStore,
+  ],
+): GenericStore[] {
   return stores.map((useStore) => useStore()) as GenericStore[];
 }
 
