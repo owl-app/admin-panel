@@ -175,6 +175,10 @@ const iconColorManual = computed(() => isManual.value ? 'primary' : 'secondary')
 const iconColorTimer = computed(() => isManual.value ? 'secondary' : 'primary');
 const isTimerStart = ref(timeStore.active ?? false);
 
+if (isTimerStart.value && !props.isManualOnly) {
+  isManual.value = false
+}
+
 let oldData: TimeFormData = {
   timeIntervalStart: new Date(defaultValue.timeIntervalStart), 
   timeIntervalEnd: new Date(defaultValue.timeIntervalEnd), 

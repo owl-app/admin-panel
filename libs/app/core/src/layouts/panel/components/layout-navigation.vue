@@ -29,13 +29,14 @@ import { useColors } from 'vuestic-ui'
 import VaIconMenuCollapsed from '../../../components/icons/VaIconMenuCollapsed.vue'
 import { storeToRefs } from 'pinia'
 import { useAppStore } from '../../../stores/app'
-import NavigationRoutes from './sidebar/routes'
+import getRoutes from './sidebar/routes'
 
 const { isSidebarMinimized } = storeToRefs(useAppStore())
 
 const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
+const navigationRoutes = getRoutes()
 
 type BreadcrumbNavigationItem = {
   label: string
@@ -59,7 +60,7 @@ const findRouteName = (name: string) => {
     return ''
   }
 
-  return traverse(NavigationRoutes.routes)
+  return traverse(navigationRoutes.routes)
 }
 
 const items = computed(() => {

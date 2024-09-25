@@ -67,7 +67,7 @@ const columns = defineVaDataTableColumns([
             size="small"
             color="primary"
             icon="mso-edit"
-            aria-label="Edit project"
+            aria-label="Edit client"
             @click="clientModal?.show(client)"
             v-if="hasRoutePermission(CrudActions.UPDATE)"
           />
@@ -76,7 +76,7 @@ const columns = defineVaDataTableColumns([
             size="small"
             icon="mso-delete"
             color="danger"
-            aria-label="Delete project"
+            aria-label="Delete client"
             @click="deleteModal?.show(client?.id)"
             v-if="hasRoutePermission(CrudActions.DELETE)"
           />

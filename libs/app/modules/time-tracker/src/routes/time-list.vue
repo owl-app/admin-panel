@@ -148,6 +148,7 @@ function groupByWeek(items: Time[]) {
                       name="play_arrow"
                       :size="44"
                       class="material-symbols-outlined"
+                      aria-label="Update time"
                       @click="() => timerCreateInline?.startTimer(time)"
                     />
                     <va-divider vertical />
@@ -155,7 +156,7 @@ function groupByWeek(items: Time[]) {
                       <va-button
                         color="danger"
                         icon="delete"
-                        aria-label="Delete project"
+                        aria-label="Delete time"
                         @click="deleteModal?.show(time?.id)"
                         size="small"
                       />

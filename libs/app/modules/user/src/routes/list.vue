@@ -3,20 +3,24 @@ import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue';
 
-import { User } from "@owl-app/lib-contracts";
+import { AvalilableCollections, CrudActions, User } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue'
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue'
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
+import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 
 import UserModal from '../components/user-modal.vue'
 
 const { t } = useI18n();
 
-const editUser = ref<User|null>();
 const showModalUser = ref(false);
+const showDeleteModal = ref(false);
+const editUser = ref<User|null>();
+const deleteClient = ref<User>();
 const deleteUser = ref<User>();
 const gridRef = ref<InstanceType<typeof Grid>>();
+const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 
 const headerBar = {
   title: t('users'),
@@ -30,6 +34,8 @@ const columns = defineVaDataTableColumns([
   { label: 'Phone number', key: 'phoneNumber', sortable: true },
   { label: ' ', key: 'actions' },
 ])
+
+const { hasRoutePermission } = usePermissions(AvalilableCollections.USER);
 </script>
 
 <template>
@@ -103,10 +109,9 @@ const columns = defineVaDataTableColumns([
             size="small"
             icon="mso-delete"
             color="danger"
-            aria-label="Delete project"
-            @click="
-              deleteUser = user as User;
-            "
+            aria-label="Delete client"
+            @click="deleteModal?.show(user?.id)"
+            v-if="hasRoutePermission(CrudActions.DELETE)"
           />
       </div>
       </template>
@@ -117,7 +122,9 @@ const columns = defineVaDataTableColumns([
       @saved="gridRef?.reloadGrid()"
     />
     <delete-modal 
+      ref="deleteModal"
       collection="users"
+      v-model="showDeleteModal"
       :primaryKey="deleteUser?.id"
       @deleted="gridRef?.reloadGrid"
     />

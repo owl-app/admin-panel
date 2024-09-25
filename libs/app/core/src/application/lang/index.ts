@@ -1,9 +1,12 @@
 // import { RequestError } from '@/api';
 import { createI18n, I18nOptions } from 'vue-i18n';
+import { snakeCase } from 'lodash';
+
 import availableLanguages from './available-languages.yaml';
 import datetimeFormats from './date-formats.yaml';
 import numberFormats from './number-formats.yaml';
 import enUSBase from './translations/en-US.yaml';
+
 
 export const i18n = createI18n({
 	legacy: false,
@@ -22,17 +25,11 @@ export type Language = keyof typeof availableLanguages;
 export const loadedLanguages: Language[] = ['en-US'];
 
 export function translateAPIError(error: any | string): string {
-	const defaultMsg = i18n.global.t('unexpected_error');
+	const defaultMsg = i18n.global.t('errors.unexpected_error');
 
-	let code = error;
+	if (!error) return defaultMsg;
 
-	if (typeof error === 'object') {
-		code = error?.response?.data?.errors?.[0]?.extensions?.code;
-	}
-
-	if (!error || !code) return defaultMsg;
-
-	const key = `errors.${code}`;
+	const key = `errors.${snakeCase(error.replace(/\s+/g,"_"))}`;
 	const exists = i18n.global.te(key);
 
 	if (exists === false) return defaultMsg;

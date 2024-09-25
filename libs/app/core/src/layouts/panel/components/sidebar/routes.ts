@@ -15,78 +15,80 @@ export interface INavigationRoute {
 
 const { hasRoutePermission } = usePermissions();
 
-export default {
-  root: {
-    name: '/',
-    displayName: 'navigationRoutes.home',
-  },
-  routes: [
-    {
-      name: 'dashboard',
-      displayName: 'dashboard',
-      meta: {
-        icon: 'vuestic-iconset-dashboard',
+export default function getRoutes() {
+  return {
+    root: {
+      name: '/',
+      displayName: 'navigationRoutes.home',
+    },
+    routes: [
+      {
+        name: 'dashboard',
+        displayName: 'dashboard',
+        meta: {
+          icon: 'vuestic-iconset-dashboard',
+        },
+        hasPermission: true
       },
-      hasPermission: true
-    },
-    {
-      name: 'time-list',
-      displayName: 'time_tracker',
-      meta: {
-        icon: 'vuestic-iconset-dashboard',
+      {
+        name: 'time-list',
+        displayName: 'time_tracker',
+        meta: {
+          icon: 'vuestic-iconset-dashboard',
+        },
+        hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.TIME),
       },
-      hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.TIME),
-    },
-    {
-      name: 'manage',
-      displayName: 'manage',
-      children: [ 
-        {
-          name: 'client-list',
-          displayName: 'clients',
-          meta: {
-            icon: 'sensor_occupied',
+      {
+        name: 'manage',
+        displayName: 'manage',
+        children: [ 
+          {
+            name: 'client-list',
+            displayName: 'clients',
+            meta: {
+              icon: 'sensor_occupied',
+            },
+            hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.CLIENT),
           },
-          hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.CLIENT),
-        },
-      ]
-    },
-    {
-      name: 'permissions',
-      displayName: 'access_control',
-      children: [
-        {
-          name: 'role-list',
-          displayName: 'roles',
-          meta: {
-            icon: 'guardian',
-            untrackedPages: ['role-permission-assign'],
+        ]
+      },
+      {
+        name: 'permissions',
+        displayName: 'access_control',
+        children: [
+          {
+            name: 'role-list',
+            displayName: 'roles',
+            meta: {
+              icon: 'guardian',
+              untrackedPages: ['role-permission-assign'],
+            },
+            hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.ROLE),
           },
-          hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.ROLE),
-        },
-        {
-          name: 'permission-list',
-          displayName: 'permissions',
-          meta: {
-            icon: 'vpn_key',
+          {
+            name: 'permission-list',
+            displayName: 'permissions',
+            meta: {
+              icon: 'vpn_key',
+            },
+            hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.PERMISSION),
           },
-          hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.PERMISSION),
-        },
-      ],
-    },
-    {
-      name: 'system',
-      displayName: 'system',
-      children: [ 
-        {
-          name: 'user-list',
-          displayName: 'users',
-          meta: {
-            icon: 'group',
+        ],
+      },
+      {
+        name: 'system',
+        displayName: 'system',
+        children: [ 
+          {
+            name: 'user-list',
+            displayName: 'users',
+            meta: {
+              icon: 'group',
+            },
+            hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.USER),
           },
-          hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.USER),
-        },
-      ]
-    },
-  ] as INavigationRoute[],
+        ]
+      },
+    ] as INavigationRoute[],
+  }
 }
