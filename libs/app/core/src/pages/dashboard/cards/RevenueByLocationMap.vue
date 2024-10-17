@@ -35,7 +35,7 @@ onMounted(async () => {
   geoJson.value = (await import('../../../data/geo.json')).default
 })
 
-const data = computed<ChartData<'choropleth', { feature: any; value: number }[], string>>(() => {
+const data = computed<ChartData<any, { feature: any; value: number }[], string>>(() => {
   if (!geoJson.value) {
     return {
       labels: [],

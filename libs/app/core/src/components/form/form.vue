@@ -230,8 +230,10 @@ const makeSlotRef = () => {
       ref="owl-form"
       :class="classForm"
     >
-      <template v-for="child in getUnSlottedVNodes($slots.fields({data: makeSlotRef(), validation: validationErrors }))" :key="child.key">
-        <component :is="child" @focusout="$event.stopPropagation(); validate();" />
+      <template v-if="$slots.fields">
+        <template v-for="child in getUnSlottedVNodes($slots.fields({data: makeSlotRef(), validation: validationErrors }))" :key="child.key">
+          <component :is="child" @focusout="$event.stopPropagation(); validate();" />
+        </template>
       </template>
 
       <slot

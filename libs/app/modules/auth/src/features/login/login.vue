@@ -33,7 +33,7 @@
       </VaValue>
 
       <div class="auth-layout__options flex flex-col sm:flex-row items-start sm:items-center justify-between">
-        <VaCheckbox v-model="formData.keepLoggedIn" class="mb-2 sm:mb-0" label="Keep me signed in on this device" />
+        <VaCheckbox class="mb-2 sm:mb-0" label="Keep me signed in on this device" />
         <RouterLink :to="{ name: 'recovery-password' }" class="mt-2 sm:mt-0 sm:ml-1 font-semibold text-primary">
           Forgot password?
         </RouterLink>
@@ -70,7 +70,7 @@ const submit = async () => {
         init({ message: 'Success', color: 'success' });
 
         router.push({ path: 'dashboard' });
-    } catch (error: string) {
+    } catch (error: any) {
       init({ message: error, color: 'danger' })
     }
   }

@@ -12,14 +12,14 @@ defineOptions({
 })
 
 const props = defineProps<{
-  data: ChartData<T>
-  options?: ChartOptions<T>
+  data: ChartData<any>
+  options?: any
   type: T
 }>()
 
 const chartComponent = chartTypesMap[props.type]
 
-const chartOptions = computed<ChartOptions<T>>(() => ({
+const chartOptions = computed<ChartOptions<any>>(() => ({
   ...(defaultConfig as any),
   ...props.options,
 }))

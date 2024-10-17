@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../../../dist/out-tsc",
-    "types": ["vite/client"],
+    "types": ["vite/client", "@modyfi/vite-plugin-yaml/modules"],
     "verbatimModuleSyntax": false,
 		"exactOptionalPropertyTypes": false,
 		"noPropertyAccessFromIndexSignature": false,
@@ -26,5 +26,5 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue"
-, "../../core/src/application/events/hydrate-user-event.ts"]
+  ]
 }

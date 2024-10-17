@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from "vue-router";
-import { debounce } from 'lodash-es';
+import { debounce } from 'lodash';
 
 import { Permission } from '@owl-app/lib-contracts';
 

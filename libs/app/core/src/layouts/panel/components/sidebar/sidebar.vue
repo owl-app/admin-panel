@@ -25,7 +25,7 @@ const value = ref<boolean[]>([])
 
 const writableVisible = computed({
   get: () => props.visible,
-  set: (v: boolean) => emit('update:visible', v),
+  set: (v: boolean) => emit('update:visible'),
 })
 
 const isActiveChildRoute = (child: INavigationRoute) => {

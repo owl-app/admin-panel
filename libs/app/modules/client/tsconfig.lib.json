@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../../../dist/out-tsc",
-    "types": ["vite/client"]
+    "types": ["vite/client", "@modyfi/vite-plugin-yaml/modules"]
   },
   "exclude": [
     "src/**/__tests__/*",

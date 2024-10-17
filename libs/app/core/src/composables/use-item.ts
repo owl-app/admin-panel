@@ -7,7 +7,6 @@ import { isEmpty } from '@owl-app/utils';
 import api from '../services/api';
 import { Item, PrimaryKey } from '../types/item';
 import { i18n } from '../application/lang';
-import { ApiValidationError } from '../types/error';
 import { delay } from '../utils/delay';
 
 export type ManualSortData = {

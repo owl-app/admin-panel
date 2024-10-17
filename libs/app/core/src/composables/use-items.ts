@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { isEqual, throttle } from 'lodash-es';
+import { isEqual, throttle } from 'lodash';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
 import { computed, ref, unref, watch } from 'vue';
 
@@ -71,7 +71,7 @@ export function useItems(
   };
 
   let firstLoad = true;
-  let loadingTimeout: NodeJS.Timeout | null = null;
+  let loadingTimeout: number | null = null;
 
   const fetchItems = throttle(getItems, 500);
 

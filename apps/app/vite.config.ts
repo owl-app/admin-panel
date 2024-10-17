@@ -27,7 +27,7 @@ export default defineConfig({
     ViteYaml(),
     dts({
       entryRoot: 'src',
-      tsconfigPath: path.join(__dirname, 'tsconfig.app.json'),
+      tsconfigPath: path.join(__dirname, 'tsconfig.json'),
     }),
   ],
 

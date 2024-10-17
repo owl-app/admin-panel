@@ -7,7 +7,6 @@
     </p>
     <VaInput
       v-model="email"
-      :rules="[(v) => !!v || 'Email field is required']"
       class="mb-4"
       label="Enter your email"
       type="email"
