@@ -51,7 +51,7 @@ export function useItems(
   } = query;
 
   const items = ref<Item[]>([]);
-  const loading = ref(false);
+  const loading = ref(true);
   const error = ref<any>(null);
   const totalCount = ref<number>(0);
 

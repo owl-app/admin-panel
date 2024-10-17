@@ -21,7 +21,6 @@
         @saved="ok(); $emit('saved');"
       >
         <template #fields="{ data, validation }">
-          {{ validation }}
           <va-input
             v-model="data.ref.setting.displayName"
             label="Display name"
