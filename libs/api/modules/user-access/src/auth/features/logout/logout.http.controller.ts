@@ -3,6 +3,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Inject,
   Post,
   Req,
   Res,
@@ -14,6 +15,7 @@ import { AuthUserData, AvalilableCollections, UserActions } from '@owl-app/lib-c
 
 import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response';
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
+import { type IJwtConfig, JWT_CONFIG_PROVIDER } from '@owl-app/lib-api-core/config';
 
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 
@@ -24,7 +26,11 @@ import { Logout } from './logout.service';
 @ApiResponse({ status: 500, description: 'Internal error' })
 @ApiBearerAuth()
 export class LogoutController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    @Inject(JWT_CONFIG_PROVIDER)
+    private jwtConfig: IJwtConfig,
+  ) {}
 
   @ApiOperation({ description: 'logout' })
   @HttpCode(HttpStatus.OK)
@@ -47,7 +53,11 @@ export class LogoutController {
       new Logout({ email: request.user.email })
     );
 
-    response.clearCookie('access_token');
-    response.clearCookie('refresh_token');
+    response.clearCookie('access_token', {
+      domain: this.jwtConfig.cookie.domain,
+    });
+    response.clearCookie('refresh_token', {
+      domain: this.jwtConfig.cookie.domain,
+    });
   }
 }

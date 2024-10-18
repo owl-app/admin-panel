@@ -9,6 +9,11 @@ export const JWT_CONFIG_PROVIDER = 'JwtConfig';
 export interface IJwtConfig {
   secret: string;
   expiration_time: string;
+  cookie: {
+    domain: string;
+    http_only: boolean;
+    secure: boolean
+  }
   refresh_token_secret: string;
   refresh_token_expiration_time: string;
 }
@@ -28,6 +33,27 @@ export default registerAs(JWT_CONFIG_NAME, (): IJwtConfig => {
         .default('thisisafakesecretchangeit')
         .required()
         .description('JWT secret key'),
+    },
+    cookie: {
+      value: {
+        domain: process.env.JWT_COOKIE_TOKEN_DOMAIN || 'localhost',
+        http_only: (process.env?.JWT_COOKIE_TOKEN_HTTP_ONLY === "true" || process.env?.JWT_COOKIE_TOKEN_HTTP_ONLY === "1") || true,
+        secure: (process.env?.JWT_COOKIE_TOKEN_SECURE === "true" || process.env?.JWT_COOKIE_TOKEN_SECURE === "1") || false,
+      },
+      joi: Joi.object().keys({
+        domain: Joi.string()
+          .default('localhost')
+          .required()
+          .description('Cookie token domain'),
+        http_only: Joi.boolean()
+          .default(true)
+          .required()
+          .description('Cookie token http only'),
+        secure: Joi.boolean()
+          .default(false)
+          .required()
+          .description('Cookie token secure'),
+      })
     },
     expiration_time: {
       value: process.env.JWT_EXPIRATION_TIME,

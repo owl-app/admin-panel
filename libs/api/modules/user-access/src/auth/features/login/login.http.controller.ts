@@ -5,6 +5,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Inject,
   Post,
   Res,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { Public } from '@owl-app/lib-api-core/metadata/route';
 import { ApiErrorValidationResponse } from '@owl-app/lib-api-core/api/api-error-validation.response';
 import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response';
 import { Token } from '@owl-app/lib-api-core/passport/jwt-token.interface';
+import { type IJwtConfig, JWT_CONFIG_PROVIDER } from '@owl-app/lib-api-core/config';
 
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 
@@ -26,7 +28,11 @@ import { Login } from './login.service';
 @ApiTags('Auth')
 @ApiResponse({ status: 500, description: 'Internal error' })
 export class LoginController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    @Inject(JWT_CONFIG_PROVIDER)
+    private jwtConfig: IJwtConfig,
+  ) {}
 
   @ApiOperation({ description: 'login' })
   @HttpCode(HttpStatus.OK)
@@ -56,16 +62,17 @@ export class LoginController {
       const result = await this.commandBus.execute<Login, Record<'accessToken' | 'refreshToken', Token>>(new Login(auth));
 
       response.cookie('access_token', result.accessToken.token, {
-        httpOnly: true,
-        secure: true,
+        httpOnly: this.jwtConfig.cookie.http_only,
+        secure: this.jwtConfig.cookie.secure,
         maxAge: result.accessToken.expiresIn,
+        domain: this.jwtConfig.cookie.domain,
       });
 
       response.cookie('refresh_token', result.refreshToken.token, {
-        httpOnly: true,
-        secure: true,
+        httpOnly: this.jwtConfig.cookie.http_only,
+        secure: this.jwtConfig.cookie.secure,
         maxAge:result.refreshToken.expiresIn,
-
+        domain: this.jwtConfig.cookie.domain,
       });
 
       return {

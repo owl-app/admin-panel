@@ -14,7 +14,7 @@
     "start:app": "npx nx serve app",
     "start:api": "cross-env NODE_ENV=development npx nx serve api",
     "build:api": "cross-env NODE_ENV=production npx nx build api",
-    "build:owl": "cross-env NODE_ENV=development npx nx build app",
+    "build:app": "cross-env NODE_ENV=production npx nx build app",
     "start:build": "cross-env NODE_ENV=production env-cmd -f .env.production nodemon dist/apps/api/main.js"
   },
   "dependencies": {
