@@ -4,7 +4,7 @@ import { createPinia } from 'pinia';
 
 import bootstrap from '@owl-app/lib-app-core/application/bootstrap';
 import { i18n } from '@owl-app/lib-app-core/application/lang';
-import { createApplicationConfig } from '@owl-app/lib-app-core/application/config'
+import { createApplicationConfig } from '@owl-app/lib-app-core/application/config.factory'
 
 import AuthModule from '@owl-app/lib-app-module-auth'
 import UserModule from '@owl-app/lib-app-module-user'

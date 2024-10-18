@@ -59,20 +59,22 @@ export const useUserStore = defineStore({
         const { data } = await api.post('/auth/login', { email, password });
 
         this.authenticated = true;
-        this.accessTokenExpiry = (Date.now() + (data.accessTokenExpires ?? 0) * 1000);
-        this.refreshTokenExpiry = (Date.now() + (data.refreshTokenExpires ?? 0) * 1000);
+        this.accessTokenExpiry = (Date.now() + (data.accessTokenExpires ?? 0));
+        this.refreshTokenExpiry = (Date.now() + (data.refreshTokenExpires ?? 0));
       } catch (error: any) {
         throw error.response?.data?.message ?? error.message;
       } finally {
         this.loading = false;
       }
     },
-    async logout() {
+    async logout(withRequest = true) {
       this.loading = true;
       this.error = null;
 
       try {
-        await api.post('/auth/logout');
+        if (withRequest) {
+          await api.post('/auth/logout');
+        }
       } catch (error: any) {
         this.error = error.response.data.message;
       } finally {
@@ -124,7 +126,7 @@ export const useUserStore = defineStore({
         this.accessTokenExpiry = (Date.now() + (data.accessTokenExpires ?? 0));
         this.refreshTokenExpiry = (Date.now() + (data.refreshTokenExpires ?? 0));
       } catch (error: any) {
-        this.error = error.response.data.message;
+        this.error = error?.response.data.message;
       } finally {
         this.loading = false;
       }

@@ -1,18 +1,19 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { snakeCase } from 'lodash';
 import PQueue, { Options, QueueAddOptions } from 'p-queue';
-import { useI18n } from 'vue-i18n';
 import { useToast } from 'vuestic-ui/web-components';
 
 import { useLatencyStore } from '../stores/latency';
 import { useRequestsStore } from '../stores/requests';
+import { useUserStore } from '../stores/user';
 import { translateAPIError } from '../application/lang';
+import Config from '../config';
 
 const { init: notify } = useToast();
 
+let isRefreshing = false;
+
 const api = axios.create({
-  // baseURL: getRootPath(),
-  baseURL: 'http://localhost:3000/api/v1/',
+  baseURL: Config.api.baseUrl + Config.api.prefix,
   withCredentials: true,
 });
 
@@ -40,10 +41,13 @@ export const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalA
 
   return new Promise((resolve) => {
     requestQueue.add(async () => {
-      // await sdk.getToken().catch(() => {
-      // 	/* fail gracefully */
-      // });
+      const userStore = useUserStore();
 
+      if (Date.now() > userStore.accessTokenExpiry && Date.now() < userStore.refreshTokenExpiry && !isRefreshing) {
+        isRefreshing = true;
+        await userStore.refresh();
+        isRefreshing = false;
+      }
 
       if (requestConfig.measureLatency) requestConfig.start = performance.now();
 
@@ -57,17 +61,27 @@ export const onResponse = (response: AxiosResponse | Response): AxiosResponse | 
   return response;
 };
 
-export const onError = async (error: RequestError): Promise<RequestError> => {
+export const onError = async (error: RequestError): Promise<RequestError | void> => {
+  if (error.response.status === 401) {
+    const userStore = useUserStore();
+
+    await userStore.logout(false);
+
+    return Promise.reject();
+  }
+ 
   onRequestEnd(error.response);
 
   const { data } = error.response;
 
-  notify({
-    message: translateAPIError(data.message),
-    color: 'danger',
-    position: 'bottom-right',
-    offsetY: 30
-  })
+  if (error.response.status !== 422) {
+    notify({
+      message: translateAPIError(data.message),
+      color: 'danger',
+      position: 'bottom-right',
+      offsetY: 30
+    })
+  }
 
   return Promise.reject(error);
 };
