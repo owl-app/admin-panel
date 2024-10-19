@@ -8,15 +8,20 @@ import {
   Inject,
   Post,
   Res,
+  UnprocessableEntityException,
+  UsePipes,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import { loginValidationSchema } from '@owl-app/lib-contracts';
 
 import { Public } from '@owl-app/lib-api-core/metadata/route';
 import { ApiErrorValidationResponse } from '@owl-app/lib-api-core/api/api-error-validation.response';
 import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response';
 import { Token } from '@owl-app/lib-api-core/passport/jwt-token.interface';
 import { type IJwtConfig, JWT_CONFIG_PROVIDER } from '@owl-app/lib-api-core/config';
+import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
 
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';
 
@@ -54,6 +59,7 @@ export class LoginController {
     type: ApiErrorResponse,
   })
   @Post('/login')
+  @UsePipes(new ValibotValidationPipe(loginValidationSchema))
   async login(
     @Body() auth: AuthRequest,
     @Res({ passthrough: true }) response: Response
@@ -81,7 +87,7 @@ export class LoginController {
       };
     } catch (error: unknown) {
       if (error instanceof InvalidAuthenticationError) {
-        throw new BadRequestException(error.message);
+        throw new UnprocessableEntityException(error.message);
       }
 
       throw error;

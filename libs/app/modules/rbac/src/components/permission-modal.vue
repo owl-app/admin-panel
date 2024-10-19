@@ -73,7 +73,6 @@
   
 <script setup lang="ts">
 import { toRefs } from 'vue';
-import * as v from 'valibot'
 import { isEmpty } from 'lodash';
 
 import { type Permission, permissionValidationSchema } from "@owl-app/lib-contracts";

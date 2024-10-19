@@ -16,6 +16,7 @@ assign_permissions_to_role: Assign permissions to role
 validation:
   field_is_required: Field is required
   please_select_option: Please select an option
+  invalid_email_received: Invalid email received
 item_delete_success: Item deleted successfully
 item_create_success: Item created successfully
 item_update_success: Item updated successfully
