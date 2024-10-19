@@ -13,13 +13,13 @@
         </Transition>
         <RouterLink to="/dashboard" aria-label="Owl">
           <div class="logo-bar">
-            <VuesticLogo /> OWL
+            <OwlLogo /> OWL
           </div>
         </RouterLink>
       </div>
     </template>
     <template #right>
-      <AppNavbarActions class="app-navbar__actions" :is-mobile="isMobile" />
+      <NavbarActions class="app-navbar__actions" :is-mobile="isMobile" />
     </template>
   </VaNavbar>
 </template>
@@ -27,8 +27,8 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useAppStore } from '../../../../stores/app'
-import VuesticLogo from '../../../../components/logo-black.vue'
-import AppNavbarActions from './components/AppNavbarActions.vue'
+import OwlLogo from '../../../../components/logo-black.vue'
+import NavbarActions from './components/navbar-actions.vue'
 
 defineProps({
   isMobile: { type: Boolean, default: false },

@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "nx build",
     "test": "nx test",
     "workspace:compile-executors": "rm -rf ./tools/executors/**/*.js ./tools/executors/**/*.js.map && npx tsc -p ./tools/executors/tsconfig.executors.json",
     "start": "concurrently --raw --kill-others \"yarn start:api\" \"yarn start:app\"",
+    "build": "concurrently --raw --kill-others \"yarn buld:api\" \"yarn build:app\"",
     "start:app": "cross-env NODE_ENV=development env-cmd -f .env.development npx nx serve app",
     "start:api": "cross-env NODE_ENV=development env-cmd -f .env.development npx nx serve api",
     "build:app": "cross-env NODE_ENV=production env-cmd -f .env.production npx nx build app",

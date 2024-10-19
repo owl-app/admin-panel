@@ -40,7 +40,7 @@
       </div>
 
       <div class="flex justify-center mt-4">
-        <VaButton class="w-full" @click="submit"> Login</VaButton>
+        <VaButton class="w-full" @click="submit" :loading="userStore.loading"> Login</VaButton>
       </div>
     </VaForm>
   </auth-layout>

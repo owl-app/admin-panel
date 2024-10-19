@@ -19,8 +19,8 @@ import { useI18n } from 'vue-i18n'
 
 import { useTimeStore } from '../../../../../stores/time'
 
-import ProfileDropdown from './dropdowns/ProfileDropdown.vue'
-import NotificationDropdown from './dropdowns/NotificationDropdown.vue'
+import ProfileDropdown from './dropdowns/profile-dropdown.vue'
+import NotificationDropdown from './dropdowns/notification-dropdown.vue'
 
 defineProps({
   isMobile: { type: Boolean, default: false },
