@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineModel } from 'vue';
 import { PermissionReferType } from '@owl-app/lib-contracts';
 import { useI18n } from 'vue-i18n'
 

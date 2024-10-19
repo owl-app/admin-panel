@@ -33,7 +33,6 @@
   
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { Client } from "@owl-app/lib-contracts";
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue'
 
 const model = defineModel<boolean>();

@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineModel, defineExpose } from 'vue';
+import { defineExpose } from 'vue';
 
 import type { Item, PrimaryKey } from '../../types/item';
 import { useItem } from '../../composables/use-item';
