@@ -4,6 +4,7 @@ export enum AvalilableCollections {
   ROLE = 'Role',
   PERMISSION = 'Permission',
   TIME = 'Time',
+  TAG = 'Tag',
 }
 
 export enum CrudActions {
@@ -40,4 +41,5 @@ export enum AvalilableRouteCollections {
   ROLE = 'Role',
   PERMISSION = 'Permission',
   TIME = 'Time',
+  TAG = 'Tag',
 }

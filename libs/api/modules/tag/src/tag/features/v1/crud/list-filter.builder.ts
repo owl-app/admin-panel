@@ -1,0 +1,18 @@
+import { Tag } from '@owl-app/lib-contracts';
+import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/query-filter.builder';
+import { Filter } from '@owl-app/crud-core';
+
+import { FilterTagDto } from './dto';
+
+export class ListFilterBuilder extends QueryFilterBuilder<Tag, FilterTagDto> {
+  build(data: FilterTagDto): Filter<Tag>
+  {
+    const filters: Filter<Tag>[] = []
+
+    filters.push(this.filterRegistry.get('string').apply(['name'], data?.search));
+
+    return {
+      or: filters
+    }
+  }
+}

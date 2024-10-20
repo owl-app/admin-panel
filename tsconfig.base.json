@@ -14,6 +14,7 @@
       "@owl-app/lib-api-module-client/*": ["libs/api/modules/client/src/*"],
       "@owl-app/lib-api-module-company/*": ["libs/api/modules/company/src/*"],
       "@owl-app/lib-api-module-rbac/*": ["libs/api/modules/rbac/src/*"],
+      "@owl-app/lib-api-module-tag/*": ["libs/api/modules/tag/src/*"],
       "@owl-app/lib-api-module-time-tracker/*": [
         "libs/api/modules/time-tracker/src/*"
       ],
