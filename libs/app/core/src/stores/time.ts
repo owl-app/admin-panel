@@ -35,12 +35,13 @@ export const useTimeStore = defineStore({
     async dehydrate() {
       this.$reset();
     },
-    async startTimer(description: string) {
+    async startTimer(description: string, tags: string[]) {
       try {
         this.startInterval();
 
         const { data }  = await api.post('/times/stopwatch', {
-          description
+          description,
+          tags,
         });
 
         this.active = data;
@@ -63,10 +64,11 @@ export const useTimeStore = defineStore({
       }
     },
 
-    async stopTimer(description: string) {
+    async stopTimer(description: string, tags: string[]) {
       try {
         const { data } = await api.put('/times/stopwatch', {
-          description
+          description,
+          tags,
         });
 
         this.active = null;

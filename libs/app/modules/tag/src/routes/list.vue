@@ -32,6 +32,7 @@ const headerBar = {
 
 const columns = defineVaDataTableColumns([
   { label: 'Name', key: 'name', sortable: true },
+  { label: 'Color', key: 'color', sortable: true },
   { label: ' ', key: 'actions' },
 ])
 </script>
@@ -56,6 +57,12 @@ const columns = defineVaDataTableColumns([
             :change-filter="changeFilter"
             :remove-filter="removeFilter"
           />
+        </div>
+      </template>
+
+      <template #cell(color)="{ rowData }">
+        <div class="flex items-center gap-2 max-w-[230px] ellipsis">
+          <va-badge :text="`color: ${rowData.color}`" :color="rowData.color" v-if="rowData.color" />
         </div>
       </template>
 

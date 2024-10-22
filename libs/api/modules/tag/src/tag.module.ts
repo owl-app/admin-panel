@@ -8,7 +8,7 @@ import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.r
 
 import { TagEntitySchema } from './database/entity-schema/tag.entity-schema'
 
-import { ClientCrudController } from './tag/features/v1/crud/crud.http.controller'
+import { TagCrudController } from './tag/features/v1/crud/crud.http.controller'
 import { TagAssembler } from './tag/features/v1/crud/tag.assembler'
 import { ListFilterBuilder } from './tag/features/v1/crud/list-filter.builder'
 
@@ -30,7 +30,7 @@ import { ListFilterBuilder } from './tag/features/v1/crud/list-filter.builder'
     }),
   ],
   controllers: [
-    ClientCrudController,
+    TagCrudController,
   ],
 })
 export class TagModule {}

@@ -37,11 +37,12 @@ export class ContinueWatchHandler implements ICommandHandler<ContinueWatch> {
         await this.timeRepository.save(existingTime);
       }
 
-      const copyTime = await this.timeRepository.findOneBy({ id: command.id });
+      const copyTime = await this.timeRepository.findOne( { where: { id: command.id }, relations: ['tags'] });
 
       const newTime = new TimeEntity();
       newTime.description = copyTime.description;
       newTime.timeIntervalStart = new Date();
+      newTime.tags = copyTime.tags;
   
       const createdTime = await this.timeRepository.save(newTime);
   

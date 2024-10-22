@@ -59,6 +59,7 @@ export const TimeEntitySchema = new EntitySchema<TimeEntity>({
           name: 'tag_id',
         },
       },
+      lazy: true,
     },
   },
 });

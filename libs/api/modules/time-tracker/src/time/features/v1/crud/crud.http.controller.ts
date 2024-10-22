@@ -74,7 +74,7 @@ export class TimeCrudController {
   @RoutePermissions(AvalilableCollections.TIME, CrudActions.CREATE)
   async create(@Body(new ValibotValidationPipe(timeValidationSchema)) createTimeRequest: CreateTimeRequest) {
     const createdTime = await this.service.createWithRelations(createTimeRequest, {
-      tags: ["36c4fa82-31ee-497f-bde0-62c8b02125bb"]
+      tags: createTimeRequest.tags.map((tag) => tag.id)
     });
 
     return createdTime;
@@ -101,8 +101,9 @@ export class TimeCrudController {
     @Param('id', UUIDValidationPipe) id: string,
     @Body(new ValibotValidationPipe(timeValidationSchema)) updateTimeRequest: UpdateTimeRequest,
   ): Promise<TimeResponse> {
+    console.log(updateTimeRequest)
     const updatedTime = await this.service.updateWithRelations(id, updateTimeRequest, {
-      tags: ["f5b33063-e7ca-4fcc-883f-7fcf22aa4bf7"]
+      tags: updateTimeRequest.tags.map((tag) => tag.id)
     });
 
     return updatedTime;

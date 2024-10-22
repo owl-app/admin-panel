@@ -8,4 +8,6 @@ export class TagEntity extends BaseEntity implements Tag {
   tenant: Tenant;
 
   name: string;
+
+  color: string;
 }

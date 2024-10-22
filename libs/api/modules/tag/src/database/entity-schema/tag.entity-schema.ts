@@ -18,6 +18,9 @@ export const TagEntitySchema = new EntitySchema<TagEntity>({
     name: {
       type: String,
     },
+    color: {
+      type: String,
+    },
     ...TimestampableSchemaPart
   },
   relations: {

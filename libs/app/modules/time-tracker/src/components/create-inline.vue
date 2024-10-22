@@ -39,23 +39,26 @@
         />
         <va-select
           v-model="data.ref.tags"
-          :class="`select-tags ${data.ref.tags.length > 0 ? 'select-tags--active' : 'w-12'}`"
           width="24rem"
           highlight-matched-text
           searchPlaceholderText="Search tags"
-          track-by="value"
-          :keepAnchorWidth="false"
-          :options="[
-                {
-                    'value': '36c4fa82-31ee-497f-bde0-62c8b02125bb',
-                    'text': 'test',
-                }
-          ]"
           multiple
           searchable
+          :text-by="(option: Tag) => option.name"
+          :track-by="(option: Tag) => option.id"
+          :class="`select-tags ${data.ref.tags.length > 0 ? 'select-tags--active' : 'w-12'}`"
+          :keepAnchorWidth="false"
+          :options="tagOptions"
+          @update:isOpen="(isOpen: boolean) => isSavedAfterChange && !isOpen && saveAfterChange(data.ref)"
         >
           <template #content="{ value }">
-            <va-badge v-for="v in value" :text="v.text" :key="v" class="mr-0.5 mt-0.5" color="primary" />
+            <va-badge
+              v-for="v in value"
+              class="mr-0.5 mt-0.5"
+              :color="v.color ?? 'primary'"
+              :text="v.name"
+              :key="v"
+            />
           </template>
           <template #appendInner >
             <va-icon name="sell" class="mr-1 material-symbols-outlined" v-if="data.ref.tags.length === 0" />
@@ -146,7 +149,7 @@ import { useInputMask, createRegexMask } from 'vuestic-ui'
 import { useToast } from 'vuestic-ui/web-components';
 import { useLocalStorage } from '@vueuse/core';
 
-import { Time } from '@owl-app/lib-contracts';
+import type { Tag, Time } from '@owl-app/lib-contracts';
 
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
 import { useApi } from '@owl-app/lib-app-core/composables/use-system'
@@ -158,7 +161,8 @@ interface Props {
   isManual?: boolean,
   manualNameStorage?: string
   isSavedAfterChange?: boolean
-  isManualOnly?: boolean
+  isManualOnly?: boolean,
+  tagOptions?: Tag[],
 }
 
 export type TimeFormData = {
@@ -168,15 +172,16 @@ export type TimeFormData = {
   date: Date | string,
   timeSum: string,
   tags: {
-    value: string,
-    text: string
+    value?: string,
+    text?: string,
+    color?: string,
   }[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isManual: true,
   isSavedAfterChange: false,
-  isManualOnly: true
+  isManualOnly: true,
 })
 
 const emit = defineEmits<{
@@ -239,8 +244,6 @@ function parseDefaultValue(value?: Time): TimeFormData {
 
   setChangedScope(timeIntervalStart, timeIntervalEnd, hour);
 
-  console.log(value?.tags)
-
   return {
     description: value.description,
     timeIntervalStart: timeIntervalStart.toJSDate(),
@@ -250,7 +253,7 @@ function parseDefaultValue(value?: Time): TimeFormData {
       .set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 })
       .toJSDate(),
     timeSum: timeSum,
-    tags: value?.tags.map(tag => Object.assign({},  { value: tag.id, text: tag.name })) || [],
+    tags: value?.tags || [],
   }
 }
 
@@ -371,12 +374,7 @@ function afterSave(savedData: Time, dataForm: Ref<TimeFormData>) {
 }
 
 async function saveAfterChange(data: any) {
-  const mappedData = Object.assign({}, data);
-  mappedData.tags = mappedData?.tags.map((tag: any) => {
-    return tag.value;
-  });
-
-  const response = await api.put(`${props.url}`, mappedData);
+  const response = await api.put(`${props.url}`, data);
 
   notify({
     message: t('item_update_success'),
@@ -397,7 +395,8 @@ async function startTimer(time?: Time) {
 
   if (time) {
     timerForm.value.formData = {
-      description: time.description
+      description: time.description,
+      tags: time.tags
     }
   }
 
@@ -411,7 +410,8 @@ async function startTimer(time?: Time) {
 
     } else {
       await timeStore.startTimer(
-        timerForm.value.formData.description
+        timerForm.value.formData.description,
+        timerForm.value.formData.tags
       );
     }
 
@@ -429,8 +429,14 @@ async function startTimer(time?: Time) {
 
 async function endTimer() {
   try {
-    const time = await timeStore.stopTimer(timerForm.value.formData.description);
+    const { description, tags } = timerForm.value.formData;
+    const time = await timeStore.stopTimer(
+      description,
+      tags ?? [],
+    );
     isTimerStart.value = false;
+    timerForm.value.formData.description = '';
+    timerForm.value.formData.tags = [];
 
     emit('saved', time);
   } catch (error) {

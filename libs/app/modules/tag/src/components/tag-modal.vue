@@ -14,8 +14,29 @@
       :primaryKey="item?.id"
       @saved="ok(); $emit('saved');"
     >
-      <template #fields="{ data }">
-        <va-input v-model="data.ref.name" label="name" />
+      <template #fields="{ data, validation }">
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <va-input 
+              v-model="data.ref.name"
+              label="Name"
+              name="name"
+              :error="!!validation['name']"
+              :error-messages="validation['name']"
+              :required-mark="true"
+            />
+          </div>
+          <div class="col-span-2">
+            <va-color-input
+              v-model="data.ref.color"
+              label="Color"
+              name="color"
+              :error="!!validation['color']"
+              :error-messages="validation['color']"
+              :required-mark="true"
+            />
+          </div>
+        </div>
       </template>
 
       <template #actions="{ validate, save, isLoading, isValid }">

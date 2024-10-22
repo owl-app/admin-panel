@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
-import { AvalilableCollections, CrudActions, clientValidationSchema } from '@owl-app/lib-contracts'
+import { AvalilableCollections, CrudActions, tagValidationSchema } from '@owl-app/lib-contracts'
 
 import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query'
 import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core'
@@ -35,7 +35,7 @@ import { TagAssembler } from './tag.assembler'
 @Controller('tags')
 @ApiBearerAuth()
 @Injectable()
-export class ClientCrudController {
+export class TagCrudController {
   constructor(
     @InjectAssemblerQueryService(TagAssembler)
     readonly service: AssemblerQueryService<TagResponse, TagEntity>,
@@ -72,10 +72,10 @@ export class ClientCrudController {
     })
   @Post()
   @RoutePermissions(AvalilableCollections.TAG, CrudActions.CREATE)
-  async create(@Body(new ValibotValidationPipe(clientValidationSchema)) CreateTagRequest: CreateTagRequest) {
-    const createdClient = await this.service.createOne(CreateTagRequest);
+  async create(@Body(new ValibotValidationPipe(tagValidationSchema)) CreateTagRequest: CreateTagRequest) {
+    const created = await this.service.createOne(CreateTagRequest);
 
-    return createdClient;
+    return created;
   }
 
   @ApiOperation({ summary: 'Update tag' })
@@ -97,11 +97,11 @@ export class ClientCrudController {
   @RoutePermissions(AvalilableCollections.TAG, CrudActions.UPDATE)
   async update(
     @Param('id', UUIDValidationPipe) id: string,
-    @Body(new ValibotValidationPipe(clientValidationSchema)) UpdateTagDto: UpdateTagDto,
+    @Body(new ValibotValidationPipe(tagValidationSchema)) UpdateTagDto: UpdateTagDto,
   ): Promise<TagResponse> {
-    const updatedClient = await this.service.updateOne(id, UpdateTagDto);
+    const updated = await this.service.updateOne(id, UpdateTagDto);
 
-    return updatedClient;
+    return updated;
   }
 
   @ApiOperation({ summary: 'Delete tag' })

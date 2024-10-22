@@ -9,7 +9,7 @@ export default registerAs('db', () => ({
   password: process.env.DB_PASS,
   synchronize: true,
   timezone: 'Z',
-  // logger: 'advanced-console',
-  // logging: true,
+  logger: 'advanced-console',
+  logging: true,
   autoLoadEntities: true,
 }));

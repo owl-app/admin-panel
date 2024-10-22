@@ -1,18 +1,20 @@
-import { IsNull } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { IsNull } from 'typeorm';
 
 import { InjectRepository } from '@owl-app/lib-api-core/typeorm/common/typeorm.decorators';
 import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository'
+import { Tag } from '@owl-app/lib-contracts';
 
 import { TimeResponse } from '../../../dto/time.response';
 import { TimeEntity } from '../../../../domain/entity/time.entity';
 import { mapperTime } from '../../../mapping';
 
-
 export class Stop {
 
   description: string;
+
+  tags: Tag[]
 
   constructor(request: Partial<Stop> = {}) {
     Object.assign(this, request);
@@ -38,6 +40,7 @@ export class StopHandler implements ICommandHandler<Stop> {
     }
 
     existingTime.description = command.description;
+    existingTime.tags = command?.tags;
     existingTime.timeIntervalEnd = new Date();
 
     const stoppedTime = await this.timeRepository.save(existingTime);

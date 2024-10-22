@@ -4,28 +4,39 @@ import { DateTime } from 'luxon'
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import { Time } from "@owl-app/lib-contracts";
+import type { Time, Tag } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
+import { useApi } from '@owl-app/lib-app-core/composables/use-system'
 
 import CreateInline from '../components/create-inline.vue';
 
 type GroupedWeeksAndDays = Record<string, Record<string, Time[]>>;
 
 const { t } = useI18n();
+const api = useApi();
 
 const gridRef = ref<InstanceType<typeof Grid>>();
 const showDeleteModal = ref(false);
 const deleteTime = ref<Time>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const timerCreateInline = ref<InstanceType<typeof CreateInline>>();
+const tags = ref<Tag[]>([]);
 
 const columns = defineVaDataTableColumns([
   { label: 'Name', key: 'name', sortable: true },
   { label: ' ', key: 'actions' },
 ])
+
+loadTags();
+
+async function loadTags(): Promise<void> {
+  const result = await api.get('tags?pageable=0');
+
+  tags.value = result.data?.items;
+}
 
 function groupByWeek(items: Time[]) {
   function getWeekRange(date: string) {
@@ -103,6 +114,7 @@ function groupByWeek(items: Time[]) {
       manual-name-storage="time-is-manual"
       :is-manual="true"
       :is-manual-only="false"
+      :tag-options="tags"
       @saved="gridRef?.reloadGrid"
     >
       <template #actions="{ save, isManual, startTimer, isTimerStart }">
@@ -140,6 +152,7 @@ function groupByWeek(items: Time[]) {
                   :key="`${time.id}-${time.timeIntervalStart}-${time.timeIntervalEnd}`"
                   :default-value="time"
                   :is-saved-after-change="true"
+                  :tag-options="tags"
                   @saved="gridRef?.reloadGrid"
                 >
                   <template #actions>
