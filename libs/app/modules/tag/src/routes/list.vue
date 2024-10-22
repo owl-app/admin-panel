@@ -18,7 +18,6 @@ const { t } = useI18n();
 const showModalTag = ref(false);
 const showDeleteModal = ref(false);
 const editTag = ref<Tag | null>();
-const deleteTag = ref<Tag>();
 const gridRef = ref<InstanceType<typeof Grid>>();
 const tagModal = ref<InstanceType<typeof TagModal>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
@@ -93,7 +92,6 @@ const columns = defineVaDataTableColumns([
       ref="deleteModal"
       collection="tags"
       v-model="showDeleteModal"
-      :primaryKey="deleteTag?.id"
       @deleted="gridRef?.reloadGrid"
     />
   </panel-layout>

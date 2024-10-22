@@ -92,7 +92,7 @@
           @update:modelValue="(value: string) => changeDate(value, data)"
           v-if="isManual"
         />
-        <va-divider vertical class="self-stretch" />
+        <va-divider vertical class="self-stretch" v-if="isManual" />
         <va-input
           class="w-28"
           inputClass="text-center font-bold input-time"
