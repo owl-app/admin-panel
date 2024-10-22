@@ -8,7 +8,7 @@ import { TagEntity } from '../../domain/entity/tag.entity';
 export const TagEntitySchema = new EntitySchema<TagEntity>({
   target: TagEntity,
   name: TAG_ENTITY,
-  tableName: 'client',
+  tableName: 'tag',
   columns: {
     id: {
       type: String,

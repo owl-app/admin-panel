@@ -237,6 +237,15 @@ export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> 
     return this.proxied.updateOne(id, update, opts)
   }
 
+  updateWithRelations(
+    id: number | string,
+    update: U,
+    relations: Record<string, (string | number)[]>,
+    opts?: UpdateOneOptions<DTO>,
+  ): Promise<DTO> {
+    return this.proxied.updateWithRelations(id, update, relations, opts)
+  }
+
   aggregateRelations<Relation>(
     RelationClass: Class<Relation>,
     relationName: string,

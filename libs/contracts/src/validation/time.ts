@@ -16,6 +16,7 @@ export const timeValidationSchema = v.object({
       v.string(),
       v.nonEmpty('Field is required')
     ), ''),
+  tags: v.array(v.string())
 });
 
 export type TimeRequest = v.InferInput<typeof timeValidationSchema>;

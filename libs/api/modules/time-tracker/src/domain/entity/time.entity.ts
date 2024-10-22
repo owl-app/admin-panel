@@ -1,4 +1,4 @@
-import type { Time, User, Tenant } from '@owl-app/lib-contracts';
+import type { Time, User, Tenant, Tag } from '@owl-app/lib-contracts';
 
 import BaseEntity from '@owl-app/lib-api-core/database/entity/base.entity';
 
@@ -14,4 +14,5 @@ export class TimeEntity extends BaseEntity implements Time {
 
   description: string;
 
+  tags: Tag[];
 }

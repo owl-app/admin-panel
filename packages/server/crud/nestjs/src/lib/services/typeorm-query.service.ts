@@ -255,6 +255,31 @@ export class TypeOrmQueryService<Entity>
     return this.repo.save(this.repo.merge(entity, update))
   }
 
+  public async updateWithRelations(
+    id: number | string,
+    update: DeepPartial<Entity>,
+    relations: Record<string, (string | number)[]>,
+    opts?: UpdateOneOptions<Entity>,
+  ): Promise<Entity> {
+    this.ensureIdIsNotPresent(update)
+    const entity = await this.getById(id, opts);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const mergedEntity = this.repo.merge(entity, update);
+    const resultRelations: Array<Promise<Entity>> = [];
+    
+    Object.entries(relations).forEach(async ([name, ids]) => {
+      resultRelations.push(this.assignRelations(mergedEntity, name, ids))
+    })
+
+    const entityWithRelations = (await Promise.all(resultRelations))
+      .reduce((base, extended) => ({ ...base, ...extended }))
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return this.repo.save(entityWithRelations)
+  }
+
   /**
    * Update multiple entities with a `@owl-app/crud-core` Filter.
    *

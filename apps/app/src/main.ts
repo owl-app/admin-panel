@@ -10,6 +10,7 @@ import AuthModule from '@owl-app/lib-app-module-auth'
 import UserModule from '@owl-app/lib-app-module-user'
 import ClientModule from '@owl-app/lib-app-module-client'
 import RbacModule from '@owl-app/lib-app-module-rbac'
+import TagModule from '@owl-app/lib-app-module-tag'
 import TimeTrackerModule from '@owl-app/lib-app-module-time-tracker'
 
 import App from './app.vue';
@@ -35,6 +36,7 @@ async function initApp() {
       ClientModule,
       RbacModule,
       TimeTrackerModule,
+      TagModule,
     ],
     [],
     {

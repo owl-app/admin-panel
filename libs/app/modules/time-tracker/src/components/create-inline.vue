@@ -35,8 +35,33 @@
           name="description"
           background="#fff"
           :error="!!validation['description']"
-          @change="() => { if (isSavedAfterChange) savedAfterChange(data.ref) }"
+          @change="() => { if (isSavedAfterChange) saveAfterChange(data.ref) }"
         />
+        <va-select
+          v-model="data.ref.tags"
+          :class="`select-tags ${data.ref.tags.length > 0 ? 'select-tags--active' : 'w-12'}`"
+          width="24rem"
+          highlight-matched-text
+          searchPlaceholderText="Search tags"
+          track-by="value"
+          :keepAnchorWidth="false"
+          :options="[
+                {
+                    'value': '36c4fa82-31ee-497f-bde0-62c8b02125bb',
+                    'text': 'test',
+                }
+          ]"
+          multiple
+          searchable
+        >
+          <template #content="{ value }">
+            <va-badge v-for="v in value" :text="v.text" :key="v" class="mr-0.5 mt-0.5" color="primary" />
+          </template>
+          <template #appendInner >
+            <va-icon name="sell" class="mr-1 material-symbols-outlined" v-if="data.ref.tags.length === 0" />
+          </template>
+        </va-select>
+        <va-divider vertical class="self-stretch" />
         <div @focusout="() => changeTime(data)" v-if="isManual">
           <va-time-input 
             class="w-24"
@@ -113,7 +138,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, defineProps, Ref, defineExpose } from 'vue'
+import { computed, ref, defineProps, Ref } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { DateTime } from 'luxon'
 import { snakeCase } from 'lodash';
@@ -141,7 +166,11 @@ export type TimeFormData = {
   timeIntervalStart: Date,
   timeIntervalEnd: Date,
   date: Date | string,
-  timeSum: string
+  timeSum: string,
+  tags: {
+    value: string,
+    text: string
+  }[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -183,10 +212,11 @@ let oldData: TimeFormData = {
   timeIntervalStart: new Date(defaultValue.timeIntervalStart), 
   timeIntervalEnd: new Date(defaultValue.timeIntervalEnd), 
   date: new Date(defaultValue.date),
-  timeSum: defaultValue.timeSum
+  timeSum: defaultValue.timeSum,
+  tags: defaultValue.tags,
 };
 
-useInputMask(createRegexMask(/(\d){2}:(\d){2}:(\d){2}/), inputTimeSum)
+useInputMask(createRegexMask(/(\d){2}:(\d){2}:(\d){2}/), inputTimeSum);
 
 function parseDefaultValue(value?: Time): TimeFormData {
   if(!value) {
@@ -195,7 +225,8 @@ function parseDefaultValue(value?: Time): TimeFormData {
       timeIntervalStart: now.toJSDate(),
       timeIntervalEnd: now.toJSDate(),
       date: now.set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 }).toJSDate(),
-      timeSum: '00:00:00'
+      timeSum: '00:00:00',
+      tags: []
     }
   };
 
@@ -208,6 +239,8 @@ function parseDefaultValue(value?: Time): TimeFormData {
 
   setChangedScope(timeIntervalStart, timeIntervalEnd, hour);
 
+  console.log(value?.tags)
+
   return {
     description: value.description,
     timeIntervalStart: timeIntervalStart.toJSDate(),
@@ -216,7 +249,8 @@ function parseDefaultValue(value?: Time): TimeFormData {
       .fromJSDate(new Date(value.timeIntervalStart))
       .set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 })
       .toJSDate(),
-    timeSum: timeSum
+    timeSum: timeSum,
+    tags: value?.tags.map(tag => Object.assign({},  { value: tag.id, text: tag.name })) || [],
   }
 }
 
@@ -247,7 +281,7 @@ function changeTimeSum(data: { ref: TimeFormData }) {
   setChangedScope(dateFrom, dateTo, hours);
 
   if (props.isSavedAfterChange && oldData.timeSum !== data.ref.timeSum) {
-    savedAfterChange(data.ref)
+    saveAfterChange(data.ref)
     oldData.timeSum = data.ref.timeSum;
   }
 }
@@ -279,7 +313,7 @@ function changeTime(data: { ref: TimeFormData }) {
       .toFormat('hh:mm:ss');
 
     if(props.isSavedAfterChange) {
-      savedAfterChange(data.ref);
+      saveAfterChange(data.ref);
     }
 
     oldData.timeIntervalStart = dateFrom.toJSDate();
@@ -301,7 +335,7 @@ function changeDate(value: string, data: { ref: TimeFormData }) {
   oldData.date = new Date(value);
 
   if(props.isSavedAfterChange) {
-    savedAfterChange(data.ref)
+    saveAfterChange(data.ref)
   }
 }
 
@@ -329,14 +363,20 @@ function afterSave(savedData: Time, dataForm: Ref<TimeFormData>) {
       .toJSDate(),
     timeSum: timeIntervalEnd
       .diff(timeIntervalStart, ["hours", "minutes", "seconds"])
-      .toFormat('hh:mm:ss')
+      .toFormat('hh:mm:ss'),
+    tags: [],
   }
 
   emit('saved', savedData);
 }
 
-async function savedAfterChange(data: any) {
-  await api.put(`${props.url}`, data);
+async function saveAfterChange(data: any) {
+  const mappedData = Object.assign({}, data);
+  mappedData.tags = mappedData?.tags.map((tag: any) => {
+    return tag.value;
+  });
+
+  const response = await api.put(`${props.url}`, mappedData);
 
   notify({
     message: t('item_update_success'),
@@ -345,7 +385,7 @@ async function savedAfterChange(data: any) {
     offsetY: 30
   })
 
-  emit('saved', data);
+  emit('saved', response.data);
 }
 
 async function startTimer(time?: Time) {
@@ -428,9 +468,37 @@ function setChangedScope(dateFrom: DateTime, dateTo: DateTime, hours: number) {
   --va-input-wrapper-horizontal-padding: 0.6rem;
   --va-input-wrapper-border-color-hover: transparent;
   --va-input-wrapper-border-color: transparent;
-  
 
   :deep() {
+    &:hover {
+      .va-input, .va-time-input, .va-date-input, .va-select {
+        --va-input-wrapper-border-color: var(--va-background-border);
+      }
+    }
+    .select-tags {
+      .va-input-wrapper{
+        &__text {
+          display: none;
+        }
+      }
+      &--active {
+        flex: 0 0 auto !important;
+        width: fit-content;
+
+        .va-input-wrapper{
+          &__text {
+            display: flex;
+          }
+          &__field {
+            --va-input-wrapper-items-gap: 0;
+          }
+          &__fieldset {
+            width: fit-content;
+          }
+        }
+      }
+    }
+
     .input-time {
       --va-input-font-weight: bold;
       --va-input-font-size: 1rem;
@@ -443,10 +511,6 @@ function setChangedScope(dateFrom: DateTime, dateTo: DateTime, hours: number) {
         }
       }
     }
-  }
-
-  &:hover {
-    --va-input-wrapper-border-color: var(--va-background-border);
   }
 }
 </style>

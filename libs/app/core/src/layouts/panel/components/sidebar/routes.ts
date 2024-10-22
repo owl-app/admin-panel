@@ -50,6 +50,14 @@ export default function getRoutes() {
             },
             hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.CLIENT),
           },
+          {
+            name: 'tag-list',
+            displayName: 'tags',
+            meta: {
+              icon: 'sell',
+            },
+            hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.TAG),
+          },
         ]
       },
       {

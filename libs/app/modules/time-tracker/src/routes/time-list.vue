@@ -106,8 +106,8 @@ function groupByWeek(items: Time[]) {
       @saved="gridRef?.reloadGrid"
     >
       <template #actions="{ save, isManual, startTimer, isTimerStart }">
-          <va-button v-if="!isManual && !isTimerStart" @click="startTimer()" class="w-full">START</va-button>
-          <va-button v-if="isManual" @click="save()" class="w-full">ADD</va-button>
+        <va-button v-if="!isManual && !isTimerStart" @click="startTimer()" class="w-full">START</va-button>
+        <va-button v-if="isManual" @click="save()" class="w-full">ADD</va-button>
       </template>
     </create-inline>
 

@@ -299,6 +299,22 @@ export class AssemblerQueryService<DTO, Entity, C = DeepPartial<DTO>, CE = DeepP
     )
   }
 
+  async updateWithRelations(
+    id: number | string,
+    update: U,
+    relations: Record<string, (string | number)[]>,
+    opts?: UpdateOneOptions<DTO>,
+  ): Promise<DTO> {
+    const c = await this.queryService.updateWithRelations(
+      id,
+      await this.assembler.convertToUpdateEntity(update),
+      relations,
+      this.convertFilterable(opts)
+    )
+
+    return this.assembler.convertToDTO(c)
+  }
+
   aggregateRelations<Relation>(
     RelationClass: Class<Relation>,
     relationName: string,

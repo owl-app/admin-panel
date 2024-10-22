@@ -284,6 +284,19 @@ export interface QueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> {
   ): Promise<DTO>;
 
   /**
+   * Update a single record with relations
+   *
+   * @param items - the records to create.
+   * @returns a created records.
+   */
+  updateWithRelations(
+    id: number | string,
+    update: U,
+    relations: Record<string, (string | number)[]>,
+    opts?: UpdateOneOptions<DTO>,
+  ): Promise<DTO>;
+
+  /**
    * Update one record.
    * @param id - the id of the record to update
    * @param update - The update to apply.

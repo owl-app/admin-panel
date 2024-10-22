@@ -1,6 +1,6 @@
-import { Time } from '@owl-app/lib-contracts';
+import { Tag, Time } from '@owl-app/lib-contracts';
 import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/query-filter.builder';
-import { Filter } from '@owl-app/crud-core';
+import { Filter, SelectRelation } from '@owl-app/crud-core';
 
 import { FilterTimeRequest } from './dto';
 
@@ -17,5 +17,9 @@ export class ListFilterBuilder extends QueryFilterBuilder<Time, FilterTimeReques
         { timeIntervalEnd: { isNot: null }}
       ]
     }
+  }
+
+  buildRelations(): SelectRelation<Time>[] {
+    return [{ name: 'tags', query: {}}];
   }
 }

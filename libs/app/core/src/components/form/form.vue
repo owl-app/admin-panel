@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch, VNode, Fragment, Ref, defineExpose } from 'vue'
+import { computed, ref, watch, VNode, Fragment, Ref } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { debounce, DebouncedFunc, snakeCase } from 'lodash';
 import * as v from 'valibot'
@@ -242,7 +242,7 @@ const makeSlotRef = () => {
         :save="saveForm"
         :is-valid="isValid"
         :is-loading="loading || saving"
-        :data="makeSlotRef()"
+        :data="makeSlotRef() as any"
       />
     </va-form>
   </VaInnerLoading>

@@ -10,4 +10,7 @@ export class CreateTimeRequest{
 
     @ApiProperty({ type: () => String })
     timeIntervalEnd: string;
+
+    @ApiProperty({ type: () => [Number] })
+    tags: [number];
 }

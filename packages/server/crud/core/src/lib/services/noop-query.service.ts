@@ -212,6 +212,15 @@ export class NoOpQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> i
     return Promise.reject(new NotImplementedException('updateOne is not implemented'))
   }
 
+  updateWithRelations(
+    id: number | string,
+    update: U,
+    relations: Record<string, (string | number)[]>,
+    opts?: UpdateOneOptions<DTO>,
+  ): Promise<DTO> {
+    return Promise.reject(new NotImplementedException('updateWithRelations is not implemented'))
+  }
+
   aggregateRelations<Relation>(
     RelationClass: Class<Relation>,
     relationName: string,

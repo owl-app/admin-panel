@@ -252,30 +252,32 @@ async function reloadGrid() {
 </template>
 <style lang="scss">
 .wrapper-grid {
-  .va-data-table {
-    // --va-data-table-transition: none;
-    &--grid {
-      .va-data-table {
-        &__table-thead {
-          display: none;
+  .va-card {
+    .va-data-table {
+      &--grid {
+        .va-data-table {
+          &__table-thead {
+            display: none;
+          }
         }
-      }
-      .va-inner-loading {
-        &__spinner {
-          margin: 0;
+        .va-inner-loading {
+          &__spinner {
+            margin: 0;
+          }
         }
       }
     }
-  }
-  .va-inner-loading {
-    --va-inner-loading-min-height: 200px;
 
-    &--active {
-      min-height: var(--va-inner-loading-min-height);
-      .va-data-table {
-        &__table-tbody {
-          &:has(.no-data) {
-            visibility: hidden;
+    .va-inner-loading {
+      --va-inner-loading-min-height: 200px;
+
+      &--active {
+        min-height: var(--va-inner-loading-min-height);
+        .va-data-table {
+          &__table-tbody {
+            &:has(.no-data) {
+              visibility: hidden;
+            }
           }
         }
       }
