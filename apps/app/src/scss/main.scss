@@ -58,3 +58,9 @@ pre {
   font-size: 0.8125rem;
   line-height: 1rem;
 }
+
+.va-dropdown__content {
+  .va-input-wrapper {
+    outline: 0;
+  }
+}
