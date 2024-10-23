@@ -24,7 +24,6 @@
     </VaSidebarItem>
 </template>
 <script lang="ts" setup>
-import { defineProps } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { INavigationRoute } from './routes'

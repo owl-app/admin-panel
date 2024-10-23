@@ -141,7 +141,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, defineProps, Ref } from 'vue'
+import { computed, ref, Ref } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { DateTime } from 'luxon'
 import { snakeCase } from 'lodash';

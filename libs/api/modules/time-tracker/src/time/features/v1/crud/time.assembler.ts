@@ -27,8 +27,8 @@ export class TimeAssembler extends ClassTransformerAssembler<
 
     dto.id = entity.id;
     dto.description = entity.description;
-    dto.timeIntervalStart = String(entity.timeIntervalStart);
-    dto.timeIntervalEnd = String(entity.timeIntervalEnd);
+    dto.timeIntervalStart = entity.timeIntervalStart as string;
+    dto.timeIntervalEnd = entity.timeIntervalEnd as string;
     dto.tags = await entity.tags;
 
     return dto;
