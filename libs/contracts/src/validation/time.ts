@@ -1,11 +1,7 @@
 import * as v from 'valibot'
 
 export const timeValidationSchema = v.object({
-  description: v.optional(
-    v.pipe(
-      v.string(),
-      v.nonEmpty('Field is required')
-    ), ''),
+  description: v.nullish(v.string(), null),
   timeIntervalStart: v.optional(
     v.pipe(
       v.string(),
