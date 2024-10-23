@@ -20,6 +20,7 @@ export const TagEntitySchema = new EntitySchema<TagEntity>({
     },
     color: {
       type: String,
+      nullable: true,
     },
     ...TimestampableSchemaPart
   },

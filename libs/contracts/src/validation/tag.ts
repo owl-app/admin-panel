@@ -6,11 +6,7 @@ export const tagValidationSchema = v.object({
       v.string(),
       v.nonEmpty('Field is required')
     ), ''),
-  color: v.optional(
-    v.pipe(
-      v.string(),
-      v.nonEmpty('Field is required')
-    ), ''),
+  color: v.nullish(v.string(), null)
 });
 
 export type TagRequest = v.InferInput<typeof tagValidationSchema>;
