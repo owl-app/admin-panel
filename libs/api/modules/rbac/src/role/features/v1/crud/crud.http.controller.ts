@@ -53,7 +53,7 @@ export class CrudController {
     description: 'Role not found',
     type: RoleResponse
   })
-  @RoutePermissions(AvalilableCollections.USER, CrudActions.READ)
+  @RoutePermissions(AvalilableCollections.ROLE, CrudActions.READ)
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<RoleResponse> {
     const role = await this.service.getById(id, { relations: [{ name: 'setting', query: {}}]});
@@ -72,7 +72,7 @@ export class CrudController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Post()
-  @RoutePermissions(AvalilableCollections.USER, CrudActions.CREATE)
+  @RoutePermissions(AvalilableCollections.ROLE, CrudActions.CREATE)
   @UsePipes(new ValibotValidationPipe(roleValidationSchema))
   async createRole(@Body() createRoleDto: CreateRoleRequest) {
     const addedRole = await this.service.createOne(createRoleDto);
@@ -96,7 +96,7 @@ export class CrudController {
     })
     @HttpCode(HttpStatus.ACCEPTED)
 	@Put(':name')
-  @RoutePermissions(AvalilableCollections.USER, CrudActions.UPDATE)
+  @RoutePermissions(AvalilableCollections.ROLE, CrudActions.UPDATE)
   async updateRole(@Param('name') name: string, @Body() updateRoleDto: UpdateRoleRequest) {
     const updatedRole = await this.service.updateOne(name, updateRoleDto);
 
@@ -114,7 +114,7 @@ export class CrudController {
     })
     @HttpCode(HttpStatus.ACCEPTED)
   @Delete(':name')
-  @RoutePermissions(AvalilableCollections.USER, CrudActions.DELETE)
+  @RoutePermissions(AvalilableCollections.ROLE, CrudActions.DELETE)
   async remove(@Param('name') name: string): Promise<void> {
     await this.service.deleteOne(name);
   }
@@ -131,7 +131,7 @@ export class CrudController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Get()
-  @RoutePermissions(AvalilableCollections.USER, CrudActions.LIST)
+  @RoutePermissions(AvalilableCollections.ROLE, CrudActions.LIST)
   async paginated(
     @Query('filters') filters: FilterRoleDto,
     @Query() pagination: PaginatedQuery
