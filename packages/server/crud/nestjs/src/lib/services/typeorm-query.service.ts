@@ -203,17 +203,11 @@ export class TypeOrmQueryService<Entity>
     relations: Record<string, (string | number)[]>,
   ): Promise<Entity> {
     const entity = await this.ensureIsEntityAndDoesNotExist(record)
-    const resultRelations: Array<Promise<Entity>> = []
     
-    Object.entries(relations).forEach(async ([name, ids]) => {
-      resultRelations.push(this.assignRelations(entity, name, ids))
-    })
+    const entityWithRelations = await Promise.all(
+        Object.entries(relations).map(async ([name, ids]) => this.assignRelations(entity, name, ids))
+      ).then(() => entity);
 
-    const entityWithRelations = (await Promise.all(resultRelations))
-      .reduce((base, extended) => ({ ...base, ...extended }))
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     return this.repo.save(entityWithRelations)
   }
 
@@ -261,22 +255,17 @@ export class TypeOrmQueryService<Entity>
     relations: Record<string, (string | number)[]>,
     opts?: UpdateOneOptions<Entity>,
   ): Promise<Entity> {
-    this.ensureIdIsNotPresent(update)
+    this.ensureIdIsNotPresent(update);
+
     const entity = await this.getById(id, opts);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const mergedEntity = this.repo.merge(entity, update);
-    const resultRelations: Array<Promise<Entity>> = [];
-    
-    Object.entries(relations).forEach(async ([name, ids]) => {
-      resultRelations.push(this.assignRelations(mergedEntity, name, ids))
-    })
+    this.repo.merge(entity, update);
 
-    const entityWithRelations = (await Promise.all(resultRelations))
-      .reduce((base, extended) => ({ ...base, ...extended }))
+    const entityWithRelations = await Promise.all(
+        Object.entries(relations).map(async ([name, ids]) => this.assignRelations(entity, name, ids))
+      ).then(() => entity);
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     return this.repo.save(entityWithRelations)
   }
 

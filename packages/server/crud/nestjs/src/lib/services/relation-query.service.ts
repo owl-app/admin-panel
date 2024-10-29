@@ -220,7 +220,9 @@ export abstract class RelationQueryService<Entity> {
       assignedRelations = relations.shift()
     }
 
-    return {...entity, ...{ [relationName]: assignedRelations }}
+    entity[relationName as keyof Entity] = assignedRelations as Entity[keyof Entity];
+
+    return entity;
   }
 
   /**

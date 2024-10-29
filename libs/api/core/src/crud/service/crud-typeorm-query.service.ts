@@ -5,7 +5,7 @@ import {
   TypeOrmQueryService,
   TypeOrmQueryServiceOpts,
 } from '@owl-app/crud-nestjs';
-import { DeepPartial } from '@owl-app/crud-core';
+import { DeepPartial, UpdateOneOptions } from '@owl-app/crud-core';
 import { convertToSnakeCase } from '@owl-app/utils';
 import { Registry } from '@owl-app/registry';
 
@@ -85,35 +85,48 @@ export class CrudTypeOrmQueryService<
     this.injectSetters(record);
 
     const entity = await this.ensureIsEntityAndDoesNotExist(record)
-    const resultRelations: Array<Promise<Entity>> = []
 
     if (record instanceof DomainEventableEntity) {
       this.createEvent(this.events.EVENT_CREATED, entity);
     }
 
-    Object.entries(relations).forEach(async ([name, ids]) => {
-      resultRelations.push(this.assignRelations(entity, name, ids))
-    })
-
-    const entityWithRelations: Entity = (await Promise.all(resultRelations))
-      .reduce((base, extended) => ({ ...base, ...extended }))
-
-    // copy because we need interfaces Entity to checks in repository
-    Object.keys(relations).forEach(async (name) => {
-      entity[name as keyof Entity] = entityWithRelations[name as keyof Entity]
-    })
+    const entityWithRelations = await Promise.all(
+        Object.entries(relations).map(async ([name, ids]) => this.assignRelations(entity, name, ids))
+      ).then(() => entity);
 
     if (this.useTransaction) {
       if (this.repo instanceof TransactionalRepository) {
-        return await this.repo.transaction(async () => this.repo.save(entity));
+        return await this.repo.transaction(async () => this.repo.save(entityWithRelations));
       }
 
       throw new Error('Repository should extend by TransactionalRepository');
     }
 
+    return this.repo.save(entity)
+  }
+
+  public override async updateWithRelations(
+    id: number | string,
+    update: DeepPartial<Entity>,
+    relations: Record<string, (string | number)[]>,
+    opts?: UpdateOneOptions<Entity>,
+  ): Promise<Entity> {
+    this.ensureIdIsNotPresent(update);
+
+    const entity = await this.getById(id, opts);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return this.repo.save(entity)
+    this.repo.merge(entity, update);
+
+    if (update instanceof DomainEventableEntity) {
+      this.createEvent(this.events.EVENT_UPDATED, entity);
+    }
+
+    const entityWithRelations = await Promise.all(
+        Object.entries(relations).map(async ([name, ids]) => this.assignRelations(entity, name, ids))
+      ).then(() => entity);
+
+    return this.repo.save(entityWithRelations)
   }
 
   private injectSetters(record: DeepPartial<Entity>): void {
