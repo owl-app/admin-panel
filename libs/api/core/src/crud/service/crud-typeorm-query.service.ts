@@ -1,4 +1,5 @@
 import { Repository } from 'typeorm';
+import { cloneDeep, omit } from 'lodash';
 
 import {
   TypeOrmQueryService,
@@ -89,17 +90,22 @@ export class CrudTypeOrmQueryService<
     if (record instanceof DomainEventableEntity) {
       this.createEvent(this.events.EVENT_CREATED, entity);
     }
-    
+
     Object.entries(relations).forEach(async ([name, ids]) => {
       resultRelations.push(this.assignRelations(entity, name, ids))
     })
 
-    const entityWithRelations = (await Promise.all(resultRelations))
+    const entityWithRelations: Entity = (await Promise.all(resultRelations))
       .reduce((base, extended) => ({ ...base, ...extended }))
+
+    // copy because we need interfaces Entity to checks in repository
+    Object.keys(relations).forEach(async (name) => {
+      entity[name as keyof Entity] = entityWithRelations[name as keyof Entity]
+    })
 
     if (this.useTransaction) {
       if (this.repo instanceof TransactionalRepository) {
-        return await this.repo.transaction(async () => this.repo.save(entityWithRelations));
+        return await this.repo.transaction(async () => this.repo.save(entity));
       }
 
       throw new Error('Repository should extend by TransactionalRepository');
@@ -107,7 +113,7 @@ export class CrudTypeOrmQueryService<
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return this.repo.save(entityWithRelations)
+    return this.repo.save(entity)
   }
 
   private injectSetters(record: DeepPartial<Entity>): void {
@@ -126,7 +132,7 @@ export class CrudTypeOrmQueryService<
     const eventName = `${convertToSnakeCase(this.EntityClassName)}_${name}`;
     const event = new DomainEvent({ eventName });
 
-    Object.assign(event, entity);
+    Object.assign(event, cloneDeep(omit(entity, ['_domainEvents'])));
     entity.addEvent(event);
 
     return event;
