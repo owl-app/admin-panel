@@ -335,8 +335,6 @@ export interface QueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> {
 // eslint-disable-next-line @typescript-eslint/no-redeclare,@typescript-eslint/no-unused-vars -- intentional
 export function QueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>>(DTOClass: Class<DTO>) {
   return <Cls extends Class<QueryService<DTO, C, U>>>(cls: Cls): Cls | void => {
-    console.log('clsclsclsclsclsclsclscls', cls)
-    console.log(new Error().stack);
     return Injectable()(cls)
   }
 }

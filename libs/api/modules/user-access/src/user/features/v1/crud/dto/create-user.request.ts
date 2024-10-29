@@ -1,20 +1,10 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 
-export class CreateUserRequest {
+import { UserDto } from "../../../../dto/user.dto";
 
-    @ApiProperty({ type: () => String, example: 'test@fajny.pl'})
-    email?: string;
+export class CreateUserRequest extends PartialType(UserDto) {
 
     @ApiProperty({ type: () => String })
     password?: string;
-
-    @ApiPropertyOptional({ type: () => String })
-    readonly firstName?: string;
-
-    @ApiPropertyOptional({ type: () => String })
-    readonly lastName?: string;
-
-    @ApiPropertyOptional({ type: () => String })
-    readonly phoneNumber?: string;
-
+  
 }

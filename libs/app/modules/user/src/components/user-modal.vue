@@ -6,7 +6,7 @@
   >
     <template #header>
       <header-bar
-        :title="(user ? 'Edit' : 'Create') + ' permission'"
+        :title="(user ? 'Edit' : 'Create') + ' user'"
         :icon="user ? 'edit' : 'add'"
         :bordered-bottom="true"
       />
@@ -16,7 +16,7 @@
         class-form="flex flex-col gap-2"
         collection="users"
         :primaryKey="user?.id"
-        :schema="userValidationSchema"
+        :schema="user?.id ? updateUserValidationSchema : createUserValidationSchema"
         @saved="ok(); $emit('saved');"
       >
         <template #fields="{ data, validation }">
@@ -34,7 +34,14 @@
               :validation="validation"
             />
           </div>
-          <va-input v-model="data.ref.password" label="password" />
+          <va-input 
+            v-model="data.ref.password"
+            label="Password"
+            name="password"
+            :error="!!validation['password']"
+            :error-messages="validation['password']"
+            :required-mark="true"
+          />
           <va-input v-model="data.ref.firstName" label="firstName" :rules="[required]" />
           <va-input v-model="data.ref.lastName" label="lastName" :rules="[required]" />
           <va-input v-model="data.ref.phoneNumber" label="phoneNumber" :rules="[required]" />
@@ -52,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { type User, userValidationSchema } from "@owl-app/lib-contracts";
+import { type User, createUserValidationSchema, updateUserValidationSchema } from "@owl-app/lib-contracts";
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue'
 import HeaderBar from '@owl-app/lib-app-core/layouts/panel/components/header-bar.vue'
 

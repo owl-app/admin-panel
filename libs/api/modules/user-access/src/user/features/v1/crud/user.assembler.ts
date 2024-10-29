@@ -38,7 +38,7 @@ export class UserAssembler extends ClassTransformerAssembler<
     const createdUser = await user;
     const dto = new UserDto();
 
-    dto.role = createdUser.roles.pop();
+    dto.role = createdUser?.roles?.pop() ?? null;
 
     return mapper.map<UserEntity, UserDto>(createdUser, dto);
   }

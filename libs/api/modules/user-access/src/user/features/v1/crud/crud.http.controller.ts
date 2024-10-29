@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth, ApiQuery, getSchemaPath, ApiExtraModels } from '@nestjs/swagger'
 
-import { AvalilableCollections, CrudActions, userValidationSchema } from '@owl-app/lib-contracts'
+import { AvalilableCollections, CrudActions, createUserValidationSchema, updateUserValidationSchema } from '@owl-app/lib-contracts'
 import { InjectAssemblerQueryService, QueryService } from '@owl-app/crud-core'
 
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe'
@@ -31,7 +31,6 @@ import { UserEntity } from '../../../../domain/entity/user.entity'
 import { UserDto } from '../../../dto/user.dto'
 
 import { CreateUserRequest, UpdateUserRequest, FilterUserDto, UserPaginatedResponse } from './dto'
-import { createUserValidation } from './validation'
 import { UserAssembler } from './user.assembler'
 
 @ApiTags('User')
@@ -91,17 +90,11 @@ export class UserCrudController {
   @Post()
   @RoutePermissions(AvalilableCollections.USER, CrudActions.CREATE)
   async create(
-    @Body(new ValibotValidationPipe(userValidationSchema)) createUserRequest: CreateUserRequest,
+    @Body(new ValibotValidationPipe(createUserValidationSchema)) createUserRequest: CreateUserRequest,
   ) {
-    await createUserValidation.validateAsync(createUserRequest, { abortEarly: false });
-
-    const createdUser = await this.service.createOne({...createUserRequest, ...{tenant: {name: 'la la la client'}}});
-
-    // const createdUser = await this.service.createWithRelations(createUserRequest, {
-    //   company: [createUserRequest.companyId]
-    // });
-
-    // console.log(createdUser)
+    const createdUser = await this.service.createWithRelations(createUserRequest, {
+      roles: [createUserRequest.role.name]
+    });
 
     return createdUser
   }
@@ -125,7 +118,7 @@ export class UserCrudController {
   @RoutePermissions(AvalilableCollections.USER, CrudActions.UPDATE)
   async update(
     @Param('id', UUIDValidationPipe) id: string,
-    @Body(new ValibotValidationPipe(userValidationSchema)) updateUserRequest: UpdateUserRequest,
+    @Body(new ValibotValidationPipe(updateUserValidationSchema)) updateUserRequest: UpdateUserRequest,
   ): Promise<UserDto> {
     const updatedUser = await this.service.updateWithRelations(id, updateUserRequest, {
       roles: [updateUserRequest.role.name]

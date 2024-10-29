@@ -74,9 +74,40 @@ export class CrudTypeOrmQueryService<
       throw new Error('Repository should extend by TransactionalRepository');
     }
 
+    return this.repo.save(entity);
+  }
+
+  public override async createWithRelations(
+    record: DeepPartial<Entity>,
+    relations: Record<string, (string | number)[]>,
+  ): Promise<Entity> {
+    this.injectSetters(record);
+
+    const entity = await this.ensureIsEntityAndDoesNotExist(record)
+    const resultRelations: Array<Promise<Entity>> = []
+
+    if (record instanceof DomainEventableEntity) {
+      this.createEvent(this.events.EVENT_CREATED, entity);
+    }
+    
+    Object.entries(relations).forEach(async ([name, ids]) => {
+      resultRelations.push(this.assignRelations(entity, name, ids))
+    })
+
+    const entityWithRelations = (await Promise.all(resultRelations))
+      .reduce((base, extended) => ({ ...base, ...extended }))
+
+    if (this.useTransaction) {
+      if (this.repo instanceof TransactionalRepository) {
+        return await this.repo.transaction(async () => this.repo.save(entityWithRelations));
+      }
+
+      throw new Error('Repository should extend by TransactionalRepository');
+    }
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return super.createOne(record);
+    return this.repo.save(entityWithRelations)
   }
 
   private injectSetters(record: DeepPartial<Entity>): void {
