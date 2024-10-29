@@ -1,4 +1,5 @@
 import { CompanyAware } from "./company";
+import { Role } from "./rbac";
 import { Tenant } from "./tenant";
 import { Timestampable } from "./timestampable";
 
@@ -15,6 +16,7 @@ export interface User extends CompanyAware, Timestampable {
 	hashRefreshToken?: string;
 	lastLogin?: Date;
 	language?: string;
+	roles: Role[];
 }
 
 export interface IUserRegistrationInput {

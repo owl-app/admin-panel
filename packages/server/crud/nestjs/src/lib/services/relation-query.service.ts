@@ -1,3 +1,5 @@
+import { NotFoundException } from '@nestjs/common'
+
 import {
   AggregateQuery,
   AggregateResponse,
@@ -206,7 +208,7 @@ export abstract class RelationQueryService<Entity> {
     const relations = await this.getRelations(relationName, relationIds, opts?.relationFilter)
 
     if (!this.foundAllRelations(relationIds, relations)) {
-      throw new Error(`Unable to find ${relationName}`)
+      throw new NotFoundException(`Unable to find ${relationName}`)
     }
 
     const relationMetadata = this.getRelationMeta(relationName)

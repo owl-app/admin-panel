@@ -13,8 +13,10 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth, ApiQuery, getSchemaPath, ApiExtraModels } from '@nestjs/swagger'
 
-import { AvalilableCollections, CrudActions } from '@owl-app/lib-contracts'
+import { AvalilableCollections, CrudActions, userValidationSchema } from '@owl-app/lib-contracts'
 import { InjectAssemblerQueryService, QueryService } from '@owl-app/crud-core'
+
+import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe'
 import { Paginated } from '@owl-app/lib-api-core/pagination/pagination'
 import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider'
 import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query'
@@ -57,8 +59,23 @@ export class UserCrudController {
   })
   @Get(':id')
   @RoutePermissions(AvalilableCollections.USER, CrudActions.READ)
-  findOne(@Param('id') id: string) {
-    return this.service.getById(id);
+  async findOne(@Param('id') id: string) {
+    const relations = [
+      {
+        name: 'roles',
+        query: {
+          relations: [
+            {
+              name: 'setting',
+              query: {}
+            }
+          ]
+        }
+      }
+    ]
+    const user = await this.service.getById(id, { relations });
+
+    return user;
   }
 
   @ApiOperation({ summary: 'Create new user' })
@@ -73,7 +90,9 @@ export class UserCrudController {
     })
   @Post()
   @RoutePermissions(AvalilableCollections.USER, CrudActions.CREATE)
-  async create(@Body() createUserRequest: CreateUserRequest) {
+  async create(
+    @Body(new ValibotValidationPipe(userValidationSchema)) createUserRequest: CreateUserRequest,
+  ) {
     await createUserValidation.validateAsync(createUserRequest, { abortEarly: false });
 
     const createdUser = await this.service.createOne({...createUserRequest, ...{tenant: {name: 'la la la client'}}});
@@ -106,12 +125,13 @@ export class UserCrudController {
   @RoutePermissions(AvalilableCollections.USER, CrudActions.UPDATE)
   async update(
     @Param('id', UUIDValidationPipe) id: string,
-    @Body() updateUserRequest: UpdateUserRequest,
+    @Body(new ValibotValidationPipe(userValidationSchema)) updateUserRequest: UpdateUserRequest,
   ): Promise<UserDto> {
+    const updatedUser = await this.service.updateWithRelations(id, updateUserRequest, {
+      roles: [updateUserRequest.role.name]
+    });
 
-    const updatedUser = await this.service.updateOne(id, updateUserRequest);
-
-    return  updatedUser
+    return updatedUser;
   }
 
   @ApiOperation({ summary: 'Delete user' })

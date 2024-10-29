@@ -10,6 +10,7 @@ import {
   Param,
   HttpCode,
   Injectable,
+  ValidationPipe,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
@@ -30,6 +31,7 @@ import { TagResponse } from '../../../dto/tag.response'
 
 import { CreateTagRequest, UpdateTagDto, FilterTagDto, TagPaginatedResponse } from './dto'
 import { TagAssembler } from './tag.assembler'
+import { TagPaginatedQuery } from './dto/tag-paginated.query'
 
 @ApiTags('Tags')
 @Controller('tags')
@@ -135,9 +137,9 @@ export class TagCrudController {
   @RoutePermissions(AvalilableCollections.TAG, CrudActions.LIST)
   async paginated(
     @Query('filters') filters: FilterTagDto,
-    @Query() pagination: PaginatedQuery
+    @Query(new ValidationPipe({ transform: true })) pagination: TagPaginatedQuery,
   ): Promise<TagPaginatedResponse> {
-    const paginated = await this.paginatedService.getData(filters, pagination);
+    const paginated = await this.paginatedService.getData(filters, (pagination.pageable === 0 ? null : pagination));
 
     return new TagPaginatedResponse(paginated);
   }

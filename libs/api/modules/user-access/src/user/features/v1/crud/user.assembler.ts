@@ -36,10 +36,17 @@ export class UserAssembler extends ClassTransformerAssembler<
   async convertAsyncToDTO(user: Promise<UserEntity>): Promise<UserDto>
   {
     const createdUser = await user;
-    return mapper.map<UserEntity, UserDto>(createdUser, new UserDto());
+    const dto = new UserDto();
+
+    dto.role = createdUser.roles.pop();
+
+    return mapper.map<UserEntity, UserDto>(createdUser, dto);
   }
 
   convertToDTO(user: UserEntity): UserDto {
-    return mapper.map<UserEntity, UserDto>(user, new UserDto());
+    const dto = new UserDto();
+    dto.role = user.roles.pop();
+
+    return mapper.map<UserEntity, UserDto>(user, dto);
   }
 }

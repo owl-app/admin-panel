@@ -2,11 +2,18 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { DataSource } from 'typeorm'
+import { DataSource, ObjectLiteral } from 'typeorm'
+
+import { Role } from '@owl-app/lib-contracts'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
 import { CrudTypeOrmQueryModule } from '@owl-app/lib-api-core/crud/crud-typeorm-query.module'
 import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository'
+import { FILTER_REGISTRY_TENANT } from '@owl-app/lib-api-core/registry/constants'
+import { RolesFilter } from '@owl-app/lib-api-core/tenant-typeorm/filters/roles.filter'
+import { RegistryServiceModule } from '@owl-app/registry-nestjs'
+import { FilterQuery } from '@owl-app/lib-api-core/registry/interfaces/filter-query'
+import { CrudTypeOrmQueryService } from '@owl-app/lib-api-core/crud/service/crud-typeorm-query.service'
 
 import { CrudController } from './features/v1/crud/crud.http.controller'
 import { AssignController } from './features/v1/assign/assign.http.controller'
@@ -24,7 +31,15 @@ import { AssignedPermissionsController } from './features/v1/assigned-permission
     RbacTypeOrmModule.forFeature(),
     TypeOrmModule.forFeature([BaseAuthEntitySchema, RoleSettingEntitySchema]),
     CrudTypeOrmQueryModule.forFeature({
-      importsQueryTypeOrm: [RbacTypeOrmModule.forFeature()],
+      importsQueryTypeOrm: [
+        RegistryServiceModule.forFeature<FilterQuery<ObjectLiteral>>({
+          name: FILTER_REGISTRY_TENANT,
+          services: {
+            roles: RolesFilter<Role>,
+          },
+        }),
+        RbacTypeOrmModule.forFeature()
+      ],
       entities: [
         {
           entity: RoleEntitySchema,
@@ -38,7 +53,7 @@ import { AssignedPermissionsController } from './features/v1/assigned-permission
       ],
       queryService: {
         classService: RoleService,
-        inject: [DataSource, 'RBAC_MANAGER']
+        inject: [DataSource, 'RBAC_MANAGER', FILTER_REGISTRY_TENANT]
       }
     })
   ],

@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
 
-import type { Company, IUserRequest } from "@owl-app/lib-contracts";
+import type { Role, Company, IUserRequest } from "@owl-app/lib-contracts";
 
 export class UserDto implements IUserRequest{
 
@@ -12,13 +12,13 @@ export class UserDto implements IUserRequest{
     password?: string;
 
     @ApiPropertyOptional({ type: () => String })
-    readonly firstName?: string;
+    firstName?: string;
 
     @ApiPropertyOptional({ type: () => String })
-    readonly lastName?: string;
+    lastName?: string;
 
     @ApiPropertyOptional({ type: () => String })
-    readonly phoneNumber?: string;
+    phoneNumber?: string;
 
     @ApiProperty({ type: () => String })
     id: string;
@@ -26,4 +26,8 @@ export class UserDto implements IUserRequest{
     @ApiPropertyOptional({ type: () => Array })
     @IsOptional()
     company: Company;
+
+    @ApiPropertyOptional({ type: () => Array })
+    @IsOptional()
+    role?: Role;
 }

@@ -1,7 +1,7 @@
 import { DataSource, DataSourceOptions, ObjectLiteral } from 'typeorm';
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { CompanyAware, TenantAware } from '@owl-app/lib-contracts';
+import { CompanyAware, Role, TenantAware } from '@owl-app/lib-contracts';
 import { RegistryServiceModule } from '@owl-app/registry-nestjs';
 
 import { DEFAULT_DATA_SOURCE_NAME } from '../contants';
@@ -20,6 +20,7 @@ import {
   CrudTypeOrmQueryEntitiesOpts,
   CrudTypeOrmQueryModule,
 } from '../crud/crud-typeorm-query.module';
+import { RolesFilter } from './filters/roles.filter';
 
 export interface CrudTenantTypeOrmQueryModuleOpts {
   entities: CrudTypeOrmQueryEntitiesOpts[];
@@ -46,6 +47,7 @@ export class CrudTenantTypeOrmQueryModule {
             name: FILTER_REGISTRY_TENANT,
             services: {
               tenant: TenantRelationFilter<TenantAware>,
+              roles: RolesFilter<Role>,
             },
           }),
           RegistryServiceModule.forFeature<EntitySetter<ObjectLiteral>>({

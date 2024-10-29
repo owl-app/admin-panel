@@ -101,7 +101,6 @@ export class TimeCrudController {
     @Param('id', UUIDValidationPipe) id: string,
     @Body(new ValibotValidationPipe(timeValidationSchema)) updateTimeRequest: UpdateTimeRequest,
   ): Promise<TimeResponse> {
-    console.log(updateTimeRequest)
     const updatedTime = await this.service.updateWithRelations(id, updateTimeRequest, {
       tags: updateTimeRequest.tags.map((tag) => tag.id)
     });

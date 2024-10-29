@@ -1,14 +1,14 @@
 import { SelectQueryBuilder } from 'typeorm';
-import { Client } from '@owl-app/lib-contracts';
+import { User } from '@owl-app/lib-contracts';
 import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/query-filter.builder';
-import { Filter } from '@owl-app/crud-core';
+import { Filter, SelectRelation } from '@owl-app/crud-core';
 
 import { FilterUserDto } from './dto';
 
-export class ListFilterBuilder extends QueryFilterBuilder<Client, FilterUserDto> {
-  build(data: FilterUserDto): Filter<Client>
+export class ListFilterBuilder extends QueryFilterBuilder<User, FilterUserDto> {
+  build(data: FilterUserDto): Filter<User>
   {
-    const filters: Filter<Client>[] = []
+    const filters: Filter<User>[] = []
 
     filters.push(this.filterRegistry.get('string').apply(['email'], data?.search));
 
@@ -17,7 +17,19 @@ export class ListFilterBuilder extends QueryFilterBuilder<Client, FilterUserDto>
     }
   }
 
-  buildCustom(filters: FilterUserDto, qb: SelectQueryBuilder<Client>): void {
-
+  buildRelations(): SelectRelation<User>[] {
+    return [
+      {
+        name: 'roles',
+        query: {
+          relations: [
+            {
+              name: 'setting',
+              query: {}
+            }
+          ]
+        }
+      }
+    ]
   }
 }

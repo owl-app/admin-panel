@@ -1,4 +1,4 @@
-import { Client, Permission } from '@owl-app/lib-contracts';
+import { Permission } from '@owl-app/lib-contracts';
 import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/query-filter.builder';
 import { Filter } from '@owl-app/crud-core';
 

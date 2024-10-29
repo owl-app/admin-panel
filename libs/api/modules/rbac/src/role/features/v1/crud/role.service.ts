@@ -1,9 +1,12 @@
 import { DataSource, Repository } from "typeorm";
 
-import { Permission } from "@owl-app/lib-api-core/rbac/types/permission";
+import { Registry } from "@owl-app/registry";
 import { RbacManager, Role } from "@owl-app/rbac-manager";
-import { CrudTypeOrmQueryService, CrudTypeOrmQueryServiceOpts } from "@owl-app/lib-api-core/crud/service/crud-typeorm-query.service";
 import { DeepPartial } from "@owl-app/crud-core";
+
+import { Permission } from "@owl-app/lib-api-core/rbac/types/permission";
+import { FilterQuery } from "@owl-app/lib-api-core/registry/interfaces/filter-query";
+import { CrudTypeOrmQueryService, CrudTypeOrmQueryServiceOpts } from "@owl-app/lib-api-core/crud/service/crud-typeorm-query.service";
 
 import { RoleEntity } from "../../../../domain/entity/role.entity";
 import { RoleSettingEntity } from "../../../../domain/entity/role-setting.entity";
@@ -15,8 +18,9 @@ export class RoleService extends CrudTypeOrmQueryService<RoleEntity> {
     opts: CrudTypeOrmQueryServiceOpts<RoleEntity>,
     private dataSource: DataSource,
     private rbacManager: RbacManager<Permission, Role>,
+    readonly filters?: Registry<FilterQuery<RoleEntity>>,
   ) {
-    super(repository, opts);
+    super(repository, opts, filters);
   }
 
   public override async createOne(record: DeepPartial<RoleEntity>): Promise<RoleEntity>

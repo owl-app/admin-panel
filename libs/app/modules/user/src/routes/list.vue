@@ -32,6 +32,7 @@ const columns = defineVaDataTableColumns([
   { label: 'Full Name', key: 'fullname', sortable: true },
   { label: 'Email', key: 'email', sortable: true },
   { label: 'Phone number', key: 'phoneNumber', sortable: true },
+  { label: 'Role', key: 'role', sortable: true },
   { label: ' ', key: 'actions' },
 ])
 
@@ -89,6 +90,10 @@ const { hasRoutePermission } = usePermissions(AvalilableCollections.USER);
         <div class="flex items-center gap-2 max-w-[230px] ellipsis">
           {{ rowData.phoneNumber }}
         </div>
+      </template>
+
+      <template #cell(role)="{ rowData }">
+        <va-badge color="primary" :text="rowData.role?.setting?.displayName"></va-badge>
       </template>
 
       <template #cell(actions)="{ rowData: user }">
