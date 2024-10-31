@@ -11,6 +11,7 @@ import {
   DeleteManyResponse,
   DeleteOneOptions,
   Filter,
+  Filterable,
   FindByIdOptions,
   FindRelationOptions,
   GetByIdOptions,
@@ -72,6 +73,10 @@ export class NoOpQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> i
   }
 
   deleteOne(id: number | string, opts?: DeleteOneOptions<DTO>): Promise<DTO> {
+    return Promise.reject(new NotImplementedException('deleteOne is not implemented'))
+  }
+
+  restoreOne(id: number | string, opts?: Filterable<DTO>): Promise<DTO> {
     return Promise.reject(new NotImplementedException('deleteOne is not implemented'))
   }
 

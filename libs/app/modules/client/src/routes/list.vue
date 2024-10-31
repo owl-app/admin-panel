@@ -7,6 +7,7 @@ import { AvalilableCollections, Client, CrudActions } from "@owl-app/lib-contrac
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
+import ArchivedFilter from '@owl-app/lib-app-core/components/grid/components/filters/archived.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
 import ArchiveModal from '@owl-app/lib-app-core/components/modal/archive-modal.vue';
 import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
@@ -51,7 +52,15 @@ const columns = defineVaDataTableColumns([
       </template>
       <template  #content-filter="{ filters, changeFilter, removeFilter }">
         <div class="grid grid-cols-12 gap-2 grid-flow-col" style="margin-left:auto; grid-auto-flow: column;">
-          <div class="col-start-1 col-end-4">
+          <div class="col-start-1 col-end-3">
+            <archived-filter
+              :modelValue="filters.archived"
+              clearable
+              @update:model-value="(value: string) => changeFilter({ archived: value })"
+              @clear="() => removeFilter('archived')"
+            />
+          </div>
+          <div class="col-start-3 col-end-6">
                 <div>
                   <div class="grid grid-cols-1 gap-4">
                     <string-filter
@@ -63,7 +72,6 @@ const columns = defineVaDataTableColumns([
                     />
                   </div>
                 </div>
-                <div></div>
             </div>
             <div class="col-end-13 col-span-3 content-end">
               <create-inline @saved="gridRef?.addItem" v-if="hasRoutePermission(CrudActions.CREATE)" />
@@ -90,7 +98,7 @@ const columns = defineVaDataTableColumns([
               <va-icon class="mt-0.5" name="more_vert" />
             </template>
 
-            <va-menu-item @selected="archiveModal?.show(client?.id)">
+            <va-menu-item @selected="archiveModal?.show(true, client?.id)">
               <va-icon name="archive" class="material-symbols-outlined mr-1" /> archive
             </va-menu-item>
 
@@ -116,7 +124,7 @@ const columns = defineVaDataTableColumns([
     <archive-modal 
       ref="archiveModal"
       collection="clients"
-      @deleted="gridRef?.reloadGrid"
+      @archived="gridRef?.reloadGrid"
     />
   </panel-layout>
 </template>

@@ -76,6 +76,10 @@ export class AssemblerQueryService<DTO, Entity, C = DeepPartial<DTO>, CE = DeepP
     return this.assembler.convertAsyncToDTO(this.queryService.deleteOne(id, this.convertFilterable(opts)))
   }
 
+  async restoreOne(id: number | string, opts?: Filterable<DTO>): Promise<DTO> {
+    return this.assembler.convertAsyncToDTO(this.queryService.restoreOne(id, this.convertFilterable(opts)))
+  }
+
   async findById(id: string | number, opts?: FindByIdOptions<DTO>): Promise<DTO | undefined> {
     const entity = await this.queryService.findById(id, this.convertFilterable(opts))
     if (!entity) {

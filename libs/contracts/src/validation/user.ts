@@ -5,6 +5,7 @@ const baseSchema = v.object({
   email: v.optional(
     v.pipe(
       v.string(),
+      v.email(),
       v.nonEmpty('Field is required')
     ), ''),
   firstName: v.nullish(v.string(), null),

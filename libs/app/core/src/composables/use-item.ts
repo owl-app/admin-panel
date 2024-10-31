@@ -25,6 +25,8 @@ export type UsableItem<T extends Item> = {
   save: (data: T) => Promise<T>;
   deleting: Ref<boolean>;
   remove: () => Promise<void>;
+  archiving: Ref<boolean>;
+  archive: (value: boolean) => Promise<void>;
   validationServerErrors: Ref<any>;
 };
 
@@ -39,6 +41,8 @@ export function useItem<T extends Item>(
   const loading = ref(false);
   const saving = ref(false);
   const deleting = ref(false);
+  const archiving = ref(false);
+  const action = ref<string|null>(null);
   const error = ref<any>(null);
   const validationServerErrors = ref<any>({});
   const primaryKey = ref<PrimaryKey | undefined | null>(id ?? null);
@@ -49,7 +53,7 @@ export function useItem<T extends Item>(
       return collection;
     }
 
-    return `${collection}/${encodeURIComponent(primaryKey.value as string)}`;
+    return `${collection}/${(action.value ? `${action.value}/` : '')}${encodeURIComponent(primaryKey.value as string)}`;
   });
 
   return {
@@ -63,6 +67,8 @@ export function useItem<T extends Item>(
     save,
     deleting,
     remove,
+    archiving,
+    archive,
     validationServerErrors,
   };
 
@@ -139,6 +145,30 @@ export function useItem<T extends Item>(
       throw errorResponse;
     } finally {
       deleting.value = false;
+    }
+  }
+
+  async function archive(value: boolean) {
+    archiving.value = true;
+    action.value = 'archive';
+
+    try {
+      await delay(500);
+      await api.patch(endpoint.value, { archived: value });
+
+      item.value = null;
+
+      notify({
+        message: i18n.global.t('item_archive_success', 1),
+        color: 'success',
+        position: 'bottom-right',
+        offsetY: 30
+      })
+    } catch (errorResponse) {
+      error.value = errorResponse;
+      throw errorResponse;
+    } finally {
+      archiving.value = false;
     }
   }
 

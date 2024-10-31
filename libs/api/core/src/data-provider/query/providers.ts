@@ -17,10 +17,12 @@ import {
   PaginationConfig,
 } from '../../config/pagination';
 import { Filter } from '../filtering/filter';
-import { DATA_PROVIDER_FILTER_REGISTRY } from '../contants';
+import { DATA_PROVIDER_FILTER_REGISTRY, DATA_PROVIDER_FILTER_CUSTOM_REGISTRY } from '../contants';
 
 import { PaginatedDataProvider } from './paginated-query.provider';
 import { getPaginatedQueryServiceToken } from './decorators/helpers';
+import { FilterCustom } from '../filtering/filter-custom';
+import { SelectQueryBuilder } from 'typeorm';
 
 export function createPaginatedQueryServiceProvider<Entity>(
   entity: EntityClassOrSchema,
@@ -32,12 +34,13 @@ export function createPaginatedQueryServiceProvider<Entity>(
     useFactory(
       queryService: QueryService<Entity>,
       paginationConfig: PaginationConfig,
-      filterServiceRegistry: Registry<Filter<FilterQueryService<Entity>>>
+      filterServiceRegistry: Registry<Filter<FilterQueryService<Entity>>>,
+      filterCustomServiceRegistry: Registry<FilterCustom<SelectQueryBuilder<Entity>>>
     ) {
       return new PaginatedDataProvider(
         queryService,
         paginationConfig,
-        new filterBuilder(filterServiceRegistry)
+        new filterBuilder(filterServiceRegistry, filterCustomServiceRegistry)
       );
     },
     inject: [
@@ -46,6 +49,7 @@ export function createPaginatedQueryServiceProvider<Entity>(
         : getAssemblerQueryServiceToken(assembler),
       PAGINATION_CONFIG_PROVIDER,
       DATA_PROVIDER_FILTER_REGISTRY,
+      DATA_PROVIDER_FILTER_CUSTOM_REGISTRY,
     ],
   };
 }

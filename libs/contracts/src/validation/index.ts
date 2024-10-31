@@ -5,3 +5,4 @@ export * from './time';
 export * from './login';
 export * from './tag';
 export * from './user';
+export * from './archive';

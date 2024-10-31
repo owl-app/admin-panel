@@ -7,12 +7,14 @@ import {
 import { FilterBuilder } from '../filter.builder';
 import { Filter } from '../filtering/filter';
 import { SelectQueryBuilder } from 'typeorm';
+import { FilterCustom } from '../filtering/filter-custom';
 
 export abstract class QueryFilterBuilder<Entity, FilterData>
   implements FilterBuilder<FilterQueryService<Entity>, FilterData>
 {
   constructor(
-    readonly filterRegistry: Registry<Filter<FilterQueryService<Entity>>>
+    readonly filterRegistry: Registry<Filter<FilterQueryService<Entity>>>,
+    readonly filterCustomRegistry: Registry<FilterCustom<SelectQueryBuilder<Entity>>>
   ) {}
 
   abstract build(filters: FilterData): FilterQueryService<Entity>;

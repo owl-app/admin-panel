@@ -21,6 +21,8 @@
   const props = defineProps<{
     collection: string,
   }>()
+
+  let archived: boolean;
   
   const emit = defineEmits<{
     (event: 'archived'): void
@@ -32,19 +34,20 @@
   
   const model = defineModel<boolean>();
   
-  const { primaryKey, deleting, remove } = useItem<Item>(props.collection);
+  const { primaryKey, deleting, archive } = useItem<Item>(props.collection);
   
   const onDelete = async () => {
-    await remove();
+    await archive(archived);
   
     emit('archived');
   
     model.value = false;
   }
   
-  function show(id?: PrimaryKey): void {
+  function show(isArchived: boolean, id?: PrimaryKey): void {
     model.value = true;
     primaryKey.value = id;
+    archived  = isArchived;
   }
   </script>
   

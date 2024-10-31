@@ -5,7 +5,7 @@ import { Role, TenantAware } from '@owl-app/lib-contracts';
 import { RegistryServiceModule } from '@owl-app/registry-nestjs';
 
 import { DEFAULT_DATA_SOURCE_NAME } from '../contants';
-import { CrudTypeOrmQueryService } from '../crud/service/crud-typeorm-query.service';
+import { CrudTypeOrmQueryService, CrudTypeOrmQueryServiceOpts } from '../crud/service/crud-typeorm-query.service';
 import { FilterQuery } from '../registry/interfaces/filter-query';
 import { EntitySetter } from '../registry/interfaces/entity-setter';
 import {
@@ -23,6 +23,7 @@ import { RolesFilter } from './filters/roles.filter';
 
 export interface CrudTenantTypeOrmQueryModuleOpts {
   entities: CrudTypeOrmQueryEntitiesOpts[];
+  queryServiceOpts?: CrudTypeOrmQueryServiceOpts<unknown>
 }
 
 @Module({})
@@ -40,6 +41,7 @@ export class CrudTenantTypeOrmQueryModule {
         queryService: {
           classService: CrudTypeOrmQueryService,
           inject: [FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT],
+          opts: opts.queryServiceOpts
         },
         importsQueryTypeOrm: [
           RegistryServiceModule.forFeature<FilterQuery<ObjectLiteral>>({

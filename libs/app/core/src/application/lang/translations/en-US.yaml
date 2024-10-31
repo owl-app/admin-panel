@@ -36,3 +36,9 @@ error:
 errors:
   unexpected_error: Unexpected error
   forbidden_resource: Forbidden resource
+grid:
+  filters:
+    archived:
+      show_active: show active
+      show_archived: show archived
+      show_all: show all

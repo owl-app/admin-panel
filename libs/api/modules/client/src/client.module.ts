@@ -27,6 +27,10 @@ import { ListFilterBuilder } from './client/features/v1/crud/list-filter.builder
           assembler: ClientAssembler
         }
       ],
+      queryServiceOpts: {
+        useSoftDelete: true,
+        useTransaction: true,
+      }
     }),
   ],
   controllers: [

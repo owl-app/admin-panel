@@ -10,10 +10,11 @@ import {
   Param,
   HttpCode,
   Injectable,
+  Patch,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
-import { AvalilableCollections, CrudActions, clientValidationSchema } from '@owl-app/lib-contracts'
+import { AvalilableCollections, CrudActions, archiveValidationSchema, clientValidationSchema } from '@owl-app/lib-contracts'
 
 import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query'
 import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core'
@@ -30,6 +31,7 @@ import { ClientResponse } from '../../../dto/client.response'
 
 import { CreateClientRequest, UpdateClientDto, FilterClientDto, ClientPaginatedResponseDto } from './dto'
 import { ClientAssembler } from './client.assembler'
+import { ArchiveClientRequest } from './dto/archived.request'
 
 @ApiTags('Client')
 @Controller('clients')
@@ -57,7 +59,7 @@ export class ClientCrudController {
   @Get(':id')
   @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.READ)
   findOne(@Param('id') id: string): Promise<ClientResponse> {
-    return this.service.getById(id, { relations: [{ name: 'users', query: {}}]});
+    return this.service.getById(id, { withDeleted: true, relations: [{ name: 'users', query: {}}]});
   }
 
   @ApiOperation({ summary: 'Create new client' })
@@ -99,7 +101,7 @@ export class ClientCrudController {
     @Param('id', UUIDValidationPipe) id: string,
     @Body(new ValibotValidationPipe(clientValidationSchema)) updateClientDto: UpdateClientDto,
   ): Promise<ClientResponse> {
-    const updatedClient = await this.service.updateOne(id, updateClientDto);
+    const updatedClient = await this.service.updateOne(id, updateClientDto, { withDeleted: true });
 
     return updatedClient;
   }
@@ -140,5 +142,37 @@ export class ClientCrudController {
     const paginated = await this.paginatedService.getData(filters, pagination);
 
     return new ClientPaginatedResponseDto(paginated);
+  }
+
+  @ApiOperation({ summary: 'Archive Client' })
+    @ApiAcceptedResponse({
+      description: 'Client has been successfully archived.',
+      type: ClientResponse,
+    })
+    @ApiResponse({
+      status: HttpStatus.NOT_FOUND,
+      description: 'Client not found'
+    })
+    @ApiResponse({
+      status: HttpStatus.BAD_REQUEST,
+      description:
+        'Invalid input, The response body may contain clues as to what went wrong'
+    })
+    @HttpCode(HttpStatus.ACCEPTED)
+  @Patch('archive/:id')
+  @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.UPDATE)
+  async archive(
+    @Param('id', UUIDValidationPipe) id: string,
+    @Body(new ValibotValidationPipe(archiveValidationSchema)) archiveClientRequest: ArchiveClientRequest,
+  ): Promise<ClientResponse> {
+      let archived = null;
+
+      if (archiveClientRequest.archived) {
+        archived =  await this.service.deleteOne(id, { useSoftDelete: true})
+      } else {
+        archived = await this.service.restoreOne(id);
+      }
+
+      return archived;
   }
 }

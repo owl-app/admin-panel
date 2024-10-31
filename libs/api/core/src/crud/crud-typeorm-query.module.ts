@@ -20,7 +20,7 @@ import { FilterBuilder } from '../data-provider/filter.builder';
 import { createPaginatedQueryServiceProvider } from '../data-provider/query/providers';
 import { PaginationConfigProvider } from '../config/pagination';
 import { TypeOrmModule } from '../typeorm/typeorm.module';
-import FiltersRegistry from '../data-provider/query/filters.registry';
+import { FiltersRegistry, FitersCustomRegistry } from '../data-provider/query/filters.registry';
 import { getQueryServiceRepositoryToken } from './common/repository.utils';
 
 export interface CrudTypeOrmQueryModuleOpts {
@@ -110,6 +110,7 @@ export class CrudTypeOrmQueryModule {
           assemblers: [...(assemblers ?? [])],
         }),
         FiltersRegistry,
+        FitersCustomRegistry,
       ],
       module: CrudTypeOrmQueryModule,
       providers: [PaginationConfigProvider, ...(dataProviders ?? [])],

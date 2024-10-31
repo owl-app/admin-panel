@@ -1,6 +1,10 @@
-import { Client } from '@owl-app/lib-contracts';
-import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/query-filter.builder';
+import { SelectQueryBuilder } from 'typeorm';
+
 import { Filter } from '@owl-app/crud-core';
+
+import { Client } from '@owl-app/lib-contracts';
+
+import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/query-filter.builder';
 
 import { FilterClientDto } from './dto';
 
@@ -14,5 +18,9 @@ export class ListFilterBuilder extends QueryFilterBuilder<Client, FilterClientDt
     return {
       or: filters
     }
+  }
+
+  buildCustom(filters: FilterClientDto, qb: SelectQueryBuilder<Client>): void {
+    this.filterCustomRegistry.get('archived').apply(filters, qb);
   }
 }

@@ -10,6 +10,7 @@ import {
   DeleteManyResponse,
   DeleteOneOptions,
   Filter,
+  Filterable,
   FindByIdOptions,
   FindRelationOptions,
   GetByIdOptions,
@@ -326,6 +327,20 @@ export interface QueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> {
    * @param opts - additional opts to apply when deleting by id.
    */
   deleteMany(filter: Filter<DTO> | undefined, opts?: DeleteManyOptions<DTO>): Promise<DeleteManyResponse>
+
+  /**
+   * Restore an entity by `id`.
+   *
+   * @example
+   *
+   * ```ts
+   * const restoredTodo = await this.service.restoreOne(1);
+   * ```
+   *
+   * @param id - The `id` of the entity to restore.
+   * @param opts Additional filter to use when finding the entity to restore.
+   */
+  restoreOne(id: number | string, opts?: Filterable<DTO>): Promise<DTO>;
 }
 
 /**

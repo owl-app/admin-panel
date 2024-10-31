@@ -7,6 +7,7 @@ import {
   DeleteManyResponse,
   DeleteOneOptions,
   Filter,
+  Filterable,
   FindByIdOptions,
   FindRelationOptions,
   GetByIdOptions,
@@ -203,6 +204,10 @@ export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> 
 
   deleteOne(id: number | string, opts?: DeleteOneOptions<DTO>): Promise<DTO> {
     return this.proxied.deleteOne(id, opts)
+  }
+
+  async restoreOne(id: number | string, opts?: Filterable<DTO>): Promise<DTO> {
+    return this.proxied.restoreOne(id, opts)
   }
 
   async findById(id: string | number, opts?: FindByIdOptions<DTO>): Promise<DTO | undefined> {
