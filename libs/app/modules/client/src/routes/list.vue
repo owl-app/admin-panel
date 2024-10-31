@@ -8,6 +8,7 @@ import { AvalilableCollections, Client, CrudActions } from "@owl-app/lib-contrac
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
+import ArchiveModal from '@owl-app/lib-app-core/components/modal/archive-modal.vue';
 import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 
 import CreateInline from '../components/create-inline.vue';
@@ -16,11 +17,11 @@ import ClientModal from '../components/client-modal.vue'
 const { t } = useI18n();
 
 const showModalUser = ref(false);
-const showDeleteModal = ref(false);
 const editClient = ref<Client | null>();
 const gridRef = ref<InstanceType<typeof Grid>>();
 const clientModal = ref<InstanceType<typeof ClientModal>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
+const archiveModal = ref<InstanceType<typeof ArchiveModal>>();
 
 const { hasRoutePermission } = usePermissions(AvalilableCollections.CLIENT);
 
@@ -46,22 +47,36 @@ const columns = defineVaDataTableColumns([
       url="clients"
     >
       <template #header-bar-actions>
-        <create-inline @saved="gridRef?.addItem" v-if="hasRoutePermission(CrudActions.CREATE)" />
+        
       </template>
-
-      <template #filters="{ filters, changeFilter, removeFilter }">
-        <div class="grid grid-cols-3 gap-4">
-          <string-filter 
-            :data="filters?.search"
-            :change-filter="changeFilter"
-            :remove-filter="removeFilter"
-          />
+      <template  #content-filter="{ filters, changeFilter, removeFilter }">
+        <div class="grid grid-cols-12 gap-2 grid-flow-col" style="margin-left:auto; grid-auto-flow: column;">
+          <div class="col-start-1 col-end-4">
+                <div>
+                  <div class="grid grid-cols-1 gap-4">
+                    <string-filter
+                      single-filter="contains"
+                      labelSearchInput="Search by name"
+                      :data="filters?.search"
+                      :change-filter="changeFilter"
+                      :remove-filter="removeFilter"
+                    />
+                  </div>
+                </div>
+                <div></div>
+            </div>
+            <div class="col-end-13 col-span-3 content-end">
+              <create-inline @saved="gridRef?.addItem" v-if="hasRoutePermission(CrudActions.CREATE)" />
+            </div>
+          </div>
+        <div class="my-4">
+          <va-divider />
         </div>
       </template>
 
       <template #cell(actions)="{ rowData: client }">
         <div class="flex gap-2 justify-end">
-          <VaButton
+          <va-button
             preset="primary"
             size="small"
             color="primary"
@@ -70,15 +85,20 @@ const columns = defineVaDataTableColumns([
             @click="clientModal?.show(client)"
             v-if="hasRoutePermission(CrudActions.UPDATE)"
           />
-          <VaButton
-            preset="primary"
-            size="small"
-            icon="mso-delete"
-            color="danger"
-            aria-label="Delete client"
-            @click="deleteModal?.show(client?.id)"
-            v-if="hasRoutePermission(CrudActions.DELETE)"
-          />
+          <va-menu :autoPlacement="false">
+            <template #anchor>
+              <va-icon class="mt-0.5" name="more_vert" />
+            </template>
+
+            <va-menu-item @selected="archiveModal?.show(client?.id)">
+              <va-icon name="archive" class="material-symbols-outlined mr-1" /> archive
+            </va-menu-item>
+
+            <va-menu-item @selected="deleteModal?.show(client?.id)" textAlign="left">
+              <va-icon name="delete" color="danger" class="material-symbols-outlined mr-1" />
+              <span style="color: var(--va-danger)"> delete</span>
+            </va-menu-item>
+          </va-menu>
         </div>
       </template>
     </grid>
@@ -91,7 +111,11 @@ const columns = defineVaDataTableColumns([
     <delete-modal 
       ref="deleteModal"
       collection="clients"
-      v-model="showDeleteModal"
+      @deleted="gridRef?.reloadGrid"
+    />
+    <archive-modal 
+      ref="archiveModal"
+      collection="clients"
       @deleted="gridRef?.reloadGrid"
     />
   </panel-layout>

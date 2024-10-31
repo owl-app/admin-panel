@@ -22,6 +22,16 @@ const props = defineProps({
     type: Function as PropType<Function>,
     required: true,
   },
+  singleFilter: {
+    type: String as PropType<string>,
+    required: false,
+    default: '',
+  },
+  labelSearchInput: {
+    type: String as PropType<string>,
+    required: false,
+    default: 'Search text',
+  }
 });
 
 const types = [
@@ -56,9 +66,11 @@ function change(field: string) {
     textDebounce.cancel();
   }
 
+  const searchType = props.singleFilter === '' ? type?.value : props.singleFilter;
+
   if (
     isEmpty(text) &&
-    (!['not_empty', 'empty'].includes(type.value))
+    (!['not_empty', 'empty'].includes(searchType))
   ) {
     if (field === 'text') props.removeFilter('search');
 
@@ -69,7 +81,7 @@ function change(field: string) {
     textDebounce = debounce(() => {
       props.changeFilter({
         search: {
-          type: type?.value,
+          type: searchType,
           value: text
         }
       });
@@ -79,7 +91,7 @@ function change(field: string) {
   } else {
     props.changeFilter({
       search: {
-        type: type?.value,
+        type: props.singleFilter === '' ? searchType : props.singleFilter,
         value: text
       }
     });
@@ -88,28 +100,42 @@ function change(field: string) {
 
 function clear() {
   form.text = '';
-  form.type = { value: 'equal', text: 'Equal' };
+
+  if (props.singleFilter === '') {
+    form.type = { value: 'equal', text: 'Equal' };
+  }
+
   props.removeFilter('search');
 }
-
 </script>
 
 <template>
   <div class="grid grid-cols-12 gap-2">
     <div class="col-span-11">
-        <div class="grid grid-cols-2 gap-2">
+        <div :class="`grid grid-cols-${singleFilter === '' ? 2 : 1} gap-2`">
           <va-select
             v-model="form.type"
             :options="types"
             label="Type"
             @update:modelValue="change('type')"
+            v-if="singleFilter === ''"
           />
 
           <va-input
             v-model="form.text"
-            label="Search text"
+            :label="labelSearchInput"
+            placeholder="Search"
+            background="#fff"
             @update:modelValue="change('text')"
-          />
+          >
+          <template #prependInner>
+            <va-icon
+              name="manage_search"
+              class="search-input-icon mr-1"
+              color="secondary"
+            />
+          </template>
+          </va-input>
         </div>
     </div>
     <div class="clear">
@@ -122,6 +148,9 @@ function clear() {
 
 <style lang="scss" scoped>
 :deep() {
+  .search-input-icon {
+    font-size: 1.5rem !important;
+  }
   .clear {
     display: flex;
     align-items: end;

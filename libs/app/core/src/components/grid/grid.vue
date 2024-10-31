@@ -171,7 +171,7 @@ async function reloadGrid() {
         <slot name="header-bar-actions" />
       </template>
     </header-bar>
-    <va-card style="margin-bottom: 10px;">
+    <va-card style="margin-bottom: 10px;" v-if="!!$slots.filters">
       <va-card-content>
         <va-collapse
             :model-value="(!isEmpty(filter) || filtersChanged)"
@@ -188,6 +188,13 @@ async function reloadGrid() {
         </va-collapse>
       </va-card-content>
     </va-card>
+    <slot
+      name="content-filter"
+      :filters="filter"
+      :change-filter="changeFilter"
+      :remove-filter="removeFilter"
+      v-if="$slots['content-filter']"
+    />
 
     <va-card>
       <va-card-content>
@@ -252,6 +259,11 @@ async function reloadGrid() {
 </template>
 <style lang="scss">
 .wrapper-grid {
+  .va-data-table {
+    &__table-thead {
+      background-color: var(--va-background-primary);
+    }
+  }
   .va-card {
     .va-data-table {
       &--grid {
