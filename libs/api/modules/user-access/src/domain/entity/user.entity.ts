@@ -1,4 +1,4 @@
-import { Company, Role, Tenant, Time, User } from '@owl-app/lib-contracts';
+import { Role, Tenant, Time, User } from '@owl-app/lib-contracts';
 
 import BaseEntity from '@owl-app/lib-api-core/database/entity/base.entity';
 
@@ -8,8 +8,6 @@ import { RegisterUserProps } from '../user.types';
 
 export class UserEntity extends BaseEntity implements User {
   id: string;
-
-  company: Company;
 
   tenant: Tenant;
 

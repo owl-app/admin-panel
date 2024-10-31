@@ -1,9 +1,8 @@
-import { CompanyAware } from "./company";
 import { Role } from "./rbac";
 import { Tenant } from "./tenant";
 import { Timestampable } from "./timestampable";
 
-export interface User extends CompanyAware, Timestampable {
+export interface User extends Timestampable {
 	id: string;
 	tenant: Tenant;
 	email: string;
@@ -52,5 +51,4 @@ export interface IUserResponse {
 	email: string;
 	firstName?: string;
 	lastName?: string;
-	companyId?: string;
 }

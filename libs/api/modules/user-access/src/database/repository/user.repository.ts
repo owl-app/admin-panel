@@ -29,11 +29,6 @@ export class UserRepository extends BaseRepository <UserEntity> implements IUser
         where: {
           email,
         },
-        select: {
-          company: {
-            id: true,
-          }
-        },
         relations: {
           tenant: true,
         },
