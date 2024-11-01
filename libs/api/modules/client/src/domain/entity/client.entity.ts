@@ -3,7 +3,6 @@ import type { Client, Tenant } from '@owl-app/lib-contracts';
 import BaseEntity from '@owl-app/lib-api-core/database/entity/base.entity';
 
 export class ClientEntity extends BaseEntity implements Client {
-  id: string;
 
   tenant: Tenant;
 
@@ -14,4 +13,5 @@ export class ClientEntity extends BaseEntity implements Client {
   address: string;
 
   description: string;
+
 }

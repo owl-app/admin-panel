@@ -3,7 +3,6 @@ import {
   DeepPartial,
   EntityManager,
   EntityTarget,
-  ObjectLiteral,
   QueryRunner,
   SaveOptions,
   SelectQueryBuilder,

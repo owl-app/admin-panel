@@ -6,14 +6,14 @@ import {
   HttpCode,
   Injectable,
   Patch,
+  Inject,
 } from '@nestjs/common'
-import { CommandBus } from '@nestjs/cqrs';
 import { ApiTags, ApiOperation, ApiResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
 import { AvalilableCollections, CommonActions, archiveValidationSchema } from '@owl-app/lib-contracts'
 
-import { ArchiveRequest, Archive } from '@owl-app/lib-api-core/command/archive.command'
-
+import ArchiveRequest from '@owl-app/lib-api-core/actions/archive/archive.request';
+import { ArchiveService } from '@owl-app/lib-api-core/actions/archive/archive.service';
 import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe'
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
@@ -25,7 +25,10 @@ import { ClientResponse } from '../../../dto/client.response'
 @ApiBearerAuth()
 @Injectable()
 export class ArchiveControllerController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    @Inject(ArchiveService)
+    private readonly archiveService: ArchiveService
+  ) {}
 
   @ApiOperation({ summary: 'Archive client' })
     @ApiAcceptedResponse({
@@ -48,6 +51,6 @@ export class ArchiveControllerController {
     @Param('id', UUIDValidationPipe) id: string,
     @Body(new ValibotValidationPipe(archiveValidationSchema)) archiveClientRequest: ArchiveRequest,
   ): Promise<void> {
-    await this.commandBus.execute(new Archive({ id, archived: archiveClientRequest.archived }));
+    await this.archiveService.execute(id, archiveClientRequest);
   }
 }

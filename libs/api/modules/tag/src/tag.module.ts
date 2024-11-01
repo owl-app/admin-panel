@@ -6,7 +6,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
 import { CrudTenantTypeOrmQueryModule } from '@owl-app/lib-api-core/tenant-typeorm/crud-tenant-typeorm-query.module'
 import { TenantTypeOrmModule } from '@owl-app/lib-api-core/tenant-typeorm/tenant-typeorm.module'
-import { ArchiveHandler } from '@owl-app/lib-api-core/command/archive.command'
+import { ArchiveService, DefaultArchiveService } from '@owl-app/lib-api-core/actions/archive/archive.service'
 import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository'
 import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository'
 import { getRepositoryToken } from '@owl-app/lib-api-core/typeorm/common/typeorm.utils'
@@ -55,8 +55,8 @@ import { TagEntity } from './domain/entity/tag.entity'
   ],
   providers: [
     {
-      provide: ArchiveHandler,
-      useFactory: (repository: InjectableRepository<TagEntity>) => new ArchiveHandler(repository),
+      provide: ArchiveService,
+      useFactory: (repository: InjectableRepository<TagEntity>) => new DefaultArchiveService(repository),
       inject: [getRepositoryToken(TagEntitySchema)],
     }
   ]

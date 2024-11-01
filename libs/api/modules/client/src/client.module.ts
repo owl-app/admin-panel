@@ -7,7 +7,7 @@ import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.modul
 import { CrudTenantTypeOrmQueryModule } from '@owl-app/lib-api-core/tenant-typeorm/crud-tenant-typeorm-query.module'
 import { TenantTypeOrmModule } from '@owl-app/lib-api-core/tenant-typeorm/tenant-typeorm.module'
 import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository'
-import { ArchiveHandler } from '@owl-app/lib-api-core/command/archive.command'
+import { ArchiveService, DefaultArchiveService } from '@owl-app/lib-api-core/actions/archive/archive.service'
 import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository'
 import { getRepositoryToken } from '@owl-app/lib-api-core/typeorm/common/typeorm.utils'
 
@@ -54,8 +54,8 @@ import { ArchiveControllerController } from './client/features/v1/archive/archiv
   ],
   providers: [
     {
-      provide: ArchiveHandler,
-      useFactory: (repository: InjectableRepository<ClientEntity>) => new ArchiveHandler(repository),
+      provide: ArchiveService,
+      useFactory: (repository: InjectableRepository<ClientEntity>) => new DefaultArchiveService(repository),
       inject: [getRepositoryToken(ClientEntitySchema)],
     }
   ]
