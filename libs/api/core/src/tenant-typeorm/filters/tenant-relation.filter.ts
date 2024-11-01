@@ -26,13 +26,14 @@ export class TenantRelationFilter<Entity extends TenantAware>
           RolesEnum.ROLE_ADMIN_COMPANY
         ) ||
         RequestContextService.getCurrentUser().roles.includes(
-          RolesEnum.ROLE_ADMIN_COMPANY
+          RolesEnum.ROLE_USER
         )
       )
     );
   }
 
   execute(qb: SelectQueryBuilder<Entity>): void {
+    console.log('TenantRelationFilter');
     qb.leftJoin(`${qb.alias}.tenant`, 'tenant').andWhere('tenant.id = :id', {
       id: RequestContextService.getCurrentUser().tenant.id,
     });
