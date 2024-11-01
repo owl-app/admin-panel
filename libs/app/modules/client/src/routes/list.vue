@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
+import { DataTableColumnSource, DataTableRowBind } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import { AvalilableCollections, Client, CrudActions } from "@owl-app/lib-contracts";
+import { AvalilableCollections, Client, CommonActions, CrudActions } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
@@ -23,6 +24,7 @@ const gridRef = ref<InstanceType<typeof Grid>>();
 const clientModal = ref<InstanceType<typeof ClientModal>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const archiveModal = ref<InstanceType<typeof ArchiveModal>>();
+const restoreModal = ref<InstanceType<typeof ArchiveModal>>();
 
 const { hasRoutePermission } = usePermissions(AvalilableCollections.CLIENT);
 
@@ -33,23 +35,31 @@ const headerBar = {
 }
 
 const columns = defineVaDataTableColumns([
-  { label: 'Name', key: 'name', sortable: true },
+  { label: 'Name', key: 'name', sortable: true, tdClass: ['is-line-through'] },
   { label: ' ', key: 'actions' },
 ])
+
+const getRowBind = (row: Client): Record<string, string> => {
+  if (row.deletedAt) {
+    return {
+      class: "archived"
+    };
+  }
+  return {};
+}
 </script>
 
 <template>
   <panel-layout>
     <grid
       ref="gridRef"
-      :columns="columns"
-      defaultSort="id"
-      :headerBar="headerBar"
       url="clients"
+      default-sort="id"
+      :default-filters="{ archived: 'all' }"
+      :columns="columns"
+      :headerBar="headerBar"
+      :row-bind="getRowBind"
     >
-      <template #header-bar-actions>
-        
-      </template>
       <template  #content-filter="{ filters, changeFilter, removeFilter }">
         <div class="grid grid-cols-12 gap-2 grid-flow-col" style="margin-left:auto; grid-auto-flow: column;">
           <div class="col-start-1 col-end-3">
@@ -98,11 +108,24 @@ const columns = defineVaDataTableColumns([
               <va-icon class="mt-0.5" name="more_vert" />
             </template>
 
-            <va-menu-item @selected="archiveModal?.show(true, client?.id)">
+            <va-menu-item
+              @selected="archiveModal?.show(true, client?.id)"
+              v-if="hasRoutePermission(CommonActions.ARCHIVE) && !client?.deletedAt"
+            >
               <va-icon name="archive" class="material-symbols-outlined mr-1" /> archive
             </va-menu-item>
 
-            <va-menu-item @selected="deleteModal?.show(client?.id)" textAlign="left">
+            <va-menu-item
+              @selected="restoreModal?.show(false, client?.id)"
+              v-if="hasRoutePermission(CommonActions.RESTORE) && client?.deletedAt"
+            >
+              <va-icon name="restore_page" class="material-symbols-outlined mr-1" /> restore
+            </va-menu-item>
+
+            <va-menu-item
+              @selected="deleteModal?.show(client?.id)"
+              v-if="hasRoutePermission(CrudActions.DELETE) && client?.deletedAt"
+            >
               <va-icon name="delete" color="danger" class="material-symbols-outlined mr-1" />
               <span style="color: var(--va-danger)"> delete</span>
             </va-menu-item>
@@ -123,6 +146,11 @@ const columns = defineVaDataTableColumns([
     />
     <archive-modal 
       ref="archiveModal"
+      collection="clients"
+      @archived="gridRef?.reloadGrid"
+    />
+    <archive-modal 
+      ref="restoreModal"
       collection="clients"
       @archived="gridRef?.reloadGrid"
     />

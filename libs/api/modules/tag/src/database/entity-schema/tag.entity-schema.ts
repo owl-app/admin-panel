@@ -2,6 +2,7 @@ import { EntitySchema } from 'typeorm';
 
 import { TAG_ENTITY, TENANT_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
 import { TimestampableSchemaPart } from '@owl-app/lib-api-core/database/entity-schema/timestampable.schemat';
+import { ArchiveableSchemaPart } from '@owl-app/lib-api-core/database/entity-schema/archiveable.schema';
 
 import { TagEntity } from '../../domain/entity/tag.entity';
 
@@ -22,7 +23,8 @@ export const TagEntitySchema = new EntitySchema<TagEntity>({
       type: String,
       nullable: true,
     },
-    ...TimestampableSchemaPart
+    ...TimestampableSchemaPart,
+    ...ArchiveableSchemaPart,
   },
   relations: {
     tenant: {

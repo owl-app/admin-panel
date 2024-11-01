@@ -27,6 +27,10 @@ import { ListFilterBuilder } from './tag/features/v1/crud/list-filter.builder'
           assembler: TagAssembler
         }
       ],
+      queryServiceOpts: {
+        useSoftDelete: true,
+        useTransaction: true,
+      }
     }),
   ],
   controllers: [

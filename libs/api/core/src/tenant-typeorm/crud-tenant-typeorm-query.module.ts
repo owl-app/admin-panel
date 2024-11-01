@@ -1,7 +1,7 @@
 import { DataSource, DataSourceOptions, ObjectLiteral } from 'typeorm';
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { Role, TenantAware } from '@owl-app/lib-contracts';
+import { Role, Archivable, TenantAware } from '@owl-app/lib-contracts';
 import { RegistryServiceModule } from '@owl-app/registry-nestjs';
 
 import { DEFAULT_DATA_SOURCE_NAME } from '../contants';

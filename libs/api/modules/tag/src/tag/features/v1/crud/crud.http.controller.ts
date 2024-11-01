@@ -11,12 +11,12 @@ import {
   HttpCode,
   Injectable,
   ValidationPipe,
+  Patch,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
-import { AvalilableCollections, CrudActions, tagValidationSchema } from '@owl-app/lib-contracts'
+import { archiveValidationSchema, AvalilableCollections, CommonActions, CrudActions, TagActions, tagValidationSchema } from '@owl-app/lib-contracts'
 
-import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query'
 import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core'
 import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe'
 import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response'
@@ -32,6 +32,7 @@ import { TagResponse } from '../../../dto/tag.response'
 import { CreateTagRequest, UpdateTagDto, FilterTagDto, TagPaginatedResponse } from './dto'
 import { TagAssembler } from './tag.assembler'
 import { TagPaginatedQuery } from './dto/tag-paginated.query'
+import { ArchiveTagRequest } from './dto/archived.request'
 
 @ApiTags('Tags')
 @Controller('tags')
@@ -119,7 +120,7 @@ export class TagCrudController {
   @Delete(':id')
   @RoutePermissions(AvalilableCollections.TAG, CrudActions.DELETE)
   async remove(@Param('id') id: string): Promise<void> {
-    await this.service.deleteOne(id);
+    await this.service.deleteOne(id, { useSoftDelete: false, filter: { deletedAt: { isNot: null }}});
   }
 
   @ApiOperation({ summary: 'Find all tags by filters using pagination' })
@@ -134,7 +135,7 @@ export class TagCrudController {
         'Invalid input, The response body may contain clues as to what went wrong',
     })
   @Get()
-  @RoutePermissions(AvalilableCollections.TAG, CrudActions.LIST)
+  @RoutePermissions(AvalilableCollections.TAG, [CrudActions.LIST, TagActions.AVAILABLE])
   async paginated(
     @Query('filters') filters: FilterTagDto,
     @Query(new ValidationPipe({ transform: true })) pagination: TagPaginatedQuery,
@@ -142,5 +143,37 @@ export class TagCrudController {
     const paginated = await this.paginatedService.getData(filters, (pagination.pageable === 0 ? null : pagination));
 
     return new TagPaginatedResponse(paginated);
+  }
+
+  @ApiOperation({ summary: 'Archive tag' })
+    @ApiAcceptedResponse({
+      description: 'Tag has been successfully archived.',
+      type: TagResponse,
+    })
+    @ApiResponse({
+      status: HttpStatus.NOT_FOUND,
+      description: 'Tag not found'
+    })
+    @ApiResponse({
+      status: HttpStatus.BAD_REQUEST,
+      description:
+        'Invalid input, The response body may contain clues as to what went wrong'
+    })
+    @HttpCode(HttpStatus.ACCEPTED)
+  @Patch('archive/:id')
+  @RoutePermissions(AvalilableCollections.TAG, CommonActions.ARCHIVE)
+  async archive(
+    @Param('id', UUIDValidationPipe) id: string,
+    @Body(new ValibotValidationPipe(archiveValidationSchema)) archiveClientRequest: ArchiveTagRequest,
+  ): Promise<TagResponse> {
+      let archived = null;
+
+      if (archiveClientRequest.archived) {
+        archived =  await this.service.deleteOne(id, { useSoftDelete: true})
+      } else {
+        archived = await this.service.restoreOne(id);
+      }
+
+      return archived;
   }
 }

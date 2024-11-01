@@ -64,3 +64,15 @@ pre {
     outline: 0;
   }
 }
+
+.va-data-table {
+  &__table {
+    &-tr {
+      &.archived {
+        .is-line-through {
+          text-decoration: line-through;
+        }
+      }
+    }
+  }
+}

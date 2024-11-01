@@ -324,7 +324,10 @@ export class TypeOrmQueryService<Entity>
    */
   public async deleteOne(id: string | number, opts?: DeleteOneOptions<Entity>): Promise<Entity> {
     const entity = await this.getById(id, opts)
-    if (this.useSoftDelete || opts?.useSoftDelete) {
+    if (
+      (this.useSoftDelete && opts?.useSoftDelete === undefined) ||
+      (opts?.useSoftDelete !== undefined && opts.useSoftDelete === true)
+     ) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       return this.repo.softRemove(entity)

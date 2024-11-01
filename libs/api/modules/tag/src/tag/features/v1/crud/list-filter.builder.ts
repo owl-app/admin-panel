@@ -1,3 +1,5 @@
+import { SelectQueryBuilder } from 'typeorm';
+
 import { Tag } from '@owl-app/lib-contracts';
 import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/query-filter.builder';
 import { Filter } from '@owl-app/crud-core';
@@ -14,5 +16,9 @@ export class ListFilterBuilder extends QueryFilterBuilder<Tag, FilterTagDto> {
     return {
       or: filters
     }
+  }
+
+  buildCustom(filters: FilterTagDto, qb: SelectQueryBuilder<Tag>): void {
+    this.filterCustomRegistry.get('archived').apply(filters, qb);
   }
 }

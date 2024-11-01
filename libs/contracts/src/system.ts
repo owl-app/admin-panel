@@ -7,6 +7,11 @@ export enum AvalilableCollections {
   TAG = 'Tag',
 }
 
+export enum CommonActions {
+  ARCHIVE = 'ARCHIVE',
+  RESTORE = 'RESTORE',
+}
+
 export enum CrudActions {
   CREATE = 'CREATE',
   READ = 'READ',
@@ -20,6 +25,10 @@ export enum UserActions {
   LOGOUT = 'LOGOUT',
   ASSIGN_ACCESS = 'ASSIGN_ACCESS',
   PERMISSIONS = 'PERMISSIONS',
+}
+
+export enum TagActions {
+  AVAILABLE = 'AVAILABLE',
 }
 
 export enum RoleActions {

@@ -32,7 +32,7 @@ export const ClientEntitySchema = new EntitySchema<ClientEntity>({
       nullable: true,
     },
     ...TimestampableSchemaPart,
-    ...ArchiveableSchemaPart
+    ...ArchiveableSchemaPart,
   },
   relations: {
     tenant: {

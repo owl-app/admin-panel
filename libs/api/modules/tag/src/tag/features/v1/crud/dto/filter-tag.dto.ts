@@ -1,3 +1,5 @@
+import { ArchiveOptions } from "@owl-app/lib-contracts";
+
 import { FilterStringQuery } from "@owl-app/lib-api-core/data-provider/query/filters/string";
 
 /**
@@ -9,4 +11,5 @@ export class FilterTagDto {
 
     readonly email?: string;
 
+    readonly archived?: ArchiveOptions;
 }

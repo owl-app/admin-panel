@@ -25,16 +25,17 @@ export class ArchivedFilter<Entity>
     data: QueryData,
     qb: SelectQueryBuilder<Entity>
   ): void {
+    if (!qb.expressionMap.withDeleted) return;
+
     switch (data?.archived) {
       case ArchiveOptions.ARCHIVED:
         qb.andWhere(`${qb.alias}.deleted_at is not null`);
-        qb.withDeleted();
         break;
       case ArchiveOptions.ACTIVE:
         qb.andWhere(`${qb.alias}.deleted_at is null`);
         break;
       default:
-        qb.withDeleted();
+        qb.andWhere(`(${qb.alias}.deleted_at is not null OR ${qb.alias}.deleted_at is null)`);
         break;
     }
   }

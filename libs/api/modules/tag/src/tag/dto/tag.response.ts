@@ -12,6 +12,9 @@ export class TagResponse {
     @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
     name?: string;
 
+    @ApiProperty({ type: () => Date })
+    deletedAt?: Date;
+
     @Exclude()
     tenant?: Tenant;
 

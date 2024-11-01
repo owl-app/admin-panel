@@ -21,6 +21,8 @@ validation:
 item_delete_success: Item deleted successfully
 item_create_success: Item created successfully
 item_update_success: Item updated successfully
+item_archive_success: Item archived successfully
+item_restore_success: Item restored successfully
 vuestic:
   sortColumnBy: Sort column by
   toggleDropdown: Toggle dropdown

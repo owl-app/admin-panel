@@ -3,7 +3,7 @@ import { isEqual, isEmpty, omit } from 'lodash';
 import { computed, PropType, ref, watch, Ref } from 'vue'
 import { LocationQueryRaw, useRoute, useRouter } from 'vue-router';
 
-import { DataTableColumnSource } from 'vuestic-ui/web-components';
+import { DataTableColumnSource, DataTableRowBind } from 'vuestic-ui/web-components';
 
 import HeaderBar, { type Props as HeaderBarProps } from '../../layouts/panel/components/header-bar.vue';
 
@@ -23,6 +23,10 @@ const props = defineProps({
   columns: {
     type: Array as PropType<DataTableColumnSource[]>,
     required: true,
+  },
+  defaultFilters: {
+    type: Object as PropType<object>,
+    required: false,
   },
   defaultLimit: {
     type: Number as PropType<number>,
@@ -47,6 +51,9 @@ const props = defineProps({
     type: Boolean as PropType<boolean>,
     required: false,
     default: false
+  },
+  rowBind: { 
+    type: null as unknown as PropType<DataTableRowBind | undefined> 
   },
 });
 
@@ -149,7 +156,7 @@ function useItemOptions() {
   const page = ref(route.query.page ? parseInt(route.query.page as string) : 1);
   const limit = ref(route.query.limit ? parseInt(route.query?.limit as string) : props.defaultLimit);
   const sort = ref([props.defaultSort]);
-  const filter = ref(route.query?.filters as Record<string, any> ?? {});
+  const filter = ref(route.query?.filters as Record<string, any> ?? props.defaultFilters ?? {});
 
   return { sort, limit, page, filter };
 }
@@ -210,6 +217,7 @@ async function reloadGrid() {
           :per-page="limit"
           :grid="props.grid"
           :hideDefaultHeader="props.grid"
+          :row-bind="props.rowBind"
           v-if="props.layout === 'table'"
         >
           <template v-for="(_, slot) in $slots" v-slot:[slot]="scope">

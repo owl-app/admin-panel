@@ -159,7 +159,7 @@ export function useItem<T extends Item>(
       item.value = null;
 
       notify({
-        message: i18n.global.t('item_archive_success', 1),
+        message: i18n.global.t(`item_${value ? 'archive' : 'restore'}_success`, 1),
         color: 'success',
         position: 'bottom-right',
         offsetY: 30

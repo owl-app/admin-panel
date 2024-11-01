@@ -4,17 +4,18 @@
       v-model="model"
       ok-text="Apply"
       hide-default-actions
-      title="Archive"
+      :title="archived ? 'archive' : 'restore'"
     >
-      Are you sure you want to archive ?
+      Are you sure you want to {{ archived ? 'archive' : 'restore'}} ?
       <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">
-        <va-button :disabled="deleting" preset="secondary" color="secondary" @click="cancel">Cancel</va-button>
-        <va-button :loading="deleting" color="danger" @click="onDelete">Archive</va-button>
+        <va-button :disabled="archiving" preset="secondary" color="secondary" @click="cancel">Cancel</va-button>
+        <va-button :loading="archiving" color="danger" @click="onDelete">{{ archived ? 'Archive' : 'Restore'}}</va-button>
       </div>
     </VaModal>
   </template>
   
   <script lang="ts" setup>
+  import { ref} from 'vue';
   import type { Item, PrimaryKey } from '../../types/item';
   import { useItem } from '../../composables/use-item';
   
@@ -22,7 +23,7 @@
     collection: string,
   }>()
 
-  let archived: boolean;
+  let archived = ref(false);
   
   const emit = defineEmits<{
     (event: 'archived'): void
@@ -34,10 +35,10 @@
   
   const model = defineModel<boolean>();
   
-  const { primaryKey, deleting, archive } = useItem<Item>(props.collection);
+  const { primaryKey, archiving, archive } = useItem<Item>(props.collection);
   
   const onDelete = async () => {
-    await archive(archived);
+    await archive(archived.value);
   
     emit('archived');
   
@@ -47,7 +48,7 @@
   function show(isArchived: boolean, id?: PrimaryKey): void {
     model.value = true;
     primaryKey.value = id;
-    archived  = isArchived;
+    archived.value  = isArchived;
   }
   </script>
   

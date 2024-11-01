@@ -1,12 +1,8 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-
-import { Archivable } from '@owl-app/lib-contracts';
+import { PartialType } from '@nestjs/swagger';
 
 import { CreateClientRequest } from './create-client.request';
 
-export class UpdateClientDto extends PartialType(CreateClientRequest) implements Archivable {
+export class UpdateClientDto extends PartialType(CreateClientRequest) {
 
-  @ApiProperty({ required: false, default: false })
-  archived?: boolean;
 
 }
