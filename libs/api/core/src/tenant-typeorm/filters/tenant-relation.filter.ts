@@ -21,8 +21,13 @@ export class TenantRelationFilter<Entity extends TenantAware>
         (r) => r.type === TENANT_ENTITY && r.propertyName === 'tenant'
       ) &&
       RequestContextService.getCurrentUser() &&
-      RequestContextService.getCurrentUser().roles.includes(
-        RolesEnum.ROLE_ADMIN_COMPANY
+      (
+        RequestContextService.getCurrentUser().roles.includes(
+          RolesEnum.ROLE_ADMIN_COMPANY
+        ) ||
+        RequestContextService.getCurrentUser().roles.includes(
+          RolesEnum.ROLE_ADMIN_COMPANY
+        )
       )
     );
   }
