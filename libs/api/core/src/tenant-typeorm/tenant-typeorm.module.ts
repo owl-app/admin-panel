@@ -1,7 +1,7 @@
 import { DataSource, DataSourceOptions, ObjectLiteral } from 'typeorm';
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { Role, TenantAware } from '@owl-app/lib-contracts';
+import { Archivable, Role, TenantAware } from '@owl-app/lib-contracts';
 import { RegistryServiceModule } from '@owl-app/registry-nestjs';
 
 import { TypeOrmOpts } from '../typeorm/types';
@@ -18,6 +18,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TenantRelationSetter } from './setters/tenant-relation.setter';
 import { EntitySetter } from '../registry/interfaces/entity-setter';
 import { RolesFilter } from './filters/roles.filter';
+import { NonArchivedFilter } from './filters/non-archived.filter';
 
 @Module({})
 export class TenantTypeOrmModule {
@@ -44,6 +45,7 @@ export class TenantTypeOrmModule {
           services: {
             tenant: TenantRelationFilter<TenantAware>,
             roles: RolesFilter<Role>,
+            archived: NonArchivedFilter<Archivable>,
           },
         }),
         RegistryServiceModule.forFeature<EntitySetter<ObjectLiteral>>({

@@ -40,7 +40,7 @@ const columns = defineVaDataTableColumns([
 ])
 
 const getRowBind = (row: Client): Record<string, string> => {
-  if (row.deletedAt) {
+  if (row.archived) {
     return {
       class: "archived"
     };
@@ -110,21 +110,21 @@ const getRowBind = (row: Client): Record<string, string> => {
 
             <va-menu-item
               @selected="archiveModal?.show(true, client?.id)"
-              v-if="hasRoutePermission(CommonActions.ARCHIVE) && !client?.deletedAt"
+              v-if="hasRoutePermission(CommonActions.ARCHIVE) && !client?.archived"
             >
               <va-icon name="archive" class="material-symbols-outlined mr-1" /> archive
             </va-menu-item>
 
             <va-menu-item
               @selected="restoreModal?.show(false, client?.id)"
-              v-if="hasRoutePermission(CommonActions.RESTORE) && client?.deletedAt"
+              v-if="hasRoutePermission(CommonActions.RESTORE) && client?.archived"
             >
               <va-icon name="restore_page" class="material-symbols-outlined mr-1" /> restore
             </va-menu-item>
 
             <va-menu-item
               @selected="deleteModal?.show(client?.id)"
-              v-if="hasRoutePermission(CrudActions.DELETE) && client?.deletedAt"
+              v-if="hasRoutePermission(CrudActions.DELETE) && client?.archived"
             >
               <va-icon name="delete" color="danger" class="material-symbols-outlined mr-1" />
               <span style="color: var(--va-danger)"> delete</span>

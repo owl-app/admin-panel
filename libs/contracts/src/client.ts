@@ -1,8 +1,8 @@
-import { SoftDeleteable } from "./common";
+import { Archivable } from "./archive";
 import { TenantAware } from "./tenant";
 import { Timestampable } from "./timestampable";
 
-export type Client = TenantAware & Timestampable & SoftDeleteable & {
+export type Client = TenantAware & Timestampable & Archivable & {
   id: string;
   name: string;
   email: string;

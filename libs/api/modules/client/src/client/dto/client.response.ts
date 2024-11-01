@@ -12,8 +12,8 @@ export class ClientResponse {
     @Transform((params: TransformFnParams) => params.value ? params.value.trim() : null)
     name?: string;
 
-    @ApiProperty({ type: () => Date })
-    deletedAt?: Date;
+    @ApiProperty({ type: () => Boolean })
+    archived?: boolean;
 
     @Exclude()
     tenant?: Tenant;

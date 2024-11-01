@@ -1,9 +1,7 @@
-import { EntitySchemaColumnOptions } from 'typeorm';
-
 export const ArchiveableSchemaPart = {
-  deletedAt: {
-    name: 'deleted_at',
-    type: 'datetime',
-    deleteDate: true,
-  } as EntitySchemaColumnOptions,
+  archived: {
+    type: Boolean,
+    name: 'is_archive',
+    default: 0,
+  },
 };

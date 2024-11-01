@@ -20,6 +20,7 @@ import {
   CrudTypeOrmQueryModule,
 } from '../crud/crud-typeorm-query.module';
 import { RolesFilter } from './filters/roles.filter';
+import { NonArchivedFilter } from './filters/non-archived.filter';
 
 export interface CrudTenantTypeOrmQueryModuleOpts {
   entities: CrudTypeOrmQueryEntitiesOpts[];
@@ -49,6 +50,7 @@ export class CrudTenantTypeOrmQueryModule {
             services: {
               tenant: TenantRelationFilter<TenantAware>,
               roles: RolesFilter<Role>,
+              archived: NonArchivedFilter<Archivable>,
             },
           }),
           RegistryServiceModule.forFeature<EntitySetter<ObjectLiteral>>({

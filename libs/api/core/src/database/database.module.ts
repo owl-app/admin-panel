@@ -1,7 +1,7 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
-import { DataSource } from './typeorm/DataSource';
+import { DataSource } from 'typeorm';
 
 @Global()
 @Module({

@@ -33,7 +33,6 @@ export class TenantRelationFilter<Entity extends TenantAware>
   }
 
   execute(qb: SelectQueryBuilder<Entity>): void {
-    console.log('TenantRelationFilter');
     qb.leftJoin(`${qb.alias}.tenant`, 'tenant').andWhere('tenant.id = :id', {
       id: RequestContextService.getCurrentUser().tenant.id,
     });
