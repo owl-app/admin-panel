@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-core/config';
-import { InjectQueryServiceRepository } from '@owl-app/lib-api-core/crud/common/repository.decorator'
+import { InjectQueryServiceRepository } from '@owl-app/lib-api-core/query/common/repository.decorator'
 
 import { UserEntity } from '../../../../domain/entity/user.entity';
 import type { IUserRepository } from '../../../../database/repository/user-repository.interface';

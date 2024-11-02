@@ -7,7 +7,7 @@ import {
   SelectRelation,
   SortDirection,
   SortField,
-} from '@owl-app/crud-core';
+} from '@owl-app/nestjs-query-core';
 
 import { PaginationConfig } from '../../config/pagination';
 import { PaginatedQuery } from '../../pagination/paginated.query';
@@ -15,7 +15,7 @@ import { Pagination } from '../../pagination/pagination';
 
 import type { DataProvider, Sort } from '../data.provider';
 import { FilterBuilder } from '../filter.builder';
-import { TypeOrmQueryService } from '@owl-app/crud-nestjs';
+import { TypeOrmQueryService } from '@owl-app/nestjs-query-typeorm';
 import { QueryFilterBuilder } from './query-filter.builder';
 import { instanceOf } from '@owl-app/utils';
 

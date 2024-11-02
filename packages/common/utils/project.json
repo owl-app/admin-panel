@@ -4,19 +4,6 @@
   "sourceRoot": "packages/common/utils/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "nx:run-commands",
-      "outputs": ["{workspaceRoot}/dist/packages/common/utils"],
-      "options": {
-        "commands": [
-          "npx rimraf dist/packages/common/utils",
-          "npx tsc -p packages/common/utils/tsconfig.build.json",
-          "npx copyfiles -f \"packages/common/utils/package.json\" \"packages/common/utils/README.md\" \"LICENSE\" dist/packages/common/utils"
-        ],
-        "cwd": ".",
-        "parallel": false
-      }
-    },
     "publish": {
       "executor": "nx:run-commands",
       "options": {

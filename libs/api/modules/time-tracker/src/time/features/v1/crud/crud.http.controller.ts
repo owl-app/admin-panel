@@ -10,26 +10,46 @@ import {
   Param,
   HttpCode,
   Injectable,
-} from '@nestjs/common'
-import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiCreatedResponse,
+  ApiAcceptedResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 
-import { AvalilableCollections, CrudActions, timeValidationSchema } from '@owl-app/lib-contracts'
+import {
+  AvalilableCollections,
+  CrudActions,
+  timeValidationSchema,
+} from '@owl-app/lib-contracts';
 
-import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query'
-import { AssemblerQueryService, InjectAssemblerQueryService, SortDirection } from '@owl-app/crud-core'
-import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe'
-import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response'
-import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider'
-import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider/query/decorators/inject-paginated-query.decorator'
-import { Paginated } from '@owl-app/lib-api-core/pagination/pagination'
+import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query';
+import {
+  AssemblerQueryService,
+  InjectAssemblerQueryService,
+  SortDirection,
+} from '@owl-app/nestjs-query-core';
+import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe';
+import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response';
+import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider';
+import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider/query/decorators/inject-paginated-query.decorator';
+import { Paginated } from '@owl-app/lib-api-core/pagination/pagination';
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
 
-import { TimeEntity } from '../../../../domain/entity/time.entity'
-import { TimeResponse } from '../../../dto/time.response'
+import { TimeEntity } from '../../../../domain/entity/time.entity';
+import { TimeResponse } from '../../../dto/time.response';
 
-import { CreateTimeRequest, UpdateTimeRequest, FilterTimeRequest, TimePaginatedResponse } from './dto'
-import { TimeAssembler } from './time.assembler'
+import {
+  CreateTimeRequest,
+  UpdateTimeRequest,
+  FilterTimeRequest,
+  TimePaginatedResponse,
+} from './dto';
+import { TimeAssembler } from './time.assembler';
 
 @ApiTags('Time Tracker Manage')
 @Controller('times')
@@ -40,10 +60,14 @@ export class TimeCrudController {
     @InjectAssemblerQueryService(TimeAssembler)
     readonly service: AssemblerQueryService<TimeResponse, TimeEntity>,
     @InjectPaginatedQueryService(TimeEntity)
-    readonly paginatedService: DataProvider<Paginated<TimeResponse>, FilterTimeRequest, TimeEntity>
+    readonly paginatedService: DataProvider<
+      Paginated<TimeResponse>,
+      FilterTimeRequest,
+      TimeEntity
+    >
   ) {}
 
-@ApiOperation({ summary: 'Find time by id' })
+  @ApiOperation({ summary: 'Find time by id' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Found one time record',
@@ -52,72 +76,85 @@ export class TimeCrudController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Time not found',
-    type: ApiErrorResponse
+    type: ApiErrorResponse,
   })
   @Get(':id')
   @RoutePermissions(AvalilableCollections.TIME, CrudActions.READ)
   findOne(@Param('id') id: string): Promise<TimeResponse> {
-    return this.service.getById(id, { relations: [{ name: 'users', query: {}}]});
+    return this.service.getById(id, {
+      relations: [{ name: 'users', query: {} }],
+    });
   }
 
   @ApiOperation({ summary: 'Create new time' })
-    @ApiCreatedResponse({
-      description: 'The time has been successfully created.',
-      type: TimeResponse,
-    })
-    @ApiResponse({
-      status: HttpStatus.BAD_REQUEST,
-      description:
-        'Invalid input, The response body may contain clues as to what went wrong',
-    })
+  @ApiCreatedResponse({
+    description: 'The time has been successfully created.',
+    type: TimeResponse,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description:
+      'Invalid input, The response body may contain clues as to what went wrong',
+  })
   @Post()
   @RoutePermissions(AvalilableCollections.TIME, CrudActions.CREATE)
-  async create(@Body(new ValibotValidationPipe(timeValidationSchema)) createTimeRequest: CreateTimeRequest) {
-    const createdTime = await this.service.createWithRelations(createTimeRequest, {
-      tags: createTimeRequest.tags.map((tag) => tag.id)
-    });
+  async create(
+    @Body(new ValibotValidationPipe(timeValidationSchema))
+    createTimeRequest: CreateTimeRequest
+  ) {
+    const createdTime = await this.service.createWithRelations(
+      createTimeRequest,
+      {
+        tags: createTimeRequest.tags.map((tag) => tag.id),
+      }
+    );
 
     return createdTime;
   }
 
   @ApiOperation({ summary: 'Update time' })
-    @ApiAcceptedResponse({
-      description: 'Time has been successfully updated.',
-      type: TimeResponse,
-    })
-    @ApiResponse({
-      status: HttpStatus.NOT_FOUND,
-      description: 'Time not found'
-    })
-    @ApiResponse({
-      status: HttpStatus.BAD_REQUEST,
-      description:
-        'Invalid input, The response body may contain clues as to what went wrong'
-    })
-    @HttpCode(HttpStatus.ACCEPTED)
+  @ApiAcceptedResponse({
+    description: 'Time has been successfully updated.',
+    type: TimeResponse,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Time not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description:
+      'Invalid input, The response body may contain clues as to what went wrong',
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
   @Put(':id')
   @RoutePermissions(AvalilableCollections.TIME, CrudActions.UPDATE)
   async update(
     @Param('id', UUIDValidationPipe) id: string,
-    @Body(new ValibotValidationPipe(timeValidationSchema)) updateTimeRequest: UpdateTimeRequest,
+    @Body(new ValibotValidationPipe(timeValidationSchema))
+    updateTimeRequest: UpdateTimeRequest
   ): Promise<TimeResponse> {
-    const updatedTime = await this.service.updateWithRelations(id, updateTimeRequest, {
-      tags: updateTimeRequest.tags.map((tag) => tag.id)
-    });
+    const updatedTime = await this.service.updateWithRelations(
+      id,
+      updateTimeRequest,
+      {
+        tags: updateTimeRequest.tags.map((tag) => tag.id),
+      }
+    );
 
     return updatedTime;
   }
 
   @ApiOperation({ summary: 'Delete time' })
-    @ApiResponse({
-      status: HttpStatus.NO_CONTENT,
-      description: 'Time has been successfully deleted',
-    })
-    @ApiResponse({
-      status: HttpStatus.NOT_FOUND,
-      description: 'Record not found',
-    })
-    @HttpCode(HttpStatus.ACCEPTED)
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Time has been successfully deleted',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Record not found',
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
   @Delete(':id')
   @RoutePermissions(AvalilableCollections.TIME, CrudActions.DELETE)
   async remove(@Param('id') id: string): Promise<void> {
@@ -125,27 +162,26 @@ export class TimeCrudController {
   }
 
   @ApiOperation({ summary: 'Find all times by filters using pagination' })
-    @ApiResponse({
-      status: HttpStatus.OK,
-      description: 'Found records.',
-      type: TimePaginatedResponse,
-    })
-    @ApiResponse({
-      status: HttpStatus.BAD_REQUEST,
-      description:
-        'Invalid input, The response body may contain clues as to what went wrong',
-    })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Found records.',
+    type: TimePaginatedResponse,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description:
+      'Invalid input, The response body may contain clues as to what went wrong',
+  })
   @Get()
   @RoutePermissions(AvalilableCollections.TIME, CrudActions.LIST)
   async paginated(
     @Query('filters') filters: FilterTimeRequest,
     @Query() pagination: PaginatedQuery
   ): Promise<TimePaginatedResponse> {
-    const paginated = await this.paginatedService.getData(
-      filters,
-      pagination,
-      { field: 'createdAt', direction: SortDirection.DESC }
-    );
+    const paginated = await this.paginatedService.getData(filters, pagination, {
+      field: 'createdAt',
+      direction: SortDirection.DESC,
+    });
 
     return new TimePaginatedResponse(paginated);
   }

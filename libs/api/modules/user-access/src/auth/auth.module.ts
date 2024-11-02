@@ -9,7 +9,7 @@ import { WinstonLoggerModule } from '@owl-app/winston-logger-nestjs'
 
 import { IJwtConfig, JWT_CONFIG_NAME, JwtConfigProvider } from '@owl-app/lib-api-core/config/jwt'
 import { IJwtTokenService } from '@owl-app/lib-api-core/passport/jwt-token.interface'
-import { TenantTypeOrmModule } from '@owl-app/lib-api-core/tenant-typeorm/tenant-typeorm.module'
+import { AppTypeOrmModule } from '@owl-app/lib-api-core/typeorm/app-typeorm.module'
 import { getRepositoryToken } from '@owl-app/lib-api-core/typeorm/common/typeorm.utils'
 import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
 
@@ -32,7 +32,7 @@ import { LogoutHandler } from './features/logout/logout.service'
     CqrsModule,
     WinstonLoggerModule,
     RbacTypeOrmModule.forFeature({}),
-    TenantTypeOrmModule.forFeature({
+    AppTypeOrmModule.forFeature({
       entities: [
         {
           entity: UserEntitySchema,

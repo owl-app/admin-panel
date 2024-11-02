@@ -4,19 +4,6 @@
   "sourceRoot": "packages/server/rbac/manager/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "nx:run-commands",
-      "outputs": ["{workspaceRoot}/dist/packages/server/rbac/manager"],
-      "options": {
-        "commands": [
-          "npx rimraf dist/packages/server/rbac/manager",
-          "npx tsc -p packages/server/rbac/manager/tsconfig.build.json",
-          "npx copyfiles -f \"packages/server/rbac/manager/package.json\" \"packages/server/rbac/manager/README.md\" \"LICENSE\" dist/packages/server/rbac/manager"
-        ],
-        "cwd": ".",
-        "parallel": false
-      }
-    },
     "publish": {
       "executor": "nx:run-commands",
       "options": {

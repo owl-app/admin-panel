@@ -2,20 +2,20 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { TypeOrmModule as BaseTypeOrmModule } from '@nestjs/typeorm';
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { TypeOrmOpts } from './types';
+import { AppTypeOrmOpts } from './types';
 import { DEFAULT_DATA_SOURCE_NAME } from '../contants';
-import { createTypeOrmProviders } from './tenant-typeorm.providers';
+import { createAppTypeOrmProviders } from './app-typeorm.providers';
 
 @Module({})
 export class TypeOrmModule {
   static forFeature(
-    opts: TypeOrmOpts,
+    opts: AppTypeOrmOpts,
     dataSource:
       | DataSource
       | DataSourceOptions
       | string = DEFAULT_DATA_SOURCE_NAME
   ): DynamicModule {
-    const providers = createTypeOrmProviders(opts.entities, dataSource);
+    const providers = createAppTypeOrmProviders(opts.entities, dataSource);
     const entities = opts.entities.map((entity) => entity.entity);
 
     const baseTypeOrmModule = BaseTypeOrmModule.forFeature(

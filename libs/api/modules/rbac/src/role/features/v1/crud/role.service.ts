@@ -1,47 +1,48 @@
-import { DataSource, Repository } from "typeorm";
+import { DataSource, Repository } from 'typeorm';
 
-import { Registry } from "@owl-app/registry";
-import { RbacManager, Role } from "@owl-app/rbac-manager";
-import { DeepPartial } from "@owl-app/crud-core";
+import { Registry } from '@owl-app/registry';
+import { RbacManager, Role } from '@owl-app/rbac-manager';
+import { DeepPartial } from '@owl-app/nestjs-query-core';
 
-import { Permission } from "@owl-app/lib-api-core/rbac/types/permission";
-import { FilterQuery } from "@owl-app/lib-api-core/registry/interfaces/filter-query";
-import { CrudTypeOrmQueryService, CrudTypeOrmQueryServiceOpts } from "@owl-app/lib-api-core/crud/service/crud-typeorm-query.service";
+import { Permission } from '@owl-app/lib-api-core/rbac/types/permission';
+import { FilterQuery } from '@owl-app/lib-api-core/registry/interfaces/filter-query';
+import { EntitySetter } from '@owl-app/lib-api-core/registry/interfaces/entity-setter';
+import { AppTypeOrmQueryService, AppTypeOrmQueryServiceOpts } from '@owl-app/lib-api-core/query/typeorm/services/app-typeorm-query.service';
 
-import { RoleEntity } from "../../../../domain/entity/role.entity";
-import { RoleSettingEntity } from "../../../../domain/entity/role-setting.entity";
-import mapper from '../../../mapping'
+import { RoleEntity } from '../../../../domain/entity/role.entity';
+import { RoleSettingEntity } from '../../../../domain/entity/role-setting.entity';
+import mapper from '../../../mapping';
 
-export class RoleService extends CrudTypeOrmQueryService<RoleEntity> {
+export class RoleService extends AppTypeOrmQueryService<RoleEntity> {
   constructor(
     readonly repository: Repository<RoleEntity>,
-    opts: CrudTypeOrmQueryServiceOpts<RoleEntity>,
+    opts: AppTypeOrmQueryServiceOpts<RoleEntity>,
+    readonly filters: Registry<FilterQuery<RoleEntity>>,
+    readonly setters: Registry<EntitySetter<RoleEntity>>,
     private dataSource: DataSource,
     private rbacManager: RbacManager<Permission, Role>,
-    readonly filters?: Registry<FilterQuery<RoleEntity>>,
   ) {
-    super(repository, opts, filters);
+    super(repository, opts, filters, setters);
   }
 
-  public override async createOne(record: DeepPartial<RoleEntity>): Promise<RoleEntity>
-  {
+  public override async createOne(
+    record: DeepPartial<RoleEntity>
+  ): Promise<RoleEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
-  
+
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      await this.rbacManager.addRole(
-        mapper.toPersistence(record)
-      );
+      await this.rbacManager.addRole(mapper.toPersistence(record));
 
-      const roleSetting = new RoleSettingEntity()
+      const roleSetting = new RoleSettingEntity();
       roleSetting.role = { name: record.name };
       roleSetting.displayName = record.setting?.displayName;
       roleSetting.theme = record.setting?.theme;
 
       await queryRunner.manager.save(roleSetting);
-  
+
       await queryRunner.commitTransaction();
 
       return Object.assign(mapper.toResponse(record), { setting: roleSetting });
@@ -53,22 +54,30 @@ export class RoleService extends CrudTypeOrmQueryService<RoleEntity> {
     }
   }
 
-  async updateOne(id: number | string, update: DeepPartial<RoleEntity>): Promise<RoleEntity> {
+  async updateOne(
+    id: number | string,
+    update: DeepPartial<RoleEntity>
+  ): Promise<RoleEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
-  
+
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
       await this.rbacManager.updateRole(
-        id as string, mapper.toPersistence(update)
+        id as string,
+        mapper.toPersistence(update)
       );
 
-      const roleSetting = new RoleSettingEntity()
+      const roleSetting = new RoleSettingEntity();
       roleSetting.displayName = update.setting?.displayName;
       roleSetting.theme = update.setting?.theme;
 
-      await queryRunner.manager.update(RoleSettingEntity, { role: { name: update.name } }, roleSetting);
+      await queryRunner.manager.update(
+        RoleSettingEntity,
+        { role: { name: update.name } },
+        roleSetting
+      );
 
       await queryRunner.commitTransaction();
 

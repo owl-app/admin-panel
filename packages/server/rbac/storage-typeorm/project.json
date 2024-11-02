@@ -4,19 +4,6 @@
   "sourceRoot": "packages/server/rbac/storage-typeorm/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "nx:run-commands",
-      "outputs": ["{workspaceRoot}/dist/packages/server/rbac/storage-typeorm"],
-      "options": {
-        "commands": [
-          "npx rimraf dist/packages/server/rbac/storage-typeorm",
-          "npx tsc -p packages/server/rbac/storage-typeorm/tsconfig.build.json",
-          "npx copyfiles -f \"packages/server/rbac/storage-typeorm/package.json\" \"packages/server/rbac/storage-typeorm/README.md\" \"LICENSE\" dist/packages/server/rbac/storage-typeorm"
-        ],
-        "cwd": ".",
-        "parallel": false
-      }
-    },
     "publish": {
       "executor": "nx:run-commands",
       "options": {

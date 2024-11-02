@@ -13,22 +13,36 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiCreatedResponse,
+  ApiAcceptedResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 
-import { AvalilableCollections, CrudActions, permissionValidationSchema } from '@owl-app/lib-contracts';
-import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/crud-core';
+import {
+  AvalilableCollections,
+  CrudActions,
+  permissionValidationSchema,
+} from '@owl-app/lib-contracts';
+import {
+  AssemblerQueryService,
+  InjectAssemblerQueryService,
+} from '@owl-app/nestjs-query-core';
 import { Paginated } from '@owl-app/lib-api-core/pagination/pagination';
-import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider'
+import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider';
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider/query/decorators/inject-paginated-query.decorator';
-import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission'
+import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
 import { ApiErrorValidationResponse } from '@owl-app/lib-api-core/api/api-error-validation.response';
 
 import { PermissionEntity } from '../../../../domain/entity/permission.entity';
 
-import { CreatePermissionRequest } from './dto/create-permission.request.dto'
-import { PermissionResponse } from './dto/permission.response.dto'
-import { UpdatePermissionRequest } from './dto/update-permission.request.dto'
+import { CreatePermissionRequest } from './dto/create-permission.request.dto';
+import { PermissionResponse } from './dto/permission.response.dto';
+import { UpdatePermissionRequest } from './dto/update-permission.request.dto';
 import { PermissionAssembler } from './permission.assembler';
 import { FilterPermissionDto, PermissionPaginatedResponseDto } from './dto';
 import { PermissionPaginatedQuery } from './dto/permission-paginated.query';
@@ -38,25 +52,31 @@ import { PermissionPaginatedQuery } from './dto/permission-paginated.query';
 @ApiBearerAuth()
 @Injectable()
 export class RbacPermissionCrudController {
-
   constructor(
     @InjectAssemblerQueryService(PermissionAssembler)
-    readonly service: AssemblerQueryService<PermissionResponse, PermissionEntity>,
+    readonly service: AssemblerQueryService<
+      PermissionResponse,
+      PermissionEntity
+    >,
     @InjectPaginatedQueryService(PermissionEntity)
-    readonly paginatedService: DataProvider<Paginated<PermissionResponse>, FilterPermissionDto, PermissionEntity>
+    readonly paginatedService: DataProvider<
+      Paginated<PermissionResponse>,
+      FilterPermissionDto,
+      PermissionEntity
+    >
   ) {}
 
   @ApiOperation({ summary: 'Find permission by id' })
-    @ApiResponse({
-      status: HttpStatus.OK,
-      description: 'Found one permission record',
-      type: PermissionResponse,
-    })
-    @ApiResponse({
-      status: HttpStatus.NOT_FOUND,
-      description: 'Permission not found',
-      type: PermissionResponse
-    })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Found one permission record',
+    type: PermissionResponse,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Permission not found',
+    type: PermissionResponse,
+  })
   @Get(':id')
   @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.READ)
   async findOne(@Param('id') id: string): Promise<PermissionResponse> {
@@ -65,21 +85,21 @@ export class RbacPermissionCrudController {
     return permission;
   }
 
-	@ApiOperation({ summary: 'Create new permission' })
-    @ApiCreatedResponse({
-      description: 'The permission has been successfully created.',
-      type: PermissionResponse
-    })
-    @ApiResponse({
-      status: HttpStatus.BAD_REQUEST,
-      description:
-        'Invalid input, The response body may contain clues as to what went wrong',
-    })
-    @ApiResponse({
-      status: HttpStatus.UNPROCESSABLE_ENTITY,
-      description: 'Validation errors.',
-      type: ApiErrorValidationResponse,
-    })
+  @ApiOperation({ summary: 'Create new permission' })
+  @ApiCreatedResponse({
+    description: 'The permission has been successfully created.',
+    type: PermissionResponse,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description:
+      'Invalid input, The response body may contain clues as to what went wrong',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNPROCESSABLE_ENTITY,
+    description: 'Validation errors.',
+    type: ApiErrorValidationResponse,
+  })
   @Post()
   @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.CREATE)
   @UsePipes(new ValibotValidationPipe(permissionValidationSchema))
@@ -89,27 +109,31 @@ export class RbacPermissionCrudController {
     return addedPermission;
   }
 
-	@ApiOperation({ summary: 'Update permission' })
+  @ApiOperation({ summary: 'Update permission' })
   @ApiAcceptedResponse({
     description: 'Permission has been successfully updated.',
     type: PermissionResponse,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Permission not found'
+    description: 'Permission not found',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description:
-      'Invalid input, The response body may contain clues as to what went wrong'
+      'Invalid input, The response body may contain clues as to what went wrong',
   })
-	@Put(':name')
+  @Put(':name')
   @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.UPDATE)
   async updatePermission(
     @Param('name') name: string,
-    @Body(new ValibotValidationPipe(permissionValidationSchema)) updatePermissionDto: UpdatePermissionRequest
+    @Body(new ValibotValidationPipe(permissionValidationSchema))
+    updatePermissionDto: UpdatePermissionRequest
   ) {
-    const updatedPermission = await this.service.updateOne(name, updatePermissionDto);
+    const updatedPermission = await this.service.updateOne(
+      name,
+      updatePermissionDto
+    );
 
     return updatedPermission;
   }
@@ -131,23 +155,27 @@ export class RbacPermissionCrudController {
   }
 
   @ApiOperation({ summary: 'Find all permissions by filters using pagination' })
-    @ApiResponse({
-      status: HttpStatus.OK,
-      description: 'Found records.',
-      type: PermissionPaginatedResponseDto,
-    })
-    @ApiResponse({
-      status: HttpStatus.BAD_REQUEST,
-      description:
-        'Invalid input, The response body may contain clues as to what went wrong',
-    })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Found records.',
+    type: PermissionPaginatedResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description:
+      'Invalid input, The response body may contain clues as to what went wrong',
+  })
   @Get()
   @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.LIST)
   async paginated(
     @Query('filters') filters: FilterPermissionDto,
-    @Query(new ValidationPipe({ transform: true })) pagination: PermissionPaginatedQuery,
+    @Query(new ValidationPipe({ transform: true }))
+    pagination: PermissionPaginatedQuery
   ): Promise<PermissionPaginatedResponseDto> {
-    const paginated = await this.paginatedService.getData(filters, (pagination.pageable === 0 ? null : pagination));
+    const paginated = await this.paginatedService.getData(
+      filters,
+      pagination.pageable === 0 ? null : pagination
+    );
 
     return new PermissionPaginatedResponseDto(paginated);
   }

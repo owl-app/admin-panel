@@ -8,8 +8,8 @@ import {
   Filter as FilterQueryService,
   getAssemblerQueryServiceToken,
   QueryService,
-} from '@owl-app/crud-core';
-import { getQueryServiceToken } from '@owl-app/crud-nestjs';
+} from '@owl-app/nestjs-query-core';
+import { getQueryServiceToken } from '@owl-app/nestjs-query-typeorm';
 
 import { FilterBuilder } from '../filter.builder';
 import {
@@ -17,7 +17,10 @@ import {
   PaginationConfig,
 } from '../../config/pagination';
 import { Filter } from '../filtering/filter';
-import { DATA_PROVIDER_FILTER_REGISTRY, DATA_PROVIDER_FILTER_CUSTOM_REGISTRY } from '../contants';
+import {
+  DATA_PROVIDER_FILTER_REGISTRY,
+  DATA_PROVIDER_FILTER_CUSTOM_REGISTRY,
+} from '../contants';
 
 import { PaginatedDataProvider } from './paginated-query.provider';
 import { getPaginatedQueryServiceToken } from './decorators/helpers';
@@ -35,7 +38,9 @@ export function createPaginatedQueryServiceProvider<Entity>(
       queryService: QueryService<Entity>,
       paginationConfig: PaginationConfig,
       filterServiceRegistry: Registry<Filter<FilterQueryService<Entity>>>,
-      filterCustomServiceRegistry: Registry<FilterCustom<SelectQueryBuilder<Entity>>>
+      filterCustomServiceRegistry: Registry<
+        FilterCustom<SelectQueryBuilder<Entity>>
+      >
     ) {
       return new PaginatedDataProvider(
         queryService,

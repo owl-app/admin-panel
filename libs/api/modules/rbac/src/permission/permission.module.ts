@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { DataSource } from 'typeorm'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
-import { CrudTypeOrmQueryModule } from '@owl-app/lib-api-core/crud/crud-typeorm-query.module'
+import { AppNestjsQueryTypeOrmModule } from '@owl-app/lib-api-core/query/module'
 import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository'
 
 import { RbacPermissionCrudController } from './features/v1/crud/crud.http.controller'
@@ -19,7 +19,7 @@ import { BaseAuthEntitySchema } from '../database/entity-schema/base-auth.entity
   imports: [
     RbacTypeOrmModule.forFeature(),
     TypeOrmModule.forFeature([BaseAuthEntitySchema]),
-    CrudTypeOrmQueryModule.forFeature({
+    AppNestjsQueryTypeOrmModule.forFeature({
       importsQueryTypeOrm: [RbacTypeOrmModule.forFeature()],
       entities: [
         {

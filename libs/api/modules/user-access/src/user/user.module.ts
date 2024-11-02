@@ -3,7 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
-import { CrudTenantTypeOrmQueryModule } from '@owl-app/lib-api-core/tenant-typeorm/crud-tenant-typeorm-query.module'
+import { AppNestjsQueryTypeOrmModule } from '@owl-app/lib-api-core/query/module'
 
 import { UserEntitySchema } from '../database/entity-schema/user.entity-schema'
 import { UserRepository } from '../database/repository/user.repository'
@@ -20,7 +20,7 @@ import { UserPermissionsController } from './features/v1/permissions/user-permis
   imports: [
     CqrsModule,
     RbacTypeOrmModule.forFeature({}),
-    CrudTenantTypeOrmQueryModule.forFeature({
+    AppNestjsQueryTypeOrmModule.forFeature({
       entities: [
         {
           entity: UserEntitySchema,

@@ -4,19 +4,6 @@
   "sourceRoot": "packages/server/registry-nestjs/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "nx:run-commands",
-      "outputs": ["{workspaceRoot}/dist/packages/server/registry-nestjs/"],
-      "options": {
-        "commands": [
-          "npx rimraf dist/packages/server/registry-nestjs",
-          "npx tsc -p packages/server/registry-nestjs/tsconfig.build.json",
-          "npx copyfiles -f \"packages/server/registry-nestjs/package.json\" \"packages/server/registry-nestjs/README.md\" \"LICENSE\" dist/packages/server/registry-nestjs"
-        ],
-        "cwd": ".",
-        "parallel": false
-      }
-    },
     "publish": {
       "executor": "nx:run-commands",
       "options": {

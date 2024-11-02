@@ -3,8 +3,8 @@ import { Module } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { CqrsModule } from '@nestjs/cqrs'
 
-import { CrudTenantTypeOrmQueryModule } from '@owl-app/lib-api-core/tenant-typeorm/crud-tenant-typeorm-query.module'
-import { TenantTypeOrmModule } from '@owl-app/lib-api-core/tenant-typeorm/tenant-typeorm.module'
+import { AppNestjsQueryTypeOrmModule } from '@owl-app/lib-api-core/query/module'
+import { AppTypeOrmModule } from '@owl-app/lib-api-core/typeorm/app-typeorm.module'
 import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository'
 import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository'
 
@@ -22,7 +22,7 @@ import { StopHandler } from './time/features/v1/stopwatch/stop.service'
 @Module({
   imports: [
     CqrsModule,
-    TenantTypeOrmModule.forFeature({
+    AppTypeOrmModule.forFeature({
       entities: [
         {
           entity: TimeEntitySchema,
@@ -30,7 +30,7 @@ import { StopHandler } from './time/features/v1/stopwatch/stop.service'
         }
       ]
     }),
-    CrudTenantTypeOrmQueryModule.forFeature({
+    AppNestjsQueryTypeOrmModule.forFeature({
       entities: [
         {
           entity: TimeEntitySchema,

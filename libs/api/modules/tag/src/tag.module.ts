@@ -4,8 +4,8 @@ import { CqrsModule } from '@nestjs/cqrs'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
-import { CrudTenantTypeOrmQueryModule } from '@owl-app/lib-api-core/tenant-typeorm/crud-tenant-typeorm-query.module'
-import { TenantTypeOrmModule } from '@owl-app/lib-api-core/tenant-typeorm/tenant-typeorm.module'
+import { AppNestjsQueryTypeOrmModule } from '@owl-app/lib-api-core/query/module'
+import { AppTypeOrmModule } from '@owl-app/lib-api-core/typeorm/app-typeorm.module'
 import { ArchiveService, DefaultArchiveService } from '@owl-app/lib-api-core/actions/archive/archive.service'
 import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository'
 import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository'
@@ -23,7 +23,7 @@ import { TagEntity } from './domain/entity/tag.entity'
   imports: [
     RbacTypeOrmModule.forFeature({}),
     CqrsModule,
-    TenantTypeOrmModule.forFeature({
+    AppTypeOrmModule.forFeature({
       entities: [
         {
           entity: TagEntitySchema,
@@ -31,7 +31,7 @@ import { TagEntity } from './domain/entity/tag.entity'
         }
       ]
     }),
-    CrudTenantTypeOrmQueryModule.forFeature({
+    AppNestjsQueryTypeOrmModule.forFeature({
       entities: [
         {
           entity: TagEntitySchema,
@@ -43,10 +43,6 @@ import { TagEntity } from './domain/entity/tag.entity'
           assembler: TagAssembler
         }
       ],
-      queryServiceOpts: {
-        useSoftDelete: true,
-        useTransaction: true,
-      }
     }),
   ],
   controllers: [

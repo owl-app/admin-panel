@@ -4,20 +4,6 @@
   "sourceRoot": "packages/common/registry/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "nx:run-commands",
-			"inputs": ["default", "^production"],
-			"outputs": ["{workspaceRoot}/dist/packages/common/registry"],
-      "options": {
-        "commands": [
-          "npx rimraf dist/packages/common/registry",
-          "npx tsc -p packages/common/registry/tsconfig.build.json",
-          "npx copyfiles -f \"packages/common/registry/package.json\" \"packages/common/registry/README.md\" \"LICENSE\" dist/packages/common/registry"
-        ],
-        "cwd": ".",
-        "parallel": false
-      }
-    },
     "publish": {
       "executor": "nx:run-commands",
       "options": {

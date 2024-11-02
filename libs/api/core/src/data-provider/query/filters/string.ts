@@ -6,7 +6,7 @@ import {
   FilterComparisons,
   FilterFieldComparison,
   Filter as FilterQueryService,
-} from '@owl-app/crud-core';
+} from '@owl-app/nestjs-query-core';
 
 import { Filter } from '../../filtering/filter';
 import { isEmpty } from '@owl-app/utils';

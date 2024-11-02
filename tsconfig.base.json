@@ -8,8 +8,6 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "paths": {
-      "@owl-app/crud-core": ["packages/server/crud/core/src/index.ts"],
-      "@owl-app/crud-nestjs": ["packages/server/crud/nestjs/src/index.ts"],
       "@owl-app/lib-api-core/*": ["libs/api/core/src/*"],
       "@owl-app/lib-api-module-client/*": ["libs/api/modules/client/src/*"],
       "@owl-app/lib-api-module-rbac/*": ["libs/api/modules/rbac/src/*"],
@@ -32,6 +30,10 @@
       ],
       "@owl-app/lib-app-module-user/*": ["libs/app/modules/user/src/*"],
       "@owl-app/lib-contracts": ["libs/contracts/src/index.ts"],
+      "@owl-app/nestjs-query-core": ["packages/server/query/core/src/index.ts"],
+      "@owl-app/nestjs-query-typeorm": [
+        "packages/server/query/typeorm/src/index.ts"
+      ],
       "@owl-app/rbac-manager": ["packages/server/rbac/manager/src/index.ts"],
       "@owl-app/rbac-storage-typerom": [
         "packages/server/rbac/storage-typeorm/src/index.ts"

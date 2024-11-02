@@ -14,7 +14,7 @@ import { RbacManager, Role } from '@owl-app/rbac-manager'
 import { AvalilableCollections, UserActions } from '@owl-app/lib-contracts'
 import { Permission } from '@owl-app/lib-api-core/rbac/types/permission'
 import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe'
-import { InjectQueryServiceRepository } from '@owl-app/lib-api-core/crud/common/repository.decorator'
+import { InjectQueryServiceRepository } from '@owl-app/lib-api-core/query/common/repository.decorator'
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission'
 
 import type { IUserRepository } from '../../../../database/repository/user-repository.interface'

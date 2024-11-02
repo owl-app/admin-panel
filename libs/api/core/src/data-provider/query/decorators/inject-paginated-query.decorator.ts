@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 
-import { Class } from '@owl-app/crud-core';
+import { Class } from '@owl-app/nestjs-query-core';
 import { getPaginatedQueryServiceToken } from './helpers';
 
 export const InjectPaginatedQueryService = <DTO>(
