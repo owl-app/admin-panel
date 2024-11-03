@@ -152,7 +152,7 @@ function groupByWeek(items: Time[]) {
                   :key="`${time.id}-${time.timeIntervalStart}-${time.timeIntervalEnd}`"
                   :default-value="time"
                   :is-saved-after-change="true"
-                  :tag-options="tags"
+                  :tag-options="[...tags, ...time.tags.filter(tag => tag.archived && !tags.find(existing => tag.id === existing.id))]"
                   @saved="gridRef?.reloadGrid"
                 >
                   <template #actions>

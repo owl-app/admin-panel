@@ -1,5 +1,3 @@
-import { NotFoundException } from '@nestjs/common';
-
 import {
   AggregateQuery,
   AggregateResponse,
@@ -249,26 +247,37 @@ export abstract class RelationQueryService<Entity> {
     relationIds: (string | number)[],
     opts?: ModifyRelationOptions<Entity, Relation>
   ): Promise<Entity> {
-    const relations = await this.getRelations(
+    const relationMetadata = this.getRelationMeta(relationName);
+
+    if (relationMetadata.inverseEntityMetadata.hasMultiplePrimaryKeys) {
+      throw new Error(`App query service not supported multiple primary keys`);
+    }
+
+    const relationPrimaryKeyName = relationMetadata.inverseEntityMetadata.primaryColumns[0].propertyName;
+    const existingRelations = await this.createTypeormRelationQueryBuilder(
+      entity  ,
       relationName,
-      relationIds,
+    ).loadMany();
+
+    const newRelations = await this.getRelations(
+      relationName,
+      [...relationIds].filter((id) => !existingRelations.find((r) => r[relationPrimaryKeyName as keyof Relation] === id)),
       opts?.relationFilter
     );
 
-    if (!this.foundAllRelations(relationIds, relations)) {
-      throw new NotFoundException(`Unable to find ${relationName}`);
+    if (existingRelations) {
+      existingRelations.forEach((r, key) => {
+        if (![...relationIds].includes(r[relationPrimaryKeyName as keyof Relation] as string)) {
+          delete existingRelations[key];
+        }
+      });
     }
-
-    const relationMetadata = this.getRelationMeta(relationName);
-    let assignedRelations: DeepPartial<Relation> | DeepPartial<Relation>[] = [];
 
     if (relationMetadata.isManyToMany || relationMetadata.isOneToMany) {
-      assignedRelations = relations;
+      relationMetadata.setEntityValue(entity, [...existingRelations, ...newRelations]);
     } else {
-      assignedRelations = relations.shift();
+      relationMetadata.setEntityValue(entity, [...existingRelations, ...newRelations].shift());
     }
-
-    entity[relationName as keyof Entity] = assignedRelations as Entity[keyof Entity];
 
     return entity;
   }

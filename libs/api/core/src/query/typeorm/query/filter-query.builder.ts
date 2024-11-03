@@ -17,8 +17,6 @@ export class FilterQueryBuilder<Entity> extends BaseFilterQueryBuilder<Entity> {
   public override select(query: Query<Entity>): SelectQueryBuilder<Entity> {
     const qb = super.select(query);
 
-    console.log(this.filters);
-
     const filters = this.filters?.all();
 
     if (filters) {

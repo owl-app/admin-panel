@@ -228,7 +228,11 @@ export class TypeOrmQueryService<Entity>
     record: DeepPartial<Entity>,
     relations: Record<string, (string | number)[]>
   ): Promise<Entity> {
-    const entity = await this.ensureIsEntityAndDoesNotExist(record);
+    const newEntity = this.repo.create({} as Entity);
+
+    this.copyRegularColumn(record, newEntity);
+
+    const entity = await this.ensureEntityDoesNotExist(newEntity);
 
     const entityWithRelations = await Promise.all(
       Object.entries(relations).map(async ([name, ids]) =>
@@ -292,9 +296,8 @@ export class TypeOrmQueryService<Entity>
     this.ensureIdIsNotPresent(update);
 
     const entity = await this.getById(id, opts);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    this.repo.merge(entity, update);
+
+    this.copyRegularColumn(update, entity);
 
     const entityWithRelations = await Promise.all(
       Object.entries(relations).map(async ([name, ids]) =>
@@ -525,5 +528,13 @@ export class TypeOrmQueryService<Entity>
         `Restore not allowed for non soft deleted entity ${this.EntityClass.name}.`
       );
     }
+  }
+  
+  copyRegularColumn(record: DeepPartial<Entity>, entity: Entity ): void {
+    this.repo.metadata.nonVirtualColumns.forEach((column) => {
+      const objectColumnValue = column.getEntityValue(record)
+      if (objectColumnValue !== undefined)
+          column.setEntityValue(entity, objectColumnValue)
+    })
   }
 }

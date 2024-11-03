@@ -82,9 +82,12 @@ export class AppTypeOrmQueryService<
     record: DeepPartial<Entity>,
     relations: Record<string, (string | number)[]>
   ): Promise<Entity> {
-    this.injectSetters(record);
+    const newEntity = this.repo.create({} as Entity);
 
-    const entity = await this.ensureIsEntityAndDoesNotExist(record);
+    this.copyRegularColumn(record, newEntity);
+    this.injectSetters(newEntity as DeepPartial<Entity>);
+
+    const entity = await this.ensureEntityDoesNotExist(newEntity);
 
     if (record instanceof DomainEventableEntity) {
       this.createEvent(this.events.EVENT_CREATED, entity);
@@ -118,9 +121,8 @@ export class AppTypeOrmQueryService<
     this.ensureIdIsNotPresent(update);
 
     const entity = await this.getById(id, opts);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    this.repo.merge(entity, update);
+
+    this.copyRegularColumn(update, entity);
 
     if (update instanceof DomainEventableEntity) {
       this.createEvent(this.events.EVENT_UPDATED, entity);

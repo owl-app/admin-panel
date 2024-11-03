@@ -25,7 +25,6 @@ export default class DomainEventableEntity {
   ): Promise<void> {
     await Promise.all(
       this.domainEvents.map(async (event) => {
-        console.log('jedziemy DomainEventableEntity', event)
         return await eventEmitter.emitAsync(
           event.eventName ?? event.constructor.name,
           Object.assign(event, { id })
