@@ -174,13 +174,6 @@ export interface QueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> {
     opts?: FindRelationOptions<Relation>
   ): Promise<Map<DTO, Relation | undefined>>;
 
-  assignRelations<Relation>(
-    entity: DTO,
-    id: string | number,
-    relationIds: (string | number)[],
-    opts?: ModifyRelationOptions<DTO, Relation>
-  ): Promise<DTO>;
-
   /**
    * Adds multiple relations.
    * @param relationName - The name of the relation to query for.
@@ -281,30 +274,6 @@ export interface QueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> {
    * @returns a created records.
    */
   createMany(items: (C | Promise<C>)[]): Promise<DTO[]>;
-
-  /**
-   * Creates a single record with relations
-   *
-   * @param items - the records to create.
-   * @returns a created records.
-   */
-  createWithRelations(
-    item: C,
-    relations: Record<string, (string | number)[]>
-  ): Promise<DTO>;
-
-  /**
-   * Update a single record with relations
-   *
-   * @param items - the records to create.
-   * @returns a created records.
-   */
-  updateWithRelations(
-    id: number | string,
-    update: U,
-    relations: Record<string, (string | number)[]>,
-    opts?: UpdateOneOptions<DTO>
-  ): Promise<DTO>;
 
   /**
    * Update one record.

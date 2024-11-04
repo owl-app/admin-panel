@@ -24,15 +24,6 @@ export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>>
 {
   constructor(readonly proxied: QueryService<DTO, C, U>) {}
 
-  assignRelations<Relation>(
-    entity: DTO,
-    id: string | number,
-    relationIds: (string | number)[],
-    opts?: ModifyRelationOptions<DTO, Relation>
-  ): Promise<DTO> {
-    return this.proxied.assignRelations(entity, id, relationIds, opts);
-  }
-
   addRelations<Relation>(
     relationName: string,
     id: string | number,
@@ -207,13 +198,6 @@ export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>>
     return this.proxied.createOne(item);
   }
 
-  createWithRelations(
-    item: C,
-    relations: Record<string, (string | number)[]>
-  ): Promise<DTO> {
-    return this.proxied.createWithRelations(item, relations);
-  }
-
   async deleteMany(filter: Filter<DTO>): Promise<DeleteManyResponse> {
     return this.proxied.deleteMany(filter);
   }
@@ -270,15 +254,6 @@ export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>>
     opts?: UpdateOneOptions<DTO>
   ): Promise<DTO> {
     return this.proxied.updateOne(id, update, opts);
-  }
-
-  updateWithRelations(
-    id: number | string,
-    update: U,
-    relations: Record<string, (string | number)[]>,
-    opts?: UpdateOneOptions<DTO>
-  ): Promise<DTO> {
-    return this.proxied.updateWithRelations(id, update, relations, opts);
   }
 
   aggregateRelations<Relation>(

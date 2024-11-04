@@ -1,34 +1,42 @@
 import { Provider } from '@nestjs/common';
 
 import { Assembler, getAssemblerClasses } from './assemblers';
-import { Class } from './common';
 import { getQueryServiceToken } from './decorators';
 import { getAssemblerQueryServiceToken } from './decorators/helpers';
 import { AssemblerQueryService, QueryService } from './services';
+import { NestjsQueryCoreModuleAssemblersOpts } from './types';
 
 function createServiceProvider<DTO, Entity, C, CE, U, UE>(
-  AssemblerClass: Class<Assembler<DTO, Entity, C, CE, U, UE>>
+  opts: NestjsQueryCoreModuleAssemblersOpts
 ): Provider {
-  const classes = getAssemblerClasses(AssemblerClass);
+  const classes = getAssemblerClasses(opts.classAssembler);
   if (!classes) {
     throw new Error(
-      `unable to determine DTO and Entity classes for ${AssemblerClass.name}. Did you decorate your class with @Assembler`
+      `unable to determine DTO and Entity classes for ${opts.classAssembler.name}. Did you decorate your class with @Assembler`
     );
   }
   const { EntityClass } = classes;
+
+  const {
+    classService = AssemblerQueryService,
+    inject = [],
+  } = opts ?? {};
+
   return {
-    provide: getAssemblerQueryServiceToken(AssemblerClass),
+    provide: getAssemblerQueryServiceToken(opts.classAssembler),
     useFactory(
       assembler: Assembler<DTO, Entity, C, CE, U, UE>,
-      entityService: QueryService<Entity, CE, UE>
+      entityService: QueryService<Entity, CE, UE>,
+      ...injectArgs
     ) {
-      return new AssemblerQueryService(assembler, entityService);
+      /* eslint-disable new-cap */
+      return new classService(assembler, entityService, ...injectArgs);
     },
-    inject: [AssemblerClass, getQueryServiceToken(EntityClass)],
+    inject: [opts.classAssembler, getQueryServiceToken(EntityClass), ...inject],
   };
 }
 
 // eslint-disable-next-line import/prefer-default-export
 export const createServices = (
-  opts: Class<Assembler<unknown, unknown, unknown, unknown, unknown, unknown>>[]
+  opts: NestjsQueryCoreModuleAssemblersOpts[]
 ): Provider[] => opts.map((opt) => createServiceProvider(opt));

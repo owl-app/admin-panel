@@ -1,28 +1,20 @@
-import { DynamicModule, ForwardReference } from '@nestjs/common';
+import { DynamicModule } from '@nestjs/common';
 
-import { Assembler } from './assemblers';
-import { Class } from './common';
 import { createServices } from './providers';
-
-export interface NestjsQueryCoreModuleOpts {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  imports?: Array<
-    Class<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
-  >;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  assemblers?: Class<Assembler<any, any, any, any, any, any>>[];
-}
+import { NestjsQueryCoreModuleOpts } from './types';
 
 export class NestjsQueryCoreModule {
   static forFeature(opts: NestjsQueryCoreModuleOpts): DynamicModule {
     const { imports = [], assemblers = [] } = opts;
     const assemblerServiceProviders = createServices(assemblers);
 
+    const assemblersProviders = assemblers.map((opt) => opt.classAssembler);
+
     return {
       module: NestjsQueryCoreModule,
       imports: [...imports],
-      providers: [...assemblers, ...assemblerServiceProviders],
-      exports: [...imports, ...assemblers, ...assemblerServiceProviders],
+      providers: [...assemblersProviders, ...assemblerServiceProviders],
+      exports: [...imports, ...assemblersProviders, ...assemblerServiceProviders],
     };
   }
 }

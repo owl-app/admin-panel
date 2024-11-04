@@ -27,11 +27,7 @@ import {
 } from '@owl-app/lib-contracts';
 
 import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query';
-import {
-  AssemblerQueryService,
-  InjectAssemblerQueryService,
-  SortDirection,
-} from '@owl-app/nestjs-query-core';
+import { InjectAssemblerQueryService, SortDirection } from '@owl-app/nestjs-query-core';
 import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe';
 import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response';
 import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider';
@@ -39,6 +35,7 @@ import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider
 import { Paginated } from '@owl-app/lib-api-core/pagination/pagination';
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
+import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service';
 
 import { TimeEntity } from '../../../../domain/entity/time.entity';
 import { TimeResponse } from '../../../dto/time.response';
@@ -49,7 +46,7 @@ import {
   FilterTimeRequest,
   TimePaginatedResponse,
 } from './dto';
-import { TimeAssembler } from './time.assembler';
+import { TimeAssembler } from '../../../assembler/time.assembler';
 
 @ApiTags('Time Tracker Manage')
 @Controller('times')
@@ -58,13 +55,9 @@ import { TimeAssembler } from './time.assembler';
 export class TimeCrudController {
   constructor(
     @InjectAssemblerQueryService(TimeAssembler)
-    readonly service: AssemblerQueryService<TimeResponse, TimeEntity>,
+    readonly service: AppAssemblerQueryService<TimeResponse, TimeEntity>,
     @InjectPaginatedQueryService(TimeEntity)
-    readonly paginatedService: DataProvider<
-      Paginated<TimeResponse>,
-      FilterTimeRequest,
-      TimeEntity
-    >
+    readonly paginatedService: DataProvider<Paginated<TimeResponse>, FilterTimeRequest, TimeEntity>
   ) {}
 
   @ApiOperation({ summary: 'Find time by id' })

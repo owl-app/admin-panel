@@ -41,7 +41,9 @@ import { AssignedPermissionsController } from './features/v1/assigned-permission
           dataProvider: {
             filterBuilder: ListFilterBuilder,
           },
-          assembler: RoleAssembler
+          assembler: {
+            classAssembler: RoleAssembler
+          }
         }
       ],
       queryService: {

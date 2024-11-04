@@ -31,9 +31,9 @@ import {
 } from '@owl-app/lib-contracts';
 import {
   InjectAssemblerQueryService,
-  QueryService,
 } from '@owl-app/nestjs-query-core';
 
+import type { AppQueryService } from '@owl-app/lib-api-core/query/core/services/app-query.service';
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
 import { Paginated } from '@owl-app/lib-api-core/pagination/pagination';
 import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider';
@@ -63,7 +63,7 @@ import { UserAssembler } from './user.assembler';
 export class UserCrudController {
   constructor(
     @InjectAssemblerQueryService(UserAssembler)
-    readonly service: QueryService<UserEntity>,
+    readonly service: AppQueryService<UserEntity>,
     @InjectPaginatedQueryService(UserEntity)
     readonly paginatedService: DataProvider<
       Paginated<UserEntity>,

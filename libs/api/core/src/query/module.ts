@@ -70,7 +70,7 @@ export class AppNestjsQueryTypeOrmModule {
           createPaginatedQueryServiceProvider(
             opt.entity,
             opt.dataProvider.filterBuilder,
-            opt.assembler
+            opt.assembler.classAssembler
           )
         );
       }

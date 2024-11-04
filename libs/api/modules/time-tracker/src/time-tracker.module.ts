@@ -7,11 +7,12 @@ import { AppNestjsQueryTypeOrmModule } from '@owl-app/lib-api-core/query/module'
 import { AppTypeOrmModule } from '@owl-app/lib-api-core/typeorm/app-typeorm.module'
 import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository'
 import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository'
+import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service'
 
 import { TimeEntitySchema } from './database/entity-schema/time.entity-schema'
 
 import { TimeCrudController } from './time/features/v1/crud/crud.http.controller'
-import { TimeAssembler } from './time/features/v1/crud/time.assembler'
+import { TimeAssembler } from './time/assembler/time.assembler'
 import { ListFilterBuilder } from './time/features/v1/crud/list-filter.builder'
 import { WatchHandler } from './time/features/v1/stopwatch/watch.service'
 import { StopWathController } from './time/features/v1/stopwatch/stopwatch.http.controller'
@@ -39,7 +40,10 @@ import { StopHandler } from './time/features/v1/stopwatch/stop.service'
           dataProvider: {
             filterBuilder: ListFilterBuilder,
           },
-          assembler: TimeAssembler
+          assembler: {
+            classService: AppAssemblerQueryService,
+            classAssembler: TimeAssembler
+          }
         }
       ],
     }),

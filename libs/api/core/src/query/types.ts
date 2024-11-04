@@ -2,7 +2,7 @@ import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-clas
 import { DynamicModule, ForwardReference, InjectionToken, OptionalFactoryDependency } from '@nestjs/common';
 
 import {
-  Assembler,
+  NestjsQueryCoreModuleAssemblersOpts,
   Class,
   Filter,
   QueryService,
@@ -27,7 +27,7 @@ export interface AppNestjsQueryTypeOrmModuleOpts {
 
 export interface AppNestjsQueryTypeOrmEntitiesOpts extends AppTypeOrmEntitesOpts {
   dataProvider?: AppNestjsQueryTypeOrmProviderOpts;
-  assembler?: Class<Assembler<any, any, any, any, any, any>>;
+  assembler?: NestjsQueryCoreModuleAssemblersOpts;
 }
 
 export interface AppNestjsQueryTypeOrmProviderOpts {

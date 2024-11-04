@@ -29,7 +29,9 @@ import { BaseAuthEntitySchema } from '../database/entity-schema/base-auth.entity
           dataProvider: {
             filterBuilder: ListFilterBuilder,
           },
-          assembler: PermissionAssembler
+          assembler: {
+            classAssembler: PermissionAssembler
+          }
         }
       ],
       queryService: {

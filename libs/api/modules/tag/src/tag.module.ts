@@ -10,6 +10,7 @@ import { ArchiveService, DefaultArchiveService } from '@owl-app/lib-api-core/act
 import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository'
 import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository'
 import { getRepositoryToken } from '@owl-app/lib-api-core/typeorm/common/typeorm.utils'
+import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service'
 
 import { TagEntitySchema } from './database/entity-schema/tag.entity-schema'
 
@@ -40,7 +41,10 @@ import { TagEntity } from './domain/entity/tag.entity'
           dataProvider: {
             filterBuilder: ListFilterBuilder,
           },
-          assembler: TagAssembler
+          assembler: {
+            classService: AppAssemblerQueryService,
+            classAssembler: TagAssembler
+          }
         }
       ],
     }),

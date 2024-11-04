@@ -5,6 +5,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
 import { AppNestjsQueryTypeOrmModule } from '@owl-app/lib-api-core/query/module'
+import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service'
 import { AppTypeOrmModule } from '@owl-app/lib-api-core/typeorm/app-typeorm.module'
 import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository'
 import { ArchiveService, DefaultArchiveService } from '@owl-app/lib-api-core/actions/archive/archive.service'
@@ -40,7 +41,10 @@ import { ArchiveControllerController } from './client/features/v1/archive/archiv
           dataProvider: {
             filterBuilder: ListFilterBuilder,
           },
-          assembler: ClientAssembler
+          assembler: {
+            classService: AppAssemblerQueryService,
+            classAssembler: ClientAssembler,
+          }
         }
       ],
     }),

@@ -28,7 +28,6 @@ import {
 
 import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query';
 import {
-  AssemblerQueryService,
   InjectAssemblerQueryService,
 } from '@owl-app/nestjs-query-core';
 import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe';
@@ -38,6 +37,7 @@ import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider
 import { Paginated } from '@owl-app/lib-api-core/pagination/pagination';
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
+import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service';
 
 import { ClientEntity } from '../../../../domain/entity/client.entity';
 import { ClientResponse } from '../../../dto/client.response';
@@ -57,7 +57,7 @@ import { ClientAssembler } from './client.assembler';
 export class ClientCrudController {
   constructor(
     @InjectAssemblerQueryService(ClientAssembler)
-    readonly service: AssemblerQueryService<ClientResponse, ClientEntity>,
+    readonly service: AppAssemblerQueryService<ClientResponse, ClientEntity>,
     @InjectPaginatedQueryService(ClientEntity)
     readonly paginatedService: DataProvider<
       Paginated<ClientEntity>,

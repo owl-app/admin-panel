@@ -1,14 +1,16 @@
 import { NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { IsNull } from 'typeorm';
+
+import { Tag } from '@owl-app/lib-contracts';
+import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 
 import { InjectRepository } from '@owl-app/lib-api-core/typeorm/common/typeorm.decorators';
 import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository'
-import { Tag } from '@owl-app/lib-contracts';
+import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service';
 
 import { TimeResponse } from '../../../dto/time.response';
 import { TimeEntity } from '../../../../domain/entity/time.entity';
-import { mapperTime } from '../../../mapping';
+import { TimeAssembler } from '../../../assembler/time.assembler';
 
 export class Stop {
 
@@ -24,27 +26,29 @@ export class Stop {
 @CommandHandler(Stop)
 export class StopHandler implements ICommandHandler<Stop> {
   constructor(
-    @InjectRepository(TimeEntity)
-    private readonly timeRepository: InjectableRepository<TimeEntity>
+    @InjectAssemblerQueryService(TimeAssembler)
+    readonly queryService: AppAssemblerQueryService<TimeResponse, TimeEntity>,
   ) { }
 
   async execute(command: Stop): Promise<TimeResponse> {
-    const existingTime = await this.timeRepository.findOne({
-      where: { 
-        timeIntervalEnd: IsNull()
-      }
+    const existingTime = await this.queryService.query({
+      filter: { timeIntervalEnd: { is: null } }
     });
 
     if (!existingTime) {
       throw new NotFoundException('Timer is not running');
     }
 
-    existingTime.description = command.description;
-    existingTime.tags = command?.tags;
-    existingTime.timeIntervalEnd = new Date();
+    const time = existingTime.shift();
 
-    const stoppedTime = await this.timeRepository.save(existingTime);
+    const updatedTime = await this.queryService.updateWithRelations(
+      time.id,
+      {...command, ... { timeIntervalEnd: (new Date()).toISOString() }},
+      {
+        tags: command.tags.map((tag) => tag.id),
+      }
+    );
 
-    return mapperTime.map<TimeEntity, TimeResponse>(stoppedTime, new TimeResponse());
+    return updatedTime;
   }
 }

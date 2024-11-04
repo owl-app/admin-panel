@@ -35,22 +35,6 @@ export class AssemblerQueryService<
     readonly queryService: QueryService<Entity, CE, UE>
   ) {}
 
-  assignRelations<Relation>(
-    entity: DTO,
-    id: string | number,
-    relationIds: (string | number)[],
-    opts?: ModifyRelationOptions<DTO, Relation>
-  ): Promise<DTO> {
-    return this.assembler.convertAsyncToDTO(
-      this.queryService.assignRelations(
-        this.assembler.convertToEntity(entity),
-        id,
-        relationIds,
-        this.convertModifyRelationsOptions(opts)
-      )
-    );
-  }
-
   addRelations<Relation>(
     relationName: string,
     id: string | number,
@@ -78,17 +62,6 @@ export class AssemblerQueryService<
   async createOne(item: C): Promise<DTO> {
     const c = await this.assembler.convertToCreateEntity(item);
     return this.assembler.convertAsyncToDTO(this.queryService.createOne(c));
-  }
-
-  async createWithRelations(
-    item: C,
-    relations: Record<string, (string | number)[]>
-  ): Promise<DTO> {
-    const c = await this.queryService.createWithRelations(
-      await this.assembler.convertToCreateEntity(item),
-      relations
-    );
-    return this.assembler.convertToDTO(c);
   }
 
   async deleteMany(filter: Filter<DTO>): Promise<DeleteManyResponse> {
@@ -411,22 +384,6 @@ export class AssemblerQueryService<
         this.convertFilterable(opts)
       )
     );
-  }
-
-  async updateWithRelations(
-    id: number | string,
-    update: U,
-    relations: Record<string, (string | number)[]>,
-    opts?: UpdateOneOptions<DTO>
-  ): Promise<DTO> {
-    const c = await this.queryService.updateWithRelations(
-      id,
-      await this.assembler.convertToUpdateEntity(update),
-      relations,
-      this.convertFilterable(opts)
-    );
-
-    return this.assembler.convertToDTO(c);
   }
 
   aggregateRelations<Relation>(

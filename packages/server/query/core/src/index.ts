@@ -36,8 +36,10 @@ export {
 export * from './lib/interfaces';
 export {
   NestjsQueryCoreModule,
-  type NestjsQueryCoreModuleOpts,
 } from './lib/module';
+export type { 
+  NestjsQueryCoreModuleOpts, NestjsQueryCoreModuleAssemblersOpts 
+} from './lib/types';
 export {
   AssemblerQueryService,
   NoOpQueryService,

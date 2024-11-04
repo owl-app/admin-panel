@@ -4,6 +4,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
 import { AppNestjsQueryTypeOrmModule } from '@owl-app/lib-api-core/query/module'
+import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service'
 
 import { UserEntitySchema } from '../database/entity-schema/user.entity-schema'
 import { UserRepository } from '../database/repository/user.repository'
@@ -29,7 +30,10 @@ import { UserPermissionsController } from './features/v1/permissions/user-permis
           dataProvider: {
             filterBuilder: ListFilterBuilder,
           },
-          assembler: UserAssembler
+          assembler: {
+            classService: AppAssemblerQueryService,
+            classAssembler: UserAssembler
+          }
         }
       ],
     })

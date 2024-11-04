@@ -241,47 +241,6 @@ export abstract class RelationQueryService<Entity> {
     return relationEntity ? assembler.convertToDTO(relationEntity) : undefined;
   }
 
-  public async assignRelations<Relation>(
-    entity: Entity,
-    relationName: string,
-    relationIds: (string | number)[],
-    opts?: ModifyRelationOptions<Entity, Relation>
-  ): Promise<Entity> {
-    const relationMetadata = this.getRelationMeta(relationName);
-
-    if (relationMetadata.inverseEntityMetadata.hasMultiplePrimaryKeys) {
-      throw new Error(`App query service not supported multiple primary keys`);
-    }
-
-    const relationPrimaryKeyName = relationMetadata.inverseEntityMetadata.primaryColumns[0].propertyName;
-    const existingRelations = await this.createTypeormRelationQueryBuilder(
-      entity  ,
-      relationName,
-    ).loadMany();
-
-    const newRelations = await this.getRelations(
-      relationName,
-      [...relationIds].filter((id) => !existingRelations.find((r) => r[relationPrimaryKeyName as keyof Relation] === id)),
-      opts?.relationFilter
-    );
-
-    if (existingRelations) {
-      existingRelations.forEach((r, key) => {
-        if (![...relationIds].includes(r[relationPrimaryKeyName as keyof Relation] as string)) {
-          delete existingRelations[key];
-        }
-      });
-    }
-
-    if (relationMetadata.isManyToMany || relationMetadata.isOneToMany) {
-      relationMetadata.setEntityValue(entity, [...existingRelations, ...newRelations]);
-    } else {
-      relationMetadata.setEntityValue(entity, [...existingRelations, ...newRelations].shift());
-    }
-
-    return entity;
-  }
-
   /**
    * Add a single relation.
    * @param id - The id of the entity to add the relation to.

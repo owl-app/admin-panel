@@ -224,25 +224,6 @@ export class TypeOrmQueryService<Entity>
     return this.repo.save(entity);
   }
 
-  public async createWithRelations(
-    record: DeepPartial<Entity>,
-    relations: Record<string, (string | number)[]>
-  ): Promise<Entity> {
-    const newEntity = this.repo.create({} as Entity);
-
-    this.copyRegularColumn(record, newEntity);
-
-    const entity = await this.ensureEntityDoesNotExist(newEntity);
-
-    const entityWithRelations = await Promise.all(
-      Object.entries(relations).map(async ([name, ids]) =>
-        this.assignRelations(entity, name, ids)
-      )
-    ).then(() => entity);
-
-    return this.repo.save(entityWithRelations);
-  }
-
   /**
    * Create multiple entities.
    *
@@ -285,27 +266,6 @@ export class TypeOrmQueryService<Entity>
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return this.repo.save(this.repo.merge(entity, update));
-  }
-
-  public async updateWithRelations(
-    id: number | string,
-    update: DeepPartial<Entity>,
-    relations: Record<string, (string | number)[]>,
-    opts?: UpdateOneOptions<Entity>
-  ): Promise<Entity> {
-    this.ensureIdIsNotPresent(update);
-
-    const entity = await this.getById(id, opts);
-
-    this.copyRegularColumn(update, entity);
-
-    const entityWithRelations = await Promise.all(
-      Object.entries(relations).map(async ([name, ids]) =>
-        this.assignRelations(entity, name, ids)
-      )
-    ).then(() => entity);
-
-    return this.repo.save(entityWithRelations);
   }
 
   /**
@@ -528,13 +488,5 @@ export class TypeOrmQueryService<Entity>
         `Restore not allowed for non soft deleted entity ${this.EntityClass.name}.`
       );
     }
-  }
-  
-  copyRegularColumn(record: DeepPartial<Entity>, entity: Entity ): void {
-    this.repo.metadata.nonVirtualColumns.forEach((column) => {
-      const objectColumnValue = column.getEntityValue(record)
-      if (objectColumnValue !== undefined)
-          column.setEntityValue(entity, objectColumnValue)
-    })
   }
 }

@@ -5,7 +5,7 @@ import {
   TypeOrmQueryService,
   TypeOrmQueryServiceOpts,
 } from '@owl-app/nestjs-query-typeorm';
-import { DeepPartial, UpdateOneOptions } from '@owl-app/nestjs-query-core';
+import { DeepPartial, UpdateOneOptions, ModifyRelationOptions } from '@owl-app/nestjs-query-core';
 import { convertToSnakeCase } from '@owl-app/utils';
 import { Registry } from '@owl-app/registry';
 
@@ -16,6 +16,7 @@ import { RelationQueryBuilder } from '../query/relation-query.builder';
 import { EntitySetter } from '../../../registry/interfaces/entity-setter';
 import { TransactionalRepository } from '../../../database/repository/transactional.repository';
 import DomainEventableEntity from '../../../database/entity/domain-eventable.entity';
+import { AppQueryService } from '../../core/services/app-query.service';
 
 export interface AppTypeOrmQueryServiceOpts<Entity>
   extends TypeOrmQueryServiceOpts<Entity> {
@@ -24,7 +25,7 @@ export interface AppTypeOrmQueryServiceOpts<Entity>
 
 export class AppTypeOrmQueryService<
   Entity extends DomainEventableEntity
-> extends TypeOrmQueryService<Entity> {
+> extends TypeOrmQueryService<Entity> implements AppQueryService<Entity> {
   readonly filterQueryBuilder: FilterQueryBuilder<Entity>;
 
   readonly useTransaction: boolean;
@@ -56,7 +57,7 @@ export class AppTypeOrmQueryService<
     );
   }
 
-  public override async createOne(
+  public async createOne(
     record: DeepPartial<Entity>
   ): Promise<Entity> {
     this.injectSetters(record);
@@ -78,7 +79,7 @@ export class AppTypeOrmQueryService<
     return this.repo.save(entity);
   }
 
-  public override async createWithRelations(
+  public async createWithRelations(
     record: DeepPartial<Entity>,
     relations: Record<string, (string | number)[]>
   ): Promise<Entity> {
@@ -112,7 +113,7 @@ export class AppTypeOrmQueryService<
     return this.repo.save(entity);
   }
 
-  public override async updateWithRelations(
+  public async updateWithRelations(
     id: number | string,
     update: DeepPartial<Entity>,
     relations: Record<string, (string | number)[]>,
@@ -137,6 +138,43 @@ export class AppTypeOrmQueryService<
     return this.repo.save(entityWithRelations);
   }
 
+  public async assignRelations<Relation>(
+    entity: Entity,
+    relationName: string,
+    relationIds: (string | number)[],
+    opts?: ModifyRelationOptions<Entity, Relation>
+  ): Promise<Entity> {
+    const relationMetadata = this.getRelationMeta(relationName);
+
+    if (relationMetadata.inverseEntityMetadata.hasMultiplePrimaryKeys) {
+      throw new Error(`App query service not supported multiple primary keys`);
+    }
+
+    const relationPrimaryKeyName = relationMetadata.inverseEntityMetadata.primaryColumns[0].propertyName;
+    const existingRelations = await this.createTypeormRelationQueryBuilder(
+      entity  ,
+      relationName,
+    ).loadMany();
+
+    const newRelations = await this.getRelations(
+      relationName,
+      [...relationIds].filter((id) => !existingRelations.find((r) => r[relationPrimaryKeyName as keyof Relation] === id)),
+      opts?.relationFilter
+    );
+
+    if (existingRelations) {
+      existingRelations.forEach((r, key) => {
+        if (![...relationIds].includes(r[relationPrimaryKeyName as keyof Relation] as string)) {
+          delete existingRelations[key];
+        }
+      });
+    }
+
+    relationMetadata.setEntityValue(entity, [...existingRelations, ...newRelations]);
+
+    return entity;
+  }
+
   private injectSetters(record: DeepPartial<Entity>): void {
     const setters = this.setters?.all();
 
@@ -157,5 +195,13 @@ export class AppTypeOrmQueryService<
     entity.addEvent(event);
 
     return event;
+  }
+
+  private copyRegularColumn(record: DeepPartial<Entity>, entity: Entity ): void {
+    this.repo.metadata.nonVirtualColumns.forEach((column) => {
+      const objectColumnValue = column.getEntityValue(record)
+      if (objectColumnValue !== undefined)
+          column.setEntityValue(entity, objectColumnValue)
+    })
   }
 }

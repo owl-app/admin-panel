@@ -3,8 +3,8 @@ import {
   ClassTransformerAssembler,
 } from '@owl-app/nestjs-query-core';
 
-import { TimeEntity } from '../../../../domain/entity/time.entity';
-import { TimeResponse } from '../../../dto/time.response';
+import { TimeEntity } from '../../domain/entity/time.entity';
+import { TimeResponse } from '../dto/time.response';
 
 @Assembler(TimeResponse, TimeEntity)
 export class TimeAssembler extends ClassTransformerAssembler<
