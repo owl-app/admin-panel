@@ -149,7 +149,7 @@
 import { computed, ref, Ref } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { DateTime } from 'luxon'
-import { snakeCase } from 'lodash';
+import { has, snakeCase } from 'lodash';
 import { useInputMask, createRegexMask } from 'vuestic-ui'
 import { useToast } from 'vuestic-ui/web-components';
 import { useLocalStorage } from '@vueuse/core';
@@ -302,6 +302,8 @@ function changeTime(data: { ref: TimeFormData }) {
     const dateFrom = DateTime.fromJSDate(new Date(data.ref.timeIntervalStart));
     let dateTo = DateTime.fromJSDate(new Date(data.ref.timeIntervalEnd));
 
+    console.log(hasChangedScope)
+
     if (hasChangedScope) {
       const currentDateTo = dateTo.set({ hour: dateFrom.hour, minute: dateFrom.minute, second: dateFrom.second });
 
@@ -374,6 +376,8 @@ function afterSave(savedData: Time, dataForm: Ref<TimeFormData>) {
       .toFormat('hh:mm:ss'),
     tags: [],
   }
+
+  hasChangedScope = false;
 
   emit('saved', savedData);
 }
