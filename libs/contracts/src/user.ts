@@ -18,6 +18,10 @@ export interface User extends Timestampable {
 	roles: Role[];
 }
 
+export type UserAware = {
+  user: User;
+}
+
 export interface IUserRegistrationInput {
 	user: User;
 	password?: string;

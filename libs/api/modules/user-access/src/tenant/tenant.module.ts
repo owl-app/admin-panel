@@ -27,7 +27,7 @@ import { CreateTenantWhenUserIsCreatedDomainEventHandler } from './event-handler
   ],
   providers: [
     CreateTenantWhenUserIsRegisteredDomainEventHandler,
-    CreateTenantWhenUserIsCreatedDomainEventHandler
+    // CreateTenantWhenUserIsCreatedDomainEventHandler
   ]
 })
 export class TenantModule {}

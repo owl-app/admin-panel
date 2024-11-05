@@ -19,11 +19,15 @@ export const useTimeStore = defineStore({
       this.loading = true;
 
       try {
+        this.stopInterval();
+
         const { data } = await api.get(`/times/in-progress`);
 
         if (data) {
           this.active = data;
           this.startInterval();
+        } else {
+          this.active = null;
         }
 
       } finally {
@@ -82,11 +86,13 @@ export const useTimeStore = defineStore({
     startInterval() {
       const startTime = DateTime.fromJSDate(new Date(this.active?.timeIntervalStart ||  new Date()));
 
-      this.timer = '00:00:00';
+      this.timer = DateTime.now()
+        .diff(startTime, ["hours", "minutes", "seconds"])
+        .toFormat('hh:mm:ss');
 
       this.intervalTimer = setInterval(() => {
         const now = DateTime.now();
-    
+
         this.timer = now
           .diff(startTime, ["hours", "minutes", "seconds"])
           .toFormat('hh:mm:ss');

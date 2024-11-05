@@ -1,7 +1,8 @@
 import { DataSource, DataSourceOptions, ObjectLiteral } from 'typeorm';
 import { DynamicModule, Module } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { Archivable, Role, TenantAware } from '@owl-app/lib-contracts';
+import { Archivable, Role, TenantAware, UserAware } from '@owl-app/lib-contracts';
 import { RegistryServiceModule } from '@owl-app/registry-nestjs';
 
 import { AppTypeOrmOpts } from './types';
@@ -14,11 +15,12 @@ import {
 } from '../registry/constants';
 import { TenantRelationFilter } from './filters/tenant-relation.filter';
 import { FilterQuery } from '../registry/interfaces/filter-query';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TenantRelationSetter } from './setters/tenant-relation.setter';
 import { EntitySetter } from '../registry/interfaces/entity-setter';
 import { RolesFilter } from './filters/roles.filter';
 import { NonArchivedFilter } from './filters/non-archived.filter';
+import { OwnerRelationSetter } from './setters/owner-relation.setter';
+import { OwnerRelationFilter } from './filters/owner-relation.filter';
 
 @Module({})
 export class AppTypeOrmModule {
@@ -46,12 +48,14 @@ export class AppTypeOrmModule {
             tenant: TenantRelationFilter<TenantAware>,
             roles: RolesFilter<Role>,
             archived: NonArchivedFilter<Archivable>,
+            user: OwnerRelationFilter<UserAware>,
           },
         }),
         RegistryServiceModule.forFeature<EntitySetter<ObjectLiteral>>({
           name: SETTER_REGISTRY_TENANT,
           services: {
             tenant: TenantRelationSetter<TenantAware>,
+            user: OwnerRelationSetter<UserAware>,
           },
         }),
         EventEmitter2,

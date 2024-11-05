@@ -9,6 +9,8 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 
 import { AvalilableCollections, TimeActions } from '@owl-app/lib-contracts';
 import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
+
+import {RequestContextService } from '@owl-app/lib-api-core/context/app-request-context';
 import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service';
 
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
@@ -39,12 +41,15 @@ export class InProgressController {
   async inProgress(): Promise<TimeResponse|null> {
     const time = await this.queryService.query({
       filter: { 
-        timeIntervalEnd: { is: null }
+        timeIntervalEnd: { is: null },
+        user: { id: { eq: RequestContextService.getCurrentUserId() } }
       },
-      relations: [{
-        name: 'tags',
-        query: {},
-      }],
+      relations: [
+        {
+          name: 'tags',
+          query: {},
+        },
+      ],
     });
 
     if (time) {

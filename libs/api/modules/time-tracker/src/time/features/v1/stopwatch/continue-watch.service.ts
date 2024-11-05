@@ -3,6 +3,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 import { TypeOrmQueryService } from '@owl-app/nestjs-query-typeorm';
 
+import { RequestContextService } from '@owl-app/lib-api-core/context/app-request-context';
 import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service';
 import { TransactionalRepository } from '@owl-app/lib-api-core/database/repository/transactional.repository';
 
@@ -33,7 +34,10 @@ export class ContinueWatchHandler implements ICommandHandler<ContinueWatch> {
     const createTime = await repository.transaction(async () => {
         try {
           await this.queryService.updateWithRelations(
-            { timeIntervalEnd: { is: null } },
+            { 
+              timeIntervalEnd: { is: null },
+              user: { id: { eq: RequestContextService.getCurrentUserId() } }
+            },
             { timeIntervalEnd: (new Date()).toISOString() },
           );
         } catch (error) { /* empty */ }
