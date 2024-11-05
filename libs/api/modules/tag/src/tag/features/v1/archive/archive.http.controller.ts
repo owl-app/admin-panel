@@ -20,7 +20,7 @@ import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.
 
 import { TagResponse } from '../../../dto/tag.response'
 
-@ApiTags('Tag')
+@ApiTags('Tags')
 @Controller('tags')
 @ApiBearerAuth()
 @Injectable()

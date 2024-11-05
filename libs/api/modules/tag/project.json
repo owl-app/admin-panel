@@ -1,6 +1,6 @@
 {
   "name": "@owl-app/lib-api-module-tag",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api/modules/tag/src",
   "projectType": "library",
   "tags": [],

@@ -1,9 +1,7 @@
 
 import { Module } from '@nestjs/common'
-import { CqrsModule } from '@nestjs/cqrs'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 
-import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
 import { AppNestjsQueryTypeOrmModule } from '@owl-app/lib-api-core/query/module'
 import { AppTypeOrmModule } from '@owl-app/lib-api-core/typeorm/app-typeorm.module'
 import { ArchiveService, DefaultArchiveService } from '@owl-app/lib-api-core/actions/archive/archive.service'
@@ -22,8 +20,6 @@ import { TagEntity } from './domain/entity/tag.entity'
 
 @Module({
   imports: [
-    RbacTypeOrmModule.forFeature({}),
-    CqrsModule,
     AppTypeOrmModule.forFeature({
       entities: [
         {

@@ -3,7 +3,6 @@ import { IsOptional } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
 import {
-  FilterComparisons,
   FilterFieldComparison,
   Filter as FilterQueryService,
 } from '@owl-app/nestjs-query-core';
