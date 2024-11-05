@@ -54,11 +54,16 @@
           <template #content="{ value }">
             <va-badge
               v-for="v in value"
-              class="mr-0.5 mt-0.5"
+              :class="`mr-0.5 mt-0.5 ${v.archived ? 'line-through' : ''}`"
               :color="v.color ?? 'primary'"
               :text="v.name"
               :key="v"
             />
+          </template>
+          <template #option-content="{ option, index }">
+              <span :class="`${option.archived ? 'line-through' : ''}`">
+                {{ option.name }}
+              </span>
           </template>
           <template #appendInner >
             <va-icon name="sell" class="mr-1 material-symbols-outlined" v-if="data.ref.tags.length === 0" />
