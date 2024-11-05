@@ -6,6 +6,7 @@ import { RequestContextModule } from '@owl-app/request-context-nestjs'
 import { RbacModule } from '@owl-app/lib-api-module-rbac/rbac.module'
 import { TimeTrackerModule } from '@owl-app/lib-api-module-time-tracker/time-tracker.module'
 import { TagModule } from '@owl-app/lib-api-module-tag/tag.module'
+import { ProjectModule  } from '@owl-app/lib-api-module-project/project.module'
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { TagModule } from '@owl-app/lib-api-module-tag/tag.module'
     TimeTrackerModule,
     RequestContextModule,
     TagModule,
+    ProjectModule,
   ],
   exports: [
     // RbacModule

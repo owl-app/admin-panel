@@ -10,6 +10,9 @@
     "paths": {
       "@owl-app/lib-api-core/*": ["libs/api/core/src/*"],
       "@owl-app/lib-api-module-client/*": ["libs/api/modules/client/src/*"],
+      "@owl-app/lib-api-module-project/*": [
+        "libs/api/modules/project/src/*"
+      ],
       "@owl-app/lib-api-module-rbac/*": ["libs/api/modules/rbac/src/*"],
       "@owl-app/lib-api-module-tag/*": ["libs/api/modules/tag/src/*"],
       "@owl-app/lib-api-module-time-tracker/*": [

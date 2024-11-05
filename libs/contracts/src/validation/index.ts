@@ -4,5 +4,6 @@ export * from './client';
 export * from './time';
 export * from './login';
 export * from './tag';
+export * from './project';
 export * from './user';
 export * from './archive';

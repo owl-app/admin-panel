@@ -5,6 +5,7 @@ export enum AvalilableCollections {
   PERMISSION = 'Permission',
   TIME = 'Time',
   TAG = 'Tag',
+  PROJECT = 'Project',
 }
 
 export enum CommonActions {
@@ -28,6 +29,10 @@ export enum UserActions {
 }
 
 export enum TagActions {
+  AVAILABLE = 'AVAILABLE',
+}
+
+export enum ProjectActions {
   AVAILABLE = 'AVAILABLE',
 }
 
