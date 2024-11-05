@@ -1,6 +1,7 @@
 
-import { DeepPartial, AssemblerQueryService, UpdateOneOptions, Assembler, Filter, WithDeleted } from '@owl-app/nestjs-query-core';
+import { DeepPartial, AssemblerQueryService, UpdateOneOptions, Assembler, Filter, WithDeleted, Query } from '@owl-app/nestjs-query-core';
 import { AppQueryService } from './app-query.service';
+import { QueryOptions } from '../interfaces/query-options';
 
 export class AppAssemblerQueryService<
 DTO,
@@ -18,14 +19,23 @@ UE = CE
     super(assembler, queryService);
   }
 
+  query(
+    query: Query<DTO>,
+    opts?: QueryOptions
+  ): Promise<DTO[]> {
+    return this.assembler.convertAsyncToDTOs(
+      this.queryService.query(this.assembler.convertQuery(query), opts)
+    );
+  }
+
   async createWithRelations(
     item: C,
-    filters?: Filter<DTO>,
-    opts?: WithDeleted,
+    filter?: Filter<DTO>,
+    opts?: QueryOptions,
   ): Promise<DTO> {
     const c = this.queryService.createWithRelations(
       await this.assembler.convertToCreateEntity(item),
-      this.convertToFilter(filters),
+      this.convertToFilter(filter),
       opts,
     );
     return this.assembler.convertAsyncToDTO(c);
@@ -34,12 +44,12 @@ UE = CE
   async updateWithRelations(
     id: number | string | Filter<DTO>,
     update: U,
-    opts?: UpdateOneOptions<DTO>
+    opts?: QueryOptions,
   ): Promise<DTO> {
     const c = this.queryService.updateWithRelations(
       typeof id === 'object' ? this.convertToFilter(id) : id,
       await this.assembler.convertToUpdateEntity(update),
-      this.convertFilterable(opts)
+      opts
     );
 
     return this.assembler.convertAsyncToDTO(c);

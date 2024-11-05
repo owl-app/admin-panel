@@ -6,7 +6,7 @@ import {
   TypeOrmQueryService,
   TypeOrmQueryServiceOpts,
 } from '@owl-app/nestjs-query-typeorm';
-import { DeepPartial, UpdateOneOptions, Filter, WithDeleted, FilterComparisons } from '@owl-app/nestjs-query-core';
+import { DeepPartial, UpdateOneOptions, Filter, WithDeleted, FilterComparisons, Query } from '@owl-app/nestjs-query-core';
 import { convertToSnakeCase } from '@owl-app/utils';
 import { Registry } from '@owl-app/registry';
 
@@ -19,6 +19,7 @@ import { TransactionalRepository } from '../../../database/repository/transactio
 import DomainEventableEntity from '../../../database/entity/domain-eventable.entity';
 import { AppQueryService } from '../../core/services/app-query.service';
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
+import { QueryOptions } from '../../core/interfaces/query-options';
 
 export interface AppTypeOrmQueryServiceOpts<Entity>
   extends TypeOrmQueryServiceOpts<Entity> {
@@ -57,6 +58,19 @@ export class AppTypeOrmQueryService<
       name,
       this.filters as unknown as Registry<FilterQuery<Relation>>
     );
+  }
+
+  public async query(
+    query: Query<Entity>,
+    opts?: QueryOptions
+  ): Promise<Entity[]> {
+    const qb = this.filterQueryBuilder.select(query, opts);
+
+    if (opts?.withDeleted) {
+      qb.withDeleted();
+    }
+
+    return qb.getMany();
   }
 
   async findByFilter(filter: Filter<Entity>, opts?: WithDeleted): Promise<Entity>
@@ -130,7 +144,7 @@ export class AppTypeOrmQueryService<
   public async createWithRelations(
     record: DeepPartial<Entity>,
     filters?: Filter<Entity>,
-    opts?: WithDeleted,
+    opts?: QueryOptions,
   ): Promise<Entity> {
     const entity = this.repo.create({} as Entity);
 
@@ -167,13 +181,13 @@ export class AppTypeOrmQueryService<
   public async updateWithRelations(
     id: number | string | Filter<Entity>,
     update: DeepPartial<Entity>,
-    opts?: UpdateOneOptions<Entity>
+    opts?: QueryOptions
   ): Promise<Entity> {
     this.ensureIdIsNotPresent(update);
     let entity: Entity = null;
 
     if (typeof id === 'object') {
-      entity = await  this.findByFilter(id, opts);
+      entity = (await this.query({ filter: id }, opts))?.[0];
     } else {
       entity = await this.getById(id, opts);
     }
@@ -272,8 +286,8 @@ export class AppTypeOrmQueryService<
     return entity;
   }
 
-  async ensureEntityDoesNotExistByFilter(filter: Filter<Entity>, opts?: WithDeleted): Promise<void> {
-    const entity = await this.filterQueryBuilder.select({ filter }).getOne();
+  async ensureEntityDoesNotExistByFilter(filter: Filter<Entity>, opts?: QueryOptions): Promise<void> {
+    const entity = await this.filterQueryBuilder.select({ filter }, opts).getOne();
 
     if (entity) {
       throw new Error('Entity already exists');

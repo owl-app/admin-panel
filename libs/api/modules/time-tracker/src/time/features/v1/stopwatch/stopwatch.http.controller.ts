@@ -16,7 +16,6 @@ import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 import { ApiErrorValidationResponse } from '@owl-app/lib-api-core/api/api-error-validation.response';
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
 import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service';
-import { RequestContextService } from '@owl-app/lib-api-core/context/app-request-context';
 
 import { TimeEntity } from '../../../../domain/entity/time.entity';
 import { TimeResponse } from '../../../dto/time.response';
@@ -54,10 +53,8 @@ export class StopWathController {
   ): Promise<TimeResponse> {
     const createdTime = await this.queryService.createWithRelations(
       {...watch, timeIntervalStart: (new Date()).toISOString() },
-      { 
-        timeIntervalEnd: { is: null },
-        user: { id: { eq: RequestContextService.getCurrentUserId() } }
-      },
+      { timeIntervalEnd: { is: null } },
+      { forceFilters: ['user'] },
     );
 
     return createdTime;
@@ -102,11 +99,9 @@ export class StopWathController {
     @Body() stop: WatchRequest,
   ): Promise<TimeResponse> {
     const updatedTime = await this.queryService.updateWithRelations(
-      {
-        timeIntervalEnd: { is: null },
-        user: { id: { eq: RequestContextService.getCurrentUserId() } }
-      },
+      { timeIntervalEnd: { is: null } },
       {...stop, ... { timeIntervalEnd: (new Date()).toISOString() }},
+      { forceFilters: ['user'] }
     );
 
     return updatedTime;

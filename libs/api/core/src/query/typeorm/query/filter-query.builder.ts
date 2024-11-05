@@ -4,6 +4,7 @@ import { FilterQueryBuilder as BaseFilterQueryBuilder } from '@owl-app/nestjs-qu
 import { Registry } from '@owl-app/registry';
 
 import { FilterQuery } from '../../../registry/interfaces/filter-query';
+import { ForceFilters } from '../../core/interfaces/force-filters.interface';
 
 export class FilterQueryBuilder<Entity> extends BaseFilterQueryBuilder<Entity> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,15 +15,16 @@ export class FilterQueryBuilder<Entity> extends BaseFilterQueryBuilder<Entity> {
     super(repo);
   }
 
-  public override select(query: Query<Entity>): SelectQueryBuilder<Entity> {
+  select(query: Query<Entity>, opts?: ForceFilters): SelectQueryBuilder<Entity> 
+  {
     const qb = super.select(query);
 
     const filters = this.filters?.all();
 
     if (filters) {
-      Object.entries(filters).forEach((filter) => {
-        if (filter[1].supports(this.repo.metadata)) {
-          filter[1].execute(qb);
+      Object.entries(filters).forEach(([name, filter]) => {
+        if (filter.supports(this.repo.metadata) || opts?.forceFilters?.includes(name)) {
+          filter.execute(qb);
         }
       });
     }
