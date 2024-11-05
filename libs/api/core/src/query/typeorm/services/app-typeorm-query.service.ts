@@ -1,11 +1,12 @@
 import { Repository } from 'typeorm';
+import { NotFoundException } from '@nestjs/common';
 import { cloneDeep, omit } from 'lodash';
 
 import {
   TypeOrmQueryService,
   TypeOrmQueryServiceOpts,
 } from '@owl-app/nestjs-query-typeorm';
-import { DeepPartial, UpdateOneOptions, ModifyRelationOptions } from '@owl-app/nestjs-query-core';
+import { DeepPartial, UpdateOneOptions, Filter, WithDeleted, FilterComparisons } from '@owl-app/nestjs-query-core';
 import { convertToSnakeCase } from '@owl-app/utils';
 import { Registry } from '@owl-app/registry';
 
@@ -17,6 +18,7 @@ import { EntitySetter } from '../../../registry/interfaces/entity-setter';
 import { TransactionalRepository } from '../../../database/repository/transactional.repository';
 import DomainEventableEntity from '../../../database/entity/domain-eventable.entity';
 import { AppQueryService } from '../../core/services/app-query.service';
+import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 
 export interface AppTypeOrmQueryServiceOpts<Entity>
   extends TypeOrmQueryServiceOpts<Entity> {
@@ -57,6 +59,23 @@ export class AppTypeOrmQueryService<
     );
   }
 
+  async findByFilter(filter: Filter<Entity>, opts?: WithDeleted): Promise<Entity>
+  {
+    const qb = this.filterQueryBuilder.select({ filter });
+
+    if (opts?.withDeleted) {
+      qb.withDeleted();
+    }
+
+    const entity = await qb.getOne();
+
+    if (!entity) {
+      throw new NotFoundException('Entity not found');
+    }
+
+    return entity
+  }
+
   public async createOne(
     record: DeepPartial<Entity>
   ): Promise<Entity> {
@@ -79,32 +98,64 @@ export class AppTypeOrmQueryService<
     return this.repo.save(entity);
   }
 
+  public async updateOne(
+    id: number | string,
+    update: DeepPartial<Entity>,
+    opts?: UpdateOneOptions<Entity>
+  ): Promise<Entity> {
+    this.ensureIdIsNotPresent(update);
+
+    this.injectSetters(update);
+
+    const entity = await this.getById(id, opts);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    this.repo.merge(entity, update);
+
+    if (update instanceof DomainEventableEntity) {
+      this.createEvent(this.events.EVENT_UPDATED, entity);
+    }
+
+    if (this.useTransaction) {
+      if (this.repo instanceof TransactionalRepository) {
+        return await this.repo.transaction(async () => this.repo.save(entity));
+      }
+
+      throw new Error('Repository should extend by TransactionalRepository');
+    }
+
+    return this.repo.save(entity);
+  }
+
   public async createWithRelations(
     record: DeepPartial<Entity>,
-    relations: Record<string, (string | number)[]>
+    filters?: Filter<Entity>,
+    opts?: WithDeleted,
   ): Promise<Entity> {
-    const newEntity = this.repo.create({} as Entity);
+    const entity = this.repo.create({} as Entity);
 
-    this.copyRegularColumn(record, newEntity);
-    this.injectSetters(newEntity as DeepPartial<Entity>);
+    this.copyRegularColumn(entity, record);
+    this.injectSetters(entity as DeepPartial<Entity>);
 
-    const entity = await this.ensureEntityDoesNotExist(newEntity);
+    if (filters) {
+      await this.ensureEntityDoesNotExistByFilter(filters, opts);
+    } else {
+      await this.ensureEntityDoesNotExist(entity);
+    }
 
     if (record instanceof DomainEventableEntity) {
       this.createEvent(this.events.EVENT_CREATED, entity);
     }
 
-    const entityWithRelations = await Promise.all(
-      Object.entries(relations).map(async ([name, ids]) =>
-        this.assignRelations(entity, name, ids)
-      )
-    ).then(() => entity);
-
     if (this.useTransaction) {
       if (this.repo instanceof TransactionalRepository) {
-        return await this.repo.transaction(async () =>
-          this.repo.save(entityWithRelations)
-        );
+        return await this.repo.transaction(async () => {
+          await Promise.all(
+            this.repo.metadata.relations.map(async (relation) => this.assingRelations(entity, record, relation))
+          ).then(() => entity)
+
+          return this.repo.save(entity)
+        });
       }
 
       throw new Error('Repository should extend by TransactionalRepository');
@@ -114,65 +165,119 @@ export class AppTypeOrmQueryService<
   }
 
   public async updateWithRelations(
-    id: number | string,
+    id: number | string | Filter<Entity>,
     update: DeepPartial<Entity>,
-    relations: Record<string, (string | number)[]>,
     opts?: UpdateOneOptions<Entity>
   ): Promise<Entity> {
     this.ensureIdIsNotPresent(update);
+    let entity: Entity = null;
 
-    const entity = await this.getById(id, opts);
+    if (typeof id === 'object') {
+      entity = await  this.findByFilter(id, opts);
+    } else {
+      entity = await this.getById(id, opts);
+    }
 
-    this.copyRegularColumn(update, entity);
+    this.copyRegularColumn(entity, update);
 
     if (update instanceof DomainEventableEntity) {
       this.createEvent(this.events.EVENT_UPDATED, entity);
     }
 
-    const entityWithRelations = await Promise.all(
-      Object.entries(relations).map(async ([name, ids]) =>
-        this.assignRelations(entity, name, ids)
-      )
-    ).then(() => entity);
+    if (this.useTransaction) {
+      if (this.repo instanceof TransactionalRepository) {
+        return await this.repo.transaction(async () => {
+          await Promise.all(
+            this.repo.metadata.relations.map(async (relation) => this.assingRelations(entity, update, relation))
+          ).then(() => entity)
 
-    return this.repo.save(entityWithRelations);
+          return this.repo.save(entity)
+        });
+      }
+
+      throw new Error('Repository should extend by TransactionalRepository');
+    }
+
+    return this.repo.save(entity);
   }
 
-  public async assignRelations<Relation>(
+  async assingRelations<Relation>(
     entity: Entity,
-    relationName: string,
-    relationIds: (string | number)[],
-    opts?: ModifyRelationOptions<Entity, Relation>
+    update: DeepPartial<Entity>,
+    relation: RelationMetadata
   ): Promise<Entity> {
-    const relationMetadata = this.getRelationMeta(relationName);
+    const entityRelatedValue = relation.getEntityValue(entity)
+    const objectRelatedValue = relation.getEntityValue(update);
 
-    if (relationMetadata.inverseEntityMetadata.hasMultiplePrimaryKeys) {
-      throw new Error(`App query service not supported multiple primary keys`);
-    }
+    if (objectRelatedValue === undefined) return;
 
-    const relationPrimaryKeyName = relationMetadata.inverseEntityMetadata.primaryColumns[0].propertyName;
-    const existingRelations = await this.createTypeormRelationQueryBuilder(
+    const objectRelatedArrayValue = Array.from(objectRelatedValue);
+    const existingRelations: Relation[] = entityRelatedValue ?? await this.createTypeormRelationQueryBuilder(
       entity  ,
-      relationName,
+      relation.propertyName,
     ).loadMany();
+    const relationQueryBuilder =
+      this.getRelationQueryBuilder(relation.propertyName).filterQueryBuilder;
 
-    const newRelations = await this.getRelations(
-      relationName,
-      [...relationIds].filter((id) => !existingRelations.find((r) => r[relationPrimaryKeyName as keyof Relation] === id)),
-      opts?.relationFilter
-    );
+    
+    let objectRelatedNewRelations = []
+    const objectRelatedExisting: Relation[] = []
 
-    if (existingRelations) {
-      existingRelations.forEach((r, key) => {
-        if (![...relationIds].includes(r[relationPrimaryKeyName as keyof Relation] as string)) {
-          delete existingRelations[key];
+    objectRelatedNewRelations = objectRelatedArrayValue
+      .filter((objectRelatedValueItem) => 
+        !existingRelations.find(entityRelatedValueItem => relation.inverseEntityMetadata.compareEntities(
+          objectRelatedValueItem,
+            entityRelatedValueItem,
+        ))
+      )
+
+    existingRelations.map((objectRelatedValueItem) => {
+      const objectRelatedValueEntity = (
+        objectRelatedArrayValue
+      ).find((entityRelatedValueItem) => {
+          return relation.inverseEntityMetadata.compareEntities(
+            objectRelatedValueItem,
+              entityRelatedValueItem,
+          )
+      })
+
+      if(objectRelatedValueEntity) {
+        objectRelatedExisting.push(objectRelatedValueItem)
+      } 
+    })
+
+    let objectRelatedNewRelationValues: unknown[] = []
+
+    if (objectRelatedNewRelations.length) {
+      const newRelationsFilter: Filter<Entity>[] = []
+
+      objectRelatedNewRelations.forEach((objectRelatedValueItem) => {
+        const inverseEntityMetadata = relation.inverseEntityMetadata.findInheritanceMetadata(
+          objectRelatedValueItem,
+        )
+        const idMap = inverseEntityMetadata.getEntityIdMap(objectRelatedValueItem);
+
+        for (const [key, value] of Object.entries(idMap)) {
+          newRelationsFilter.push({ [key]: { eq: value } } as FilterComparisons<Entity>)
         }
       });
+
+      objectRelatedNewRelationValues = await relationQueryBuilder
+        .select({ filter: {or : newRelationsFilter }})
+        .getMany();
     }
 
-    relationMetadata.setEntityValue(entity, [...existingRelations, ...newRelations]);
+    relation.setEntityValue(entity, objectRelatedNewRelationValues.concat(objectRelatedExisting));
 
     return entity;
+  }
+
+  async ensureEntityDoesNotExistByFilter(filter: Filter<Entity>, opts?: WithDeleted): Promise<void> {
+    const entity = await this.filterQueryBuilder.select({ filter }).getOne();
+
+    if (entity) {
+      throw new Error('Entity already exists');
+    }
   }
 
   private injectSetters(record: DeepPartial<Entity>): void {
@@ -197,7 +302,7 @@ export class AppTypeOrmQueryService<
     return event;
   }
 
-  private copyRegularColumn(record: DeepPartial<Entity>, entity: Entity ): void {
+  private copyRegularColumn(entity: Entity, record: DeepPartial<Entity> ): void {
     this.repo.metadata.nonVirtualColumns.forEach((column) => {
       const objectColumnValue = column.getEntityValue(record)
       if (objectColumnValue !== undefined)

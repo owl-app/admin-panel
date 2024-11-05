@@ -11,24 +11,27 @@ import { CommandBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AvalilableCollections, TimeActions } from '@owl-app/lib-contracts';
+import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 
 import { ApiErrorValidationResponse } from '@owl-app/lib-api-core/api/api-error-validation.response';
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
-import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response';
+import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service';
 
+import { TimeEntity } from '../../../../domain/entity/time.entity';
 import { TimeResponse } from '../../../dto/time.response';
+import { TimeAssembler } from '../../../assembler/time.assembler';
 import { WatchRequest } from './dto/watch.request';
-import { Watch } from './watch.service';
 import { ContinueWatch } from './continue-watch.service';
-import { Stop } from './stop.service';
-
 
 @ApiTags('Time Tracker Manage')
 @Controller('times')
 @ApiBearerAuth()
 @ApiResponse({ status: 500, description: 'Internal error' })
 export class StopWathController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    @InjectAssemblerQueryService(TimeAssembler)
+    readonly queryService: AppAssemblerQueryService<TimeResponse, TimeEntity>,
+    private readonly commandBus: CommandBus) {}
 
   @ApiOperation({ summary: 'Start watching' })
   @HttpCode(HttpStatus.OK)
@@ -48,9 +51,12 @@ export class StopWathController {
   async watch(
     @Body() watch: WatchRequest,
   ): Promise<TimeResponse> {
-    const result = await this.commandBus.execute<TimeResponse>(new Watch(watch));
+    const createdTime = await this.queryService.createWithRelations(
+      {...watch, timeIntervalStart: (new Date()).toISOString() },
+      { timeIntervalEnd: { is: null } },
+    );
 
-    return result;
+    return createdTime;
   }
 
   @ApiOperation({ summary: 'Continue watching' })
@@ -91,8 +97,11 @@ export class StopWathController {
   async stop(
     @Body() stop: WatchRequest,
   ): Promise<TimeResponse> {
-    const result = await this.commandBus.execute<TimeResponse>(new Stop(stop));
+    const updatedTime = await this.queryService.updateWithRelations(
+      { timeIntervalEnd: { is: null } },
+      {...stop, ... { timeIntervalEnd: (new Date()).toISOString() }},
+    );
 
-    return result;
+    return updatedTime;
   }
 }

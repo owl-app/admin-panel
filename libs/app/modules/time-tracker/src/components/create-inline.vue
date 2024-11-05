@@ -200,7 +200,7 @@ const timeStore = useTimeStore();
 
 let hasChangedScope = false;
 const now = DateTime.now().set({ second: 0, millisecond: 0.00 });
-const defaultValue: TimeFormData = parseDefaultValue(props.defaultValue);
+const defaultValue: TimeFormData = parseDefaultValue(!props.isManualOnly ? timeStore.active : props.defaultValue);
 
 const timerForm = ref<any>(null)
 const inputTimeSum = ref();

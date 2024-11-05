@@ -1,12 +1,14 @@
-import { IsNull } from 'typeorm';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { InjectRepository } from '@owl-app/lib-api-core/typeorm/common/typeorm.decorators';
-import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository';
+import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
+import { TypeOrmQueryService } from '@owl-app/nestjs-query-typeorm';
+
+import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service';
+import { TransactionalRepository } from '@owl-app/lib-api-core/database/repository/transactional.repository';
 
 import { TimeResponse } from '../../../dto/time.response';
 import { TimeEntity } from '../../../../domain/entity/time.entity';
-import { mapperTime } from '../../../mapping';
+import { TimeAssembler } from '../../../assembler/time.assembler';
 
 export class ContinueWatch {
 
@@ -20,35 +22,38 @@ export class ContinueWatch {
 @CommandHandler(ContinueWatch)
 export class ContinueWatchHandler implements ICommandHandler<ContinueWatch> {
   constructor(
-    @InjectRepository(TimeEntity)
-    private readonly timeRepository: InjectableRepository<TimeEntity>
+    @InjectAssemblerQueryService(TimeAssembler)
+    readonly queryService: AppAssemblerQueryService<TimeResponse, TimeEntity>,
   ) { }
 
   async execute(command: ContinueWatch): Promise<TimeResponse> {
-    const createTime = await this.timeRepository.transaction(async () => {
-      const existingTime = await this.timeRepository.findOne({
-        where: { 
-          timeIntervalEnd: IsNull()
-        }
-      });
+    const repository = (this.queryService.queryService as unknown as TypeOrmQueryService<TimeEntity>)
+      .repo as TransactionalRepository<TimeEntity>;
 
-      if (existingTime) {
-        existingTime.timeIntervalEnd = new Date();
-        await this.timeRepository.save(existingTime);
-      }
+    const createTime = await repository.transaction(async () => {
+        try {
+          await this.queryService.updateWithRelations(
+            { timeIntervalEnd: { is: null } },
+            { timeIntervalEnd: (new Date()).toISOString() },
+          );
+        } catch (error) { /* empty */ }
 
-      const copyTime = await this.timeRepository.findOne( { where: { id: command.id }, relations: ['tags'] });
+        const copyTime = await this.queryService.getById(command.id, {
+          relations: [{
+            name: 'tags',
+            query: {},
+          }],
+        })
 
-      const newTime = new TimeEntity();
-      newTime.description = copyTime.description;
-      newTime.timeIntervalStart = new Date();
-      newTime.tags = copyTime.tags;
-  
-      const createdTime = await this.timeRepository.save(newTime);
-  
-      return createdTime;
-    })
+        const createdTime = this.queryService.createWithRelations({
+          description: copyTime.description,
+          timeIntervalStart: new Date().toISOString(),
+          tags: await copyTime.tags,
+        })
 
-    return mapperTime.map<TimeEntity, TimeResponse>(createTime, new TimeResponse());
+        return createdTime;
+      })
+
+    return createTime;
   }
 }

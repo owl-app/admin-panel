@@ -24,6 +24,10 @@ export class MapperTime extends TypeMapper {
         (src) => src.timeIntervalStart,
         (dest) => dest.timeIntervalStart
       )
+      .map(
+        (src) => src.tags,
+        (dest) => dest.tags
+      )
   }
 }
 

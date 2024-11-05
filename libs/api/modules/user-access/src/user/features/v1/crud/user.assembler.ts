@@ -39,6 +39,7 @@ export class UserAssembler extends ClassTransformerAssembler<
     model.lastName = dto.lastName;
     model.email = dto.email;
     model.phoneNumber = dto.phoneNumber;
+    model.roles = [dto.role];
 
     return model;
   }
@@ -54,8 +55,32 @@ export class UserAssembler extends ClassTransformerAssembler<
 
   convertToDTO(user: UserEntity): UserDto {
     const dto = new UserDto();
-    dto.role = user.roles.pop();
+    dto.role = user.roles?.pop();
 
     return mapper.map<UserEntity, UserDto>(user, dto);
+  }
+
+  async convertToUpdateEntity(
+    dto: UserDto
+  ): Promise<UserEntity> {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { password_bcrypt_salt_rounds } =
+      this.configService.get<IConfigApp>(APP_CONFIG_NAME);
+
+    const model = new UserEntity();
+    model.firstName = dto.firstName;
+    model.lastName = dto.lastName;
+    model.email = dto.email;
+    model.phoneNumber = dto.phoneNumber;
+    model.roles = [dto.role];
+
+    if (dto.password) {
+      model.passwordHash = await bcrypt.hash(
+        dto.password,
+        password_bcrypt_salt_rounds
+      );
+    }
+
+    return model;
   }
 }

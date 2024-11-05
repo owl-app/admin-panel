@@ -8,14 +8,14 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AvalilableCollections, TimeActions } from '@owl-app/lib-contracts';
+import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
+import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service';
 
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
-import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository';
-import { InjectRepository } from '@owl-app/lib-api-core/typeorm/common/typeorm.decorators';
 
+import { TimeAssembler } from '../../../assembler/time.assembler';
 import { TimeResponse } from '../../../dto/time.response';
 import { TimeEntity } from '../../../../domain/entity/time.entity';
-import { mapperTime } from '../../../mapping';
 
 @ApiTags('Time Tracker Manage')
 @Controller('times')
@@ -23,8 +23,8 @@ import { mapperTime } from '../../../mapping';
 @ApiResponse({ status: 500, description: 'Internal error' })
 export class InProgressController {
   constructor(
-    @InjectRepository(TimeEntity)
-    private readonly timeRepository: InjectableRepository<TimeEntity>
+    @InjectAssemblerQueryService(TimeAssembler)
+    readonly queryService: AppAssemblerQueryService<TimeResponse, TimeEntity>,
   ) { }
 
   @ApiOperation({ description: 'In progress' })
@@ -37,14 +37,18 @@ export class InProgressController {
   @Get('in-progress')
   @RoutePermissions(AvalilableCollections.TIME, TimeActions.IN_PROGRESS)
   async inProgress(): Promise<TimeResponse|null> {
-    const time = await this.timeRepository.findOne({
-      where: { 
-        timeIntervalEnd: IsNull()
-      }
+    const time = await this.queryService.query({
+      filter: { 
+        timeIntervalEnd: { is: null }
+      },
+      relations: [{
+        name: 'tags',
+        query: {},
+      }],
     });
 
     if (time) {
-      return mapperTime.map<TimeEntity, TimeResponse>(time, new TimeResponse());
+      return time.shift();
     }
 
     return null;

@@ -39,14 +39,13 @@ import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/servi
 
 import { TimeEntity } from '../../../../domain/entity/time.entity';
 import { TimeResponse } from '../../../dto/time.response';
-
+import { TimeAssembler } from '../../../assembler/time.assembler';
 import {
   CreateTimeRequest,
   UpdateTimeRequest,
   FilterTimeRequest,
   TimePaginatedResponse,
 } from './dto';
-import { TimeAssembler } from '../../../assembler/time.assembler';
 
 @ApiTags('Time Tracker Manage')
 @Controller('times')
@@ -97,9 +96,6 @@ export class TimeCrudController {
   ) {
     const createdTime = await this.service.createWithRelations(
       createTimeRequest,
-      {
-        tags: createTimeRequest.tags.map((tag) => tag.id),
-      }
     );
 
     return createdTime;
@@ -130,9 +126,6 @@ export class TimeCrudController {
     const updatedTime = await this.service.updateWithRelations(
       id,
       updateTimeRequest,
-      {
-        tags: updateTimeRequest.tags.map((tag) => tag.id),
-      }
     );
 
     return updatedTime;

@@ -1,8 +1,7 @@
 
-import { DeepPartial, AssemblerQueryService, UpdateOneOptions, ModifyRelationOptions, Assembler } from '@owl-app/nestjs-query-core';
+import { DeepPartial, AssemblerQueryService, UpdateOneOptions, Assembler, Filter, WithDeleted } from '@owl-app/nestjs-query-core';
 import { AppQueryService } from './app-query.service';
 
-// eslint-disable-next-line import/prefer-default-export
 export class AppAssemblerQueryService<
 DTO,
 Entity,
@@ -21,44 +20,32 @@ UE = CE
 
   async createWithRelations(
     item: C,
-    relations: Record<string, (string | number)[]>
+    filters?: Filter<DTO>,
+    opts?: WithDeleted,
   ): Promise<DTO> {
-    const c = await this.queryService.createWithRelations(
+    const c = this.queryService.createWithRelations(
       await this.assembler.convertToCreateEntity(item),
-      relations
+      this.convertToFilter(filters),
+      opts,
     );
-    return this.assembler.convertToDTO(c);
+    return this.assembler.convertAsyncToDTO(c);
   }
 
   async updateWithRelations(
-    id: number | string,
+    id: number | string | Filter<DTO>,
     update: U,
-    relations: Record<string, (string | number)[]>,
     opts?: UpdateOneOptions<DTO>
   ): Promise<DTO> {
-    const c = await this.queryService.updateWithRelations(
-      id,
+    const c = this.queryService.updateWithRelations(
+      typeof id === 'object' ? this.convertToFilter(id) : id,
       await this.assembler.convertToUpdateEntity(update),
-      relations,
       this.convertFilterable(opts)
     );
 
-    return this.assembler.convertToDTO(c);
+    return this.assembler.convertAsyncToDTO(c);
   }
 
-  assignRelations<Relation>(
-    entity: DTO,
-    id: string | number,
-    relationIds: (string | number)[],
-    opts?: ModifyRelationOptions<DTO, Relation>
-  ): Promise<DTO> {
-    return this.assembler.convertAsyncToDTO(
-      this.queryService.assignRelations(
-        this.assembler.convertToEntity(entity),
-        id,
-        relationIds,
-        this.convertModifyRelationsOptions(opts)
-      )
-    );
+  convertToFilter(query: Filter<DTO>): Filter<Entity> {
+    return query as unknown as Filter<Entity>;
   }
 }

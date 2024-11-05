@@ -40,4 +40,17 @@ export class TimeAssembler extends ClassTransformerAssembler<
 
     return dto;
   }
+
+  async convertAsyncToDTO(entity: Promise<TimeEntity>): Promise<TimeResponse> {
+    const time = await entity;
+
+    return this.customConvertToDTO(time);
+  }
+
+  async convertAsyncToDTOs(entities: Promise<TimeEntity[]>): Promise<TimeResponse[]>
+  {
+    const items = await entities;
+
+    return this.customConvertAsyncToDTOs(items);
+  }
 }

@@ -53,12 +53,11 @@ export const useTimeStore = defineStore({
 
     async continueTimer(id: string) {
       try {
-        this.startInterval();
-
         const { data }  = await api.post(`/times/stopwatch/${id}`);
 
         this.active = data;
 
+        this.startInterval();
       } catch (error: any) {
         throw error.response?.data?.message ?? error.message;
       }

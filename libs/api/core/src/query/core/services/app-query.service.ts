@@ -1,4 +1,4 @@
-import { DeepPartial, QueryService, UpdateOneOptions, ModifyRelationOptions } from '@owl-app/nestjs-query-core';
+import { DeepPartial, QueryService, UpdateOneOptions, Filter, WithDeleted } from '@owl-app/nestjs-query-core';
 
 /**
  * Base interface for all QueryServices.
@@ -9,20 +9,14 @@ export interface AppQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>
 
     createWithRelations(
       item: C,
-      relations: Record<string, (string | number)[]>
+      filters?: Filter<DTO>,
+      opts?: WithDeleted,
     ): Promise<DTO>;
   
     updateWithRelations(
-      id: number | string,
+      id: number | string | Filter<DTO>,
       update: U,
-      relations: Record<string, (string | number)[]>,
-      opts?: UpdateOneOptions<DTO>
+      opts?: UpdateOneOptions<DTO>,
     ): Promise<DTO>;
 
-    assignRelations<Relation>(
-      entity: DTO,
-      id: string | number,
-      relationIds: (string | number)[],
-      opts?: ModifyRelationOptions<DTO, Relation>
-    ): Promise<DTO>;
 }

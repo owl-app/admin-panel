@@ -122,9 +122,6 @@ export class UserCrudController {
   ) {
     const createdUser = await this.service.createWithRelations(
       createUserRequest,
-      {
-        roles: [createUserRequest.role.name],
-      }
     );
 
     return createdUser;
@@ -155,9 +152,6 @@ export class UserCrudController {
     const updatedUser = await this.service.updateWithRelations(
       id,
       updateUserRequest,
-      {
-        roles: [updateUserRequest.role.name],
-      }
     );
 
     return updatedUser;
