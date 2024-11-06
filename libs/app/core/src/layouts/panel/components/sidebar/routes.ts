@@ -34,7 +34,7 @@ export default function getRoutes() {
         name: 'time-list',
         displayName: 'time_tracker',
         meta: {
-          icon: 'vuestic-iconset-dashboard',
+          icon: 'schedule',
         },
         hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.TIME),
       },
@@ -46,7 +46,7 @@ export default function getRoutes() {
             name: 'client-list',
             displayName: 'clients',
             meta: {
-              icon: 'sensor_occupied',
+              icon: 'person',
             },
             hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.CLIENT),
           },
@@ -57,6 +57,14 @@ export default function getRoutes() {
               icon: 'sell',
             },
             hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.TAG),
+          },
+          {
+            name: 'project-list',
+            displayName: 'projects',
+            meta: {
+              icon: 'source_notes',
+            },
+            hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.PROJECT),
           },
         ]
       },

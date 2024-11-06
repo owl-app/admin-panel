@@ -1,5 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
 
+import { User } from '@owl-app/lib-contracts';
+
 export interface ModuleConfig {
   id: string;
   name: string;
@@ -9,5 +11,5 @@ export interface ModuleConfig {
     private?: RouteRecordRaw[];
   };
   hidden?: boolean;
-  preRegisterCheck?: () => Promise<boolean> | boolean;
+  preRegisterCheck?: (user: User | null, permissions: string[]) => Promise<boolean> | boolean;
 }

@@ -1,19 +1,19 @@
-
-import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
-import { checkPermission } from '@owl-app/lib-app-core/utils/check-permission'
-
-import ListRoute from './routes/list.vue';
 import { AvalilableCollections, CrudActions, PermissionReferType } from '@owl-app/lib-contracts';
 
+import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
+import { checkPermission } from '@owl-app/lib-app-core/utils/check-permission';
+
+import ListRoute from './routes/list.vue';
+
 export default defineModule({
-  id: 'client',
-  name: '$t:client_module',
-  icon: 'people_alt',
+  id: 'project',
+  name: '$t:project_module',
+  icon: 'source_notes',
   routes: {
     private: [
       {
-        name: 'client-list',
-        path: 'clients',
+        name: 'project-list',
+        path: 'projects',
         component: ListRoute,
         props: (route) => ({
           ssoErrorCode: route.query.error ? route.query.code : null,
@@ -26,6 +26,6 @@ export default defineModule({
     ]
   },
   preRegisterCheck(user, permissions) {
-    return checkPermission(permissions, AvalilableCollections.CLIENT, CrudActions.LIST, PermissionReferType.ROUTE);
+    return checkPermission(permissions, AvalilableCollections.PROJECT, CrudActions.LIST, PermissionReferType.ROUTE);
 	},
 })

@@ -12,6 +12,7 @@ import ClientModule from '@owl-app/lib-app-module-client'
 import RbacModule from '@owl-app/lib-app-module-rbac'
 import TagModule from '@owl-app/lib-app-module-tag'
 import TimeTrackerModule from '@owl-app/lib-app-module-time-tracker'
+import ProjectModule from '@owl-app/lib-app-module-project'
 
 import App from './app.vue';
 import vuesticGlobalConfig from './config/vuestic-ui/global-config';
@@ -37,6 +38,7 @@ async function initApp() {
       RbacModule,
       TimeTrackerModule,
       TagModule,
+      ProjectModule,
     ],
     [],
     {

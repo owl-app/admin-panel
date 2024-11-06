@@ -5,6 +5,7 @@ roles: Roles
 access_control: Access control
 permissions: Permissions
 time_tracker: Time tracker
+projects: Projects
 tags: Tags
 logout: Logout
 select_option: Select an option

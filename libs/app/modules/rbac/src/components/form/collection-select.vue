@@ -25,6 +25,7 @@ const options = [
     AvalilableCollections.PERMISSION,
     AvalilableCollections.TIME,
     AvalilableCollections.TAG,
+    AvalilableCollections.PROJECT,
 ];
 </script>
 

@@ -228,7 +228,7 @@ async function reloadGrid() {
         <div class="wrapper-bottom">
           <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-top py-2">
             <div  v-if="showLimit" >
-              Results per page {{ showLimit }}
+              Results per page
               <VaSelect v-model="limit" class="!w-20" :options="availableLimit" />
             </div>
             <div v-if="totalPages > 1" class="flex">

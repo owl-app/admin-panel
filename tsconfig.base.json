@@ -10,9 +10,7 @@
     "paths": {
       "@owl-app/lib-api-core/*": ["libs/api/core/src/*"],
       "@owl-app/lib-api-module-client/*": ["libs/api/modules/client/src/*"],
-      "@owl-app/lib-api-module-project/*": [
-        "libs/api/modules/project/src/*"
-      ],
+      "@owl-app/lib-api-module-project/*": ["libs/api/modules/project/src/*"],
       "@owl-app/lib-api-module-rbac/*": ["libs/api/modules/rbac/src/*"],
       "@owl-app/lib-api-module-tag/*": ["libs/api/modules/tag/src/*"],
       "@owl-app/lib-api-module-time-tracker/*": [
@@ -25,6 +23,9 @@
       "@owl-app/lib-app-module-auth/*": ["libs/app/modules/auth/src/*"],
       "@owl-app/lib-app-module-client": [
         "libs/app/modules/client/src/index.ts"
+      ],
+      "@owl-app/lib-app-module-project": [
+        "libs/app/modules/project/src/index.ts"
       ],
       "@owl-app/lib-app-module-rbac": ["libs/app/modules/rbac/src/index.ts"],
       "@owl-app/lib-app-module-tag": ["libs/app/modules/tag/src/index.ts"],

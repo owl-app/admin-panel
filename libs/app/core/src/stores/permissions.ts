@@ -1,6 +1,7 @@
 import api from '../services/api';
 import { defineStore } from 'pinia';
 import { AvalilableCollections, PermissionReferType } from '@owl-app/lib-contracts';
+import { checkPermission } from '../utils/check-permission';
 
 export const usePermissionsStore = defineStore({
   id: 'permissionsStore',
@@ -28,9 +29,7 @@ export const usePermissionsStore = defineStore({
       return permission || null;
     },
     hasPermission(collection: AvalilableCollections, action: string, referType: PermissionReferType) {
-      return this.permissions.routes.some(
-        (permission) => permission === `${referType.toUpperCase()}_${collection.toUpperCase()}_${action.toUpperCase()}`
-      );
+      return checkPermission(this.permissions.routes, collection, action, referType);
     },
   },
 });

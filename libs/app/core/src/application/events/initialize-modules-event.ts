@@ -5,6 +5,7 @@ import RouterPass from '../../router/passthrough';
 import { defineRequestEvent } from '../defines/events';
 import { useAppStore } from '../../stores/app';
 import { useUserStore } from '../../stores/user';
+import { usePermissionsStore } from '../../stores/permissions';
 import { RequestEvent } from '../types/lifecycle';
 import { ModuleConfig } from '../types/module';
 import { router } from '../router';
@@ -20,23 +21,21 @@ export function defineModuleRequestEvent(
       event: LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH,
       callback: async (): Promise<void> => {
         const appStore = useAppStore();
+        const userStore = useUserStore();
+        const permissionsStore = usePermissionsStore();
 
         if (!appStore.initializing) return;
 
         registeredModules.value = (
           await Promise.all(
-            modules.filter(async (module) => {
-              const isRegistered = registeredModules.value.find(
-                (registered) => registered.name === module.name
-              );
+            modules.map(async (module) => {
+              if (!module.preRegisterCheck) return module;
 
-              if (module.preRegisterCheck) {
-                const allowed = await module.preRegisterCheck();
+              const allowed = await module.preRegisterCheck(userStore.currentUser, permissionsStore.permissions?.routes ?? []);
 
-                if (allowed && !isRegistered) return module;
-              }
+              if (allowed) return module;
 
-              return !isRegistered;
+              return null;
             })
           )
         ).filter((module): module is ModuleConfig => module !== null);
