@@ -471,16 +471,7 @@ async function startTimer(time?: Time) {
     isManual.value = false;
   } catch (error: any) {
     if (error?.response?.status === 422) {
-      Object.values(error.response?.data?.errors as Record<string, string[]>).forEach((error: string[], index) => {
-        debounce(() => {
-          notify({
-            message: error.join(', '),
-            color: 'danger',
-            position: 'bottom-right',
-            offsetY: 30
-          })
-        }, 10*index)();
-      });
+      timerForm.value.validationServerErrors = error.response?.data?.errors;
     } else {
       notify({
         message: t(`error.timer.${snakeCase((error?.response?.message as string).replace(/\s+/g,"_"))}`),
