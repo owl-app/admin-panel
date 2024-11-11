@@ -6,16 +6,16 @@
     hide-default-actions
   >
     <h3 class="va-h5">
-      {{ item ? 'Edit' : 'Create' }} tag
+      {{ item ? 'Edit' : 'Create' }} project
     </h3>
     <owl-form
       class-form="flex flex-col gap-2"
-      collection="tags"
+      collection="projects"
       :primaryKey="item?.id"
       @saved="ok(); $emit('saved');"
     >
       <template #fields="{ data, validation }">
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-2 gap-4">
           <div>
             <va-input 
               v-model="data.ref.name"
@@ -26,13 +26,13 @@
               :required-mark="true"
             />
           </div>
-          <div class="col-span-2">
-            <va-color-input
-              v-model="data.ref.color"
-              label="Color"
-              name="color"
-              :error="!!validation['color']"
-              :error-messages="validation['color']"
+          <div>
+            <client-select
+              v-model="data.ref.client"
+              label="Client"
+              name="client"
+              :error="!!validation['client']"
+              :error-messages="validation['client']"
               :required-mark="true"
             />
           </div>
@@ -52,6 +52,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue'
+import ClientSelect from '@owl-app/lib-app-core/components/form/select-client.vue'
 
 const model = defineModel<boolean>();
 

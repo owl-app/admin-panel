@@ -65,7 +65,6 @@ const getRowBind = (row: Tag): Record<string, string> => {
           <div class="col-start-1 col-end-3">
             <archived-filter
               :modelValue="filters.archived"
-              clearable
               @update:model-value="(value: string) => changeFilter({ archived: value })"
               @clear="() => removeFilter('archived')"
             />
@@ -121,7 +120,7 @@ const getRowBind = (row: Tag): Record<string, string> => {
 
             <va-menu-item
               @selected="restoreModal?.show(false, tag?.id)"
-              v-if="hasRoutePermission(CommonActions.RESTORE) && tag?.archived"
+              v-if="hasRoutePermission(CommonActions.ARCHIVE) && tag?.archived"
             >
               <va-icon name="restore_page" class="material-symbols-outlined mr-1" /> restore
             </va-menu-item>

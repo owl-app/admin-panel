@@ -1,4 +1,4 @@
-import { FindOptionsWhere, ObjectLiteral } from "typeorm";
+import { FindOptionsWhere } from "typeorm";
 
 import { cloneDeep, omit } from "lodash";
 
@@ -19,14 +19,14 @@ export interface ArchiveService {
 
 export const ArchiveService = Symbol('ArchiveService');
 
-export class DefaultArchiveService<Entity extends BaseEntity & Archivable> implements ArchiveService {
+export class DefaultArchiveService<Entity extends BaseEntity & Archivable, Request extends ArchiveRequest = ArchiveRequest> implements ArchiveService {
   constructor(
     private readonly repository: InjectableRepository<Entity>
   ) { }
 
-  async execute(id: string, requestData: ArchiveRequest): Promise<void> {
+  async execute(id: string, requestData: Request): Promise<void> {
     let entity = null;
-    const where = { id } as FindOptionsWhere<ObjectLiteral>;
+    const where = { id } as FindOptionsWhere<Entity>;
 
     try {
       entity = await this.repository.findOne({ where});
@@ -38,7 +38,7 @@ export class DefaultArchiveService<Entity extends BaseEntity & Archivable> imple
 
     const event = new DomainEvent({ eventName: `${convertToSnakeCase(entity.constructor.name)}_ARCHIVED`});
 
-    Object.assign(event, cloneDeep(omit(entity, ['_domainEvents'])));
+    Object.assign(event, requestData, cloneDeep(omit(entity, ['_domainEvents'])));
     entity.addEvent(event);
 
     await this.repository.save(entity);

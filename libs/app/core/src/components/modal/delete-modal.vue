@@ -6,7 +6,7 @@
     hide-default-actions
     title="Deleting"
   >
-    Are you sure you want to delete ?
+    <strong>Are you sure you want to delete ?</strong>
     <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">
       <va-button :disabled="deleting" preset="secondary" color="secondary" @click="cancel">Cancel</va-button>
       <va-button :loading="deleting" color="danger" @click="onDelete">Delete</va-button>

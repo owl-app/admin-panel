@@ -6,4 +6,10 @@ export const archiveValidationSchema = v.object({
     , false),
 });
 
+export const clientArchiveValidationSchema = v.object({
+  ...archiveValidationSchema.entries,
+  withProjects: v.boolean(),
+});
+
 export type ArchiveRequest = v.InferInput<typeof archiveValidationSchema>;
+export type ClientArchiveRequest = v.InferInput<typeof clientArchiveValidationSchema>;

@@ -10,4 +10,6 @@ export class TagEntity extends BaseEntity implements Tag {
   name: string;
 
   color: string;
+
+  archived: boolean;
 }

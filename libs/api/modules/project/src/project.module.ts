@@ -17,6 +17,7 @@ import { ProjectAssembler } from './project/features/v1/crud/project.assembler'
 import { ListFilterBuilder } from './project/features/v1/crud/list-filter.builder'
 import { ArchiveControllerController } from './project/features/v1/archive/archive.http.controller'
 import { ProjectEntity } from './domain/entity/project.entity'
+import { ArchiveProjectsWhenClientIsArchivedDomainEventHandler } from './project/event-handlers/archive-projects-when-client-is-archived.domain-event-handler'
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { ProjectEntity } from './domain/entity/project.entity'
     ArchiveControllerController,
   ],
   providers: [
+    ArchiveProjectsWhenClientIsArchivedDomainEventHandler,
     {
       provide: ArchiveService,
       useFactory: (repository: InjectableRepository<ProjectEntity>) => new DefaultArchiveService(repository),

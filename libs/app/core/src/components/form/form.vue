@@ -97,6 +97,7 @@ watch(
 watch(
   () => validationServerErrors.value,
   () => {
+    console.log('test')
     if (!isEmpty(validationServerErrors.value)) {
       validationErrors.value = getErrors(validationServerErrors.value, true);
       isValid.value = false;
@@ -198,6 +199,7 @@ function clearServerValidationErrors() {
     Object.keys(validationServerErrors.value).forEach((key) => {
       if (field.name === key && field.isDirty) {
         delete validationErrors.value[key];
+        delete validationServerErrors.value[key];
       }
     })
   })

@@ -1,6 +1,6 @@
 import { EntitySchema } from 'typeorm';
 
-import { PROJECTT_ENTITY, TENANT_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
+import { CLIENT_ENTITY, PROJECTT_ENTITY, TENANT_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
 import { TimestampableSchemaPart } from '@owl-app/lib-api-core/database/entity-schema/timestampable.schemat';
 import { ArchiveableSchemaPart } from '@owl-app/lib-api-core/database/entity-schema/archiveable.schema';
 
@@ -29,6 +29,15 @@ export const ProjectEntitySchema = new EntitySchema<ProjectEntity>({
       // cascade: true,
       joinColumn: {
         name: 'tenant_id',
+      },
+    },
+    client: {
+      type: 'many-to-one',
+      target: CLIENT_ENTITY,
+      cascade: true,
+      onDelete: 'CASCADE',
+      joinColumn: {
+        name: 'client_id',
       },
     },
   },

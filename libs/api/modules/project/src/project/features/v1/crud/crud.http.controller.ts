@@ -83,7 +83,7 @@ export class ProjectCrudController {
   @RoutePermissions(AvalilableCollections.PROJECT, CrudActions.READ)
   findOne(@Param('id') id: string): Promise<ProjectResponse> {
     return this.service.getById(id, {
-      relations: [{ name: 'users', query: {} }],
+      relations: [{ name: 'client', query: {} }],
     });
   }
 

@@ -1,5 +1,5 @@
 export interface Archivable {
-  archived?: boolean;
+  archived: boolean;
 }
 
 export enum ArchiveOptions {

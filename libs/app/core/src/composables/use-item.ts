@@ -19,14 +19,14 @@ export type UsableItem<T extends Item> = {
   item: Ref<T | null>;
   loading: Ref<boolean>;
   error: Ref<any>;
-  getItem: () => Promise<void>;
+  getItem: (params?: Record<string, any>) => Promise<void>;
   isNew: ComputedRef<boolean>;
   saving: Ref<boolean>;
   save: (data: T) => Promise<T>;
   deleting: Ref<boolean>;
   remove: () => Promise<void>;
   archiving: Ref<boolean>;
-  archive: (value: boolean) => Promise<void>;
+  archive: (value: boolean, custom: Record<string, any>) => Promise<void>;
   validationServerErrors: Ref<any>;
 };
 
@@ -72,13 +72,13 @@ export function useItem<T extends Item>(
     validationServerErrors,
   };
 
-  async function getItem() {
+  async function getItem(params?: Record<string, any>) {
     loading.value = true;
     error.value = null;
 
     try {
       await delay(500);
-      const response = await api.get(endpoint.value);
+      const response = await api.get(endpoint.value, { params });
       item.value = response.data;
     } catch (err) {
       error.value = err;
@@ -148,13 +148,13 @@ export function useItem<T extends Item>(
     }
   }
 
-  async function archive(value: boolean) {
+  async function archive(value: boolean, custom: Record<string, any> = {}) {
     archiving.value = true;
     action.value = 'archive';
 
     try {
       await delay(500);
-      await api.patch(endpoint.value, { archived: value });
+      await api.patch(endpoint.value, {...{ archived: value }, ...custom});
 
       item.value = null;
 

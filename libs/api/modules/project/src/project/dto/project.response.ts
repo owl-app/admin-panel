@@ -1,7 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Transform, TransformFnParams } from "class-transformer";
 
-import { type Tenant } from "@owl-app/lib-contracts";
+import type { Client, Tenant } from "@owl-app/lib-contracts";
 
 export class ProjectResponse {
 
@@ -14,6 +14,9 @@ export class ProjectResponse {
 
     @ApiProperty({ type: () => Boolean })
     archived?: boolean;
+
+    @ApiPropertyOptional({ type: () => Object })
+    client?: Client;
 
     @Exclude()
     tenant?: Tenant;

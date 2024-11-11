@@ -6,7 +6,7 @@
       hide-default-actions
       :title="archived ? 'archive' : 'restore'"
     >
-      Are you sure you want to {{ archived ? 'archive' : 'restore'}} ?
+      <strong>Are you sure you want to {{ archived ? 'archive' : 'restore'}} ?</strong>
       <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">
         <va-button :disabled="archiving" preset="secondary" color="secondary" @click="cancel">Cancel</va-button>
         <va-button :loading="archiving" color="danger" @click="onDelete">{{ archived ? 'Archive' : 'Restore'}}</va-button>

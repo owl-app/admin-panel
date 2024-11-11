@@ -10,6 +10,7 @@ import {
   Param,
   HttpCode,
   Injectable,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -49,6 +50,7 @@ import {
   ClientPaginatedResponseDto,
 } from './dto';
 import { ClientAssembler } from './client.assembler';
+import { FindOneQuery } from './dto/find-one.query';
 
 @ApiTags('Client')
 @Controller('clients')
@@ -79,9 +81,13 @@ export class ClientCrudController {
   })
   @Get(':id')
   @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.READ)
-  findOne(@Param('id') id: string): Promise<ClientResponse> {
+  findOne(
+    @Param('id') id: string,
+    @Query(new ValidationPipe({ transform: true }))
+    findOneQuery: FindOneQuery
+  ): Promise<ClientResponse> {
     return this.service.getById(id, {
-      relations: [{ name: 'users', query: {} }],
+      relations: findOneQuery.withProjects ? [{ name: 'projects', query: {} } ] : [],
     });
   }
 

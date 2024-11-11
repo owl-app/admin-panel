@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
-import { DataTableColumnSource, DataTableRowBind } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
 import { AvalilableCollections, Client, CommonActions, CrudActions } from "@owl-app/lib-contracts";
@@ -10,7 +9,7 @@ import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import ArchivedFilter from '@owl-app/lib-app-core/components/grid/components/filters/archived.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
-import ArchiveModal from '@owl-app/lib-app-core/components/modal/archive-modal.vue';
+import ArchiveModal from '../components/archive-modal.vue';
 import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 
 import CreateInline from '../components/create-inline.vue';
@@ -65,7 +64,6 @@ const getRowBind = (row: Client): Record<string, string> => {
           <div class="col-start-1 col-end-3">
             <archived-filter
               :modelValue="filters.archived"
-              clearable
               @update:model-value="(value: string) => changeFilter({ archived: value })"
               @clear="() => removeFilter('archived')"
             />
@@ -117,7 +115,7 @@ const getRowBind = (row: Client): Record<string, string> => {
 
             <va-menu-item
               @selected="restoreModal?.show(false, client?.id)"
-              v-if="hasRoutePermission(CommonActions.RESTORE) && client?.archived"
+              v-if="hasRoutePermission(CommonActions.ARCHIVE) && client?.archived"
             >
               <va-icon name="restore_page" class="material-symbols-outlined mr-1" /> restore
             </va-menu-item>

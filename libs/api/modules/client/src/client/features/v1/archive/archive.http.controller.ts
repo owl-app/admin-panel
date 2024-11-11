@@ -10,15 +10,15 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiAcceptedResponse, ApiBearerAuth } from '@nestjs/swagger'
 
-import { AvalilableCollections, CommonActions, archiveValidationSchema } from '@owl-app/lib-contracts'
+import { AvalilableCollections, CommonActions, clientArchiveValidationSchema } from '@owl-app/lib-contracts'
 
-import ArchiveRequest from '@owl-app/lib-api-core/actions/archive/archive.request';
 import { ArchiveService } from '@owl-app/lib-api-core/actions/archive/archive.service';
 import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe'
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
 
 import { ClientResponse } from '../../../dto/client.response'
+import ClientArchiveRequest from './dto/archive.request';
 
 @ApiTags('Client')
 @Controller('clients')
@@ -49,7 +49,7 @@ export class ArchiveControllerController {
   @RoutePermissions(AvalilableCollections.CLIENT, CommonActions.ARCHIVE)
   async archive(
     @Param('id', UUIDValidationPipe) id: string,
-    @Body(new ValibotValidationPipe(archiveValidationSchema)) archiveClientRequest: ArchiveRequest,
+    @Body(new ValibotValidationPipe(clientArchiveValidationSchema)) archiveClientRequest: ClientArchiveRequest,
   ): Promise<void> {
     await this.archiveService.execute(id, archiveClientRequest);
   }
