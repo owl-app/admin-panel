@@ -12,6 +12,28 @@ export const timeValidationSchema = v.object({
       v.string(),
       v.nonEmpty('Field is required')
     ), ''),
+  project: v.pipe(
+    v.custom((input) => input !== undefined && input !== null, 'Project is required'),
+    v.object({
+      id: v.string(),
+      name: v.string(),
+    }),
+  ),
+  tags: v.array(
+    v.object({
+      id: v.string(),
+      name: v.string(),
+    }))
+});
+
+export const startTimeValidationSchema = v.object({
+  project: v.pipe(
+    v.custom((input) => input !== undefined && input !== null, 'Project is required'),
+    v.object({
+      id: v.string(),
+      name: v.string(),
+    }),
+  ),
   tags: v.array(
     v.object({
       id: v.string(),
@@ -20,3 +42,4 @@ export const timeValidationSchema = v.object({
 });
 
 export type TimeRequest = v.InferInput<typeof timeValidationSchema>;
+export type StartTimeRequest = v.InferInput<typeof startTimeValidationSchema>;

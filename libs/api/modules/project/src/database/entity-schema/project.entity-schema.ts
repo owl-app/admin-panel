@@ -1,6 +1,6 @@
 import { EntitySchema } from 'typeorm';
 
-import { CLIENT_ENTITY, PROJECTT_ENTITY, TENANT_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
+import { CLIENT_ENTITY, PROJECTT_ENTITY, TENANT_ENTITY, TIME_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
 import { TimestampableSchemaPart } from '@owl-app/lib-api-core/database/entity-schema/timestampable.schemat';
 import { ArchiveableSchemaPart } from '@owl-app/lib-api-core/database/entity-schema/archiveable.schema';
 
@@ -39,6 +39,11 @@ export const ProjectEntitySchema = new EntitySchema<ProjectEntity>({
       joinColumn: {
         name: 'client_id',
       },
+    },
+    times: {
+      type: 'one-to-many',
+      target: TIME_ENTITY,
+      inverseSide: 'project'
     },
   },
 });

@@ -10,7 +10,8 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { AvalilableCollections, TimeActions } from '@owl-app/lib-contracts';
+import { AvalilableCollections, startTimeValidationSchema, TimeActions } from '@owl-app/lib-contracts';
+import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
 import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 
 import { ApiErrorValidationResponse } from '@owl-app/lib-api-core/api/api-error-validation.response';
@@ -49,7 +50,7 @@ export class StopWathController {
   @Post('/stopwatch')
   @RoutePermissions(AvalilableCollections.TIME, TimeActions.START_WATCH)
   async watch(
-    @Body() watch: WatchRequest,
+    @Body(new ValibotValidationPipe(startTimeValidationSchema)) watch: WatchRequest
   ): Promise<TimeResponse> {
     const createdTime = await this.queryService.createWithRelations(
       {...watch, timeIntervalStart: (new Date()).toISOString() },

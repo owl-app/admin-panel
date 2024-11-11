@@ -57,7 +57,8 @@ let textDebounce: DebouncedFunc<(...args: any[]) => any>;
 
 defineExpose({
   isFormHasUnsavedChanges,
-  formData
+  formData,
+  validationErrors
 })
 
 watch(
@@ -97,7 +98,6 @@ watch(
 watch(
   () => validationServerErrors.value,
   () => {
-    console.log('test')
     if (!isEmpty(validationServerErrors.value)) {
       validationErrors.value = getErrors(validationServerErrors.value, true);
       isValid.value = false;

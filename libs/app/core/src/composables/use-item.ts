@@ -169,6 +169,7 @@ export function useItem<T extends Item>(
       throw errorResponse;
     } finally {
       archiving.value = false;
+      action.value = '';
     }
   }
 

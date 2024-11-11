@@ -4,7 +4,7 @@ import { DateTime } from 'luxon'
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import type { Time, Tag } from "@owl-app/lib-contracts";
+import type { Time, Tag, Project } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
@@ -24,6 +24,7 @@ const deleteTime = ref<Time>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const timerCreateInline = ref<InstanceType<typeof CreateInline>>();
 const tags = ref<Tag[]>([]);
+const projects = ref<Project[]>([]);
 
 const columns = defineVaDataTableColumns([
   { label: 'Name', key: 'name', sortable: true },
@@ -31,11 +32,18 @@ const columns = defineVaDataTableColumns([
 ])
 
 loadTags();
+loadProjects();
 
 async function loadTags(): Promise<void> {
   const result = await api.get('tags?pageable=0');
 
   tags.value = result.data?.items;
+}
+
+async function loadProjects(): Promise<void> {
+  const result = await api.get('projects?pageable=0');
+
+  projects.value = result.data?.items;
 }
 
 function groupByWeek(items: Time[]) {
@@ -115,6 +123,7 @@ function groupByWeek(items: Time[]) {
       :is-manual="true"
       :is-manual-only="false"
       :tag-options="tags"
+      :project-options="projects"
       @saved="gridRef?.reloadGrid"
     >
       <template #actions="{ save, isManual, startTimer, isTimerStart }">
@@ -152,7 +161,14 @@ function groupByWeek(items: Time[]) {
                   :key="`${time.id}-${time.timeIntervalStart}-${time.timeIntervalEnd}`"
                   :default-value="time"
                   :is-saved-after-change="true"
-                  :tag-options="[...tags, ...time.tags.filter(tag => tag.archived && !tags.find(existing => tag.id === existing.id))]"
+                  :tag-options="[
+                    ...tags,
+                    ...time.tags.filter(tag => tag.archived && !tags.find(existing => tag.id === existing.id))
+                  ]"
+                  :project-options="[
+                    ...projects,
+                    ...time?.projects?.filter(tag => tag.archived && !projects?.find(existing => tag.id === existing.id)) ?? []
+                  ]"
                   @saved="gridRef?.reloadGrid"
                 >
                   <template #actions>

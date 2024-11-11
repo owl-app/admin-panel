@@ -38,6 +38,14 @@ export class TimeAssembler extends ClassTransformerAssembler<
     dto.timeIntervalEnd = entity.timeIntervalEnd as string;
     dto.tags = await entity.tags;
 
+    if (entity.project) {
+      dto.project = { 
+        id: entity.project.id, 
+        name: entity.project.name, 
+        archived: entity.project.archived 
+      };
+    }
+
     return dto;
   }
 

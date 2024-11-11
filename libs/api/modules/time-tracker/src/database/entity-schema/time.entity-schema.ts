@@ -1,6 +1,6 @@
 import { EntitySchema, EntitySchemaColumnOptions } from 'typeorm';
 
-import { TIME_ENTITY, TENANT_ENTITY, USER_ENTITY, TAG_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
+import { TIME_ENTITY, TENANT_ENTITY, USER_ENTITY, TAG_ENTITY, PROJECTT_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
 import { TimestampableSchemaPart } from '@owl-app/lib-api-core/database/entity-schema/timestampable.schemat';
 
 import { TimeEntity } from '../../domain/entity/time.entity';
@@ -46,6 +46,15 @@ export const TimeEntitySchema = new EntitySchema<TimeEntity>({
         name: 'user_id',
       },
       inverseSide: 'times'
+    },
+    project: {
+      type: 'many-to-one',
+      target: PROJECTT_ENTITY,
+      cascade: true,
+      onDelete: 'CASCADE',
+      joinColumn: {
+        name: 'project_id',
+      },
     },
     tags: {
       type: 'many-to-many',

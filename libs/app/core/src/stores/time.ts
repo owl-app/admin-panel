@@ -51,7 +51,8 @@ export const useTimeStore = defineStore({
         this.active = data;
 
       } catch (error: any) {
-        throw error.response?.data?.message ?? error.message;
+        this.stopInterval();
+        throw error
       }
     },
 

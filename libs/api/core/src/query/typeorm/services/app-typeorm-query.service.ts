@@ -225,7 +225,8 @@ export class AppTypeOrmQueryService<
 
     if (objectRelatedValue === undefined) return;
 
-    const objectRelatedArrayValue = Array.from(objectRelatedValue);
+    const objectRelatedArrayValue = Array.isArray(objectRelatedValue) ? objectRelatedValue : [objectRelatedValue];
+
     const existingRelations: Relation[] = entityRelatedValue ?? await this.createTypeormRelationQueryBuilder(
       entity  ,
       relation.propertyName,
@@ -233,13 +234,12 @@ export class AppTypeOrmQueryService<
     const relationQueryBuilder =
       this.getRelationQueryBuilder(relation.propertyName).filterQueryBuilder;
 
-    
     let objectRelatedNewRelations = []
     const objectRelatedExisting: Relation[] = []
 
     objectRelatedNewRelations = objectRelatedArrayValue
       .filter((objectRelatedValueItem) => 
-        !existingRelations.find(entityRelatedValueItem => relation.inverseEntityMetadata.compareEntities(
+        existingRelations.length === 0 || !existingRelations.find(entityRelatedValueItem => relation.inverseEntityMetadata.compareEntities(
           objectRelatedValueItem,
             entityRelatedValueItem,
         ))
@@ -281,7 +281,18 @@ export class AppTypeOrmQueryService<
         .getMany();
     }
 
-    relation.setEntityValue(entity, objectRelatedNewRelationValues.concat(objectRelatedExisting));
+    if (relation.isOneToMany || relation.isManyToMany) {
+      relation.setEntityValue(
+        entity,
+        objectRelatedNewRelationValues.concat(objectRelatedExisting) 
+      );
+    } else {
+      relation.setEntityValue(
+        entity,
+        objectRelatedNewRelationValues.pop()
+      );
+    }
+
 
     return entity;
   }

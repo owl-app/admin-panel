@@ -12,6 +12,7 @@ const api = useApi();
 const { t } = useI18n()
 
 const clients = ref<Client[]>([]);
+const loading = ref(false);
 
 defineProps({
   clearable: {
@@ -28,9 +29,11 @@ defineEmits([
 loadClients();
 
 async function loadClients(): Promise<void> {
+  loading.value = true;
   const result = await api.get('clients?pageable=0');
 
   clients.value = result.data?.items?.map(({ id, name }: { id: string, name: string }) => ({ id, name })) ?? [];
+  loading.value = false;
 }
 </script>
 
@@ -45,5 +48,6 @@ async function loadClients(): Promise<void> {
       :text-by="(option: Client) => option.name"
       :track-by="(option: Client) => option.id"
       @clear="$emit('clear')"
+      :loading="loading"
     />
 </template>

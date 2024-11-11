@@ -38,6 +38,26 @@
           @change="() => { if (isSavedAfterChange) saveAfterChange(data.ref) }"
         />
         <va-select
+          v-model="data.ref.project"
+          name="project"
+          :class="`select-project ${data.ref.project ? 'select-project--active' : 'w-36'}`"
+          highlight-matched-text
+          searchPlaceholderText="Search project"
+          searchable
+          :text-by="(option: Project) => option.name"
+          :track-by="(option: Project) => option.id"
+          :closeOnChange="false"
+          :options="projectOptions"
+          :error="!!validation['project']"
+          @update:modelValue="() => isSavedAfterChange && saveAfterChange(data.ref)"
+        >
+          <template #prependInner>
+            <div class="flex" v-if="!data.ref.project">
+              <va-icon class="material-symbols-outlined mr-2" name="add_circle" /> Project
+            </div>
+          </template>
+        </va-select>
+        <va-select
           v-model="data.ref.tags"
           width="24rem"
           highlight-matched-text
@@ -146,15 +166,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, Ref } from 'vue'
+import { computed, onMounted, ref, Ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { DateTime } from 'luxon'
-import { has, snakeCase } from 'lodash';
+import { debounce, snakeCase } from 'lodash';
 import { useInputMask, createRegexMask } from 'vuestic-ui'
 import { useToast } from 'vuestic-ui/web-components';
 import { useLocalStorage } from '@vueuse/core';
 
-import type { Tag, Time } from '@owl-app/lib-contracts';
+import type { Tag, Time, Project } from '@owl-app/lib-contracts';
 
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
 import { useApi } from '@owl-app/lib-app-core/composables/use-system'
@@ -168,19 +188,21 @@ interface Props {
   isSavedAfterChange?: boolean
   isManualOnly?: boolean,
   tagOptions?: Tag[],
+  projectOptions?: Project[],
 }
 
 export type TimeFormData = {
   description?: string
   timeIntervalStart: Date,
   timeIntervalEnd: Date,
-  date: Date | string,
+  date: Date|string,
   timeSum: string,
+  project: Project|null,
   tags: {
     value?: string,
     text?: string,
     color?: string,
-  }[]
+  }[],
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -224,18 +246,39 @@ let oldData: TimeFormData = {
   date: new Date(defaultValue.date),
   timeSum: defaultValue.timeSum,
   tags: defaultValue.tags,
+  project: defaultValue.project,
 };
 
 useInputMask(createRegexMask(/(\d){2}:(\d){2}:(\d){2}/), inputTimeSum);
 
+onMounted(() => {
+  watch(
+    () => timerForm.value.validationErrors,
+    async (validationErrors: Record<string, string[]>): Promise<void> => {
+      if (Object.keys(validationErrors).length) {
+        Object.values(validationErrors).forEach((error: string[]) => {
+          notify({
+            message: error.join(', '),
+            color: 'danger',
+            position: 'bottom-right',
+            offsetY: 30
+          })
+        });
+      }
+    },
+    { immediate: false },
+  )
+})
+
 function parseDefaultValue(value?: Time): TimeFormData {
-  if(!value) {
+  if (!value) {
     return {
       description: '',
       timeIntervalStart: now.toJSDate(),
       timeIntervalEnd: now.toJSDate(),
       date: now.set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 }).toJSDate(),
       timeSum: '00:00:00',
+      project: null,
       tags: []
     }
   };
@@ -258,6 +301,7 @@ function parseDefaultValue(value?: Time): TimeFormData {
       .set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 })
       .toJSDate(),
     timeSum: timeSum,
+    project: value?.project || null,
     tags: value?.tags || [],
   }
 }
@@ -301,8 +345,6 @@ function changeTime(data: { ref: TimeFormData }) {
   ) {
     const dateFrom = DateTime.fromJSDate(new Date(data.ref.timeIntervalStart));
     let dateTo = DateTime.fromJSDate(new Date(data.ref.timeIntervalEnd));
-
-    console.log(hasChangedScope)
 
     if (hasChangedScope) {
       const currentDateTo = dateTo.set({ hour: dateFrom.hour, minute: dateFrom.minute, second: dateFrom.second });
@@ -375,6 +417,7 @@ function afterSave(savedData: Time, dataForm: Ref<TimeFormData>) {
       .diff(timeIntervalStart, ["hours", "minutes", "seconds"])
       .toFormat('hh:mm:ss'),
     tags: [],
+    project: null
   }
 
   hasChangedScope = false;
@@ -426,13 +469,26 @@ async function startTimer(time?: Time) {
 
     isTimerStart.value = true;
     isManual.value = false;
-  } catch (error) {
-    notify({
-      message: t(`error.timer.${snakeCase((error as string).replace(/\s+/g,"_"))}`),
-      color: 'danger',
-      position: 'bottom-right',
-      offsetY: 30
-    })
+  } catch (error: any) {
+    if (error?.response?.status === 422) {
+      Object.values(error.response?.data?.errors as Record<string, string[]>).forEach((error: string[], index) => {
+        debounce(() => {
+          notify({
+            message: error.join(', '),
+            color: 'danger',
+            position: 'bottom-right',
+            offsetY: 30
+          })
+        }, 10*index)();
+      });
+    } else {
+      notify({
+        message: t(`error.timer.${snakeCase((error?.response?.message as string).replace(/\s+/g,"_"))}`),
+        color: 'danger',
+        position: 'bottom-right',
+        offsetY: 30
+      })
+    }
   }
 }
 
@@ -491,7 +547,7 @@ function setChangedScope(dateFrom: DateTime, dateTo: DateTime, hours: number) {
       }
     }
     .select-tags {
-      .va-input-wrapper{
+      .va-input-wrapper {
         &__text {
           display: none;
         }
@@ -500,7 +556,7 @@ function setChangedScope(dateFrom: DateTime, dateTo: DateTime, hours: number) {
         flex: 0 0 auto !important;
         width: fit-content;
 
-        .va-input-wrapper{
+        .va-input-wrapper {
           &__text {
             display: flex;
           }
@@ -510,6 +566,27 @@ function setChangedScope(dateFrom: DateTime, dateTo: DateTime, hours: number) {
           &__fieldset {
             width: fit-content;
           }
+        }
+      }
+    }
+    .select-project {
+      &--active {
+        flex: 0 0 auto !important;
+        width: fit-content;
+      }
+     
+      .va-input-wrapper {
+        &__field {
+          --va-input-wrapper-items-gap: 0;
+        }
+        &__text {
+          margin-right: 0.5rem;
+        }
+        &__fieldset {
+          width: fit-content;
+        }
+        &__append-inner {
+          margin-left: 0.5rem;
         }
       }
     }
