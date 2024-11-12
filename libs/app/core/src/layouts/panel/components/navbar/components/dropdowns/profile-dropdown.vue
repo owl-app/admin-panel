@@ -73,22 +73,22 @@ withDefaults(
         list: [
           {
             name: 'profile',
-            to: 'dashboard',
+            to: 'time-list',
             icon: 'mso-account_circle',
           },
           {
             name: 'settings',
-            to: 'dashboard',
+            to: 'time-list',
             icon: 'mso-settings',
           },
           {
             name: 'billing',
-            to: 'dashboard',
+            to: 'time-list',
             icon: 'mso-receipt_long',
           },
           {
             name: 'projects',
-            to: 'dashboard',
+            to: 'time-list',
             icon: 'mso-favorite',
           },
         ],
@@ -99,7 +99,7 @@ withDefaults(
         list: [
           {
             name: 'faq',
-            to: 'dashboard',
+            to: 'time-list',
             icon: 'mso-quiz',
           },
           {

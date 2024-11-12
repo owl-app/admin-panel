@@ -2,15 +2,15 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 import type { Project, Tag } from "@owl-app/lib-contracts";
 
-export class WatchRequest {
+export class StopRequest {
 
     @ApiProperty({ type: () => String })
     description: string;
 
-    @ApiPropertyOptional({ type: () => Object })
-    project: Project;
+    @ApiProperty({ type: () => Object })
+    project: Project
 
-    @ApiProperty({ type: () => [String] })
-    tags: Tag[];
+    @ApiPropertyOptional({ type: () => [String] })
+    tags: Tag[]
 
 }

@@ -26,7 +26,7 @@ export const timeValidationSchema = v.object({
     }))
 });
 
-export const startTimeValidationSchema = v.object({
+export const stopTimeValidationSchema = v.object({
   project: v.pipe(
     v.custom((input) => input !== undefined && input !== null, 'Project is required'),
     v.object({
@@ -42,4 +42,4 @@ export const startTimeValidationSchema = v.object({
 });
 
 export type TimeRequest = v.InferInput<typeof timeValidationSchema>;
-export type StartTimeRequest = v.InferInput<typeof startTimeValidationSchema>;
+export type StartTimeRequest = v.InferInput<typeof stopTimeValidationSchema>;

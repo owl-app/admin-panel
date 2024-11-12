@@ -11,7 +11,7 @@
             @click="isSidebarMinimized = !isSidebarMinimized"
           />
         </Transition>
-        <RouterLink to="/dashboard" aria-label="Owl">
+        <RouterLink to="/times" aria-label="Owl">
           <div class="logo-bar">
             <OwlLogo /> OWL
           </div>

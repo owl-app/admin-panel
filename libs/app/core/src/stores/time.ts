@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { debounce } from 'lodash';
 
-import { Time } from '@owl-app/lib-contracts';
+import { Project, Tag, Time } from '@owl-app/lib-contracts';
 
 import api from '../services/api';
 import { defineStore } from 'pinia';
@@ -39,12 +39,13 @@ export const useTimeStore = defineStore({
     async dehydrate() {
       this.$reset();
     },
-    async startTimer(description: string, tags: string[]) {
+    async startTimer(description: string, project: Project, tags: Tag[]) {
       try {
         this.startInterval();
 
         const { data }  = await api.post('/times/stopwatch', {
           description,
+          project,
           tags,
         });
 
@@ -57,31 +58,24 @@ export const useTimeStore = defineStore({
     },
 
     async continueTimer(id: string) {
-      try {
-        const { data }  = await api.post(`/times/stopwatch/${id}`);
+      const { data }  = await api.post(`/times/stopwatch/${id}`);
 
-        this.active = data;
+      this.active = data;
 
-        this.startInterval();
-      } catch (error: any) {
-        throw error.response?.data?.message ?? error.message;
-      }
+      this.startInterval();
     },
 
-    async stopTimer(description: string, tags: string[]) {
-      try {
-        const { data } = await api.put('/times/stopwatch', {
-          description,
-          tags,
-        });
+    async stopTimer(description: string, project: Project, tags: Tag[]) {
+      const { data } = await api.put('/times/stopwatch', {
+        description,
+        project,
+        tags,
+      });
 
-        this.active = null;
-        this.stopInterval();
+      this.active = null;
+      this.stopInterval();
 
-        return data;
-      } catch (error: any) {
-        throw error.response?.data?.message ?? error.message;
-      }
+      return data;
     },
 
     startInterval() {

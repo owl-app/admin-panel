@@ -56,6 +56,14 @@
               <va-icon class="material-symbols-outlined mr-2" name="add_circle" /> Project
             </div>
           </template>
+          <template #content="{ value }">
+            <div class="flex items-center" v-if="data.ref.project">
+              <span class="project-dot"></span>
+              <span flat size="small">
+                {{ value?.name }}
+              </span>
+            </div>
+          </template>
         </va-select>
         <va-select
           v-model="data.ref.tags"
@@ -64,6 +72,7 @@
           searchPlaceholderText="Search tags"
           multiple
           searchable
+          :max-visible-options="4"
           :text-by="(option: Tag) => option.name"
           :track-by="(option: Tag) => option.id"
           :class="`select-tags ${data.ref.tags.length > 0 ? 'select-tags--active' : 'w-12'}`"
@@ -71,18 +80,18 @@
           :options="tagOptions"
           @update:isOpen="(isOpen: boolean) => isSavedAfterChange && !isOpen && saveAfterChange(data.ref)"
         >
-          <template #content="{ value }">
+          <template #content="{ valueArray }">
             <va-badge
-              v-for="v in value"
+              v-for="v in valueArray"
               :class="`mr-0.5 mt-0.5 ${v.archived ? 'line-through' : ''}`"
               :color="v.color ?? 'primary'"
               :text="v.name"
               :key="v"
             />
           </template>
-          <template #option-content="{ option, index }">
-              <span :class="`${option.archived ? 'line-through' : ''}`">
-                {{ option.name }}
+          <template #option-content="{ option }">
+              <span :class="`${(option as Tag)?.archived ? 'line-through' : ''}`">
+                {{ (option as Tag)?.name }}
               </span>
           </template>
           <template #appendInner >
@@ -115,8 +124,8 @@
           class="w-36"
           inputClass="text-center font-bold input-time"
           v-model="data.ref.date"
-          :format="(date: Date) => (DateTime.fromJSDate(new Date(date))).toFormat('dd-MM-yyyy')"
           firstWeekday="Monday"
+          :format="(date: DateInputModelValue) => (DateTime.fromJSDate(new Date(date as string))).toFormat('dd-MM-yyyy')"
           @update:modelValue="(value: string) => changeDate(value, data)"
           v-if="isManual"
         />
@@ -169,7 +178,7 @@
 import { computed, onMounted, ref, Ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { DateTime } from 'luxon'
-import { debounce, snakeCase } from 'lodash';
+import { snakeCase } from 'lodash';
 import { useInputMask, createRegexMask } from 'vuestic-ui'
 import { useToast } from 'vuestic-ui/web-components';
 import { useLocalStorage } from '@vueuse/core';
@@ -179,6 +188,7 @@ import type { Tag, Time, Project } from '@owl-app/lib-contracts';
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
 import { useApi } from '@owl-app/lib-app-core/composables/use-system'
 import { useStores } from '@owl-app/lib-app-core/composables/use-system'
+import { DateInputModelValue } from 'vuestic-ui/dist/types/components/va-date-input/types';
 
 interface Props {
   url: string,
@@ -461,10 +471,9 @@ async function startTimer(time?: Time) {
       }
 
     } else {
-      await timeStore.startTimer(
-        timerForm.value.formData.description,
-        timerForm.value.formData.tags
-      );
+      const { description, project, tags } = timerForm.value.formData;
+
+      await timeStore.startTimer(description, project, tags);
     }
 
     isTimerStart.value = true;
@@ -485,23 +494,29 @@ async function startTimer(time?: Time) {
 
 async function endTimer() {
   try {
-    const { description, tags } = timerForm.value.formData;
+    const { description, project, tags } = timerForm.value.formData;
     const time = await timeStore.stopTimer(
       description,
+      project,
       tags ?? [],
     );
     isTimerStart.value = false;
     timerForm.value.formData.description = '';
+    timerForm.value.formData.project = null;
     timerForm.value.formData.tags = [];
 
     emit('saved', time);
-  } catch (error) {
-    notify({
-      message: t(`error.timer.${snakeCase((error as string).replace(/\s+/g,"_"))}`),
-      color: 'danger',
-      position: 'bottom-right',
-      offsetY: 30
-    })
+  } catch (error: any) {
+    if (error?.response?.status === 422) {
+      timerForm.value.validationServerErrors = error.response?.data?.errors;
+    } else {
+      notify({
+        message: t(`error.timer.${snakeCase((error?.response?.message as string).replace(/\s+/g,"_"))}`),
+        color: 'danger',
+        position: 'bottom-right',
+        offsetY: 30
+      })
+    }
   }
 };
 
@@ -572,6 +587,20 @@ function setChangedScope(dateFrom: DateTime, dateTo: DateTime, hours: number) {
         }
         &__text {
           margin-right: 0.5rem;
+
+          .va-select-content {
+            color:  var(--va-primary);
+
+            .project-dot {
+              display: flex;
+              margin-right: .7143rem;
+              width: .4111rem;
+              height: .4111rem;
+              vertical-align: middle;
+              border-radius: 50%;
+              background-color: var(--va-primary);;
+            }
+          }
         }
         &__fieldset {
           width: fit-content;

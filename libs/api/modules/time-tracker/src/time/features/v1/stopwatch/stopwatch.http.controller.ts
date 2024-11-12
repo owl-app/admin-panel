@@ -10,7 +10,7 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { AvalilableCollections, startTimeValidationSchema, TimeActions } from '@owl-app/lib-contracts';
+import { AvalilableCollections, stopTimeValidationSchema, TimeActions } from '@owl-app/lib-contracts';
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
 import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 
@@ -23,6 +23,7 @@ import { TimeResponse } from '../../../dto/time.response';
 import { TimeAssembler } from '../../../assembler/time.assembler';
 import { WatchRequest } from './dto/watch.request';
 import { ContinueWatch } from './continue-watch.service';
+import { StopRequest } from './dto/stop.request';
 
 @ApiTags('Time Tracker Manage')
 @Controller('times')
@@ -50,7 +51,7 @@ export class StopWathController {
   @Post('/stopwatch')
   @RoutePermissions(AvalilableCollections.TIME, TimeActions.START_WATCH)
   async watch(
-    @Body(new ValibotValidationPipe(startTimeValidationSchema)) watch: WatchRequest
+    @Body() watch: WatchRequest
   ): Promise<TimeResponse> {
     const createdTime = await this.queryService.createWithRelations(
       {...watch, timeIntervalStart: (new Date()).toISOString() },
@@ -97,7 +98,7 @@ export class StopWathController {
   @Put('/stopwatch')
   @RoutePermissions(AvalilableCollections.TIME, TimeActions.STOP_WATCH)
   async stop(
-    @Body() stop: WatchRequest,
+    @Body(new ValibotValidationPipe(stopTimeValidationSchema)) stop: StopRequest
   ): Promise<TimeResponse> {
     const updatedTime = await this.queryService.updateWithRelations(
       { timeIntervalEnd: { is: null } },

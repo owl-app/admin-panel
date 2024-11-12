@@ -23,14 +23,6 @@ export default function getRoutes() {
     },
     routes: [
       {
-        name: 'dashboard',
-        displayName: 'dashboard',
-        meta: {
-          icon: 'vuestic-iconset-dashboard',
-        },
-        hasPermission: true
-      },
-      {
         name: 'time-list',
         displayName: 'time_tracker',
         meta: {

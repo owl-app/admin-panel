@@ -239,9 +239,11 @@ export class AppTypeOrmQueryService<
 
     objectRelatedNewRelations = objectRelatedArrayValue
       .filter((objectRelatedValueItem) => 
-        existingRelations.length === 0 || !existingRelations.find(entityRelatedValueItem => relation.inverseEntityMetadata.compareEntities(
+        objectRelatedValueItem && (existingRelations.length === 0 || !existingRelations.find(
+          entityRelatedValueItem => relation.inverseEntityMetadata.compareEntities(
           objectRelatedValueItem,
             entityRelatedValueItem,
+         )
         ))
       )
 
@@ -289,7 +291,7 @@ export class AppTypeOrmQueryService<
     } else {
       relation.setEntityValue(
         entity,
-        objectRelatedNewRelationValues.pop()
+        objectRelatedNewRelationValues.pop() ?? null
       );
     }
 

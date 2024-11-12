@@ -13,15 +13,9 @@ import PrivateNotFound from '../pages/private-not-found.vue';
 
 import { useAppLifecycleEventRegistry } from './registry';
 import { LIFECYCLE_EVENTS } from './contants';
-import Dashboard from '../pages/dashboard/dashboard.vue';
 
 
 export const defaultRoutes: RouteRecordRaw[] = [
-  {
-    name: 'dashboard',
-    path: '/dashboard',
-    component: Dashboard,
-  },
   {
     name: 'private-404',
     path: '/:_(.+)+',

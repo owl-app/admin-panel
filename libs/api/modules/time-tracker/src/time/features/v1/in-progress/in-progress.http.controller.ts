@@ -1,4 +1,3 @@
-import { IsNull } from 'typeorm';
 import {
   Controller,
   Get,
@@ -46,6 +45,10 @@ export class InProgressController {
         relations: [
           {
             name: 'tags',
+            query: {},
+          },
+          {
+            name: 'project',
             query: {},
           },
         ],

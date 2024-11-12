@@ -77,7 +77,7 @@ const login = async (data: { [x: string]: any; }) => {
   try {
     await userStore.login(data.email, data.password);
 
-    router.push({ path: 'dashboard' });
+    router.push({ path: 'times' });
   } catch (error: any) {
     notify({
       message: error,
