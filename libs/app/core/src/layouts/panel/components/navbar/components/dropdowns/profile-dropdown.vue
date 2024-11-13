@@ -10,11 +10,11 @@
         </VaButton>
       </template>
       <VaDropdownContent
-        class="profile-dropdown__content md:w-60 px-0 py-4 w-full"
+        class="profile-dropdown__content md:w-60 px-0 pt-4 w-full"
         :style="{ '--hover-color': hoverColor }"
       >
         <VaList v-for="group in options" :key="group.name">
-          <header v-if="group.name" class="uppercase text-[var(--va-secondary)] opacity-80 font-bold text-xs px-4">
+          <header v-if="group.name" class="uppercase text-[var(--va-secondary)] opacity-80 font-bold text-xs px-4 mb-1">
             {{ t(`user.${group.name}`) }}
           </header>
           <VaListItem
@@ -26,7 +26,7 @@
             <VaIcon :name="item.icon" class="pr-1" color="secondary" />
             {{ t(`${item.name}`) }}
           </VaListItem>
-          <VaListSeparator v-if="group.separator" class="mx-3 my-2" />
+          <VaListSeparator v-if="group.separator" class="mx-0 my-2" />
         </VaList>
       </VaDropdownContent>
     </VaDropdown>

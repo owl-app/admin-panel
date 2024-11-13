@@ -44,9 +44,9 @@ export class ProfileAssembler extends ClassTransformerAssembler<
     model.lastName = dto.lastName;
     model.phoneNumber = dto.phoneNumber;
 
-    if (dto.password_new) {
+    if (dto.passwordNew) {
       model.passwordHash = await bcrypt.hash(
-        dto.password_new,
+        dto.passwordNew,
         password_bcrypt_salt_rounds
       );
     }

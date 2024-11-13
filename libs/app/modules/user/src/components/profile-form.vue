@@ -4,10 +4,10 @@
       collection="user"
       action="profile"
       :schema="profileUserValidationSchema"
-      @saved="ok(); $emit('saved');"
+      :clearFormAfterSave="false"
+      @saved="$emit('saved');"
   >
     <template #fields="{ data, validation }">
-      {{ validation }}
       <va-input
         v-model="data.ref.firstName"
         label="firstName"
@@ -29,27 +29,39 @@
         :error="!!validation['phoneNumber']"
         :error-messages="validation['phoneNumber']"
       />
-      <va-input 
-        v-model="data.ref.passwordNew"
-        label="Password"
-        name="passwordNew"
-        :error="!!validation['passwordNew']"
-        :error-messages="validation['passwordNew']"
-        :required-mark="true"
+
+      <va-badge
+        text="Change password"
+        color="primary"
+        class="mt-5"
       />
-      <va-input 
-        v-model="data.ref.passwordNewRepeat"
-        label="Password"
-        name="passwordNewRepeat"
-        :error="!!validation['passwordNewRepeat']"
-        :error-messages="validation['passwordNewRepeat']"
-        :required-mark="true"
-      />
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <va-input 
+            v-model="data.ref.passwordNew"
+            label="Password"
+            name="passwordNew"
+            :error="!!validation['passwordNew']"
+            :error-messages="validation['passwordNew']"
+            :required-mark="true"
+          />
+        </div>
+        <div>
+          <va-input 
+            v-model="data.ref.passwordNewRepeat"
+            label="Repeat password"
+            name="passwordNewRepeat"
+            :error="!!validation['passwordNewRepeat']"
+            :error-messages="validation['passwordNewRepeat']"
+            :required-mark="true"
+          />
+        </div>
+      </div>
     </template>
 
     <template #actions="{ save, validate }">
       <div class="flex justify-center flex-col-reverse sm:flex-row mt-4 gap-2">
-          <va-button @click="validate(true) && save()">Save changes</va-button>
+          <va-button @click="validate(true) && save('put')">Save</va-button>
       </div>
     </template>
   </owl-form>

@@ -14,6 +14,8 @@ export type ManualSortData = {
   to: string | number;
 };
 
+export type SaveMethodOptions = 'post' | 'put' | 'patch';
+
 export type UsableItem<T extends Item> = {
   primaryKey: Ref<PrimaryKey | undefined | null>;
   item: Ref<T | null>;
@@ -22,7 +24,7 @@ export type UsableItem<T extends Item> = {
   getItem: (params?: Record<string, any>) => Promise<void>;
   isNew: ComputedRef<boolean>;
   saving: Ref<boolean>;
-  save: (data: T) => Promise<T>;
+  save: (data: T, method?: SaveMethodOptions) => Promise<T>;
   deleting: Ref<boolean>;
   remove: () => Promise<void>;
   archiving: Ref<boolean>;
@@ -92,32 +94,31 @@ export function useItem<T extends Item>(
     }
   }
 
-  async function save(data: T) {
+  async function save(data: T, method?: SaveMethodOptions) {
     saving.value = true;
+    let saveMethod = method;
+
+    if (!method) {
+      saveMethod = isNew.value ? 'post' : 'put';
+    }
 
     try {
       await delay(500);
-      let response;
 
-      if (isNew.value) {
-        response = await api.post(endpoint.value, data);
+      const response = await api.request({
+        url: endpoint.value,
+        data,
+        method: saveMethod
+      });
 
-        notify({
-          message: i18n.global.t('item_create_success', 1),
-          color: 'success',
-          position: 'bottom-right',
-          offsetY: 30
-        })
-      } else {
-        response = await api.put(endpoint.value, data);
-
-        notify({
-          message: i18n.global.t('item_update_success', 1),
-          color: 'success',
-          position: 'bottom-right',
-          offsetY: 30
-        })
-      }
+      notify({
+        message: i18n.global.t(
+          `item_${saveMethod === 'post' ? 'create' : 'update'}_success`
+        , 1),
+        color: 'success',
+        position: 'bottom-right',
+        offsetY: 30
+      })
 
       item.value = response.data;
       validationServerErrors.value = {};
@@ -181,6 +182,8 @@ export function useItem<T extends Item>(
   function saveErrorHandler(error: any) {
     if (error?.response?.data?.errors) {
       validationServerErrors.value = error.response.data.errors
+    } else {
+      throw error;
     }
   }
 }

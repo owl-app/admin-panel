@@ -55,6 +55,12 @@
     &__field {
       padding: 8px 12px;
     }
+
+    &__icon {
+      &--error {
+        display: none;
+      }
+    }
   }
 }
 

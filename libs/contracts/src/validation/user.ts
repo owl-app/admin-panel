@@ -45,22 +45,20 @@ export const profileUserValidationSchema = v.pipe(
       v.nonEmpty('Field is required'),
     ),
     passwordNew: v.pipe(
-      v.string(),
-      v.minLength(8, 'Your password must have 8 characters or more')
+      v.fallback(v.string(), ''),
+      v.check((input) => {
+        if (input === '') {
+          return true;
+        }
+
+        if (input.length < 8) {
+          return false;
+        }
+
+        return true;
+      }, 'Password must be at least 8 characters long'),
     ),
-    passwordNewRepeat: v.string(),
-  }),
-  v.transform((input) => {
-    let data = input;
-    if (input.passwordNew === undefined) {
-      data = { ...input, passwordNew: '' };
-    }
-
-    if (input.passwordNewRepeat === undefined) {
-      data = { ...input, passwordNewRepeat: '' };
-    }
-
-    return data;
+    passwordNewRepeat: v.fallback(v.string(), ''),
   }),
   v.forward(
     v.partialCheck(

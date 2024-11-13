@@ -19,6 +19,8 @@ validation:
   please_select_option: Please select an option
   invalid_email_received: Invalid email received
   project_is_required: Project is required
+  password_must_be_at_least_8_characters_long: Password must be at least 8 characters long
+  the_two_passwords_do_not_match: The two passwords do not match
 item_delete_success: Item deleted successfully
 item_create_success: Item created successfully
 item_update_success: Item updated successfully

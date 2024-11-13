@@ -9,7 +9,7 @@ import { useForm } from 'vuestic-ui'
 import { isEmpty } from '@owl-app/utils';
 
 import type { Item, PrimaryKey } from '../../types/item';
-import { useItem } from '../../composables/use-item';
+import { SaveMethodOptions, useItem } from '../../composables/use-item';
 
 interface Props {
   collection: string,
@@ -139,21 +139,13 @@ function validate(showAllErrors = false): boolean {
   if (result.issues) {
     const flattenResult = v.flatten(result.issues)?.nested ?? {}
 
-    console.log(flattenResult)
-
     validationErrors.value = getErrors(flattenResult, showAllErrors);
     isValid.value = false;
-
-    console.log(validationErrors.value)
-
-    console.log('validate error')
 
     return false;
   } else {
     validationErrors.value = {};
     isValid.value = true;
-
-    console.log('validate true')
 
     return true;
   }
@@ -198,8 +190,8 @@ function debouceValidate(time: number) {
   textDebounce();
 }
 
-const saveForm = async () => {
-  const savedData = await save(formData.value);
+const saveForm = async (method?: SaveMethodOptions) => {
+  const savedData = await save(formData.value, method);
 
   if (isValid.value) {
     emit('saved', savedData, formData);
