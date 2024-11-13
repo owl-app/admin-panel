@@ -39,7 +39,7 @@
         <div>
           <va-input 
             v-model="data.ref.passwordNew"
-            label="Password"
+            label="New password"
             name="passwordNew"
             :error="!!validation['passwordNew']"
             :error-messages="validation['passwordNew']"
@@ -49,7 +49,7 @@
         <div>
           <va-input 
             v-model="data.ref.passwordNewRepeat"
-            label="Repeat password"
+            label="Repeat new password"
             name="passwordNewRepeat"
             :error="!!validation['passwordNewRepeat']"
             :error-messages="validation['passwordNewRepeat']"
