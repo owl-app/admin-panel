@@ -2,7 +2,7 @@ import { DeepPartial, EntityMetadata } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { RolesEnum, TenantAware } from '@owl-app/lib-contracts';
+import { TenantAware } from '@owl-app/lib-contracts';
 
 import { RequestContextService } from '../../context/app-request-context';
 
