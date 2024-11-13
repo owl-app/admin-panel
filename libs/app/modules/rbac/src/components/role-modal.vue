@@ -6,8 +6,8 @@
   >
     <template #header>
       <header-bar
-        :title="(role ? 'Edit' : 'Create') + ' role'"
-        :icon="role ? 'edit' : 'add'"
+        :title="(item ? 'Edit' : 'Create') + ' role'"
+        :icon="item ? 'edit' : 'add'"
         :bordered-bottom="true"
       />
     </template>
@@ -15,7 +15,7 @@
       <owl-form
         class-form="flex flex-col gap-2"
         collection="rbac/roles"
-        :primaryKey="role?.name"
+        :primaryKey="item?.name"
         :default-value="defaultRole"
         :schema="roleValidationSchema"
         @saved="ok(); $emit('saved');"
@@ -66,7 +66,7 @@
 </template>
   
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { ref } from 'vue';
 import { isEmpty } from 'lodash';
 
 import { type Role, roleValidationSchema } from "@owl-app/lib-contracts";
@@ -76,6 +76,14 @@ import HeaderBar from '@owl-app/lib-app-core/layouts/panel/components/header-bar
 
 const model = defineModel<boolean>();
 
+defineExpose({
+  show,
+})
+
+const emit = defineEmits<{
+  (event: 'saved',): void
+}>()
+
 const defaultRole: Role = {
   name: '',
   description: '',
@@ -84,15 +92,11 @@ const defaultRole: Role = {
     theme: ''
   }
 }
+const item = ref<any>({})
 
-const emit = defineEmits<{
-  (event: 'saved',): void
-}>()
-
-const props = defineProps<{
-  role?: Role | null;
-}>();
-
-const { role } = toRefs(props);
+function show(data: any = {}): void {
+  model.value = true;
+  item.value = data;
+}
 </script>
   

@@ -6,8 +6,8 @@
   >
   <template #header>
     <header-bar
-      :title="(permission ? 'Edit' : 'Create') + ' permission'"
-      :icon="permission ? 'edit' : 'add'"
+      :title="(item ? 'Edit' : 'Create') + ' permission'"
+      :icon="item ? 'edit' : 'add'"
       :bordered-bottom="true"
     />
   </template>
@@ -15,7 +15,7 @@
     <owl-form
       class-form="flex flex-col gap-2"
       collection="rbac/permissions"
-      :primaryKey="permission?.name"
+      :primaryKey="item?.name"
       :schema="permissionValidationSchema"
       @saved="ok(); $emit('saved');"
     >
@@ -72,10 +72,10 @@
 </template>
   
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { ref } from 'vue';
 import { isEmpty } from 'lodash';
 
-import { type Permission, permissionValidationSchema } from "@owl-app/lib-contracts";
+import { permissionValidationSchema } from "@owl-app/lib-contracts";
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue'
 import HeaderBar from '@owl-app/lib-app-core/layouts/panel/components/header-bar.vue'
 
@@ -84,13 +84,18 @@ import ReferSelect from './form/refer-select.vue';
 
 const model = defineModel<boolean>();
 
+defineExpose({
+  show,
+})
+
 const emit = defineEmits<{
-  (event: 'saved'): void
+  (event: 'saved',): void
 }>()
 
-const props = defineProps<{
-  permission?: Permission | null;
-}>();
+const item = ref<any>({})
 
-const { permission } = toRefs(props);
+function show(data: any = {}): void {
+  model.value = true;
+  item.value = data;
+}
 </script>

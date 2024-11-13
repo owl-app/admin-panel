@@ -40,6 +40,7 @@ export enum RoleActions {
   ASSIGN = 'ASSIGN',
   REVOKE = 'REVOKE',
   ASSIGNED_PERMISSIONS = 'ASSIGNED_PERMISSIONS',
+  AVAILABLE = 'AVAILABLE',
 }
 
 export enum TimeActions {

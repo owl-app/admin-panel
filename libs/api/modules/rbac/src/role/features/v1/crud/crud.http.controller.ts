@@ -24,6 +24,7 @@ import {
 import {
   AvalilableCollections,
   CrudActions,
+  RoleActions,
   roleValidationSchema,
 } from '@owl-app/lib-contracts';
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
@@ -156,7 +157,10 @@ export class CrudController {
       'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Get()
-  @RoutePermissions(AvalilableCollections.ROLE, CrudActions.LIST)
+  @RoutePermissions(AvalilableCollections.ROLE, [
+    CrudActions.LIST,
+    RoleActions.AVAILABLE,
+  ])
   async paginated(
     @Query('filters') filters: FilterRoleDto,
     @Query() pagination: PaginatedQuery

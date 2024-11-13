@@ -3,11 +3,12 @@ import { ref } from 'vue';
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import { Permission } from "@owl-app/lib-contracts";
+import { AvalilableCollections, CrudActions, Permission } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
+import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 
 import PermissionModal from '../components/permission-modal.vue'
 import ReferSelect from '../components/form/refer-select.vue';
@@ -15,12 +16,13 @@ import CollectionSelect from '../components/form/collection-select.vue';
 
 const { t } = useI18n();
 
-const showModalPermission = ref(false);
+const showModal = ref(false);
 const showDeleteModal = ref(false);
-const editPermission = ref<Permission | null>();
-const deletePermission = ref<Permission>();
-const gridRef = ref<InstanceType<typeof Grid>>();
+const permissionModal = ref<InstanceType<typeof PermissionModal>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
+const gridRef = ref<InstanceType<typeof Grid>>();
+
+const { hasRoutePermission } = usePermissions(AvalilableCollections.ROLE);
 
 const headerBar = {
   title: t('permissions'),
@@ -47,19 +49,17 @@ const columns = defineVaDataTableColumns([
       url="rbac/permissions"
     >
       <template #header-bar-actions>
-        <VaButton
+        <va-button
           preset="primary"
           size="medium"
           color="primary"
           icon="mso-add"
           aria-label="Add permission"
-          @click="
-            editPermission = null;
-            showModalPermission = true;
-          "
+          @click="permissionModal?.show(null)"
+          v-if="hasRoutePermission(CrudActions.CREATE)"
         >
           Add permission
-        </VaButton>
+        </va-button>
       </template>
 
       <template #filters="{ filters, changeFilter, removeFilter }">
@@ -92,40 +92,37 @@ const columns = defineVaDataTableColumns([
 
       <template #cell(actions)="{ rowData: permission }">
         <div class="flex gap-2 justify-end">
-          <VaButton
+          <va-button
             preset="primary"
             size="small"
             color="primary"
             icon="mso-edit"
             aria-label="Edit project"
-            @click="
-              editPermission = permission as Permission;
-              showModalPermission = true;
-            "
+            @click="permissionModal?.show(permission)"
+            v-if="hasRoutePermission(CrudActions.UPDATE)"
           />
-          <VaButton
+          <va-button
             preset="primary"
             size="small"
             icon="mso-delete"
             color="danger"
             aria-label="Delete project"
             @click="deleteModal?.show(permission?.name)"
+            v-if="hasRoutePermission(CrudActions.DELETE)"
           />
         </div>
       </template>
     </grid>
     <permission-modal
-      v-model="showModalPermission"
-      :permission="editPermission"
+      ref="permissionModal"
+      v-model="showModal"
       @saved="gridRef?.reloadGrid()"
     />
-    {{ deletePermission }}
     <delete-modal 
       ref="deleteModal"
       collection="rbac/permissions"
       v-model="showDeleteModal"
-      :primaryKey="deletePermission?.name"
-      @deleted="gridRef?.reloadGrid"
+      @deleted="gridRef?.reloadGrid()"
     />
   </panel-layout>
 </template>

@@ -56,13 +56,13 @@ import ClientSelect from '@owl-app/lib-app-core/components/form/select-client.vu
 
 const model = defineModel<boolean>();
 
-const emit = defineEmits<{
-  (event: 'saved',): void
-}>()
-
 defineExpose({
   show,
 })
+
+const emit = defineEmits<{
+  (event: 'saved',): void
+}>()
 
 const item = ref<any>({})
 

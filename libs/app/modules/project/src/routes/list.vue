@@ -18,11 +18,11 @@ const { t } = useI18n();
 
 const showModal = ref(false);
 const showDeleteModal = ref(false);
-const gridRef = ref<InstanceType<typeof Grid>>();
 const projectModal = ref<InstanceType<typeof ProjectModal>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const archiveModal = ref<InstanceType<typeof ArchiveModal>>();
 const restoreModal = ref<InstanceType<typeof ArchiveModal>>();
+const gridRef = ref<InstanceType<typeof Grid>>();
 
 const { hasRoutePermission } = usePermissions(AvalilableCollections.PROJECT);
 
@@ -59,16 +59,17 @@ const getRowBind = (row: Project): Record<string, string> => {
     >
 
       <template #header-bar-actions>
-          <VaButton
+          <va-button
             preset="primary"
             size="medium"
             color="primary"
             icon="mso-add"
             aria-label="Add role"
             @click="projectModal?.show(null)"
+            v-if="hasRoutePermission(CrudActions.CREATE)"
           >
             Add project
-          </VaButton>
+          </va-button>
       </template>
 
       <template #cell(color)="{ rowData }">
@@ -79,7 +80,7 @@ const getRowBind = (row: Project): Record<string, string> => {
 
       <template #cell(actions)="{ rowData: project }">
         <div class="flex gap-2 justify-end">
-          <VaButton
+          <va-button
             preset="primary"
             size="small"
             color="primary"

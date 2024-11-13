@@ -3,21 +3,24 @@ import { ref } from 'vue';
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import { Role, RoleSetting } from "@owl-app/lib-contracts";
+import { AvalilableCollections, CrudActions, Role, RoleActions } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
+import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 
 import RoleModal from '../components/role-modal.vue'
 
 const { t } = useI18n();
 
-const showModalRole = ref(false);
+const showModal = ref(false);
 const showDeleteModal = ref(false);
-const editRole = ref<Role | null>();
-const deleteRole = ref<Role>();
+const roleModal = ref<InstanceType<typeof RoleModal>>();
+const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const gridRef = ref<InstanceType<typeof Grid>>();
+
+const { hasRoutePermission } = usePermissions(AvalilableCollections.ROLE);
 
 const headerBar = {
   title: t('roles'),
@@ -45,19 +48,17 @@ const columns = defineVaDataTableColumns([
       grid
     >
       <template #header-bar-actions>
-        <VaButton
+        <va-button
           preset="primary"
           size="medium"
           color="primary"
           icon="mso-add"
           aria-label="Add role"
-          @click="
-            editRole = null;
-            showModalRole = true;
-          "
+          @click="roleModal?.show(null)"
+          v-if="hasRoutePermission(CrudActions.CREATE)"
         >
           Add role
-        </VaButton>
+        </va-button>
       </template>
 
       <template #filters="{ filters, changeFilter, removeFilter }">
@@ -78,7 +79,7 @@ const columns = defineVaDataTableColumns([
 
       <template #cell(actions)="{ rowData: role }">
         <div class="flex gap-2 justify-end">
-          <VaButton
+          <va-button
             preset="primary"
             size="small"
             color="#229635"
@@ -86,42 +87,39 @@ const columns = defineVaDataTableColumns([
             aria-label="Assign permissions"
             tag="router-link"
             :to="{ name: 'role-permission-assign', params: { roleId: role.name } }"
+            v-if="hasRoutePermission(RoleActions.ASSIGN)"
           />
-          <VaButton
+          <va-button
             preset="primary"
             size="small"
             color="primary"
             icon="mso-edit"
             aria-label="Edit project"
-            @click="
-              editRole = role as Role;
-              showModalRole = true;
-            "
+            @click="roleModal?.show(role)"
+            v-if="hasRoutePermission(CrudActions.UPDATE)"
           />
-          <VaButton
+          <va-button
             preset="primary"
             size="small"
             icon="mso-delete"
             color="danger"
             aria-label="Delete project"
-            @click="
-              showDeleteModal = true;
-              deleteRole = role as Role;
-            "
+            @click="deleteModal?.show(role?.name)"
+            v-if="hasRoutePermission(CrudActions.DELETE)"
           />
         </div>
       </template>
     </grid>
     <role-modal
-      v-model="showModalRole"
-      :role="editRole"
+      ref="roleModal"
+      v-model="showModal"
       @saved="gridRef?.reloadGrid()"
     />
     <delete-modal 
+      ref="deleteModal"
       collection="rbac/roles"
       v-model="showDeleteModal"
-      :primaryKey="deleteRole?.name"
-      @deleted="gridRef?.reloadGrid"
+      @deleted="gridRef?.reloadGrid()"
     />
   </panel-layout>
 </template>
