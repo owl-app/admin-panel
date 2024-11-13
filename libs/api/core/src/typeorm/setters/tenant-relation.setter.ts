@@ -19,14 +19,6 @@ export class TenantRelationSetter<Entity extends TenantAware>
     return (
       !!metadata.relations.find(
         (r) => r.type === TENANT_ENTITY && r.propertyName === 'tenant'
-      ) &&
-      (
-        RequestContextService.getCurrentUser().roles.includes(
-          RolesEnum.ROLE_ADMIN_COMPANY
-        ) ||
-        RequestContextService.getCurrentUser().roles.includes(
-          RolesEnum.ROLE_USER
-        )
       )
     );
   }
