@@ -18,6 +18,7 @@ interface Props {
   defaultValue?: Item | null,
   classForm?: string,
   clearFormAfterSave?: boolean,
+  action?: string,
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -38,7 +39,8 @@ const {
     saving,
     validationServerErrors,
     getItem,
-    save 
+    save,
+    action,
   } = useItem<Item>(props.collection, props.primaryKey);
   
 const { fields } = useForm('owl-form')
@@ -63,21 +65,27 @@ defineExpose({
 })
 
 watch(
-  () => props.primaryKey,
+  () => [props.primaryKey, props.action],
   async (): Promise<void> => {
     if (!props.primaryKey) {
       primaryKey.value = null;
       validate();
-      return;
+    } else {
+      primaryKey.value = props.primaryKey;
     }
 
-    primaryKey.value = props.primaryKey;
-    await getItem();
+    if (props.action) {
+      action.value = props.action;
+    }
 
-    immediateValidation = true;
+    if (props.primaryKey || props.action) {
+      await getItem();
 
-    formData.value = {
-      ...item.value,
+      immediateValidation = true;
+
+      formData.value = {
+        ...item.value,
+      }
     }
   },
   { immediate: true },
@@ -131,13 +139,21 @@ function validate(showAllErrors = false): boolean {
   if (result.issues) {
     const flattenResult = v.flatten(result.issues)?.nested ?? {}
 
+    console.log(flattenResult)
+
     validationErrors.value = getErrors(flattenResult, showAllErrors);
     isValid.value = false;
+
+    console.log(validationErrors.value)
+
+    console.log('validate error')
 
     return false;
   } else {
     validationErrors.value = {};
     isValid.value = true;
+
+    console.log('validate true')
 
     return true;
   }

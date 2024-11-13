@@ -16,6 +16,8 @@ import { ListFilterBuilder } from './features/v1/crud/list-filter.builder'
 import { RegistrationController } from './features/v1/registration/registration.http.controller'
 import { RegistrationHandler } from './features/v1/registration/registration.service'
 import { UserPermissionsController } from './features/v1/permissions/user-permisssions.http.controller'
+import { ProfileAssembler } from './features/v1/profile/profile.assembler'
+import { ProfileController } from './features/v1/profile/profile.http.controller'
 
 @Module({
   imports: [
@@ -34,6 +36,15 @@ import { UserPermissionsController } from './features/v1/permissions/user-permis
             classService: AppAssemblerQueryService,
             classAssembler: UserAssembler
           }
+        },
+        {
+          entity: UserEntitySchema,
+          repository: UserRepository,
+          inject: [EventEmitter2],
+          assembler: {
+            classService: AppAssemblerQueryService,
+            classAssembler: ProfileAssembler
+          }
         }
       ],
     })
@@ -43,6 +54,7 @@ import { UserPermissionsController } from './features/v1/permissions/user-permis
     AssignAccessController,
     RegistrationController,
     UserPermissionsController,
+    ProfileController
   ],
   providers: [
     RegistrationHandler,

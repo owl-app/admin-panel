@@ -73,39 +73,8 @@ withDefaults(
         list: [
           {
             name: 'profile',
-            to: 'time-list',
+            to: 'user-profile',
             icon: 'mso-account_circle',
-          },
-          {
-            name: 'settings',
-            to: 'time-list',
-            icon: 'mso-settings',
-          },
-          {
-            name: 'billing',
-            to: 'time-list',
-            icon: 'mso-receipt_long',
-          },
-          {
-            name: 'projects',
-            to: 'time-list',
-            icon: 'mso-favorite',
-          },
-        ],
-      },
-      {
-        name: 'explore',
-        separator: true,
-        list: [
-          {
-            name: 'faq',
-            to: 'time-list',
-            icon: 'mso-quiz',
-          },
-          {
-            name: 'helpAndSupport',
-            href: 'https://discord.gg/u7fQdqQt8c',
-            icon: 'mso-error',
           },
         ],
       },

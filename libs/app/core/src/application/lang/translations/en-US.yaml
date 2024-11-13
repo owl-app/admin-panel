@@ -45,3 +45,6 @@ grid:
       show_active: show active
       show_archived: show archived
       show_all: show all
+user:
+  account: Account
+profile: Profile

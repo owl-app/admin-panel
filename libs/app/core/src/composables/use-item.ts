@@ -28,6 +28,7 @@ export type UsableItem<T extends Item> = {
   archiving: Ref<boolean>;
   archive: (value: boolean, custom: Record<string, any>) => Promise<void>;
   validationServerErrors: Ref<any>;
+  action: Ref<string|null>;
 };
 
 export function useItem<T extends Item>(
@@ -49,11 +50,14 @@ export function useItem<T extends Item>(
   const isNew = computed(() =>  isEmpty(primaryKey.value));
 
   const endpoint = computed(() => {
-    if (isNew.value) {
+    if (isNew.value && !action.value) {
       return collection;
     }
 
-    return `${collection}/${(action.value ? `${action.value}/` : '')}${encodeURIComponent(primaryKey.value as string)}`;
+    const actionUrl = action.value ? `${action.value}/` : '';
+    const primaryKeyUrl = primaryKey.value ? encodeURIComponent(primaryKey.value as string) : ''
+
+    return `${collection}/${actionUrl}${primaryKeyUrl}`;
   });
 
   return {
@@ -70,6 +74,7 @@ export function useItem<T extends Item>(
     archiving,
     archive,
     validationServerErrors,
+    action,
   };
 
   async function getItem(params?: Record<string, any>) {

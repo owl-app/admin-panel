@@ -9,7 +9,7 @@
         </VaButton>
       </VaInnerLoading>
     </div>
-    <NotificationDropdown class="app-navbar-actions__item" />
+    <!-- <NotificationDropdown class="app-navbar-actions__item" /> -->
     <ProfileDropdown class="app-navbar-actions__item app-navbar-actions__item--profile mr-1" />
   </div>
 </template>
@@ -20,7 +20,7 @@ import { useI18n } from 'vue-i18n'
 import { useTimeStore } from '../../../../../stores/time'
 
 import ProfileDropdown from './dropdowns/profile-dropdown.vue'
-import NotificationDropdown from './dropdowns/notification-dropdown.vue'
+// import NotificationDropdown from './dropdowns/notification-dropdown.vue'
 
 defineProps({
   isMobile: { type: Boolean, default: false },
