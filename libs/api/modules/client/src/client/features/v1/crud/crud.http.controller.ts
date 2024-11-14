@@ -24,7 +24,8 @@ import {
 import {
   AvalilableCollections,
   CrudActions,
-  clientValidationSchema,
+  createClientValidationSchema,
+  updateClientValidationSchema
 } from '@owl-app/lib-contracts';
 
 import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query';
@@ -104,7 +105,7 @@ export class ClientCrudController {
   @Post()
   @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.CREATE)
   async create(
-    @Body(new ValibotValidationPipe(clientValidationSchema))
+    @Body(new ValibotValidationPipe(createClientValidationSchema))
     createClientRequest: CreateClientRequest
   ) {
     const createdClient = await this.service.createOne(createClientRequest);
@@ -131,7 +132,7 @@ export class ClientCrudController {
   @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.UPDATE)
   async update(
     @Param('id', UUIDValidationPipe) id: string,
-    @Body(new ValibotValidationPipe(clientValidationSchema))
+    @Body(new ValibotValidationPipe(updateClientValidationSchema))
     updateClientDto: UpdateClientDto
   ): Promise<ClientResponse> {
     const updatedClient = await this.service.updateOne(id, updateClientDto);
