@@ -1,7 +1,7 @@
 import { DataSource, DataSourceOptions, ObjectLiteral } from 'typeorm';
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { Role, Archivable, TenantAware, UserAware } from '@owl-app/lib-contracts';
+import { Role, Archivable, TenantAware, UserAware, User } from '@owl-app/lib-contracts';
 import { NestjsQueryCoreModule } from '@owl-app/nestjs-query-core';
 import { NestjsQueryTypeOrmModule } from '@owl-app/nestjs-query-typeorm';
 import { RegistryServiceModule } from '@owl-app/registry-nestjs';
@@ -24,6 +24,7 @@ import { getQueryServiceRepositoryToken } from './common/repository.utils';
 import { AppNestjsQueryTypeOrmModuleOpts } from './types';
 import { OwnerRelationFilter } from '../typeorm/filters/owner-relation.filter';
 import { OwnerRelationSetter } from '../typeorm/setters/owner-relation.setter';
+import { UserListFilter } from '../typeorm/filters/user-list.filter';
 
 @Module({})
 export class AppNestjsQueryTypeOrmModule {
@@ -94,6 +95,7 @@ export class AppNestjsQueryTypeOrmModule {
                       roles: RolesFilter<Role>,
                       archived: NonArchivedFilter<Archivable>,
                       user: OwnerRelationFilter<UserAware>,
+                      user_list: UserListFilter<User>
                     },
                   }),
                   RegistryServiceModule.forFeature<EntitySetter<ObjectLiteral>>({

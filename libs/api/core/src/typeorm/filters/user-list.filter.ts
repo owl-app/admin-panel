@@ -2,24 +2,23 @@ import { EntityMetadata, SelectQueryBuilder } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { RolesEnum, TenantAware } from '@owl-app/lib-contracts';
+import { RolesEnum, User } from '@owl-app/lib-contracts';
 
 import { RequestContextService } from '../../context/app-request-context';
 
-import { TENANT_ENTITY } from '../../entity-tokens';
+import { USER_ENTITY } from '../../entity-tokens';
 import { FilterQuery } from '../../registry/interfaces/filter-query';
 
 @Injectable()
-export class TenantRelationFilter<Entity extends TenantAware>
+export class UserListFilter<Entity extends User>
   implements FilterQuery<Entity>
 {
   constructor(readonly configService: ConfigService) {}
 
   supports(metadata: EntityMetadata): boolean {
     return (
-      !!metadata.relations.find(
-        (r) => r.type === TENANT_ENTITY && r.propertyName === 'tenant'
-      ) &&
+      metadata.name === USER_ENTITY &&
+      RequestContextService.getCurrentUser() &&
       RequestContextService.getCurrentUser() &&
       (
         RequestContextService.getCurrentUser().roles.includes(
@@ -33,10 +32,18 @@ export class TenantRelationFilter<Entity extends TenantAware>
   }
 
   execute(qb: SelectQueryBuilder<Entity>): void {
+    if (!this.hasJoinedRelation(qb, 'roles')) {
+      qb.leftJoin(`${qb.alias}.roles`, 'roles');
+    }
+
     qb
-      .leftJoin(`${qb.alias}.tenant`, 'tenant')
-      .andWhere('tenant.id = :tenantId', {
-        tenantId: RequestContextService.getCurrentUser().tenant.id,
-      });
+      .andWhere(`roles.name IN (:roles)`)
+      .setParameter('roles', [RolesEnum.ROLE_ADMIN_COMPANY, RolesEnum.ROLE_USER]);
+  }
+
+  private hasJoinedRelation(qb: SelectQueryBuilder<Entity>, relation: string) {
+    return qb.expressionMap.joinAttributes.some(
+      (join) => join.alias.name === relation
+    );
   }
 }

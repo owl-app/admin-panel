@@ -10,7 +10,7 @@ const baseSchema = v.object({
   firstName: v.nullish(v.string(), null),
   lastName: v.nullish(v.string(), null),
   role: v.pipe(
-      v.custom((input) => input !== undefined, 'Field is required'),
+      v.custom((input) => input !== undefined && input !== null, 'Field is required'),
       v.nonNullish(v.object({
         name: v.string(),
         description: v.string(),

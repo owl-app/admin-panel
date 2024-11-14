@@ -200,7 +200,7 @@ export class TypeOrmQueryService<Entity>
 
     if (!entity) {
       throw new NotFoundException(
-        `Unable to find ${this.EntityClass.name} with id: ${id}`
+        `Unable to find ${this.EntityClassName} with id: ${id}`
       );
     }
 
@@ -485,7 +485,7 @@ export class TypeOrmQueryService<Entity>
   ensureSoftDeleteEnabled(): void {
     if (!this.useSoftDelete) {
       throw new MethodNotAllowedException(
-        `Restore not allowed for non soft deleted entity ${this.EntityClass.name}.`
+        `Restore not allowed for non soft deleted entity ${this.EntityClassName}.`
       );
     }
   }

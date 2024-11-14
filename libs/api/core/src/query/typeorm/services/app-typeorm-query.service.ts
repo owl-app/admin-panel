@@ -281,17 +281,26 @@ export class AppTypeOrmQueryService<
       objectRelatedNewRelationValues = await relationQueryBuilder
         .select({ filter: {or : newRelationsFilter }})
         .getMany();
+
+      if (objectRelatedNewRelationValues.length !== objectRelatedNewRelations.length) {
+        console.log(this.EntityClass)
+        throw new Error(
+          `Unable to find all ${relation.propertyName} to add to ${this.EntityClassName}`
+        );
+      }
     }
+
+    const newRelations = objectRelatedNewRelationValues.concat(objectRelatedExisting);
 
     if (relation.isOneToMany || relation.isManyToMany) {
       relation.setEntityValue(
         entity,
-        objectRelatedNewRelationValues.concat(objectRelatedExisting) 
+        newRelations
       );
     } else {
       relation.setEntityValue(
         entity,
-        objectRelatedNewRelationValues.pop() ?? null
+        newRelations.pop() ?? null
       );
     }
 
