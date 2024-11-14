@@ -14,6 +14,12 @@ export const updateClientValidationSchema = v.object({
       v.string(),
       v.nonEmpty('Field is required')
     ), ''),
+  email: v.optional(
+    v.pipe(
+      v.string(),
+      v.email(),
+      v.nonEmpty('Field is required')
+    ), ''),
 });
 
 export type CreateClientRequest = v.InferInput<typeof createClientValidationSchema>;
