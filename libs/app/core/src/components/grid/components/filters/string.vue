@@ -110,7 +110,7 @@ function clear() {
 </script>
 
 <template>
-  <div class="grid grid-cols-12 gap-2">
+  <div class="grid grid-cols-12 gap-2 h-max">
     <div class="col-span-11">
         <div :class="`grid grid-cols-${singleFilter === '' ? 2 : 1} gap-2`">
           <va-select

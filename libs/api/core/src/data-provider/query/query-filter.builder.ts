@@ -23,5 +23,5 @@ export abstract class QueryFilterBuilder<Entity, FilterData>
 
   buildCustom?(filters: FilterData, qb: SelectQueryBuilder<Entity>): void;
 
-  buildRelations?(): SelectRelation<Entity>[];
+  buildRelations?(filters: FilterData): SelectRelation<Entity>[];
 }

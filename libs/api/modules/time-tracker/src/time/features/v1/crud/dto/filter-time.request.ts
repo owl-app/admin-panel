@@ -6,4 +6,8 @@ export class FilterTimeRequest {
 
     readonly email?: string;
 
+    readonly clients?: string;
+
+    readonly projects?: string;
+
 }

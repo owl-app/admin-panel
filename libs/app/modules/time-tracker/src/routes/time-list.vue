@@ -8,6 +8,7 @@ import type { Time, Tag, Project } from "@owl-app/lib-contracts";
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
+import SelectFilter from '@owl-app/lib-app-core/components/grid/components/filters/select.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
 import { useApi } from '@owl-app/lib-app-core/composables/use-system'
 
@@ -137,7 +138,33 @@ function groupByWeek(items: Time[]) {
     <grid ref="gridRef" :columns="columns" defaultSort="id" url="times" layout="custom">
       <template #filters="{ filters, changeFilter, removeFilter }">
         <div class="grid grid-cols-3 gap-4">
-          <string-filter :data="filters?.search" :change-filter="changeFilter" :remove-filter="removeFilter" />
+          <string-filter
+            :data="filters?.search"
+            :change-filter="changeFilter"
+            :remove-filter="removeFilter"
+          />
+          <select-filter
+            url="clients?pageable=0"
+            label="Clients"
+            name="clients"
+            textBy="name"
+            trackBy="id"
+            :clearable="true"
+            :data="filters?.clients"
+            :change-filter="changeFilter"
+            :remove-filter="removeFilter"
+          />
+          <select-filter
+            url="projects?pageable=0"
+            label="Projects"
+            name="projects"
+            textBy="name"
+            trackBy="id"
+            :clearable="true"
+            :data="filters?.projects"
+            :change-filter="changeFilter"
+            :remove-filter="removeFilter"
+          />
         </div>
       </template>
 

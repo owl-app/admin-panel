@@ -74,7 +74,7 @@ export class PaginatedDataProvider<Entity, FiltersData>
         'buildRelations'
       )
     ) {
-      query.relations = this.filterBuilder.buildRelations();
+      query.relations = this.filterBuilder.buildRelations(filtersData);
     }
 
     if (defaultSort) {

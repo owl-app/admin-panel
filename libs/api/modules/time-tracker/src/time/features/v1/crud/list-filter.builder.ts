@@ -15,13 +15,29 @@ export class ListFilterBuilder extends QueryFilterBuilder<
       this.filterRegistry.get('string').apply(['description'], data?.search)
     );
 
+    if(data?.clients) {
+      filters.push({ project: { client : { id: { in: data?.clients?.split(',') } } } });
+    }
+
+    if(data?.projects) {
+      filters.push({ project: { id: { in: data?.projects?.split(',') } } });
+    }
+
+    filters.push({ timeIntervalEnd: { isNot: null } });
+
     return {
-      or: filters,
-      and: [{ timeIntervalEnd: { isNot: null } }],
+      and: filters,
     };
   }
 
   buildRelations(): SelectRelation<Time>[] {
-    return [{ name: 'project', query: {}}];
+    const relations = [
+      {
+        name: 'project',
+        query: {},
+      },
+    ];
+
+    return relations;
   }
 }
