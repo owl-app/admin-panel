@@ -17,8 +17,8 @@ import {
 
 import {
   AvalilableCollections,
-  CrudActions,
   profileUserValidationSchema,
+  UserActions,
 } from '@owl-app/lib-contracts';
 import {
   InjectAssemblerQueryService,
@@ -59,7 +59,7 @@ export class ProfileController {
     type: ApiErrorResponse,
   })
   @Get('/profile')
-  @RoutePermissions(AvalilableCollections.USER, CrudActions.READ)
+  @RoutePermissions(AvalilableCollections.USER, UserActions.PROFILE)
   async findOne() {
     const user = await this.service.getById(RequestContextService.getCurrentUserId());
 
@@ -78,7 +78,7 @@ export class ProfileController {
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Put('/profile')
-  @RoutePermissions(AvalilableCollections.USER, CrudActions.UPDATE)
+  @RoutePermissions(AvalilableCollections.USER, UserActions.PROFILE)
   async update(
     @Body(new ValibotValidationPipe(profileUserValidationSchema))
     updateProfileRequest: UpdateProfileRequest

@@ -26,6 +26,7 @@ export enum UserActions {
   LOGOUT = 'LOGOUT',
   ASSIGN_ACCESS = 'ASSIGN_ACCESS',
   PERMISSIONS = 'PERMISSIONS',
+  PROFILE = 'PROFILE',
 }
 
 export enum TagActions {
