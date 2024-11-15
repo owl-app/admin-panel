@@ -283,7 +283,6 @@ export class AppTypeOrmQueryService<
         .getMany();
 
       if (objectRelatedNewRelationValues.length !== objectRelatedNewRelations.length) {
-        console.log(this.EntityClass)
         throw new Error(
           `Unable to find all ${relation.propertyName} to add to ${this.EntityClassName}`
         );

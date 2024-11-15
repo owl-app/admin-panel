@@ -111,6 +111,14 @@ function groupByWeek(items: Time[]) {
 
   return sortedByWeeks;
 }
+
+function getProjectUrlFilter(clientFitler: string | undefined): string {
+  if (!clientFitler) {
+    return '';
+  }
+
+  return `&filters[clients]=${clientFitler}`;
+}
 </script>
 
 <template>
@@ -144,7 +152,7 @@ function groupByWeek(items: Time[]) {
             :remove-filter="removeFilter"
           />
           <select-filter
-            url="clients?pageable=0"
+            url="clients"
             label="Clients"
             name="clients"
             textBy="name"
@@ -155,7 +163,7 @@ function groupByWeek(items: Time[]) {
             :remove-filter="removeFilter"
           />
           <select-filter
-            url="projects?pageable=0"
+            :url="`projects?pageable=0${getProjectUrlFilter(filters?.clients)}`"
             label="Projects"
             name="projects"
             textBy="name"

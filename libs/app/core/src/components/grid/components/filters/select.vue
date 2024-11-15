@@ -3,6 +3,7 @@ import { onMounted, onUpdated, PropType, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n'
 
 import { useApi } from '../../../../composables/use-system'
+import { isEqual } from 'lodash';
 
 const props = defineProps({
   data: {
@@ -57,16 +58,31 @@ const options = ref<any[]>([]);
 const loading = ref(false);
 const model = ref<any[]>([]);
 
-
 loadData();
 
 watch(
   ()=> [props.data],
   () => {
-    if (!props.data && model.value.length > 0) {
-      model.value = [];
-      console.log('odaplamy')
+    const dataFromFilter = getValuesFromFilter();
+
+    if (!isEqual(getValuesFromFilter, model.value)) {
+      model.value = dataFromFilter;
     }
+  },
+);
+
+watch(
+  ()=> [props.url],
+  async () => {
+    await loadData();
+
+    model.value = model.value.filter((option: any) => {
+      return options.value.filter(selected => option[props.trackBy] === selected[props.trackBy]);
+    });
+
+    props.changeFilter({
+      [props.name]: (model.value.map((item: any) => item[props.trackBy])).join(','),
+    });
   },
 );
 
@@ -77,13 +93,17 @@ async function loadData() {
 
   options.value = result.data?.items?.map(({ id, name }: { id: string, name: string }) => ({ id, name })) ?? [];
 
-  model.value = options?.value.filter((option: any) => {
-        if (props.data?.split(',').includes(option[props.trackBy])) {
-          return option;
-        }
-      });
+  model.value = getValuesFromFilter();
 
   loading.value = false;
+}
+
+function getValuesFromFilter() {
+  return options?.value.filter((option: any) => {
+    if (props.data?.split(',').includes(option[props.trackBy])) {
+      return option;
+    }
+  });
 }
 
 function change() {
