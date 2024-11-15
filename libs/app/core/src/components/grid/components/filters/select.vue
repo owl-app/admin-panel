@@ -1,16 +1,8 @@
 <script setup lang="ts">
-import { computed, onUnmounted, PropType, ref, watch } from 'vue';
+import { onMounted, onUpdated, PropType, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n'
 
 import { useApi } from '../../../../composables/use-system'
-import { onBeforeMount } from 'vue';
-
-const api = useApi();
-const { t } = useI18n()
-
-const options = ref<any[]>([]);
-const loading = ref(false);
-// const model = ref<any[]>([]);
 
 const props = defineProps({
   data: {
@@ -58,35 +50,41 @@ defineEmits([
   'clear',
 ]);
 
-const model = computed({
-  get: () => props.data,
-  set: (value) => {
-    model.value = value;
-  }
-});
+const api = useApi();
+const { t } = useI18n()
 
-(async () => {
+const options = ref<any[]>([]);
+const loading = ref(false);
+const model = ref<any[]>([]);
+
+
+loadData();
+
+watch(
+  ()=> [props.data],
+  () => {
+    if (!props.data && model.value.length > 0) {
+      model.value = [];
+      console.log('odaplamy')
+    }
+  },
+);
+
+async function loadData() {
   loading.value = true;
 
   const result = await api.get(props.url);
 
   options.value = result.data?.items?.map(({ id, name }: { id: string, name: string }) => ({ id, name })) ?? [];
 
-  loading.value = false;
-
-  watch(
-    ()=> [props.data],
-    () => {
-      console.log('test')
-      model.value = options?.value.filter((option: any) => {
+  model.value = options?.value.filter((option: any) => {
         if (props.data?.split(',').includes(option[props.trackBy])) {
           return option;
         }
       });
-    },
-    { immediate: true }
-  );
-})()
+
+  loading.value = false;
+}
 
 function change() {
   props.changeFilter({
