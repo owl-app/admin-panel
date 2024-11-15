@@ -7,6 +7,7 @@ import { AvalilableCollections, Project, CrudActions, CommonActions } from "@owl
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
+import SelectFilter from '@owl-app/lib-app-core/components/grid/components/filters/select.vue';
 import ArchivedFilter from '@owl-app/lib-app-core/components/grid/components/filters/archived.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
 import ArchiveModal from '@owl-app/lib-app-core/components/modal/archive-modal.vue';
@@ -59,17 +60,56 @@ const getRowBind = (row: Project): Record<string, string> => {
     >
 
       <template #header-bar-actions>
-          <va-button
-            preset="primary"
-            size="medium"
-            color="primary"
-            icon="mso-add"
-            aria-label="Add role"
-            @click="projectModal?.show(null)"
-            v-if="hasRoutePermission(CrudActions.CREATE)"
-          >
-            Add project
-          </va-button>
+        <va-button
+          preset="primary"
+          size="medium"
+          color="primary"
+          icon="mso-add"
+          aria-label="Add role"
+          @click="projectModal?.show(null)"
+          v-if="hasRoutePermission(CrudActions.CREATE)"
+        >
+          Add project
+        </va-button>
+      </template>
+
+      <template  #content-filter="{ filters, changeFilter, removeFilter }">
+        <div class="grid grid-cols-12 gap-2 grid-flow-col" style="margin-left:auto; grid-auto-flow: column;">
+          <div class="col-start-1 col-end-3">
+            <archived-filter
+              :modelValue="filters.archived"
+              @update:model-value="(value: string) => changeFilter({ archived: value })"
+              @clear="() => removeFilter('archived')"
+            />
+          </div>
+          <div class="col-start-3 col-end-6">
+            <div class="grid grid-cols-1 gap-4">
+              <string-filter
+                single-filter="contains"
+                labelSearchInput="Search by name"
+                :data="filters?.search"
+                :change-filter="changeFilter"
+                :remove-filter="removeFilter"
+              />
+            </div>
+          </div>
+          <div class="col-start-6 col-end-9">
+            <select-filter
+              url="clients?pageable=0"
+              label="Clients"
+              name="clients"
+              textBy="name"
+              trackBy="id"
+              :clearable="true"
+              :data="filters?.clients"
+              :change-filter="changeFilter"
+              :remove-filter="removeFilter"
+            />
+          </div>
+        </div>
+        <div class="my-4">
+          <va-divider />
+        </div>
       </template>
 
       <template #cell(color)="{ rowData }">
@@ -124,18 +164,18 @@ const getRowBind = (row: Project): Record<string, string> => {
       v-model="showModal"
       @saved="gridRef?.reloadGrid()"
     />
-    <delete-modal 
+    <delete-modal
       ref="deleteModal"
       collection="projects"
       v-model="showDeleteModal"
       @deleted="gridRef?.reloadGrid"
     />
-    <archive-modal 
+    <archive-modal
       ref="archiveModal"
       collection="projects"
       @archived="gridRef?.reloadGrid"
     />
-    <archive-modal 
+    <archive-modal
       ref="restoreModal"
       collection="projects"
       @archived="gridRef?.reloadGrid"

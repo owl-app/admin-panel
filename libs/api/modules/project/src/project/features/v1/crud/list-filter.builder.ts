@@ -15,8 +15,12 @@ export class ListFilterBuilder extends QueryFilterBuilder<Project, FilterProject
       this.filterRegistry.get('string').apply(['name'], data?.search)
     );
 
+    if(data?.clients) {
+      filters.push({ client: { id: { in: data?.clients?.split(',') } } });
+    }
+
     return {
-      or: filters,
+      and: filters,
     };
   }
 

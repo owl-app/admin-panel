@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onUnmounted, PropType, ref, Suspense, watch } from 'vue';
 import { useI18n } from 'vue-i18n'
 
 import { useApi } from '../../../../composables/use-system'
@@ -7,7 +7,7 @@ import { useApi } from '../../../../composables/use-system'
 const api = useApi();
 const { t } = useI18n()
 
-const options = ref<unknown[]>([]);
+const options = ref<any[]>([]);
 const loading = ref(false);
 
 const props = defineProps({
@@ -54,26 +54,34 @@ const props = defineProps({
 
 defineEmits([
   'clear',
-])
+]);
 
-const model = ref([]);
+const model = ref<any[]>([]);
 
-loadData();
+await loadData();
 
-async function loadData(): Promise<void> {
-  loading.value = true;
-  const result = await api.get(props.url);
-
-  options.value = result.data?.items?.map(({ id, name }: { id: string, name: string }) => ({ id, name })) ?? [];
-
+watch(() => props.data, () => {
   model.value = options.value.filter((option: any) => {
     if (props.data?.split(',').includes(option[props.trackBy])) {
       return option;
     }
   });
+}, { immediate: true });
+
+async function loadData(): Promise<void> {
+  loading.value = true;
+
+  const result = await api.get(props.url);
+
+  options.value = result.data?.items?.map(({ id, name }: { id: string, name: string }) => ({ id, name })) ?? [];
 
   loading.value = false;
 }
+
+onUnmounted(() => {
+  console.log('test')
+  model.value = [];
+});
 
 function change() {
   props.changeFilter({
@@ -88,10 +96,12 @@ function clear() {
 </script>
 
 <template>
+  <Suspense>
    <va-select
       v-model="model"
       searchable
       multiple
+      background="#fff"
       :label="`${t(label)}`"
       :placeholder="`${t('select_option')}`"
       :options="options"
@@ -102,14 +112,15 @@ function clear() {
       @clear="clear"
       @update:isOpen="(isOpen: boolean) => !isOpen && change()"
     >
-    <template #content="{ valueArray }">
-            <va-badge
-              v-for="v in valueArray"
-              :class="`mr-0.5 mt-0.5 ${v.archived ? 'line-through' : ''}`"
-              :color="v.color ?? 'primary'"
-              :text="v.name"
-              :key="v"
-            />
-          </template>
+      <template #content="{ valueArray }">
+        <va-badge
+          v-for="v in valueArray"
+          :class="`mr-0.5 mt-0.5 ${v.archived ? 'line-through' : ''}`"
+          :color="v.color ?? 'primary'"
+          :text="v.name"
+          :key="v"
+        />
+      </template>
     </va-select>
+  </Suspense>
 </template>

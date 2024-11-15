@@ -12,4 +12,6 @@ export class FilterProjectQuery {
     readonly email?: string;
 
     readonly archived?: ArchiveOptions;
+
+    readonly clients?: string;
 }
