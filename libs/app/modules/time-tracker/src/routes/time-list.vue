@@ -145,34 +145,42 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
 
     <grid ref="gridRef" :columns="columns" defaultSort="id" url="times" layout="custom">
       <template #filters="{ filters, changeFilter, removeFilter }">
-        <div class="grid grid-cols-3 gap-4">
-          <string-filter
-            :data="filters?.search"
-            :change-filter="changeFilter"
-            :remove-filter="removeFilter"
-          />
-          <select-filter
-            url="clients"
-            label="Clients"
-            name="clients"
-            textBy="name"
-            trackBy="id"
-            :clearable="true"
-            :data="filters?.clients"
-            :change-filter="changeFilter"
-            :remove-filter="removeFilter"
-          />
-          <select-filter
-            :url="`projects?pageable=0${getProjectUrlFilter(filters?.clients)}`"
-            label="Projects"
-            name="projects"
-            textBy="name"
-            trackBy="id"
-            :clearable="true"
-            :data="filters?.projects"
-            :change-filter="changeFilter"
-            :remove-filter="removeFilter"
-          />
+        <div class="grid grid-cols-12 gap-2 grid-flow-col" style="margin-left:auto; grid-auto-flow: column;">
+          <div class="col-start-1 col-end-5">
+            <string-filter
+              :data="filters?.search"
+              :change-filter="changeFilter"
+              :remove-filter="removeFilter"
+            />
+          </div>
+          <div class="col-start-5 col-end-7">
+            <select-filter
+              url="clients"
+              label="Clients"
+              name="clients"
+              textBy="name"
+              trackBy="id"
+              valueBy="id"
+              :clearable="true"
+              :data="filters?.clients"
+              :change-filter="changeFilter"
+              :remove-filter="removeFilter"
+            />
+          </div>
+          <div class="col-start-7 col-end-9">
+            <select-filter
+              :url="`projects?pageable=0${getProjectUrlFilter(filters?.clients)}`"
+              label="Projects"
+              name="projects"
+              textBy="name"
+              trackBy="id"
+              valueBy="id"
+              :clearable="true"
+              :data="filters?.projects"
+              :change-filter="changeFilter"
+              :remove-filter="removeFilter"
+            />
+          </div>
         </div>
       </template>
 

@@ -110,19 +110,21 @@ function clear() {
 </script>
 
 <template>
-  <div class="grid grid-cols-12 gap-2 h-max">
-    <div class="col-span-11">
-        <div :class="`grid grid-cols-${singleFilter === '' ? 2 : 1} gap-2`">
+  <div class="flex">
+    <div class="flex-1">
+        <div :class="`grid grid-cols-12 gap-2`">
           <va-select
             v-model="form.type"
+            class="col-span-4"
             :options="types"
             label="Type"
             @update:modelValue="change('type')"
             v-if="singleFilter === ''"
+            
           />
-
           <va-input
             v-model="form.text"
+            :class="`col-span-${singleFilter === '' ? 8 : 'full'}`"
             :label="labelSearchInput"
             placeholder="Search"
             background="#fff"
@@ -138,7 +140,7 @@ function clear() {
           </va-input>
         </div>
     </div>
-    <div class="clear">
+    <div class="clear flex-none w-8 ml-2">
       <button @click="clear">
         <va-icon class="material-symbols-outlined" name="close" size="small" color="danger" />
       </button>
@@ -154,7 +156,6 @@ function clear() {
   .clear {
     display: flex;
     align-items: end;
-    width:100%;
     justify-content: left;
 
     button {

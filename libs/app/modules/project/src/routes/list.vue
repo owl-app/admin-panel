@@ -100,6 +100,8 @@ const getRowBind = (row: Project): Record<string, string> => {
               name="clients"
               textBy="name"
               trackBy="id"
+              valueBy="id"
+              :model-value="filters?.clients?.split(',') ?? []"
               :clearable="true"
               :data="filters?.clients"
               :change-filter="changeFilter"
