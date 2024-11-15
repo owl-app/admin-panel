@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { onUnmounted, PropType, ref, Suspense, watch } from 'vue';
+import { computed, onUnmounted, PropType, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n'
 
 import { useApi } from '../../../../composables/use-system'
+import { onBeforeMount } from 'vue';
 
 const api = useApi();
 const { t } = useI18n()
 
 const options = ref<any[]>([]);
 const loading = ref(false);
+// const model = ref<any[]>([]);
 
 const props = defineProps({
   data: {
@@ -56,19 +58,14 @@ defineEmits([
   'clear',
 ]);
 
-const model = ref<any[]>([]);
+const model = computed({
+  get: () => props.data,
+  set: (value) => {
+    model.value = value;
+  }
+});
 
-await loadData();
-
-watch(() => props.data, () => {
-  model.value = options.value.filter((option: any) => {
-    if (props.data?.split(',').includes(option[props.trackBy])) {
-      return option;
-    }
-  });
-}, { immediate: true });
-
-async function loadData(): Promise<void> {
+(async () => {
   loading.value = true;
 
   const result = await api.get(props.url);
@@ -76,12 +73,20 @@ async function loadData(): Promise<void> {
   options.value = result.data?.items?.map(({ id, name }: { id: string, name: string }) => ({ id, name })) ?? [];
 
   loading.value = false;
-}
 
-onUnmounted(() => {
-  console.log('test')
-  model.value = [];
-});
+  watch(
+    ()=> [props.data],
+    () => {
+      console.log('test')
+      model.value = options?.value.filter((option: any) => {
+        if (props.data?.split(',').includes(option[props.trackBy])) {
+          return option;
+        }
+      });
+    },
+    { immediate: true }
+  );
+})()
 
 function change() {
   props.changeFilter({
@@ -96,7 +101,6 @@ function clear() {
 </script>
 
 <template>
-  <Suspense>
    <va-select
       v-model="model"
       searchable
@@ -122,5 +126,4 @@ function clear() {
         />
       </template>
     </va-select>
-  </Suspense>
 </template>
