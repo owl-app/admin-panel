@@ -33,7 +33,7 @@ const nestLikeConsoleFormat = (
       // Only format the timestamp to a locale representation if it's ISO 8601 format. Any format
       // that is not a valid date string will throw, just ignore it (it will be printed as-is).
       try {
-        if (timestamp === new Date(timestamp).toISOString()) {
+        if (timestamp === new Date(timestamp as string).toISOString()) {
           timestamp = new Date(timestamp).toLocaleString();
         }
       } catch (error) {
@@ -57,9 +57,9 @@ const nestLikeConsoleFormat = (
       ('undefined' !== typeof context
         ? `${yellow('[' + context + ']')} `
         : '') +
-      `${color(message)} - ` +
+      `${color(message as string)} - ` +
       `${formattedMeta}` +
-      ('undefined' !== typeof ms ? ` ${yellow(ms)}` : '')
+      ('undefined' !== typeof ms ? ` ${yellow(ms as string)}` : '')
     );
   });
 

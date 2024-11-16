@@ -32,10 +32,6 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  valueBy: {
-    type: String,
-    required: true,
-  },
   changeFilter: {
     type: Function as PropType<Function>,
     required: true,
@@ -54,7 +50,7 @@ const props = defineProps({
 defineEmits([
   'clear',
 ]);
-const model = defineModel<any[]>({ default: [] });
+const model = ref<any[]>([])
 
 const api = useApi();
 const { t } = useI18n()
@@ -67,7 +63,7 @@ loadData();
 watch(
   ()=> [props.data],
   () => {
-    const dataFromFilter = props.data?.split(',') ?? [];
+    const dataFromFilter = getValuesFromFilter()
 
     if (!isEqual(dataFromFilter, model.value)) {
       model.value = dataFromFilter;
@@ -80,12 +76,8 @@ watch(
   async () => {
     await loadData();
 
-    model.value = model.value.filter((option: any) => {
-      return options.value.find(selected => selected[props.valueBy] === option);
-    });
-
     props.changeFilter({
-      [props.name]: model.value.join(','),
+      [props.name]: (model.value.map((item: any) => item[props.trackBy])).join(','),
     });
   },
 );
@@ -97,18 +89,28 @@ async function loadData() {
 
   options.value = result.data?.items?.map(({ id, name }: { id: string, name: string }) => ({ id, name })) ?? [];
 
+  model.value = getValuesFromFilter();
+
   loading.value = false;
 }
 
 function change() {
   props.changeFilter({
-    [props.name]: Object.values(model.value).join(','),
+    [props.name]: (model.value.map((item: any) => item[props.trackBy])).join(','),
   });
 }
 
 function clear() {
   model.value = [];
   props.removeFilter(props.name);
+}
+
+function getValuesFromFilter() {
+  return options?.value.filter((option: any) => {
+    if (props.data?.split(',').includes(option[props.trackBy])) {
+      return option;
+    }
+  });
 }
 </script>
 
@@ -124,7 +126,6 @@ function clear() {
       :clearable="clearable"
       :text-by="textBy"
       :track-by="trackBy"
-      :value-by="trackBy"
       :loading="loading"
       @clear="clear"
       @update:isOpen="(isOpen: boolean) => !isOpen && change()"

@@ -160,9 +160,8 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
               name="clients"
               textBy="name"
               trackBy="id"
-              valueBy="id"
-              :clearable="true"
               :data="filters?.clients"
+              :clearable="true"
               :change-filter="changeFilter"
               :remove-filter="removeFilter"
             />
@@ -174,9 +173,8 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
               name="projects"
               textBy="name"
               trackBy="id"
-              valueBy="id"
-              :clearable="true"
               :data="filters?.projects"
+              :clearable="true"
               :change-filter="changeFilter"
               :remove-filter="removeFilter"
             />
