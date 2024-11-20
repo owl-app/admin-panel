@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUpdated, PropType, ref, watch } from 'vue';
+import { PropType, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n'
 
 import { useApi } from '../../../../composables/use-system'
@@ -50,22 +50,22 @@ const props = defineProps({
 defineEmits([
   'clear',
 ]);
+const model = ref<any[]>([])
 
 const api = useApi();
 const { t } = useI18n()
 
 const options = ref<any[]>([]);
 const loading = ref(false);
-const model = ref<any[]>([]);
 
 loadData();
 
 watch(
   ()=> [props.data],
   () => {
-    const dataFromFilter = getValuesFromFilter();
+    const dataFromFilter = getValuesFromFilter()
 
-    if (!isEqual(getValuesFromFilter, model.value)) {
+    if (!isEqual(dataFromFilter, model.value)) {
       model.value = dataFromFilter;
     }
   },
@@ -75,10 +75,6 @@ watch(
   ()=> [props.url],
   async () => {
     await loadData();
-
-    model.value = model.value.filter((option: any) => {
-      return options.value.filter(selected => option[props.trackBy] === selected[props.trackBy]);
-    });
 
     props.changeFilter({
       [props.name]: (model.value.map((item: any) => item[props.trackBy])).join(','),
@@ -98,14 +94,6 @@ async function loadData() {
   loading.value = false;
 }
 
-function getValuesFromFilter() {
-  return options?.value.filter((option: any) => {
-    if (props.data?.split(',').includes(option[props.trackBy])) {
-      return option;
-    }
-  });
-}
-
 function change() {
   props.changeFilter({
     [props.name]: (model.value.map((item: any) => item[props.trackBy])).join(','),
@@ -115,6 +103,14 @@ function change() {
 function clear() {
   model.value = [];
   props.removeFilter(props.name);
+}
+
+function getValuesFromFilter() {
+  return options?.value.filter((option: any) => {
+    if (props.data?.split(',').includes(option[props.trackBy])) {
+      return option;
+    }
+  });
 }
 </script>
 
@@ -128,8 +124,8 @@ function clear() {
       :placeholder="`${t('select_option')}`"
       :options="options"
       :clearable="clearable"
-      :text-by="(option: any) => option.name"
-      :track-by="(option: any) => option.id"
+      :text-by="textBy"
+      :track-by="trackBy"
       :loading="loading"
       @clear="clear"
       @update:isOpen="(isOpen: boolean) => !isOpen && change()"
