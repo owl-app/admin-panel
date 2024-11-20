@@ -1,6 +1,6 @@
 import { EntitySchema } from 'typeorm';
 
-import { ROLE_ENTITY, ROLE_SETTING_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
+import { PERMISSION_ENITY, ROLE_ENTITY, ROLE_SETTING_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
 
 import { RoleEntity } from "../../domain/entity/role.entity";
 import { BaseAuthEntitySchema } from './base-auth.entity-schema';
@@ -20,6 +20,20 @@ export const RoleEntitySchema = new EntitySchema<RoleEntity>({
       type: 'one-to-one',
       target: ROLE_SETTING_ENTITY,
       inverseSide: 'role',
-    }
+    },
+    permissions: {
+      type: 'many-to-many',
+      target: PERMISSION_ENITY,
+      cascade: true,
+      joinTable: {
+        name: 'rbac_item_child',
+        joinColumn: {
+          name: 'parent',
+        },
+        inverseJoinColumn: {
+          name: 'child',
+        },
+      },
+    },
   },
 })

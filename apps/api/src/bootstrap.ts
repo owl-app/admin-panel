@@ -13,6 +13,10 @@ import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-core/config'
 import { JwtAuthGuard } from '@owl-app/lib-api-core/passport/jwt.guard'
 import { RoutePermissionGuard } from '@owl-app/lib-api-core/rbac/guards/route-permission.guard'
 import cookieParser from 'cookie-parser'
+import { DataSource } from 'typeorm'
+import TagSeeder from './app/database/seeds/Tag'
+import { runSeeders } from 'typeorm-extension';
+import RbacSeeder from './app/database/seeds/Rbac'
 // import { HttpExceptionsFilter } from '../http';
 // import { EntitySubscriberInterface } from 'typeorm';
 // // import { IPluginConfig } from '@gauzy/common';
@@ -98,6 +102,16 @@ export async function bootstrap(
     }
     if (!host) {
     	host = '0.0.0.0';
+    }
+
+    const { runSeeds } = configService.get('db');
+
+    if (runSeeds) {
+        const dataSource = app.get(DataSource);
+
+        await runSeeders(dataSource, {
+            seeds: [TagSeeder, RbacSeeder]
+        });
     }
 
     console.log(chalk.green(`Host: ${host}`));
