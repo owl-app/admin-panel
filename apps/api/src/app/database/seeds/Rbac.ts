@@ -1,53 +1,64 @@
 import { Seeder } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 
-import { PERMISSION_ENITY, ROLE_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
-import { AvalilableCollections, PermissionReferType, CrudActions, Permission } from '@owl-app/lib-contracts';
+import { ROLE_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
+import { AvalilableCollections, PermissionReferType, CrudActions, Permission, UserActions, TimeActions } from '@owl-app/lib-contracts';
 
 export default class RbacSeeder implements Seeder {
     public async run(
         dataSource: DataSource
     ): Promise<any> {
         const repository =  dataSource.getRepository(ROLE_ENTITY);
-        const repositoryPermission =  dataSource.getRepository(PERMISSION_ENITY);
 
-        const permissions: Permission[] = []
-
-        await Promise.all(Object.values(AvalilableCollections).map(async (valueCollection) => {
-            Object.values(CrudActions).forEach((valueAction) => {
-                permissions.push({
-                    name: this.getRouteName(valueCollection, valueAction),
-                    description: `${valueCollection} ${valueAction.toLowerCase()}`,
-                    refer: PermissionReferType.ROUTE,
-                    collection: valueCollection,
-                });
-            });
-        }));
-
-        await repositoryPermission.save(permissions);
+        const permissions: Permission[] = [
+          ...this.getCrudPermissions(),
+          ...this.getPermissionsByCollection<typeof UserActions>(AvalilableCollections.USER, UserActions),
+          ...this.getPermissionsByCollection<typeof TimeActions>(AvalilableCollections.TIME, TimeActions),
+        ]
 
         const roleAdmin = {
-            name: 'Admin',
+            name: 'ROLE_ADMIN_SYSTEM',
             description: 'Admin role',
             permissions 
         }
 
-        console.log(roleAdmin)
-
-
         await repository.save(roleAdmin);
+    }
 
-        // ---------------------------------------------------
+    private getCrudPermissions(): Permission[] {
+      const permissions: Permission[] = [];
 
-        // const userFactory = factoryMan ager.get(User);
-        // // save 1 factory generated entity, to the database
-        // await userFactory.save();
+      Object.values(AvalilableCollections).map(async (valueCollection) => {
+        Object.values(CrudActions).forEach((valueAction) => {
+          permissions.push({
+            name: this.getRouteName(valueCollection, valueAction),
+            description: `${valueCollection} ${valueAction.toLowerCase()}`,
+            refer: PermissionReferType.ROUTE,
+            collection: valueCollection,
+          });
+        });
+      });
 
-        // // save 5 factory generated entities, to the database
-        // await userFactory.saveMany(5);
+      return permissions;
+    }
+
+
+    private getPermissionsByCollection<T>(collection: string, available: T): Permission[] {
+      const permissions: Permission[] = [];
+
+      Object.values(available).forEach((valueAction) => {
+        permissions.push({
+          name: this.getRouteName(collection, valueAction),
+          description: `${collection} ${valueAction.toLowerCase()}`,
+          refer: PermissionReferType.ROUTE,
+          collection: collection,
+        });
+      });
+
+      return permissions;
     }
 
     private getRouteName(collection: string, action: string): string {
-        return (`${PermissionReferType.ROUTE}_${collection}_${action}`).toUpperCase();
+      return (`${PermissionReferType.ROUTE}_${collection}_${action}`).toUpperCase();
     }
 }

@@ -18,7 +18,27 @@
           "buildTarget": "api:build:production"
         }
       }
+    },
+    "sync": {
+      "executor": "@nx/webpack:webpack",
+      "options": {
+        "outputPath": "dist/apps/api",
+        "webpackConfig": "apps/api/webpack.sync.config.js"
+      }
+    },
+    "sync-run": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "cross-env NODE_ENV=$0 env-cmd -f .env.{args.env} node dist/apps/api/main.js",
+            "forwardAllArgs": true
+          }
+        ],
+        "parallel": false
+      }
     }
-  },
+    },
+
   "tags": []
 }
