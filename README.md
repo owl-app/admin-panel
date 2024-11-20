@@ -33,3 +33,6 @@ APP:
 ```
 yarn nx g @nx/vue:lib @owl-app/lib-app-module-rbac --directory=libs/app/modules/rbac
 ```
+
+PM2
+pm2 start npm --name "timetracker" -- run start:build
