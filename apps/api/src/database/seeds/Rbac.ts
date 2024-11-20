@@ -2,27 +2,36 @@ import { Seeder } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 
 import { ROLE_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
-import { AvalilableCollections, PermissionReferType, CrudActions, Permission, UserActions, TimeActions } from '@owl-app/lib-contracts';
+import { AvalilableCollections, PermissionReferType, CrudActions, Permission, UserActions, TimeActions, RoleActions, TagActions, ProjectActions, CommonActions, Role } from '@owl-app/lib-contracts';
 
 export default class RbacSeeder implements Seeder {
+
     public async run(
         dataSource: DataSource
     ): Promise<any> {
-        const repository =  dataSource.getRepository(ROLE_ENTITY);
+      const repository =  dataSource.getRepository(ROLE_ENTITY);
 
-        const permissions: Permission[] = [
-          ...this.getCrudPermissions(),
-          ...this.getPermissionsByCollection<typeof UserActions>(AvalilableCollections.USER, UserActions),
-          ...this.getPermissionsByCollection<typeof TimeActions>(AvalilableCollections.TIME, TimeActions),
-        ]
+      const permissions: Permission[] = [
+        ...this.getCrudPermissions(),
+        ...this.getPermissionsByCollection<typeof UserActions>(AvalilableCollections.USER, UserActions),
+        ...this.getPermissionsByCollection<typeof TagActions>(AvalilableCollections.TAG, TagActions),
+        ...this.getPermissionsByCollection<typeof ProjectActions>(AvalilableCollections.PROJECT, ProjectActions),
+        ...this.getPermissionsByCollection<typeof RoleActions>(AvalilableCollections.ROLE, RoleActions),
+        ...this.getPermissionsByCollection<typeof TimeActions>(AvalilableCollections.TIME, TimeActions),
+        // archive
+        ...this.getPermissionsByCollection<typeof CommonActions>(AvalilableCollections.CLIENT, CommonActions),
+        ...this.getPermissionsByCollection<typeof CommonActions>(AvalilableCollections.PROJECT, CommonActions),
+        ...this.getPermissionsByCollection<typeof CommonActions>(AvalilableCollections.TAG, CommonActions),
+      ]
 
-        const roleAdmin = {
-            name: 'ROLE_ADMIN_SYSTEM',
-            description: 'Admin role',
-            permissions 
-        }
+      const roleAdmin = {
+          name: 'ROLE_ADMIN_SYSTEM',
+          description: 'Admin role',
+          permissions,
+          setting: { displayName: 'Admin' },
+      }
 
-        await repository.save(roleAdmin);
+      await repository.save(roleAdmin);
     }
 
     private getCrudPermissions(): Permission[] {
