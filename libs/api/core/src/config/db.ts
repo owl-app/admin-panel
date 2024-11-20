@@ -12,4 +12,5 @@ export default registerAs('db', () => ({
   // logger: 'advanced-console',
   // logging: true,
   autoLoadEntities: true,
+  runSeeds: ['true', '1'].includes(process.env.DB_SEEDS),
 }));
