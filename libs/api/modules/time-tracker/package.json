@@ -1,11 +1,5 @@
 {
   "name": "@owl-app/lib-api-module-time-tracker",
-  "main": "./dist/index.js",
-  "source": "./src/index.ts",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist/"
-  ],
   "dependencies": {
     "@nestjs/common": "^10.3.1",
     "@nestjs/swagger": "^7.3.0",

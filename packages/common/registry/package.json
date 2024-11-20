@@ -1,12 +1,6 @@
 {
   "name": "@owl-app/registry",
   "version": "0.0.1",
-  "main": "./dist/index.js",
-  "source": "./src/index.ts",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist/"
-  ],
   "devDependencies": {
     "tsconfig": "^0.0.1"
   },

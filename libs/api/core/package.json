@@ -1,11 +1,5 @@
 {
   "name": "@owl-app/lib-api-core",
-  "main": "./dist/index.js",
-  "source": "./src/index.ts",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist/"
-  ],
   "dependencies": {
     "@owl-app/request-context-nestjs": "^0.0.1",
     "@nestjs/common": "^10.0.0",

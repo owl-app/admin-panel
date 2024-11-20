@@ -1,11 +1,5 @@
 {
   "name": "@owl-app/winston-logger-nestjs",
-  "main": "./dist/index.js",
-  "source": "./src/index.ts",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist/"
-  ],
   "dependencies": {
     "fast-safe-stringify": "^2.1.1",
     "logform": "^2.6.0",

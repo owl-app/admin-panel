@@ -1,11 +1,5 @@
 {
   "name": "@owl-app/rbac-manager",
-  "main": "./dist/index.js",
-  "source": "./src/index.ts",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist/"
-  ],
   "dependencies": {
     "@owl-app/registry": "^0.0.1"
   },

@@ -1,11 +1,5 @@
 {
   "name": "@owl-app/nestjs-query-core",
-  "main": "./dist/index.js",
-  "source": "./src/index.ts",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist/"
-  ],
   "dependencies": {
     "@nestjs/common": "^10.0.0"
   },

@@ -19,26 +19,28 @@
         }
       }
     },
-    "sync": {
+    "build:sync": {
       "executor": "@nx/webpack:webpack",
       "options": {
         "outputPath": "dist/apps/api",
         "webpackConfig": "apps/api/webpack.sync.config.js"
       }
     },
-    "sync-run": {
+    "sync": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
           {
-            "command": "cross-env NODE_ENV=$0 env-cmd -f .env.{args.env} node dist/apps/api/main.js",
+            "command": "env-cmd -f {args.envFile} node dist/apps/api/seeder.js",
             "forwardAllArgs": true
+          },
+          {
+            "command": "rm -rf node dist/apps/api/seeder.js"
           }
         ],
         "parallel": false
       }
     }
-    },
-
+  },
   "tags": []
 }

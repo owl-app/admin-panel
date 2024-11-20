@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { NestFactory } from '@nestjs/core';
 
-import { BootstrapModule } from '../bootstrap.module';
+import { BootstrapModule } from '../app/bootstrap.module';
 import { runSeeders } from 'typeorm-extension';
 import RbacSeeder from './seeds/Rbac';
 import UserSeeder from './seeds/User';

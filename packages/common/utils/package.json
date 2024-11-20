@@ -1,11 +1,5 @@
 {
   "name": "@owl-app/utils",
-  "main": "./dist/index.js",
-  "source": "./src/index.ts",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist/"
-  ],
   "dependencies": {
 
   },
