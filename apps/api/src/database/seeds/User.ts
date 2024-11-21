@@ -5,7 +5,9 @@ import * as bcrypt from 'bcrypt';
 import { USER_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
 import { Role, User } from '@owl-app/lib-contracts';
 
-export default class UserSeeder implements Seeder {
+export default function createUserSeeder(passwordBcryptSaltRounds: number) {
+
+  return class UserSeeder implements Seeder {
 
     public async run(
         dataSource: DataSource
@@ -20,12 +22,13 @@ export default class UserSeeder implements Seeder {
 
       user.passwordHash = await bcrypt.hash(
         'test',
-        12
+        passwordBcryptSaltRounds
       );
 
       user.roles = [{ name: 'ROLE_ADMIN_SYSTEM' } as Role];
 
       await repository.save(user);
     }
-  
+
+  }
 }
