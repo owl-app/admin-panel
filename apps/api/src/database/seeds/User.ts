@@ -4,8 +4,9 @@ import * as bcrypt from 'bcrypt';
 
 import { USER_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
 import { Role, User } from '@owl-app/lib-contracts';
+import { Class } from '@owl-app/types';
 
-export default function createUserSeeder(passwordBcryptSaltRounds: number) {
+export default function createUserSeeder(passwordBcryptSaltRounds: number): Class<Seeder> {
 
   return class UserSeeder implements Seeder {
 

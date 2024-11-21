@@ -80,5 +80,10 @@
         "ciTargetName": "e2e-ci"
       }
     }
-  ]
+  ],
+  "release": {
+    "version": {
+      "preVersionCommand": "yarn nx run-many -t build"
+    }
+  }
 }

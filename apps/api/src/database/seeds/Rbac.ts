@@ -51,7 +51,6 @@ export default class RbacSeeder implements Seeder {
       return permissions;
     }
 
-
     private getPermissionsByCollection<T>(collection: string, available: T): Permission[] {
       const permissions: Permission[] = [];
 

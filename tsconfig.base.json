@@ -49,6 +49,7 @@
       "@owl-app/request-context-nestjs": [
         "packages/server/http/request-context-nestjs/src/index.ts"
       ],
+      "@owl-app/types": ["packages/common/types/src/index.ts"],
       "@owl-app/utils": ["packages/common/utils/src/index.ts"],
       "@owl-app/winston-logger-nestjs": [
         "packages/server/logger/winston-nestjs/src/index.ts"
