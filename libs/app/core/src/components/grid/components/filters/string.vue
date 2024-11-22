@@ -112,39 +112,40 @@ function clear() {
 <template>
   <div class="flex">
     <div class="flex-1">
-        <div class="flex">
-          <va-select
-            v-model="form.type"
-            class="w-36 mr-2"
-            :options="types"
-            label="Type"
-            @update:modelValue="change('type')"
-            v-if="singleFilter === ''"
-            
-          />
-          <va-input
-            v-model="form.text"
-            class="flex-1"
-            :label="labelSearchInput"
-            placeholder="Search"
-            background="#fff"
-            @update:modelValue="change('text')"
-          >
-            <template #prependInner>
-              <va-icon
-                name="manage_search"
-                class="search-input-icon mr-1"
-                color="secondary"
-              />
-            </template>
-          </va-input>
-        </div>
+      <div class="flex">
+        <va-select
+          v-model="form.type"
+          class="w-36 mr-2"
+          label="Type"
+          background="#fff"
+          :options="types"
+          @update:modelValue="change('type')"
+          v-if="singleFilter === ''"
+          
+        />
+        <va-input
+          v-model="form.text"
+          class="flex-1"
+          placeholder="Search"
+          background="#fff"
+          :label="labelSearchInput"
+          @update:modelValue="change('text')"
+        >
+          <template #prependInner>
+            <va-icon
+              name="manage_search"
+              class="search-input-icon mr-1"
+              color="secondary"
+            />
+          </template>
+        </va-input>
+      </div>
     </div>
     <div class="clear w-8 ml-2">
       <button @click="clear">
         <va-icon class="material-symbols-outlined" name="close" size="small" color="danger" />
       </button>
-  </div>
+    </div>
   </div>
 </template>
 

@@ -95,6 +95,12 @@ async function loadData() {
 }
 
 function change() {
+  if (model.value.length === 0) {
+    props.removeFilter(props.name);
+
+    return;
+  }
+
   props.changeFilter({
     [props.name]: (model.value.map((item: any) => item[props.trackBy])).join(','),
   });

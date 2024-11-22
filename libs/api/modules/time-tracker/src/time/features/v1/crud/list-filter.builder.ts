@@ -3,6 +3,7 @@ import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/qu
 import { Filter, SelectRelation } from '@owl-app/nestjs-query-core';
 
 import { FilterTimeRequest } from './dto';
+import { SelectQueryBuilder } from 'typeorm';
 
 export class ListFilterBuilder extends QueryFilterBuilder<
   Time,
@@ -28,6 +29,18 @@ export class ListFilterBuilder extends QueryFilterBuilder<
     return {
       and: filters,
     };
+  }
+
+  buildCustom(data: FilterTimeRequest, qb: SelectQueryBuilder<Time>): void {
+    if (data?.date?.start) {
+      qb.andWhere(`DATE_FORMAT(${qb.alias}.timeIntervalStart, '%Y-%m-%d') >= :dateStart`);
+      qb.setParameters({ dateStart: data?.date?.start });
+    }
+
+    if (data?.date?.end) {
+      qb.andWhere(`DATE_FORMAT(${qb.alias}.timeIntervalStart, '%Y-%m-%d') <= :dateEnd`);
+      qb.setParameters({ dateEnd: data?.date?.end });
+    }
   }
 
   buildRelations(): SelectRelation<Time>[] {

@@ -9,6 +9,7 @@ import type { Time, Tag, Project } from "@owl-app/lib-contracts";
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import SelectFilter from '@owl-app/lib-app-core/components/grid/components/filters/select.vue';
+import DateRangeFilter from '@owl-app/lib-app-core/components/grid/components/filters/date-range.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
 import { useApi } from '@owl-app/lib-app-core/composables/use-system'
 
@@ -144,16 +145,18 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
     <div class="mb-10" />
 
     <grid ref="gridRef" :columns="columns" defaultSort="id" url="times" layout="custom">
-      <template #filters="{ filters, changeFilter, removeFilter }">
+      <template  #content-filter="{ filters, changeFilter, removeFilter }">
         <div class="grid grid-cols-12 gap-2 grid-flow-col" style="margin-left:auto; grid-auto-flow: column;">
-          <div class="col-start-1 col-end-5">
-            <string-filter
-              :data="filters?.search"
+          <div class="col-start-1 col-end-4">
+            <date-range-filter
+              label="Date"
+              name="date"
+              :model-value="filters?.date"
               :change-filter="changeFilter"
               :remove-filter="removeFilter"
             />
           </div>
-          <div class="col-start-5 col-end-7">
+          <div class="col-start-4 col-end-6">
             <select-filter
               url="clients"
               label="Clients"
@@ -166,7 +169,7 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
               :remove-filter="removeFilter"
             />
           </div>
-          <div class="col-start-7 col-end-9">
+          <div class="col-start-6 col-end-8">
             <select-filter
               :url="`projects?pageable=0${getProjectUrlFilter(filters?.clients)}`"
               label="Projects"
@@ -179,6 +182,16 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
               :remove-filter="removeFilter"
             />
           </div>
+          <div class="col-start-8 col-end-13">
+            <string-filter
+              :data="filters?.search"
+              :change-filter="changeFilter"
+              :remove-filter="removeFilter"
+            />
+          </div>
+        </div>
+        <div class="my-4">
+          <va-divider />
         </div>
       </template>
 
