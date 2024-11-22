@@ -9,8 +9,8 @@ export default registerAs('db', () => ({
   password: process.env.DB_PASS,
   synchronize: ['true', '1'].includes(process.env.APP_DEBUG),
   timezone: process.env.DB_TIMEZONE || 'Z',
-  logger: 'advanced-console',
-  logging: true,
+  // logger: 'advanced-console',
+  // logging: true,
   autoLoadEntities: true,
   runSeeds: ['true', '1'].includes(process.env.DB_SEEDS),
 }));

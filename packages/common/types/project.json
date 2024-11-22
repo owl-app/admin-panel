@@ -19,7 +19,7 @@
       "options": {
         "outputPath": "dist/packages/common/types",
         "main": "packages/common/types/src/index.ts",
-        "tsConfig": "packages/common/types/tsconfig.lib.json",
+        "tsConfig": "packages/common/types/tsconfig.build.json",
         "assets": ["packages/common/types/*.md"]
       }
     },
