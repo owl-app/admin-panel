@@ -65,14 +65,29 @@ function groupByWeek(items: Time[]) {
     const dateKey = DateTime.fromISO(obj.timeIntervalStart as string).toLocaleString(DateTime.DATE_FULL);
 
     if (!acc[weekKey]) {
-      acc[weekKey] = {} as Record<string, Time[]>;
+      acc[weekKey] = {
+        sum: DateTime.fromISO(obj.timeIntervalEnd as string).diff(DateTime.fromISO(obj.timeIntervalStart as string)),
+        items: {} as Record<string, Time[]>
+      };
+    } else {
+      acc[weekKey].sum = acc[weekKey]
+        .sum
+        .plus(DateTime.fromISO(obj.timeIntervalEnd as string).diff(DateTime.fromISO(obj.timeIntervalStart as string)));
     }
 
-    if (!acc[weekKey][dateKey as string]) {
-      acc[weekKey][dateKey as string] = [];
+    if (!acc[weekKey].items[dateKey as string]) {
+      acc[weekKey].items[dateKey as string] = {
+        sum: DateTime.fromISO(obj.timeIntervalEnd as string).diff(DateTime.fromISO(obj.timeIntervalStart as string)),
+        items: [] as Time[]
+      };
+    } else {
+      acc[weekKey].items[dateKey as string].sum = acc[weekKey]
+        .items[dateKey as string]
+        .sum
+        .plus(DateTime.fromISO(obj.timeIntervalEnd as string).diff(DateTime.fromISO(obj.timeIntervalStart as string)));
     }
 
-    acc[weekKey][dateKey as string].push({
+    acc[weekKey].items[dateKey as string].items.push({
       ...obj,
       ...{
         timeIntervalStart: new Date(obj.timeIntervalStart),
@@ -84,15 +99,15 @@ function groupByWeek(items: Time[]) {
   }, {} as GroupedWeeksAndDays);
 
   for (const weekKey in groupedWeeks) {
-    groupedWeeks[weekKey] = Object.keys(groupedWeeks[weekKey])
+    groupedWeeks[weekKey].items = Object.keys(groupedWeeks[weekKey].items)
       .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
       .reduce((sortedAcc: { [date: string]: Time[] }, dateKey: string) => {
-          sortedAcc[dateKey] = groupedWeeks[weekKey][dateKey];
+          sortedAcc[dateKey] = groupedWeeks[weekKey].items[dateKey];
           return sortedAcc;
       }, {});
 
-    for (const dateKey in groupedWeeks[weekKey]) {
-      groupedWeeks[weekKey][dateKey].sort(
+    for (const dateKey in groupedWeeks[weekKey].items) {
+      groupedWeeks[weekKey].items[dateKey].items.sort(
           (a, b) => (b.timeIntervalStart as Date).getTime() - (a.timeIntervalStart as Date).getTime()
       );
     }
@@ -198,19 +213,31 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
       <template #custom="{ items, loading }">
         <va-inner-loading :loading="loading">
           <div v-for="(groupWeek, startWeek) in groupByWeek(items as Time[])" :key="startWeek">
-            <va-chip class="mb-4">{{ startWeek }}</va-chip>
+            <div class="flex mb-4">
+              <va-chip>{{ startWeek }}</va-chip>
+              <div class="ml-auto content-center">
+                <span class="text-xs">Week total:</span> <span class="font-bold text-lg ml-1">{{ groupWeek.sum.toFormat('hh:mm:ss') }}</span>
+              </div>
+            </div>
             <va-card 
-              v-for="(groupDay, startDay) in groupWeek"
+              v-for="(groupDay, startDay) in groupWeek.items"
               :key="startDay"
               class="card-time mb-4"
               square
               outlined
               bordered
             >
-              <va-card-title>{{ startDay }}</va-card-title>
+              <va-card-title>
+                <div class="flex w-full normal-case">
+                  <div class="content-center">{{ startDay }}</div>
+                  <div class="ml-auto content-center">
+                    <span class="text-xs font-thin">Total:</span> <span class="text-lg ml-1">{{ groupDay.sum.toFormat('hh:mm:ss') }}</span>
+                  </div>
+                </div>
+              </va-card-title>
               <va-card-content>
                 <create-inline
-                  v-for="(time) in groupDay"
+                  v-for="(time) in groupDay.items"
                   :url="`times/${time.id}`"
                   :key="`${time.id}-${time.timeIntervalStart}-${time.timeIntervalEnd}`"
                   :default-value="time"
