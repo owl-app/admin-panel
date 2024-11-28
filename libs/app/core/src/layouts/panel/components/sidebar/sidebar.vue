@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { watch, ref, computed, defineEmits } from 'vue'
+import { watch, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { useI18n } from 'vue-i18n'

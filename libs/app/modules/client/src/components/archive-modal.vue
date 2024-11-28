@@ -29,52 +29,52 @@
   </template>
   
 <script lang="ts" setup>
-  import { ref } from 'vue';
-  import type { Item, PrimaryKey } from '@owl-app/lib-app-core/types/item';
-  import { useItem } from '@owl-app/lib-app-core/composables/use-item';
+import { ref } from 'vue';
+import type { Item, PrimaryKey } from '@owl-app/lib-app-core/types/item';
+import { useItem } from '@owl-app/lib-app-core/composables/use-item';
 import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 import { AvalilableCollections, CommonActions } from '@owl-app/lib-contracts';
   
-  const props = defineProps<{
-    collection: string,
-  }>()
-  
-  const emit = defineEmits<{
-    (event: 'archived'): void
-  }>()
-  
-  defineExpose({
-    show,
-  })
-  
-  const model = defineModel<boolean>();
-  
-  const { primaryKey, archiving, archive, item, loading, getItem } = useItem<Item>(props.collection);
-  const { hasRoutePermission } = usePermissions();
+const props = defineProps<{
+  collection: string,
+}>()
 
-  let archived = ref(false);
-  let withProjects = ref(false);
+const emit = defineEmits<{
+  (event: 'archived'): void
+}>()
 
-  const onDelete = async () => {
-    await archive(archived.value, { withProjects: withProjects.value });
-  
-    emit('archived');
-  
-    model.value = false;
-  }
-  
-  function show(isArchived: boolean, id?: PrimaryKey): void {
-    model.value = true;
-    primaryKey.value = id;
-    archived.value  = isArchived;
-    if (hasRoutePermission(CommonActions.ARCHIVE, AvalilableCollections.PROJECT)) {
-      loadClient();
-    }
-  }
+defineExpose({
+  show,
+})
 
-  async function loadClient() {
-    if (primaryKey.value) {
-      await getItem({ withProjects: 1 });
-    }
+const model = defineModel<boolean>();
+
+const { primaryKey, archiving, archive, item, loading, getItem } = useItem<Item>(props.collection);
+const { hasRoutePermission } = usePermissions();
+
+let archived = ref(false);
+let withProjects = ref(false);
+
+const onDelete = async () => {
+  await archive(archived.value, { withProjects: withProjects.value });
+
+  emit('archived');
+
+  model.value = false;
+}
+
+function show(isArchived: boolean, id?: PrimaryKey): void {
+  model.value = true;
+  primaryKey.value = id;
+  archived.value  = isArchived;
+  if (hasRoutePermission(CommonActions.ARCHIVE, AvalilableCollections.PROJECT)) {
+    loadClient();
   }
+}
+
+async function loadClient() {
+  if (primaryKey.value) {
+    await getItem({ withProjects: 1 });
+  }
+}
 </script>

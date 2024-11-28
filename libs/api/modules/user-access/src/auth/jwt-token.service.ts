@@ -46,6 +46,8 @@ export default class JwtTokenService implements IJwtTokenService<User> {
 
     await this.setCurrentRefreshToken(token, email);
 
+    console.log(expiresIn)
+
     return { token, expiresIn: getMilliseconds(expiresIn) };
   }
 

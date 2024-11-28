@@ -1,11 +1,11 @@
+import { DateTime } from 'luxon';
+
 import { User } from '@owl-app/lib-contracts';
 
-import api, { RequestConfig } from '../services/api';
+import api from '../services/api';
 import { userName } from '../utils/user-name';
-import { merge } from 'lodash';
 import { defineStore } from 'pinia';
-import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router';
-import { useAppStore } from './app';
+import type { RouteLocationRaw } from 'vue-router';
 import { useLocalStorage } from '@vueuse/core';
 import { router } from '../application/router';
 
@@ -18,6 +18,7 @@ export const useUserStore = defineStore({
     currentUser: null as User | null,
     loading: false,
     error: null,
+    isRefreshing: false,
   }),
   getters: {
     fullName(): string | null {
@@ -58,9 +59,7 @@ export const useUserStore = defineStore({
       try {
         const { data } = await api.post('/auth/login', { email, password });
 
-        this.authenticated = true;
-        this.accessTokenExpiry = (Date.now() + (data.accessTokenExpires ?? 0));
-        this.refreshTokenExpiry = (Date.now() + (data.refreshTokenExpires ?? 0));
+        this.logged(data.accessTokenExpires, data.refreshTokenExpires);
       } catch (error: any) {
         throw error.response?.data?.message ?? error.message;
       } finally {
@@ -93,28 +92,6 @@ export const useUserStore = defineStore({
         }, 500);
       }
     },
-    async trackPage(to: RouteLocationNormalized) {
-      /**
-       * We don't want to track the full screen preview from live previews as part of the user's
-       * last page, as that'll cause a fresh login to navigate to the full screen preview where
-       * you can't navigate away from #19160
-       */
-      if (to.path.endsWith('/preview')) {
-        return;
-      }
-
-      // await api.patch(
-      // 	`/users/me/track/page`,
-      // 	{
-      // 		last_page: to.fullPath,
-      // 	},
-      // 	{ measureLatency: true } as RequestConfig,
-      // );
-
-      if (this.currentUser && !('share' in this.currentUser)) {
-        // this.currentUser.last_page = to.fullPath;
-      }
-    },
     async refresh() {
       this.loading = true;
       this.error = null;
@@ -122,14 +99,18 @@ export const useUserStore = defineStore({
       try {
         const { data } = await api.post('/auth/refresh');
 
-        this.authenticated = true;
-        this.accessTokenExpiry = (Date.now() + (data.accessTokenExpires ?? 0));
-        this.refreshTokenExpiry = (Date.now() + (data.refreshTokenExpires ?? 0));
+        this.logged(data.accessTokenExpires, data.refreshTokenExpires);
       } catch (error: any) {
         this.error = error?.response.data.message;
       } finally {
         this.loading = false;
       }
+    },
+    logged(accessTokenExpires = null, refreshTokenExpires = null) {
+      this.authenticated = true;
+      this.accessTokenExpiry = (Date.now() + (accessTokenExpires ?? 0));
+      this.refreshTokenExpiry = (Date.now() + (refreshTokenExpires ?? 0));
     }
+
   },
 });
