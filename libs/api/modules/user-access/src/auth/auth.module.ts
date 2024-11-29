@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { CqrsModule } from '@nestjs/cqrs'
 import { JwtModule, JwtService } from '@nestjs/jwt'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { PassportModule } from '@nestjs/passport'
 
 import { JwtStrategy } from '@owl-app/lib-api-core/passport/jwt.strategy'
 import { JwtRefreshStrategy } from '@owl-app/lib-api-core/passport/strategies/jwt-refresh.strategy'
@@ -40,6 +41,7 @@ import { LogoutHandler } from './features/logout/logout.service'
         }
       ]
     }),
+    PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
@@ -47,7 +49,6 @@ import { LogoutHandler } from './features/logout/logout.service'
 
         return {
           secret: config?.secret,
-          signOptions: { expiresIn: '24h' }
         }
       },
       inject: [ConfigService],

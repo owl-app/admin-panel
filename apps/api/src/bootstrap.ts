@@ -33,10 +33,6 @@ export async function bootstrap(
         'Referer'
     ];
 
-    const reflector = app.get(Reflector);
-    app.useGlobalGuards(new JwtAuthGuard(reflector));
-    app.useGlobalGuards(new RoutePermissionGuard(reflector));
-
     app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
     // // app.useLogger(app.get(SentryService));
@@ -58,6 +54,10 @@ export async function bootstrap(
     const globalPrefix = 'api/' + version;
 
     app.setGlobalPrefix(globalPrefix);
+
+    const reflector = app.get(Reflector);
+    app.useGlobalGuards(new JwtAuthGuard(reflector));
+    app.useGlobalGuards(new RoutePermissionGuard(reflector));
 
     const options = new DocumentBuilder()
     	.setTitle('Owl API')

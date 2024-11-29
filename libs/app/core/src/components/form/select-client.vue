@@ -32,7 +32,7 @@ async function loadClients(): Promise<void> {
   loading.value = true;
   const result = await api.get('clients?pageable=0');
 
-  clients.value = result.data?.items?.map(({ id, name }: { id: string, name: string }) => ({ id, name })) ?? [];
+  clients.value = result?.data?.items?.map(({ id, name }: { id: string, name: string }) => ({ id, name })) ?? [];
   loading.value = false;
 }
 </script>

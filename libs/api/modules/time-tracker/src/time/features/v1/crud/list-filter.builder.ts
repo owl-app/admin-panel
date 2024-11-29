@@ -1,9 +1,10 @@
+import { SelectQueryBuilder } from 'typeorm';
+
 import { Time } from '@owl-app/lib-contracts';
 import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/query-filter.builder';
 import { Filter, SelectRelation } from '@owl-app/nestjs-query-core';
 
 import { FilterTimeRequest } from './dto';
-import { SelectQueryBuilder } from 'typeorm';
 
 export class ListFilterBuilder extends QueryFilterBuilder<
   Time,
@@ -22,6 +23,10 @@ export class ListFilterBuilder extends QueryFilterBuilder<
 
     if(data?.projects) {
       filters.push({ project: { id: { in: data?.projects?.split(',') } } });
+    }
+
+    if(data?.tags) {
+      filters.push({ tags: { id: { in: data?.tags?.split(',') } } });
     }
 
     filters.push({ timeIntervalEnd: { isNot: null } });

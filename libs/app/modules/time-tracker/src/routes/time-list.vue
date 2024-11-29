@@ -27,25 +27,36 @@ const deleteModal = ref<InstanceType<typeof DeleteModal>>();
 const timerCreateInline = ref<InstanceType<typeof CreateInline>>();
 const tags = ref<Tag[]>([]);
 const projects = ref<Project[]>([]);
+const loadingData = ref(false);
 
 const columns = defineVaDataTableColumns([
   { label: 'Name', key: 'name', sortable: true },
   { label: ' ', key: 'actions' },
 ])
 
-loadTags();
-loadProjects();
+loadData();
 
 async function loadTags(): Promise<void> {
   const result = await api.get('tags?pageable=0');
 
-  tags.value = result.data?.items;
+  tags.value = result?.data?.items;
 }
 
 async function loadProjects(): Promise<void> {
   const result = await api.get('projects?pageable=0');
 
-  projects.value = result.data?.items;
+  projects.value = result?.data?.items;
+}
+
+async function loadData(): Promise<void> {
+  loadingData.value = true;
+
+  await Promise.all([
+    loadTags(),
+    loadProjects()
+  ]);
+
+  loadingData.value = false;
 }
 
 function groupByWeek(items: Time[]) {
@@ -161,7 +172,7 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
 
     <grid ref="gridRef" :columns="columns" defaultSort="id" url="times" layout="custom">
       <template  #content-filter="{ filters, changeFilter, removeFilter }">
-        <div class="grid grid-cols-12 gap-2 grid-flow-col" style="margin-left:auto; grid-auto-flow: column;">
+        <div class="grid grid-cols-16 gap-2 grid-flow-col" style="margin-left:auto; grid-auto-flow: column;">
           <div class="col-start-1 col-end-4">
             <date-range-filter
               label="Date"
@@ -173,7 +184,7 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
           </div>
           <div class="col-start-4 col-end-6">
             <select-filter
-              url="clients"
+              url="clients?pageable=0"
               label="Clients"
               name="clients"
               textBy="name"
@@ -191,13 +202,30 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
               name="projects"
               textBy="name"
               trackBy="id"
+              :loading="loadingData"
+              :options="projects"
               :data="filters?.projects"
               :clearable="true"
               :change-filter="changeFilter"
               :remove-filter="removeFilter"
             />
           </div>
-          <div class="col-start-8 col-end-13">
+          <div class="col-start-8 col-end-10">
+            <select-filter
+              url="tags"
+              label="Tags"
+              name="tags"
+              textBy="name"
+              trackBy="id"
+              :loading="loadingData"
+              :options="tags"
+              :data="filters?.tags"
+              :clearable="true"
+              :change-filter="changeFilter"
+              :remove-filter="removeFilter"
+            />
+          </div>
+          <div class="col-start-10 col-end-13">
             <string-filter
               :data="filters?.search"
               :change-filter="changeFilter"

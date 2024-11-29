@@ -41,6 +41,7 @@ error:
 errors:
   unexpected_error: Unexpected error
   forbidden_resource: Forbidden resource
+  session_expired: Session expired
 grid:
   filters:
     archived:

@@ -17,11 +17,6 @@ export default class JwtTokenService implements IJwtTokenService<User> {
     private readonly jwtService: JwtService,
   ) {}
 
-  async checkToken(token: string): Promise<any> {
-    const decode = await this.jwtService.verifyAsync(token);
-    return decode;
-  }
-
   createToken(payload: IJwtTokenPayload, secret: string, expiresIn: string): string {
     return this.jwtService.sign(payload, {
       secret,
@@ -32,7 +27,7 @@ export default class JwtTokenService implements IJwtTokenService<User> {
   async getJwtToken(email: string): Promise<Token> {
     const payload: IJwtTokenPayload = { email };
     const secret = this.jwtConfig?.secret;
-    const expiresIn = this.jwtConfig.expiration_time;
+    const expiresIn = this.jwtConfig.expirationTime;
     const token = this.createToken(payload, secret, expiresIn);
 
     return { token, expiresIn: getMilliseconds(expiresIn) };
@@ -40,13 +35,11 @@ export default class JwtTokenService implements IJwtTokenService<User> {
 
   async getJwtRefreshToken(email: string): Promise<Token> {
     const payload: IJwtTokenPayload = { email };
-    const secret = this.jwtConfig.refresh_token_secret;
-    const expiresIn = this.jwtConfig.refresh_token_expiration_time;
+    const secret = this.jwtConfig.refreshTokenSecret;
+    const expiresIn = this.jwtConfig.refreshTokenExpirationTime;
     const token = this.createToken(payload, secret, expiresIn);
 
     await this.setCurrentRefreshToken(token, email);
-
-    console.log(expiresIn)
 
     return { token, expiresIn: getMilliseconds(expiresIn) };
   }

@@ -1,5 +1,4 @@
-import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import PQueue, { Options, QueueAddOptions } from 'p-queue';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useToast } from 'vuestic-ui/web-components';
 
 import { useLatencyStore } from '../stores/latency';
@@ -7,11 +6,8 @@ import { useRequestsStore } from '../stores/requests';
 import { useUserStore } from '../stores/user';
 import { translateAPIError } from '../application/lang';
 import Config from '../config';
+import { createApi, RequestConfig, Response } from './axios';
 
-export type RequestConfig = InternalAxiosRequestConfig & { measureLatency?: boolean };
-
-type InternalRequestConfig = RequestConfig & { id: string; start?: number };
-type Response = AxiosResponse & { config: RequestConfig };
 type Callback = () => void;
 
 export type RequestError = AxiosError & { response: Response };
@@ -22,10 +18,11 @@ let isRefreshing = false;
 const baseURL = Config.api.baseUrl + Config.api.prefix;
 const cancelTokenSource = axios.CancelToken.source();
 
-const api = axios.create({
+const api = createApi({
   baseURL,
   withCredentials: true,
   cancelToken: cancelTokenSource.token,
+  isAuthenticated: true,
 });
 
 let refreshRequests: Callback[] = [];
@@ -39,16 +36,14 @@ const onRrefreshed = async () => {
   refreshRequests = [];
 };
 
-export const onRequest = async (config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
+export const onRequest = async (config: RequestConfig): Promise<RequestConfig> => {
   const userStore = useUserStore();
   const requestsStore = useRequestsStore();
   const id = requestsStore.startRequest();
-  const requestConfig: InternalRequestConfig = {
+  const requestConfig: RequestConfig = {
     ...config,
     id,
   };
-
-  console.log('Before Request', config.url);
 
   if (Date.now() > userStore.accessTokenExpiry && Date.now() < userStore.refreshTokenExpiry) {
     if (!isRefreshing) {
@@ -63,7 +58,6 @@ export const onRequest = async (config: InternalAxiosRequestConfig): Promise<Int
 
         onRrefreshed();
       } catch (error) {
-        console.log('Error refreshing token', error);
         isRefreshing = false;
         userStore.logout(false);
         return Promise.reject(error);
@@ -79,14 +73,9 @@ export const onRequest = async (config: InternalAxiosRequestConfig): Promise<Int
     });
   }
 
-  if (userStore.authenticated && Date.now() > userStore.refreshTokenExpiry) {
-    cancelTokenSource.cancel('Session expired');
-    api.defaults.cancelToken = axios.CancelToken.source().token;
-    console.log('Session expired');
-    return Promise.reject({ response: { status: 401,  data: { message: 'Session expired' } } });
+  if (config?.isAuthenticated && Date.now() > userStore.refreshTokenExpiry) {
+    return Promise.reject({ response: { status: 401, data: { message: 'Session expired' } } });
   }
-
-  console.log('After Request', config.url);
 
   return requestConfig;
 };
@@ -97,18 +86,18 @@ export const onResponse = (response: AxiosResponse | Response): AxiosResponse | 
 };
 
 export const onError = async (error: RequestError): Promise<RequestError | void> => {
-  console.log('error', error);
+
   if (error?.response?.status === 401) {
     const userStore = useUserStore();
 
     await userStore.logout(false);
 
-    return Promise.reject();
+    return;
   }
- 
-  onRequestEnd(error.response);
 
-  const { data } = error.response;
+  const { data } = error?.response || {};
+
+  onRequestEnd(error.response);
 
   if (error.response.status !== 422) {
     notify({
@@ -129,7 +118,7 @@ export default api;
 
 function onRequestEnd(response?: AxiosResponse | Response) {
   // Note: Cancelled requests don't respond with the config
-  const config = response?.config as InternalRequestConfig | undefined;
+  const config = response?.config as RequestConfig | undefined;
 
   if (config?.id) {
     const requestsStore = useRequestsStore();

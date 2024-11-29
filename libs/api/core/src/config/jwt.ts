@@ -8,14 +8,15 @@ export const JWT_CONFIG_PROVIDER = 'JwtConfig';
 
 export interface IJwtConfig {
   secret: string;
-  expiration_time: string;
+  expirationTime: string;
   cookie: {
     domain: string;
     http_only: boolean;
     secure: boolean
   }
-  refresh_token_secret: string;
-  refresh_token_expiration_time: string;
+  refreshTokenSecret: string;
+  refreshTokenExpirationTime: string;
+  tokenClockTolerance: number;
 }
 
 export const JwtConfigProvider = {
@@ -55,22 +56,28 @@ export default registerAs(JWT_CONFIG_NAME, (): IJwtConfig => {
           .description('Cookie token secure'),
       })
     },
-    expiration_time: {
+    expirationTime: {
       value: process.env.JWT_EXPIRATION_TIME,
       joi: Joi.string()
         .default('10m')
         .description('minutes after which access tokens expire'),
     },
-    refresh_token_secret: {
+    refreshTokenSecret: {
       value: process.env.JWT_REFRESH_TOKEN_SECRET,
       joi: Joi.string()
         .default('thisisafakesecretchangeuy')
         .required()
         .description('JWT secret key'),
     },
-    refresh_token_expiration_time: {
+    refreshTokenExpirationTime: {
       value: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
       joi: Joi.string()
+        .default('30m')
+        .description('minutes after which refresh tokens expire'),
+    },
+    tokenClockTolerance: {
+      value: parseInt(process.env.JWT_TOKEN_CLOCK_TOLERANCE) || 2,
+      joi: Joi.number()
         .default('30m')
         .description('minutes after which refresh tokens expire'),
     },

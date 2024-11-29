@@ -47,7 +47,7 @@ loadRoles();
 async function loadRoles(): Promise<void> {
   const result = await api.get('rbac/roles');
 
-  roles.value = result.data?.items;
+  roles.value = result?.data?.items;
 }
 
 </script>

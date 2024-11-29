@@ -14,7 +14,16 @@ const props = defineProps({
   },
   url: {
     type: String,
-    required: true,
+    required: false,
+  },
+  loading: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  options: {
+    type: null as unknown as PropType<any[] | null>,
+    required: false,
   },
   label: {
     type: String,
@@ -55,10 +64,12 @@ const model = ref<any[]>([])
 const api = useApi();
 const { t } = useI18n()
 
-const options = ref<any[]>([]);
-const loading = ref(false);
+const availableOptions = ref<any[]>([]);
+const loadingData = ref(props.loading);
 
-loadData();
+if(!props.options) {
+  loadData();
+}
 
 watch(
   ()=> [props.data],
@@ -82,16 +93,28 @@ watch(
   },
 );
 
+watch(
+  ()=> [props.loading],
+  async () => {
+    if (props.options) {
+      availableOptions.value = props.options.map((item) => getOption(item));
+    }
+    
+    loadingData.value = props.loading;
+  },
+  { immediate: true },
+);
+
 async function loadData() {
-  loading.value = true;
+  loadingData.value = true;
 
   const result = await api.get(props.url);
 
-  options.value = result.data?.items?.map(({ id, name }: { id: string, name: string }) => ({ id, name })) ?? [];
+  availableOptions.value = result?.data?.items?.map((item) => getOption(item)) ?? [];
 
   model.value = getValuesFromFilter();
 
-  loading.value = false;
+  loadingData.value = false;
 }
 
 function change() {
@@ -112,11 +135,15 @@ function clear() {
 }
 
 function getValuesFromFilter() {
-  return options?.value.filter((option: any) => {
+  return availableOptions?.value.filter((option: any) => {
     if (props.data?.split(',').includes(option[props.trackBy])) {
       return option;
     }
   });
+}
+
+function getOption(item: any) {
+  return { [[props.trackBy]]: item[props.trackBy], [props.textBy]: item[props.textBy] };
 }
 </script>
 
@@ -128,11 +155,11 @@ function getValuesFromFilter() {
       background="#fff"
       :label="`${t(label)}`"
       :placeholder="`${t('select_option')}`"
-      :options="options"
+      :options="availableOptions"
       :clearable="clearable"
       :text-by="textBy"
       :track-by="trackBy"
-      :loading="loading"
+      :loading="loadingData"
       @clear="clear"
       @update:isOpen="(isOpen: boolean) => !isOpen && change()"
     >

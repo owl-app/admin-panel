@@ -10,6 +10,8 @@ export class FilterTimeRequest {
 
     readonly projects?: string;
 
+    readonly tags?: string;
+
     readonly date?: { start: string, end: string };
 
 }

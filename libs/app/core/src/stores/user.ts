@@ -57,7 +57,7 @@ export const useUserStore = defineStore({
       this.error = null;
 
       try {
-        const { data } = await api.post('/auth/login', { email, password });
+        const { data } = await api.post('/auth/login', { email, password }, { isAuthenticated: false });
 
         this.logged(data.accessTokenExpires, data.refreshTokenExpires);
       } catch (error: any) {

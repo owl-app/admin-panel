@@ -28,7 +28,7 @@ async function loadPermissions(): Promise<void> {
   const result = await api.get('rbac/permissions?pageable=0');
   const assignedPermissions = (await api.get(`rbac/roles/assigned-permissions/${route.params?.roleId}`)).data;
 
-  permissions.value = result.data?.items.reduce(
+  permissions.value = result?.data?.items.reduce(
     (groupedPermissions: Record<string, GroupedPermission[]>, permission: Permission) => {
       if (permission.collection) {
         if (!groupedPermissions[permission.collection]) {

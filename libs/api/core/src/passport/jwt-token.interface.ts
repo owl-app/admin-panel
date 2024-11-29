@@ -8,8 +8,6 @@ export type Token = {
 };
 
 export interface IJwtTokenService<User> {
-  checkToken(token: string): Promise<any>;
-
   createToken(
     payload: IJwtTokenPayload,
     secret: string,
