@@ -21,6 +21,10 @@ export enum CrudActions {
   LIST = 'LIST',
 }
 
+export enum ClientActions {
+  AVAILABLE = 'AVAILABLE',
+}
+
 export enum UserActions {
   ME = 'ME',
   LOGOUT = 'LOGOUT',

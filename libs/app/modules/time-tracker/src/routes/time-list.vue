@@ -276,7 +276,7 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
                   ]"
                   :project-options="[
                     ...projects,
-                    ...time?.projects?.filter(tag => tag.archived && !projects?.find(existing => tag.id === existing.id)) ?? []
+                    ...(projects?.find(project => project.id === time?.project?.id) ? [] : [time.project])
                   ]"
                   @saved="gridRef?.reloadGrid"
                 >

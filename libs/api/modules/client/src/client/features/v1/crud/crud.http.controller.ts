@@ -23,6 +23,7 @@ import {
 
 import {
   AvalilableCollections,
+  ClientActions,
   CrudActions,
   createClientValidationSchema,
   updateClientValidationSchema
@@ -168,7 +169,10 @@ export class ClientCrudController {
       'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Get()
-  @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.LIST)
+  @RoutePermissions(AvalilableCollections.CLIENT, [
+    CrudActions.LIST,
+    ClientActions.AVAILABLE,
+  ])
   async paginated(
     @Query('filters') filters: FilterClientDto,
     @Query() pagination: PaginatedQuery

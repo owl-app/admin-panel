@@ -59,10 +59,15 @@
           <template #content="{ value }">
             <div class="flex items-center" v-if="data.ref.project">
               <span class="project-dot"></span>
-              <span flat size="small">
+              <span flat size="small" :class="`${(value as Tag)?.archived ? 'line-through' : ''}`">
                 {{ value?.name }}
               </span>
             </div>
+          </template>
+          <template #option-content="{ option }">
+              <span :class="`${(option as Tag)?.archived ? 'line-through' : ''}`">
+                {{ (option as Tag)?.name }}
+              </span>
           </template>
         </va-select>
         <va-select
@@ -83,7 +88,7 @@
           <template #content="{ valueArray }">
             <va-badge
               v-for="v in valueArray"
-              :class="`mr-0.5 mt-0.5 ${v.archived ? 'line-through' : ''}`"
+              class="mr-0.5 mt-0.5"
               :color="v.color ?? 'primary'"
               :text="v.name"
               :key="v"
