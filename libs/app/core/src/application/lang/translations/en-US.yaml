@@ -34,6 +34,7 @@ vuestic:
   goToSpecificPage: Go to specific page
   select: Select
   selectedTime: Selected time
+  search: Search
 error:
   timer:
     another_timer_is_running: Another timer is running

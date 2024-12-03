@@ -98,6 +98,7 @@ watch(
   async () => {
     if (props.options) {
       availableOptions.value = props.options.map((item) => getOption(item));
+      model.value = getValuesFromFilter();
     }
     
     loadingData.value = props.loading;
@@ -143,7 +144,7 @@ function getValuesFromFilter() {
 }
 
 function getOption(item: any) {
-  return { [[props.trackBy]]: item[props.trackBy], [props.textBy]: item[props.textBy] };
+  return { [[props.trackBy]]: item[props.trackBy], [props.textBy]: item[props.textBy], archived: item?.archived ?? false };
 }
 </script>
 
@@ -166,11 +167,16 @@ function getOption(item: any) {
       <template #content="{ valueArray }">
         <va-badge
           v-for="v in valueArray"
-          :class="`mr-0.5 mt-0.5 ${v.archived ? 'line-through' : ''}`"
+          :class="`mr-0.5 mt-0.5 ${v?.archived ? 'line-through' : ''}`"
           :color="v.color ?? 'primary'"
           :text="v.name"
           :key="v"
         />
+      </template>
+      <template #option-content="{ option }">
+        <span :class="`${(option as Tag)?.archived ? 'line-through' : ''}`">
+          {{ (option as Tag)?.name }}
+        </span>
       </template>
     </va-select>
 </template>
