@@ -4,7 +4,7 @@ import { Time } from '@owl-app/lib-contracts';
 import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/query-filter.builder';
 import { Filter, SelectRelation } from '@owl-app/nestjs-query-core';
 
-import { FilterTimeRequest } from './dto';
+import { FilterTimeRequest } from '../../../dto';
 
 export class ListFilterBuilder extends QueryFilterBuilder<
   Time,

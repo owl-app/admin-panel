@@ -146,6 +146,23 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
 
   return `&filters[clients]=${clientFitler}`;
 }
+
+async function exportCsv(filters: Record<string, string | string[]>) {
+  const response = await api.get('times/export-csv', { 
+    params: filters,
+    responseType: 'blob'
+  });
+
+  const blob = new Blob([response?.data], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+
+  a.href = url;
+  a.download = 'timetracker-export.csv';
+  a.click();
+
+  window.URL.revokeObjectURL(url);
+}
 </script>
 
 <template>
@@ -233,7 +250,10 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
             />
           </div>
         </div>
-        <div class="my-4">
+        <div class="my-2 text-right text-xs font-bold underline">
+          <va-badge @click="exportCsv(filters)" text="Export to CSV" class="cursor-pointer" color="secondary" />
+        </div>
+        <div class="my-2">
           <va-divider />
         </div>
       </template>

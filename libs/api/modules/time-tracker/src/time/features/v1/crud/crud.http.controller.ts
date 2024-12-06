@@ -43,9 +43,9 @@ import { TimeAssembler } from '../../../assembler/time.assembler';
 import {
   CreateTimeRequest,
   UpdateTimeRequest,
-  FilterTimeRequest,
   TimePaginatedResponse,
 } from './dto';
+import { FilterTimeRequest } from '../../../dto'
 
 @ApiTags('Time Tracker Manage')
 @Controller('times')

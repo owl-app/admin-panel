@@ -15,6 +15,8 @@ import { ListFilterBuilder } from './time/features/v1/crud/list-filter.builder'
 import { StopWathController } from './time/features/v1/stopwatch/stopwatch.http.controller'
 import { ContinueWatchHandler } from './time/features/v1/stopwatch/continue-watch.service'
 import { InProgressController } from './time/features/v1/in-progress/in-progress.http.controller'
+import { ExportController } from './time/features/v1/export/export.http.controller'
+import { CsvGenerator } from './time/features/v1/export/csv.generator'
 
 @Module({
   imports: [
@@ -37,11 +39,13 @@ import { InProgressController } from './time/features/v1/in-progress/in-progress
     }),
   ],
   controllers: [
+    ExportController,
     StopWathController,
     InProgressController,
     TimeCrudController,
   ],
   providers: [
+    CsvGenerator,
     ContinueWatchHandler,
   ]
 })
