@@ -1,4 +1,4 @@
-# Admin panel
+# Timetracker
 
 NestJs, Vue.
 
