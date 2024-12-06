@@ -61,6 +61,6 @@ export class CsvGenerator {
     const [hours, minutes, seconds] = duration.toFormat('hh:mm:ss').split(':').map(Number);
     const totalHours = hours + (minutes / 60) + (seconds / 3600);
 
-    return totalHours.toFixed(2);
+    return totalHours.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 }
