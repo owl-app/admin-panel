@@ -4,8 +4,9 @@ import { DateTime } from 'luxon'
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import type { Time, Tag, Project } from "@owl-app/lib-contracts";
+import { type Time, type Tag, type Project, AvalilableCollections, TimeActions } from "@owl-app/lib-contracts";
 
+import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import SelectFilter from '@owl-app/lib-app-core/components/grid/components/filters/select.vue';
@@ -19,6 +20,7 @@ type GroupedWeeksAndDays = Record<string, Record<string, Time[]>>;
 
 const { t } = useI18n();
 const api = useApi();
+const { hasRoutePermission } = usePermissions(AvalilableCollections.TIME);
 
 const gridRef = ref<InstanceType<typeof Grid>>();
 const showDeleteModal = ref(false);
@@ -251,7 +253,13 @@ async function exportCsv(filters: Record<string, string | string[]>) {
           </div>
         </div>
         <div class="my-2 text-right text-xs font-bold underline">
-          <va-badge @click="exportCsv(filters)" text="Export to CSV" class="cursor-pointer" color="secondary" />
+          <va-badge 
+            text="Export to CSV"
+            class="cursor-pointer"
+            color="secondary"
+            @click="exportCsv(filters)"
+            v-if="hasRoutePermission(TimeActions.EXPORT_CSV)"
+          />
         </div>
         <div class="my-2">
           <va-divider />

@@ -18,7 +18,7 @@ import {
 
 import {
   AvalilableCollections,
-  CrudActions,
+  TimeActions,
 } from '@owl-app/lib-contracts';
 
 import { SortDirection } from '@owl-app/nestjs-query-core';
@@ -49,18 +49,13 @@ export class ExportController {
   ) {}
 
   @ApiOperation({ summary: 'Export all times by filters' })
-  // @ApiResponse({
-  //   status: HttpStatus.OK,
-  //   description: 'Found records.',
-  //   type: TimePaginatedResponse,
-  // })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description:
       'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Get('export-csv')
-  @RoutePermissions(AvalilableCollections.TIME, CrudActions.LIST)
+  @RoutePermissions(AvalilableCollections.TIME, TimeActions.EXPORT_CSV)
   async csvExport(
     @Query('filters') filters: FilterTimeRequest,
     @Res({ passthrough: true }) response: Response

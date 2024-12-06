@@ -53,6 +53,7 @@ export enum TimeActions {
   STOP_WATCH = 'STOP_WATCH',
   CONTINUE_WATCH = 'CONTINUE_WATCH',
   IN_PROGRESS = 'IN_PROGRESS',
+  EXPORT_CSV = 'EXPORT_CSV',
 }
 
 export enum AvalilableRouteCollections {
