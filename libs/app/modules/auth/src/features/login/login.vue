@@ -48,11 +48,13 @@
         </template>
 
         <template #actions="{ validate, data }">
-          <div class="auth-layout__options flex flex-col sm:flex-row sm:items-center justify-end">
-            <RouterLink :to="{ name: 'recovery-password' }" class="mt-2 sm:mt-0 sm:ml-1 font-semibold text-primary">
+          <div class="auth-layout__options flex flex-col sm:flex-row sm:items-center justify-start">
+            <RouterLink :to="{ name: 'register' }" class="mt-2 sm:mt-0 sm:ml-1 font-semibold text-primary">
+              Register
+            </RouterLink>
+            <RouterLink :to="{ name: 'recovery-password' }" class="mt-2 sm:mt-0 font-semibold text-primary ml-auto">
               Forgot password?
             </RouterLink>
-            
           </div>
           <div class="flex justify-center mt-4">
             <va-button class="w-full" :loading="userStore.loading" @click="validate(true) && login(data.value)">Login</va-button>

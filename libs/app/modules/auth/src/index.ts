@@ -4,6 +4,7 @@ import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
 import LoginRoute from './features/login/login.vue';
 import LogoutRoute from './features/logout/logout.vue';
 import RecoveryPasswordRoute from './features/recovery-password/recovery-password.vue';
+import RegisterRoute from './features/register/register.vue';
 
 export default defineModule({
   id: 'auth',
@@ -35,6 +36,14 @@ export default defineModule({
         name: 'recovery-password',
         path: 'recovery-password',
         component: RecoveryPasswordRoute,
+        meta: {
+          public: true,
+        },
+      },
+      {
+        name: 'register',
+        path: 'register',
+        component: RegisterRoute,
         meta: {
           public: true,
         },
