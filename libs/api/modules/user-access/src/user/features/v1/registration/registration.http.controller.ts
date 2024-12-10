@@ -2,6 +2,9 @@ import { Body, Controller, HttpCode, HttpStatus, Post, Res } from '@nestjs/commo
 import { CommandBus } from '@nestjs/cqrs'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
+import { registerUserValidationSchema } from '@owl-app/lib-contracts'
+
+import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe'
 import { Public } from '@owl-app/lib-api-core/metadata/route'
 import { ApiErrorValidationResponse } from '@owl-app/lib-api-core/api/api-error-validation.response'
 
@@ -28,7 +31,10 @@ export class RegistrationController {
     type: ApiErrorValidationResponse
   })
   @Post('/registration')
-  async login(@Body() registration: RegistrationRequest): Promise<void> {
+  async login(
+    @Body(new ValibotValidationPipe(registerUserValidationSchema))
+    registration: RegistrationRequest
+  ): Promise<void> {
     await this.commandBus.execute(new RegistrationCommand(registration));
   }
 }

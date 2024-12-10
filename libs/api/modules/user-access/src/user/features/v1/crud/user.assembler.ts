@@ -28,12 +28,12 @@ export class UserAssembler extends ClassTransformerAssembler<
   ): Promise<DeepPartial<UserEntity>> {
     const model = new UserEntity();
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { password_bcrypt_salt_rounds } =
+    const { passwordBcryptSaltRounds } =
       this.configService.get<IConfigApp>(APP_CONFIG_NAME);
 
     model.passwordHash = await bcrypt.hash(
       dto.password,
-      password_bcrypt_salt_rounds
+      passwordBcryptSaltRounds
     );
     model.firstName = dto.firstName;
     model.lastName = dto.lastName;
@@ -64,7 +64,7 @@ export class UserAssembler extends ClassTransformerAssembler<
     dto: UserDto
   ): Promise<UserEntity> {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { password_bcrypt_salt_rounds } =
+    const { passwordBcryptSaltRounds } =
       this.configService.get<IConfigApp>(APP_CONFIG_NAME);
 
     const model = new UserEntity();
@@ -77,7 +77,7 @@ export class UserAssembler extends ClassTransformerAssembler<
     if (dto.password) {
       model.passwordHash = await bcrypt.hash(
         dto.password,
-        password_bcrypt_salt_rounds
+        passwordBcryptSaltRounds
       );
     }
 

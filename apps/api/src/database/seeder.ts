@@ -17,11 +17,11 @@ async function runSeeder() {
   const app = await NestFactory.create(BootstrapModule);
   const dataSource = app.get(DataSource);
   const configService = app.get(ConfigService);
-  const { password_bcrypt_salt_rounds } = configService.get<IConfigApp>(APP_CONFIG_NAME);
+  const { passwordBcryptSaltRounds } = configService.get<IConfigApp>(APP_CONFIG_NAME);
 
   await runSeeders(dataSource, {
     seedTracking: process.env.APP_ENV === 'dev',
-    seeds: [RbacSeeder, createUserSeeder(password_bcrypt_salt_rounds)],
+    seeds: [RbacSeeder, createUserSeeder(passwordBcryptSaltRounds)],
   });
 
   await app.close();

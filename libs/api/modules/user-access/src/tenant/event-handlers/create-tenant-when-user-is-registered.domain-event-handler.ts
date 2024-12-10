@@ -17,7 +17,7 @@ export class CreateTenantWhenUserIsRegisteredDomainEventHandler {
   // Handle a Domain Event by performing changes to other aggregates (inside the same Domain).
   // supressErrors to true because we need reject transaction
   @OnEvent(UserRegisteredDomainEvent.name, { async: true, promisify: true, suppressErrors: false })
-  async handle(event: UserRegisteredDomainEvent): Promise<any> {
+  async handle(event: UserRegisteredDomainEvent): Promise<void> {
     const tenant = new TenantEntity({ name: event.email, users: [{ id: event.id }] });
 
     await this.tenantRepository.save(tenant);

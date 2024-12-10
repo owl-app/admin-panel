@@ -110,7 +110,19 @@ export const useUserStore = defineStore({
       this.authenticated = true;
       this.accessTokenExpiry = (Date.now() + (accessTokenExpires ?? 0));
       this.refreshTokenExpiry = (Date.now() + (refreshTokenExpires ?? 0));
-    }
+    },
+    async register(email: string, passwordNew: string, passwordNewRepeat: string) {
+      this.loading = true;
+      this.error = null;
 
+      try {
+        const { data } = await api.post('/registration', { email, passwordNew, passwordNewRepeat }, { isAuthenticated: false });
+
+      } catch (error: any) {
+        throw error.response?.data?.message ?? error.message;
+      } finally {
+        this.loading = false;
+      }
+    },
   },
 });

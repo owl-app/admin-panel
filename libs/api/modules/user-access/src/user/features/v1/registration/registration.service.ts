@@ -9,12 +9,9 @@ import { InjectQueryServiceRepository } from '@owl-app/lib-api-core/query/common
 import { UserEntity } from '../../../../domain/entity/user.entity';
 import type { IUserRepository } from '../../../../database/repository/user-repository.interface';
 
-import { registrationValidation } from './validation';
-
 export class RegistrationCommand {
   email: string;
-  password: string;
-  phoneNumber: string;
+  passwordNew: string;
 
   constructor(request: Partial<RegistrationCommand> = {}) {
     Object.assign(this, request);
@@ -31,12 +28,10 @@ export class RegistrationHandler implements ICommandHandler<RegistrationCommand>
   ) {}
 
   async execute(command: RegistrationCommand): Promise<void> {
-    await registrationValidation.validateAsync(command, { abortEarly: false });
-
-    const { password_bcrypt_salt_rounds } = this.configService.get<IConfigApp>(APP_CONFIG_NAME);
+    const { passwordBcryptSaltRounds } = this.configService.get<IConfigApp>(APP_CONFIG_NAME);
     const user = UserEntity.register({
       ...command,
-      passwordHash: await bcrypt.hash(command.password, password_bcrypt_salt_rounds)
+      passwordHash: await bcrypt.hash(command.passwordNew, passwordBcryptSaltRounds)
     });
 
     await this.userRepository.register(user);

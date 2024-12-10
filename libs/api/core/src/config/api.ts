@@ -11,7 +11,7 @@ export interface IConfigApp {
   app_name: string;
   host: string;
   port: number;
-  password_bcrypt_salt_rounds: number;
+  passwordBcryptSaltRounds: number;
   query: QueryConfig;
 }
 
@@ -24,7 +24,7 @@ export default registerAs(APP_CONFIG_NAME, (): IConfigApp => {
     query: {
       default_limit: 10,
     },
-    password_bcrypt_salt_rounds:
+    passwordBcryptSaltRounds:
       parseInt(process.env.PASSWORD_BCRYPT_SALT_ROUNDS) || 12,
   };
 });

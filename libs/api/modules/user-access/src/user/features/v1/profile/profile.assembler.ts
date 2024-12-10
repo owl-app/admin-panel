@@ -36,7 +36,7 @@ export class ProfileAssembler extends ClassTransformerAssembler<
     dto: UpdateProfileRequest
   ): Promise<UserEntity> {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { password_bcrypt_salt_rounds } =
+    const { passwordBcryptSaltRounds } =
       this.configService.get<IConfigApp>(APP_CONFIG_NAME);
 
     const model = new UserEntity();
@@ -47,7 +47,7 @@ export class ProfileAssembler extends ClassTransformerAssembler<
     if (dto.passwordNew) {
       model.passwordHash = await bcrypt.hash(
         dto.passwordNew,
-        password_bcrypt_salt_rounds
+        passwordBcryptSaltRounds
       );
     }
 
