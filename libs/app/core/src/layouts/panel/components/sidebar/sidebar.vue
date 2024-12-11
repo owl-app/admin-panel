@@ -86,7 +86,7 @@ watch(() => route.fullPath, setActiveExpand, { immediate: true })
 </script>
 
 <template>
-  <VaSidebar v-model="writableVisible" :width="sidebarWidth" :color="color" minimized-width="0">
+  <VaSidebar v-model="writableVisible" :width="sidebarWidth" :color="color" minimized-width="0" color="">
       <slot v-for="(route, index) in availableNavigationRoutes" :key="index">
         <VaSidebarItemContent v-if="route.children && route.children.length > 0" class="title-section">
           <VaSidebarItemTitle>

@@ -4,7 +4,7 @@
       <h1 class="font-semibold text-4xl mb-4">Log in</h1>
       <p class="text-base mb-4 leading-5">
         New to Owl?
-        <RouterLink :to="{ name: 'login' }" class="font-semibold text-primary">Sign up</RouterLink>
+        <RouterLink :to="{ name: 'register' }" class="font-semibold text-primary">Sign up</RouterLink>
       </p>
       <owl-form
         collection="auth/login"
@@ -49,9 +49,6 @@
 
         <template #actions="{ validate, data }">
           <div class="auth-layout__options flex flex-col sm:flex-row sm:items-center justify-start">
-            <RouterLink :to="{ name: 'register' }" class="mt-2 sm:mt-0 sm:ml-1 font-semibold text-primary">
-              Register
-            </RouterLink>
             <RouterLink :to="{ name: 'recovery-password' }" class="mt-2 sm:mt-0 font-semibold text-primary ml-auto">
               Forgot password?
             </RouterLink>

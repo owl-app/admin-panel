@@ -16,6 +16,7 @@ export interface User extends Timestampable {
 	lastLogin?: Date;
 	language?: string;
 	roles: Role[];
+	registrationToken: string;
 }
 
 export type UserAware = {

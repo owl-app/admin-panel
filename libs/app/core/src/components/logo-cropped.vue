@@ -1,5 +1,5 @@
 <template>
-  <img src="../assets/logo.svg" alt="Directus" class="directus-logo" />
+  <img src="../assets/logo-cropped.webp" alt="Owl" class="owl-logo" />
 </template>
 
 <script lang="ts" setup>

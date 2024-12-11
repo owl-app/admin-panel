@@ -31,7 +31,9 @@ export class UserEntity extends BaseEntity implements User {
 
   lastLogin?: Date;
 
-  roles: Role[]
+  roles: Role[];
+
+  registrationToken: string;
 
   static register(registerProps: RegisterUserProps): UserEntity {
     const user = new UserEntity();

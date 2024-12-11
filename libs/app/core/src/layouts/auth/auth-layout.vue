@@ -7,7 +7,7 @@
         to="/"
         aria-label="Visit homepage"
       >
-        <OwlLogo :height="28" start="#FFF" />
+        <OwlLogo start="#FFF" class="w-4/12" :height="28" />
       </RouterLink>
     </template>
     <template #content>

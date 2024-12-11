@@ -8,4 +8,6 @@ export interface RegisterUserProps {
   phoneNumber?: string;
 
   roles: Partial<Role>[];
+
+  registrationToken: string;
 }

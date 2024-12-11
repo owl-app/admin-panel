@@ -13,7 +13,14 @@
         </Transition>
         <RouterLink to="/times" aria-label="Owl">
           <div class="logo-bar">
-            <OwlLogo /> OWL
+            <OwlLogo />
+            <div class="flex items-center">
+              <div class="title">OWL</div>
+              <div class="subtitle ml-3 mb-auto align-start">
+                time tracker
+              </div>
+            </div>
+            
           </div>
         </RouterLink>
       </div>
@@ -27,7 +34,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useAppStore } from '../../../../stores/app'
-import OwlLogo from '../../../../components/logo-black.vue'
+import OwlLogo from '../../../../components/logo-cropped.vue'
 import NavbarActions from './components/navbar-actions.vue'
 
 defineProps({
@@ -67,6 +74,21 @@ const { isSidebarMinimized } = storeToRefs(appStore)
     img {
       height: 40px;
       margin-right: 0.5rem;
+      box-shadow: 0 5px 0 0 rgba(0,0,0,0.75);
+-webkit-box-shadow: 0 5px 0 0 rgba(0,0,0,0.75);
+-moz-box-shadow: 0 5px 0 0 rgba(0,0,0,0.75);
+    }
+
+    .title {
+      color: #68665f;
+      font-family: sans-serif;
+    }
+    
+    .subtitle {
+      color: #68665f;
+      font-family: sans-serif;
+      font-size: 13px;
+      height: 30px;
     }
   }
 }
