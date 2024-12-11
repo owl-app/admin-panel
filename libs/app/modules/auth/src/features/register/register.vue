@@ -1,6 +1,9 @@
 <template>
   <auth-layout>
     <div class="w-96">
+      <div class="text-right">
+        <RouterLink :to="{ name: 'login' }" class="font-semibold text-primary">Back to sign in</RouterLink>
+      </div>
       <h1 class="font-semibold text-4xl mb-4">Register</h1>
       <p class="text-base mb-4 leading-5">
         Start your journey with Owl and tracking time
@@ -25,6 +28,7 @@
             v-model="data.ref.passwordNew"
             label="New password"
             name="passwordNew"
+            type="password"
             class="mb-4"
             :error="!!validation['passwordNew']"
             :error-messages="validation['passwordNew']"
@@ -34,6 +38,7 @@
             v-model="data.ref.passwordNewRepeat"
             label="Repeat new password"
             name="passwordNewRepeat"
+            type="password"
             class="mb-4"
             :error="!!validation['passwordNewRepeat']"
             :error-messages="validation['passwordNewRepeat']"

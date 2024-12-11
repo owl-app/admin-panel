@@ -8,6 +8,7 @@ import { InjectQueryServiceRepository } from '@owl-app/lib-api-core/query/common
 
 import { UserEntity } from '../../../../domain/entity/user.entity';
 import type { IUserRepository } from '../../../../database/repository/user-repository.interface';
+import { RolesEnum } from '@owl-app/lib-contracts';
 
 export class RegistrationCommand {
   email: string;
@@ -31,7 +32,8 @@ export class RegistrationHandler implements ICommandHandler<RegistrationCommand>
     const { passwordBcryptSaltRounds } = this.configService.get<IConfigApp>(APP_CONFIG_NAME);
     const user = UserEntity.register({
       ...command,
-      passwordHash: await bcrypt.hash(command.passwordNew, passwordBcryptSaltRounds)
+      passwordHash: await bcrypt.hash(command.passwordNew, passwordBcryptSaltRounds),
+      roles: [{ name: RolesEnum.ROLE_ADMIN_COMPANY}]
     });
 
     await this.userRepository.register(user);

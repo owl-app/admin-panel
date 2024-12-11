@@ -41,7 +41,7 @@ import { useUserStore } from '../../../../../../stores/user'
 
 const userStore = useUserStore()
 
-const fullName = computed(() => `${userStore.currentUser?.firstName} ${userStore.currentUser?.lastName}`)
+const fullName = computed(() => `${userStore.currentUser?.firstName ?? ''} ${userStore.currentUser?.lastName ?? ''}`)
 
 const { colors, setHSLAColor } = useColors()
 const hoverColor = computed(() => setHSLAColor(colors.focus, { a: 0.1 }))
