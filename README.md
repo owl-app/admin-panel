@@ -7,9 +7,11 @@ Timetracker is an application built using NestJS, Vue, and Nx, with Role-Based A
 Timetracker allows for efficient time management and task tracking within a team. The project leverages a modular architecture to facilitate easy development and maintenance.
 
 ## Features
-
-- **RBAC**: Manage user roles and permissions.
-- **CRUD**: Create, read, update, and delete data.
+- Role-Based Access Control (RBAC)
+- CRUD operations for managing data
+- User authentication and authorization
+- Project and time tracking
+- Integration with various services
 
 ## Installation
 
