@@ -1,6 +1,6 @@
 ![Owl Timetracker](https://raw.githubusercontent.com/owl-app/timetracker/refs/heads/main/libs/app/core/src/assets/logo-cropped.webp)
 <p align="center">
-  <img src="[screen1.png](https://raw.githubusercontent.com/owl-app/timetracker/refs/heads/main/libs/app/core/src/assets/logo-cropped.webp)" width="256" height="455">
+  <img src="![Owl Timetracker](https://raw.githubusercontent.com/owl-app/timetracker/refs/heads/main/libs/app/core/src/assets/logo-cropped.webp)" width="256" height="455">
 </p>
 
 # Timetracker
