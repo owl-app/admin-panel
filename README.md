@@ -2,7 +2,7 @@
     <img src="https://raw.githubusercontent.com/owl-app/timetracker/refs/heads/main/libs/app/core/src/assets/logo.webp" width="150px" alt="Owl logo" />
 </p>
 
-# Timetracker
+# Time tracker
 
 Timetracker is an application built using NestJS, Vue, and Nx, with Role-Based Access Control (RBAC) integrated.
 
