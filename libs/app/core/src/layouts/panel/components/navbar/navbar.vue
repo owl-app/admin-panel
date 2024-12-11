@@ -72,20 +72,18 @@ const { isSidebarMinimized } = storeToRefs(appStore)
     color: #000;
 
     img {
-      height: 40px;
+      height: 45px;
       margin-right: 0.5rem;
-      box-shadow: 0 5px 0 0 rgba(0,0,0,0.75);
--webkit-box-shadow: 0 5px 0 0 rgba(0,0,0,0.75);
--moz-box-shadow: 0 5px 0 0 rgba(0,0,0,0.75);
+      border-bottom: 3px solid #6b6a69;
     }
 
     .title {
-      color: #68665f;
+      color: #6b6a69;
       font-family: sans-serif;
     }
     
     .subtitle {
-      color: #68665f;
+      color: #6b6a69;
       font-family: sans-serif;
       font-size: 13px;
       height: 30px;
