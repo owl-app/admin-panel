@@ -1,11 +1,13 @@
 // eslint-disable-next-line max-classes-per-file
+import * as classTransformer from 'class-transformer';
+
 import {
   Assembler,
   AssemblerDeserializer,
   AssemblerSerializer,
   ClassTransformerAssembler,
-} from '@owl-app/nestjs-query-core';
-import * as classTransformer from 'class-transformer';
+} from '../..';
+
 
 describe('ClassTransformerAssembler', () => {
   const plainToClassSpy = jest.spyOn(classTransformer, 'plainToClass');
@@ -121,9 +123,7 @@ describe('ClassTransformerAssembler', () => {
     const testDtoDeserialize = jest.fn((td) => {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       const input = new TestDeserializeDTO();
-      // @ts-ignore
       input.firstName = td.foo;
-      // @ts-ignore
       input.lastName = td.bar;
       return input;
     });
@@ -131,9 +131,7 @@ describe('ClassTransformerAssembler', () => {
     const testEntityDserialize = jest.fn((te) => {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       const input = new TestDeserializeEntity();
-      // @ts-ignore
       input.firstName = te.foo;
-      // @ts-ignore
       input.lastName = te.bar;
       return input;
     });

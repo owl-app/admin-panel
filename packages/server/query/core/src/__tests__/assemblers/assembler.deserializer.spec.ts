@@ -1,23 +1,23 @@
-import { AssemblerDeserializer } from '@owl-app/nestjs-query-core';
+import { AssemblerDeserializer } from '../..';
 
-import { getAssemblerDeserializer } from '../../src/assemblers/assembler.deserializer';
+import { getAssemblerDeserializer } from '../../lib/assemblers/assembler.deserializer';
 
 describe('AssemblerDeserializer decorator', () => {
   it('should register a serializer', () => {
-    // @ts-ignore
+    // @ts-expect-error
     // eslint-disable-next-line @typescript-eslint/ban-types
     @AssemblerDeserializer((obj: object): TestSerializer => ({ foo: obj.bar }))
     class TestSerializer {
       foo!: string;
     }
 
-    expect(getAssemblerDeserializer(TestSerializer)!({ bar: 'bar' })).toEqual({
+    expect(getAssemblerDeserializer(TestSerializer)?.({ bar: 'bar' })).toEqual({
       foo: 'bar',
     });
   });
 
   it('should throw an error if the serializer is registered twice', () => {
-    // @ts-ignore
+    // @ts-expect-error
     // eslint-disable-next-line @typescript-eslint/ban-types
     const deserializer = (obj: object): TestSerializer => ({ foo: obj.bar });
 

@@ -7,14 +7,14 @@ import { QueryService } from './services';
 export interface NestjsQueryCoreModuleOpts {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   imports?: Array<
-    Class<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
+    Class<unknown> | DynamicModule | Promise<DynamicModule> | ForwardReference
   >;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   assemblers?: NestjsQueryCoreModuleAssemblersOpts[];
 }
 
 export interface NestjsQueryCoreModuleAssemblersOpts {
-  classAssembler: Class<Assembler<any, any, any, any, any, any>>;
-  classService?: Class<QueryService<any>>;
+  classAssembler: Class<Assembler<unknown, unknown, unknown, unknown, unknown, unknown>>;
+  classService?: Class<QueryService<unknown>>;
   inject?: Array<InjectionToken | OptionalFactoryDependency>;
 }

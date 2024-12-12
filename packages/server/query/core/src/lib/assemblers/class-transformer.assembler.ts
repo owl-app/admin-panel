@@ -65,6 +65,7 @@ export abstract class ClassTransformerAssembler<
     return plainToClass(cls, instanceToPlain(obj));
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   isConstructor(x: any) {
     const handler = {
       construct() {

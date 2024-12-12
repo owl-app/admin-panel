@@ -1,7 +1,7 @@
-import { QueryService } from '@owl-app/nestjs-query-core';
+import { QueryService } from '../..';
 
-import { DeepPartial } from '../../src/common';
-import { NoOpQueryService } from '../../src/services/noop-query.service';
+import { DeepPartial } from '../../lib/common';
+import { NoOpQueryService } from '../../lib/services/noop-query.service';
 
 describe('NoOpQueryService', () => {
   class TestType {

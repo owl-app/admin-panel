@@ -3,7 +3,7 @@ import {
   AssemblerFactory,
   ClassTransformerAssembler,
   DefaultAssembler,
-} from '@owl-app/nestjs-query-core';
+} from '../..';
 
 describe('AssemblerFactory', () => {
   class TestDTO {

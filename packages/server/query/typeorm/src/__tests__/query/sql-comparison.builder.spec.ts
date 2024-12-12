@@ -19,8 +19,6 @@ describe('SQLComparisonBuilder', (): void => {
   });
 
   it('should throw an error for an invalid comparison type', () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     expect(() =>
       createSQLComparisonBuilder().build(
         'stringType',
@@ -209,7 +207,7 @@ describe('SQLComparisonBuilder', (): void => {
     });
 
     it('should throw an error for values other than null true or false', () => {
-      // @ts-ignore
+      // @ts-expect-error
       expect(() =>
         createSQLComparisonBuilder().build(
           'boolType',
@@ -265,7 +263,7 @@ describe('SQLComparisonBuilder', (): void => {
     });
 
     it('should throw an error for values other than null true or false', () => {
-      // @ts-ignore
+      // @ts-expect-error
       expect(() =>
         createSQLComparisonBuilder().build(
           'boolType',

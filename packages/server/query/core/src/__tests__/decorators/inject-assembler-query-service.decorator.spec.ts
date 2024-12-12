@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+
 import {
   DefaultAssembler,
   InjectAssemblerQueryService,
   NoOpQueryService,
   QueryService,
-} from '@owl-app/nestjs-query-core';
+} from '../..';
 
-import { getAssemblerQueryServiceToken } from '../../src/decorators/helpers';
+import { getAssemblerQueryServiceToken } from '../../lib/decorators/helpers';
 
 describe('@InjectAssemblerQueryService', () => {
   class Foo {

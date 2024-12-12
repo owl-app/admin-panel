@@ -1,5 +1,6 @@
-import { DefaultAssembler } from '@owl-app/nestjs-query-core';
 import * as classTransformer from 'class-transformer';
+
+import { DefaultAssembler } from '../..';
 
 describe('DefaultAssembler', () => {
   const plainToClassSpy = jest.spyOn(classTransformer, 'plainToClass');

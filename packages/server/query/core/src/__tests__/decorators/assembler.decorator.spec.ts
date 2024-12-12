@@ -2,8 +2,8 @@ import {
   Assembler,
   AssemblerFactory,
   ClassTransformerAssembler,
-  DefaultAssembler,
-} from '@owl-app/nestjs-query-core';
+  DefaultAssembler
+} from '../..';
 
 class TestFrom {
   first!: string;

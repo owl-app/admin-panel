@@ -1,6 +1,6 @@
-import { AssemblerSerializer } from '@owl-app/nestjs-query-core';
+import { AssemblerSerializer } from '../..';
 
-import { getAssemblerSerializer } from '../../src/assemblers/assembler.serializer';
+import { getAssemblerSerializer } from '../../lib/assemblers/assembler.serializer';
 
 describe('AssemblerSerializer decorator', () => {
   it('should register a serializer', () => {
@@ -9,7 +9,7 @@ describe('AssemblerSerializer decorator', () => {
       foo!: string;
     }
 
-    expect(getAssemblerSerializer(TestSerializer)!({ foo: 'bar' })).toEqual({
+    expect(getAssemblerSerializer(TestSerializer)?.({ foo: 'bar' })).toEqual({
       bar: 'bar',
     });
   });

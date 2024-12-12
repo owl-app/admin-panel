@@ -1,3 +1,5 @@
+import { deepEqual, instance, mock, objectContaining, when } from 'ts-mockito';
+
 import {
   AbstractAssembler,
   AggregateQuery,
@@ -9,8 +11,7 @@ import {
   transformAggregateQuery,
   transformAggregateResponse,
   transformQuery,
-} from '@owl-app/nestjs-query-core';
-import { deepEqual, instance, mock, objectContaining, when } from 'ts-mockito';
+} from '../..';
 
 describe('AssemblerQueryService', () => {
   class TestDTO {

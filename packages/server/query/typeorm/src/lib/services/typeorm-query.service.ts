@@ -219,8 +219,6 @@ export class TypeOrmQueryService<Entity>
   public async createOne(record: DeepPartial<Entity>): Promise<Entity> {
     const entity = await this.ensureIsEntityAndDoesNotExist(record);
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     return this.repo.save(entity);
   }
 
@@ -240,8 +238,7 @@ export class TypeOrmQueryService<Entity>
     const entities = await Promise.all(
       records.map((r) => this.ensureIsEntityAndDoesNotExist(r))
     );
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+
     return this.repo.save(entities);
   }
 
@@ -264,7 +261,7 @@ export class TypeOrmQueryService<Entity>
     this.ensureIdIsNotPresent(update);
     const entity = await this.getById(id, opts);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    // @ts-expect-error
     return this.repo.save(this.repo.merge(entity, update));
   }
 
@@ -335,8 +332,7 @@ export class TypeOrmQueryService<Entity>
       (this.useSoftDelete && opts?.useSoftDelete === undefined) ||
       (opts?.useSoftDelete !== undefined && opts.useSoftDelete === true)
     ) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+
       return this.repo.softRemove(entity);
     }
 
@@ -456,7 +452,7 @@ export class TypeOrmQueryService<Entity>
       )
     ) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error
       return this.ensureEntityDoesNotExist(this.repo.create(entity));
     }
     return this.ensureEntityDoesNotExist(entity);

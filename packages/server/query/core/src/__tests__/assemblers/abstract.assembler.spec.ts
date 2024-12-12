@@ -8,7 +8,7 @@ import {
   transformAggregateQuery,
   transformAggregateResponse,
   transformQuery,
-} from '@owl-app/nestjs-query-core';
+} from '../..';
 
 describe('ClassTransformerAssembler', () => {
   class TestDTO {

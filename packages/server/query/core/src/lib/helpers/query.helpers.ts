@@ -12,6 +12,7 @@ import { PageBuilder } from './page.builder';
 import { SortBuilder } from './sort.builder';
 
 export type QueryFieldMap<From, To, T extends keyof To = keyof To> = {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   [F in keyof From]?: T;
 };
 
@@ -76,7 +77,7 @@ export function invertSort<DTO>(
       sf.direction === SortDirection.ASC
         ? SortDirection.DESC
         : SortDirection.ASC;
-    let nulls: SortNulls | undefined = undefined;
+    let nulls: SortNulls | undefined;
     if (sf.nulls === SortNulls.NULLS_LAST) {
       nulls = SortNulls.NULLS_FIRST;
     } else if (sf.nulls === SortNulls.NULLS_FIRST) {

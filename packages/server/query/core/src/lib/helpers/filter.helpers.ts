@@ -188,7 +188,7 @@ item multiple times, that needs to be fixed first
 //         results.push(subFilter);
 //       } else {
 //         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//         // @ts-ignore
+//         // @ts-expect-error
 //         results = results.concat(getFilterComparisons(subFilter, key));
 //       }
 //     });

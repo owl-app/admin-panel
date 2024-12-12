@@ -5,7 +5,7 @@ import {
   InjectQueryService,
   NoOpQueryService,
   QueryService,
-} from '@owl-app/nestjs-query-core';
+} from '../..';
 
 describe('@InjectQueryService', () => {
   class TestEntity {}

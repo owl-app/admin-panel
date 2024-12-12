@@ -20,9 +20,9 @@ import {
   transformFilter,
   transformQuery,
   transformSort,
-} from '@owl-app/nestjs-query-core';
+} from '..';
 
-import { AggregateQuery } from '../src/interfaces/aggregate-query.interface';
+import { AggregateQuery } from '../lib/interfaces/aggregate-query.interface';
 
 class TestDTO {
   first?: string | null;
@@ -70,7 +70,7 @@ describe('transformSort', () => {
   it('should throw an error if the field name is not found', () => {
     const dtoSort: SortField<TestDTO>[] = [
       { field: 'first', direction: SortDirection.DESC },
-      // @ts-ignore
+      // @ts-expect-error
       { field: 'lasts', direction: SortDirection.ASC },
     ];
     expect(() => transformSort(dtoSort, fieldMap)).toThrow(
@@ -146,7 +146,7 @@ describe('transformFilter', () => {
   it('should throw an error if the field name is not found', () => {
     const dtoFilter: Filter<TestDTO> = {
       first: { eq: 'foo' },
-      // @ts-ignore
+      // @ts-expect-error
       lasts: { neq: 'bar' },
     };
     expect(() => transformFilter(dtoFilter, fieldMap)).toThrow(
@@ -320,7 +320,7 @@ describe('applyFilter', () => {
 
   it('should throw an error for an unknown operator', () => {
     const filter: Filter<TestDTO> = {
-      // @ts-ignore
+      // @ts-expect-error
       first: { foo: 'bar' },
     };
     expect(() => applyFilter({ first: 'baz', last: 'kaz' }, filter)).toThrow(
@@ -995,7 +995,7 @@ describe('transformAggregateQuery', () => {
         { field: 'age', args: {} },
       ],
     };
-    // @ts-ignore
+    // @ts-expect-error
     expect(() =>
       transformAggregateQuery(aggQuery, { last: 'lastName' })
     ).toThrow(
@@ -1069,7 +1069,7 @@ describe('transformAggregateResponse', () => {
         first: 2,
       },
     };
-    // @ts-ignore
+    // @ts-expect-error
     expect(() =>
       transformAggregateResponse(aggResponse, { last: 'lastName' })
     ).toThrow(
@@ -1081,7 +1081,7 @@ describe('transformAggregateResponse', () => {
         age: 10,
       },
     };
-    // @ts-ignore
+    // @ts-expect-error
     expect(() =>
       transformAggregateResponse(aggResponse, { last: 'lastName' })
     ).toThrow(

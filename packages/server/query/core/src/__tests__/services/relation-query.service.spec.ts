@@ -1,9 +1,10 @@
+import { deepEqual, instance, mock, reset, when } from 'ts-mockito';
+
 import {
   AggregateQuery,
   QueryService,
   RelationQueryService,
-} from '@owl-app/nestjs-query-core';
-import { deepEqual, instance, mock, reset, when } from 'ts-mockito';
+} from '../..';
 
 describe('RelationQueryService', () => {
   const mockQueryService: QueryService<TestType> =

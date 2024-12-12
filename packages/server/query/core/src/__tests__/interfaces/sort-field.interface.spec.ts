@@ -1,4 +1,4 @@
-import { SortDirection, SortNulls } from '@owl-app/nestjs-query-core';
+import { SortDirection, SortNulls } from '../..';
 
 describe('SortField', () => {
   it('should define SortDirection', () => {

@@ -1,4 +1,5 @@
 export type NumberAggregate<DTO> = {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   [K in keyof DTO]?: number;
 };
 

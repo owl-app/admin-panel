@@ -1,7 +1,8 @@
-import { AggregateQuery, QueryService } from '@owl-app/nestjs-query-core';
 import { instance, mock, reset, when } from 'ts-mockito';
 
-import { ProxyQueryService } from '../../src/services/proxy-query.service';
+import { AggregateQuery, QueryService } from '../..';
+
+import { ProxyQueryService } from '../../lib/services/proxy-query.service';
 
 describe('ProxyQueryService', () => {
   class TestType {

@@ -208,7 +208,7 @@ type BuiltInTypes =
 type FilterFieldComparisonType<
   FieldType,
   IsKeys extends true | false
-> = FieldType extends string | String
+> = FieldType extends string | string
   ? StringFieldComparisons // eslint-disable-next-line @typescript-eslint/ban-types
   : FieldType extends boolean | Boolean
   ? BooleanFieldComparisons

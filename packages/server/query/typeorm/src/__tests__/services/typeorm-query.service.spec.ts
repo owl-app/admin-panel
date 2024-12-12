@@ -986,7 +986,7 @@ describe('TypeOrmQueryService', (): void => {
             adaptedQueryResult.set(
               key,
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
+              // @ts-expect-error
               relations.map(({ relationOfTestRelationId, ...relation }) => ({
                 ...relation,
               }))
