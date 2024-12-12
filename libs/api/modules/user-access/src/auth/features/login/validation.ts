@@ -1,4 +1,4 @@
-import Joi, { ExternalHelpers, ExternalValidationFunction } from 'joi'
+import Joi from 'joi'
 
 export const loginValidation = Joi.object({
   email: Joi.string().required().email(),

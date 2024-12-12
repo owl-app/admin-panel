@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import {
   BadRequestException,
-  Body,
   Controller,
   HttpCode,
   HttpStatus,
@@ -58,7 +57,7 @@ export class RefreshTokenController {
   ): Promise<TokenResponse> {
     try {
       const result = await this.commandBus.execute<RefreshToken, Record<'accessToken' | 'refreshToken', Token>>(
-        new RefreshToken({ token: request.cookies['refresh_token'], email: request.user.email })
+        new RefreshToken({ token: request.cookies?.refresh_token, email: request.user.email })
       );
 
       response.cookie('access_token', result.accessToken.token, {

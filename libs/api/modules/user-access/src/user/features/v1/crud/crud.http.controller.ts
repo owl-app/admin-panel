@@ -18,9 +18,6 @@ import {
   ApiCreatedResponse,
   ApiAcceptedResponse,
   ApiBearerAuth,
-  ApiQuery,
-  getSchemaPath,
-  ApiExtraModels,
 } from '@nestjs/swagger';
 
 import {

@@ -4,7 +4,6 @@ import { USER_ENTITY, TENANT_ENTITY, TIME_ENTITY, ROLE_ENTITY } from '@owl-app/l
 import { TimestampableSchemaPart } from '@owl-app/lib-api-core/database/entity-schema/timestampable.schemat';
 
 import { UserEntity } from '../../domain/entity/user.entity';
-import { length } from 'class-validator';
 
 export const UserEntitySchema = new EntitySchema<UserEntity>({
   target: UserEntity,

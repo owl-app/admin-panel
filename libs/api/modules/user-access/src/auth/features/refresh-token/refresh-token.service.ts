@@ -2,7 +2,6 @@ import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { IJwtTokenService, Token } from '@owl-app/lib-api-core/passport/jwt-token.interface';
-import { InjectRepository } from '@owl-app/lib-api-core/typeorm/common/typeorm.decorators';
 
 import { UserEntity } from '../../../domain/entity/user.entity';
 import { InvalidAuthenticationError } from '../../../domain/auth.errors';

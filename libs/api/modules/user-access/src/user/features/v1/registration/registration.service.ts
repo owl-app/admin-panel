@@ -13,6 +13,7 @@ import type { IUserRepository } from '../../../../database/repository/user-repos
 
 export class RegistrationCommand {
   email: string;
+
   passwordNew: string;
 
   constructor(request: Partial<RegistrationCommand> = {}) {

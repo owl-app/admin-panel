@@ -1,4 +1,3 @@
-import { SelectQueryBuilder } from 'typeorm';
 import { User } from '@owl-app/lib-contracts';
 import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/query-filter.builder';
 import { Filter, SelectRelation } from '@owl-app/nestjs-query-core';
