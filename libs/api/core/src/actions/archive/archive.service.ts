@@ -17,6 +17,7 @@ export interface ArchiveService {
   execute(id: string, requestData: ArchiveRequest): Promise<void>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ArchiveService = Symbol('ArchiveService');
 
 export class DefaultArchiveService<Entity extends BaseEntity & Archivable, Request extends ArchiveRequest = ArchiveRequest> implements ArchiveService {

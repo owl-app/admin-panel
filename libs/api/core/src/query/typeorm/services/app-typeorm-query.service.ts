@@ -1,6 +1,7 @@
 import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
+import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 import { cloneDeep, omit } from 'lodash';
+import { NotFoundException } from '@nestjs/common';
 
 import {
   TypeOrmQueryService,
@@ -18,7 +19,7 @@ import { EntitySetter } from '../../../registry/interfaces/entity-setter';
 import { TransactionalRepository } from '../../../database/repository/transactional.repository';
 import DomainEventableEntity from '../../../database/entity/domain-eventable.entity';
 import { AppQueryService } from '../../core/services/app-query.service';
-import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
+
 import { QueryOptions } from '../../core/interfaces/query-options';
 
 export interface AppTypeOrmQueryServiceOpts<Entity>
@@ -103,7 +104,8 @@ export class AppTypeOrmQueryService<
 
     if (this.useTransaction) {
       if (this.repo instanceof TransactionalRepository) {
-        return await this.repo.transaction(async () => this.repo.save(entity));
+        const result = await this.repo.transaction(async () => this.repo.save(entity));
+        return result;
       }
 
       throw new Error('Repository should extend by TransactionalRepository');
@@ -132,7 +134,9 @@ export class AppTypeOrmQueryService<
 
     if (this.useTransaction) {
       if (this.repo instanceof TransactionalRepository) {
-        return await this.repo.transaction(async () => this.repo.save(entity));
+        const result = await this.repo.transaction(async () => this.repo.save(entity));
+
+        return result;
       }
 
       throw new Error('Repository should extend by TransactionalRepository');
@@ -163,13 +167,15 @@ export class AppTypeOrmQueryService<
 
     if (this.useTransaction) {
       if (this.repo instanceof TransactionalRepository) {
-        return await this.repo.transaction(async () => {
+        const result = await this.repo.transaction(async () => {
           await Promise.all(
             this.repo.metadata.relations.map(async (relation) => this.assingRelations(entity, record, relation))
           ).then(() => entity)
 
           return this.repo.save(entity)
         });
+
+        return result;
       }
 
       throw new Error('Repository should extend by TransactionalRepository');
@@ -200,13 +206,15 @@ export class AppTypeOrmQueryService<
 
     if (this.useTransaction) {
       if (this.repo instanceof TransactionalRepository) {
-        return await this.repo.transaction(async () => {
+        const result = await this.repo.transaction(async () => {
           await Promise.all(
             this.repo.metadata.relations.map(async (relation) => this.assingRelations(entity, update, relation))
           ).then(() => entity)
 
           return this.repo.save(entity)
         });
+
+        return result;
       }
 
       throw new Error('Repository should extend by TransactionalRepository');
@@ -219,7 +227,7 @@ export class AppTypeOrmQueryService<
     entity: Entity,
     update: DeepPartial<Entity>,
     relation: RelationMetadata
-  ): Promise<Entity> {
+  ): Promise<void> {
     const entityRelatedValue = relation.getEntityValue(entity)
     const objectRelatedValue = relation.getEntityValue(update);
 
@@ -247,15 +255,14 @@ export class AppTypeOrmQueryService<
         ))
       )
 
-    existingRelations.map((objectRelatedValueItem) => {
+    existingRelations.forEach((objectRelatedValueItem) => {
       const objectRelatedValueEntity = (
         objectRelatedArrayValue
-      ).find((entityRelatedValueItem) => {
-          return relation.inverseEntityMetadata.compareEntities(
-            objectRelatedValueItem,
-              entityRelatedValueItem,
-          )
-      })
+      ).find((entityRelatedValueItem) => relation.inverseEntityMetadata.compareEntities(
+          objectRelatedValueItem,
+            entityRelatedValueItem,
+        )
+      )
 
       if(objectRelatedValueEntity) {
         objectRelatedExisting.push(objectRelatedValueItem)
@@ -273,9 +280,9 @@ export class AppTypeOrmQueryService<
         )
         const idMap = inverseEntityMetadata.getEntityIdMap(objectRelatedValueItem);
 
-        for (const [key, value] of Object.entries(idMap)) {
-          newRelationsFilter.push({ [key]: { eq: value } } as FilterComparisons<Entity>)
-        }
+        Object.entries(idMap).forEach(([key, value]) => {
+          newRelationsFilter.push({ [key]: { eq: value } } as FilterComparisons<Entity>);
+        });
       });
 
       objectRelatedNewRelationValues = await relationQueryBuilder
@@ -302,9 +309,6 @@ export class AppTypeOrmQueryService<
         newRelations.pop() ?? null
       );
     }
-
-
-    return entity;
   }
 
   async ensureEntityDoesNotExistByFilter(filter: Filter<Entity>, opts?: QueryOptions): Promise<void> {

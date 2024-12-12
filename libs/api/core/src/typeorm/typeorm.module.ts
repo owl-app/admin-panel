@@ -26,7 +26,7 @@ export class TypeOrmModule {
     return {
       imports: [baseTypeOrmModule, ...(opts.imports ?? [])],
       module: TypeOrmModule,
-      providers: providers,
+      providers,
       exports: [baseTypeOrmModule, ...providers],
     };
   }

@@ -1,3 +1,5 @@
+import { SelectQueryBuilder } from 'typeorm';
+
 import { Registry } from '@owl-app/registry';
 import {
   Filter as FilterQueryService,
@@ -6,7 +8,6 @@ import {
 
 import { FilterBuilder } from '../filter.builder';
 import { Filter } from '../filtering/filter';
-import { SelectQueryBuilder } from 'typeorm';
 import { FilterCustom } from '../filtering/filter-custom';
 
 export abstract class QueryFilterBuilder<Entity, FilterData>

@@ -101,9 +101,9 @@ export class TagCrudController {
   @RoutePermissions(AvalilableCollections.TAG, CrudActions.CREATE)
   async create(
     @Body(new ValibotValidationPipe(tagValidationSchema))
-    CreateTagRequest: CreateTagRequest
+    createTagRequest: CreateTagRequest
   ) {
-    const created = await this.service.createOne(CreateTagRequest);
+    const created = await this.service.createOne(createTagRequest);
 
     return created;
   }
@@ -128,9 +128,9 @@ export class TagCrudController {
   async update(
     @Param('id', UUIDValidationPipe) id: string,
     @Body(new ValibotValidationPipe(tagValidationSchema))
-    UpdateTagDto: UpdateTagDto
+    updateTagDto: UpdateTagDto
   ): Promise<TagResponse> {
-    const updated = await this.service.updateOne(id, UpdateTagDto);
+    const updated = await this.service.updateOne(id, updateTagDto);
 
     return updated;
   }

@@ -35,7 +35,6 @@ export class ProfileAssembler extends ClassTransformerAssembler<
   async convertToUpdateEntity(
     dto: UpdateProfileRequest
   ): Promise<UserEntity> {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { passwordBcryptSaltRounds } =
       this.configService.get<IConfigApp>(APP_CONFIG_NAME);
 

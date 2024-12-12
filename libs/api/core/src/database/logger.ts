@@ -7,18 +7,19 @@ export class MyCustomLogger extends AbstractLogger {
   protected writeLog(
     level: LogLevel,
     logMessage: LogMessage | LogMessage[],
-    queryRunner?: QueryRunner
   ) {
-    const messages = this.prepareLogMessages(logMessage, {
+    this.prepareLogMessages(logMessage, {
       highlightSql: false,
     });
   }
 
-  logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner) {
+  logQuery(query: string, parameters?: unknown[], queryRunner?: QueryRunner) {
     const requestUrl =
-      queryRunner && queryRunner.data['request']
-        ? '(' + queryRunner.data['request'].url + ') '
+      queryRunner && queryRunner.data?.request
+        ? `(${queryRunner.data?.request?.url})`
         : '';
-    console.log(requestUrl + 'executing query: ' + query);
+
+    // eslint-disable-next-line no-console
+    console.log(`${requestUrl} executing query: ${query}`);
   }
 }

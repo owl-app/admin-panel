@@ -1,24 +1,14 @@
 {
-  "extends": ["../../../.eslintrc.base.json"],
+  "root": true,
+  "extends": ["eslint-config-custom/server", "../../../.eslintrc.base.json"],
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {}
-    },
-    {
       "files": ["*.ts", "*.tsx"],
-      "rules": {}
-    },
-    {
-      "files": ["*.js", "*.jsx"],
-      "rules": {}
-    },
-    {
-      "files": ["*.json"],
-      "parser": "jsonc-eslint-parser",
-      "rules": {
-        "@nx/dependency-checks": "error"
+      "parserOptions": {
+        "project": [
+          "libs/api/core/tsconfig.eslint.json"
+        ]
       }
     }
   ]

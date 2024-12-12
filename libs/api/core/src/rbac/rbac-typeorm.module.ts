@@ -25,9 +25,7 @@ export class RbacTypeOrmModule {
         rbacManagerFactoryProvider,
         {
           provide: 'ITEM_STORAGE_ITEM_FACTORY',
-          useFactory: () => {
-            return new ExtendedItemFactory()
-          },
+          useFactory: () =>  new ExtendedItemFactory()
         }
       ],
       exports: [rbacManagerFactoryProvider],

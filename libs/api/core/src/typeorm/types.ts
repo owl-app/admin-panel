@@ -19,7 +19,7 @@ export interface AppTypeOrmEntitesOpts {
 export interface AppTypeOrmOpts {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   imports?: Array<
-    Class<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
+    Class<unknown> | DynamicModule | Promise<DynamicModule> | ForwardReference
   >;
   entities: AppTypeOrmEntitesOpts[];
 }

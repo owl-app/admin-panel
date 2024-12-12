@@ -1,5 +1,5 @@
 
-import { DeepPartial, AssemblerQueryService, UpdateOneOptions, Assembler, Filter, WithDeleted, Query } from '@owl-app/nestjs-query-core';
+import { DeepPartial, AssemblerQueryService, Assembler, Filter, Query } from '@owl-app/nestjs-query-core';
 import { AppQueryService } from './app-query.service';
 import { QueryOptions } from '../interfaces/query-options';
 

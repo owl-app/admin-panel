@@ -2,7 +2,6 @@
 import { Module } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { DataSource } from 'typeorm'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
 import { AppNestjsQueryTypeOrmModule } from '@owl-app/lib-api-core/query/module'

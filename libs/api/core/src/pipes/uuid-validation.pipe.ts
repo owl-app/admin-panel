@@ -1,5 +1,4 @@
 import {
-  ArgumentMetadata,
   Injectable,
   NotAcceptableException,
   NotFoundException,
@@ -10,7 +9,7 @@ import { isEmpty } from '@owl-app/utils';
 
 @Injectable()
 export class UUIDValidationPipe implements PipeTransform<string> {
-  public transform(value: string, metadata: ArgumentMetadata): string {
+  public transform(value: string): string {
     if (isEmpty(value)) {
       throw new NotFoundException('Validation failed (uuid is expected)');
     }

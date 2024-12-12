@@ -7,6 +7,6 @@ export const RoutePermissions = (collection: string, action: string|string[]) =>
 
   return SetMetadata(
     ROUTE_PERMISSIONS_KEY,
-    actions.map(action => `ROUTE_${collection.toUpperCase()}_${action.toUpperCase()}`
+    actions.map(actionName => `ROUTE_${collection.toUpperCase()}_${actionName.toUpperCase()}`
   ))
 }

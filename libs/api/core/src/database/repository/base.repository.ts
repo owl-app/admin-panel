@@ -51,8 +51,8 @@ export class BaseRepository<
       | DeepPartial<Entity>[]
   ): Entity | Entity[] {
     const newEntity: Entity | Entity[] = this.manager.create(
-      this.metadata.target as any,
-      plainEntityLikeOrPlainEntityLikes as any
+      this.metadata.target as EntityTarget<Entity>,
+      plainEntityLikeOrPlainEntityLikes as unknown as DeepPartial<Entity>[]
     );
 
     this.copyOriginalEvents(newEntity, plainEntityLikeOrPlainEntityLikes);
@@ -104,8 +104,8 @@ export class BaseRepository<
     options?: SaveOptions
   ): Promise<T | T[]> {
     const savedEntity = await this.getManager().save<Entity, T>(
-      this.metadata.target as any,
-      entityOrEntities as any,
+      this.metadata.target as EntityTarget<Entity>,
+      Array.isArray(entityOrEntities) ? entityOrEntities : [entityOrEntities],
       options
     );
 
@@ -126,17 +126,17 @@ export class BaseRepository<
     entity: Entity | Entity[],
     record: DeepPartial<Entity> | DeepPartial<Entity>[]
   ): void {
-    function copy(entity: Entity, record: Entity) {
-      if (record instanceof DomainEventableEntity) {
-        record.domainEvents.map((event) => {
-          entity.addEvent(event);
+    function copy(entityCopy: Entity, recordCopy: Entity) {
+      if (recordCopy instanceof DomainEventableEntity) {
+        recordCopy.domainEvents.forEach((event) => {
+          entityCopy.addEvent(event);
         });
       }
     }
 
     if (Array.isArray(entity)) {
-      entity.map((entity, index) => {
-        copy(entity, Array(record as Entity)[index]);
+      entity.forEach((entityMap, index) => {
+        copy(entityMap, Array(record as Entity)[index]);
       });
     } else {
       copy(entity, record as Entity);

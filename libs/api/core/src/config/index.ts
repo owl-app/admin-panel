@@ -6,8 +6,6 @@ import jwt from './jwt';
 import pagination from './pagination';
 
 export * from './api';
-export * from './db';
-export * from './logger';
 export * from './query';
 export * from './jwt';
 export * from './pagination';

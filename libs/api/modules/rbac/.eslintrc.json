@@ -1,5 +1,5 @@
 {
-  "extends": ["custom/server", "../../../../.eslintrc.base.json"],
+  "extends": ["eslint-config-custom/server", "../../../../.eslintrc.base.json"],
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {

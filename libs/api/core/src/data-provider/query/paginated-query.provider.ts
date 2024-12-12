@@ -4,10 +4,9 @@ import {
   Filter,
   Query,
   QueryService,
-  SelectRelation,
-  SortDirection,
-  SortField,
 } from '@owl-app/nestjs-query-core';
+import { TypeOrmQueryService } from '@owl-app/nestjs-query-typeorm';
+import { instanceOf } from '@owl-app/utils';
 
 import { PaginationConfig } from '../../config/pagination';
 import { PaginatedQuery } from '../../pagination/paginated.query';
@@ -15,9 +14,7 @@ import { Pagination } from '../../pagination/pagination';
 
 import type { DataProvider, Sort } from '../data.provider';
 import { FilterBuilder } from '../filter.builder';
-import { TypeOrmQueryService } from '@owl-app/nestjs-query-typeorm';
 import { QueryFilterBuilder } from './query-filter.builder';
-import { instanceOf } from '@owl-app/utils';
 
 type FilterBuilders<Entity, FiltersData> =
   | FilterBuilder<Filter<Entity>, FiltersData>
@@ -98,7 +95,7 @@ export class PaginatedDataProvider<Entity, FiltersData>
   }
 
   private getTypeOrmQueryService(): TypeOrmQueryService<Entity> {
-    let queryService = this.queryService;
+    let { queryService } = this;
 
     if (queryService instanceof AssemblerQueryService) {
       queryService = queryService.queryService;
@@ -118,8 +115,8 @@ export class PaginatedDataProvider<Entity, FiltersData>
       return this.queryService.assembler.convertAsyncToDTOsWithCount(
         qb.getManyAndCount()
       );
-    } else {
-      return qb.getManyAndCount();
     }
+
+    return qb.getManyAndCount();
   }
 }

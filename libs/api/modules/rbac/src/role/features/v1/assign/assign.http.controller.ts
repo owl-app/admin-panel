@@ -41,8 +41,8 @@ export class AssignController {
     await Promise.all(items.map(async (item: string): Promise<void> => {
       try {
         await this.rbacManager.addChild(name, item);
-      } catch (error: any) {
-        errors.push(error.message);
+      } catch (error: unknown) {
+        errors.push((error as Error)?.message);
       }
     }));
 

@@ -1,5 +1,4 @@
-import Joi from 'joi';
-import { Schema, SchemaMap } from 'joi';
+import Joi, { Schema, SchemaMap } from 'joi';
 
 interface ConfigProps {
   value: unknown;
@@ -41,11 +40,9 @@ export default class JoiUtil {
     config: JoiConfig<T>,
     propName: keyof ConfigProps
   ): T | SchemaMap<T> {
-    const arr: any[] = Object.keys(config).map((key) => {
-      return {
-        [key]: config[key as keyof T][propName],
-      };
-    });
+    const arr: unknown[] = Object.keys(config).map((key) => ({
+      [key]: config[key as keyof T][propName],
+    }));
 
     return Object.assign({}, ...arr);
   }

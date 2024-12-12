@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
-import { AvalilableCollections, Client, CommonActions, PermissionReferType, ProjectActions } from '@owl-app/lib-contracts';
+import { AvalilableCollections, Client, CommonActions } from '@owl-app/lib-contracts';
 
 import { DomainEvent } from '@owl-app/lib-api-core/event/domain-event.base';
 import { InjectRepository } from '@owl-app/lib-api-core/typeorm/common/typeorm.decorators';
@@ -18,7 +18,7 @@ export class ArchiveProjectsWhenClientIsArchivedDomainEventHandler {
   ) {}
 
   @OnEvent('CLIENT_ENTITY_ARCHIVED', { async: true, promisify: true, suppressErrors: false})
-  async handle(event: DomainEvent & Client & { withProjects: boolean }): Promise<any> {
+  async handle(event: DomainEvent & Client & { withProjects: boolean }): Promise<void> {
     if (
         event.withProjects &&
         checkPermissionToRoute(AvalilableCollections.PROJECT, CommonActions.ARCHIVE)

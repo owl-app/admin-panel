@@ -4,7 +4,9 @@ import { EntityManager } from 'typeorm';
 
 export class AppRequestContext extends RequestContext {
   requestId: string;
+
   user: AuthUserData;
+
   transactionManager?: EntityManager;
 }
 

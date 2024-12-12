@@ -2,17 +2,12 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { DataSource, ObjectLiteral } from 'typeorm'
-
-import { Role } from '@owl-app/lib-contracts'
+import { DataSource } from 'typeorm'
 
 import { RbacTypeOrmModule } from '@owl-app/lib-api-core/rbac/rbac-typeorm.module'
 import { AppNestjsQueryTypeOrmModule } from '@owl-app/lib-api-core/query/module'
 import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository'
 import { FILTER_REGISTRY_TENANT } from '@owl-app/lib-api-core/registry/constants'
-import { RolesFilter } from '@owl-app/lib-api-core/typeorm/filters/roles.filter'
-import { RegistryServiceModule } from '@owl-app/registry-nestjs'
-import { FilterQuery } from '@owl-app/lib-api-core/registry/interfaces/filter-query'
 
 import { CrudController } from './features/v1/crud/crud.http.controller'
 import { AssignController } from './features/v1/assign/assign.http.controller'

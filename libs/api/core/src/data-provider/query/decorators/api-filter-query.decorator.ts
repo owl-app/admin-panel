@@ -13,10 +13,10 @@ export type ApiFilterQueryOptions = {
   options?: ApiQueryOptions;
 };
 
-export function ApiFilterQuery(options: ApiFilterQueryOptions[]) {
+export function ApiFilterQuery(filterQueryOptions: ApiFilterQueryOptions[]) {
   let filterDecorators = [];
 
-  filterDecorators = options.map(({ name, filter, options }) => {
+  filterDecorators = filterQueryOptions.map(({ name, filter, options }) => {
     if (isObjectOrFunction(filter)) {
       return applyDecorators(
         ApiExtraModels(filter as Function),
@@ -32,17 +32,17 @@ export function ApiFilterQuery(options: ApiFilterQueryOptions[]) {
           ...options,
         })
       );
-    } else {
-      return applyDecorators(
-        ApiQuery({
-          required: false,
-          name,
-          explode: true,
-          type: filter,
-          ...options,
-        })
-      );
     }
+
+    return applyDecorators(
+      ApiQuery({
+        required: false,
+        name,
+        explode: true,
+        type: filter,
+        ...options,
+      })
+    );
   });
 
   return applyDecorators(...filterDecorators);

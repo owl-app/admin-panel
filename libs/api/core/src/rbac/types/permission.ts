@@ -12,8 +12,8 @@ export class Permission extends BasePermission
     ruleName: string | null = null,
     createdAt: Date | null = null,
     updatedAt: Date | null = null,
-    collection: string,
-    refer: string,
+    collection: string = null,
+    refer: string = null,
   ) {
     super(name, description, ruleName, createdAt, updatedAt);
 

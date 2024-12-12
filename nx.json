@@ -30,8 +30,7 @@
         "{projectRoot}/**/*.ts",
         "{projectRoot}/.eslintrc.json",
         "{projectRoot}/.eslintignore",
-        "{projectRoot}/tsconfig.eslint.json",
-        "{workspaceRoot}/packages/utils/eslint-config-custom/*"
+        "{projectRoot}/tsconfig.eslint.json"
       ]
     },
     "@nx/js:tsc": {

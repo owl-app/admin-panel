@@ -1,3 +1,4 @@
+import { SelectQueryBuilder } from 'typeorm';
 import { FactoryProvider } from '@nestjs/common';
 import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
 
@@ -25,12 +26,11 @@ import {
 import { PaginatedDataProvider } from './paginated-query.provider';
 import { getPaginatedQueryServiceToken } from './decorators/helpers';
 import { FilterCustom } from '../filtering/filter-custom';
-import { SelectQueryBuilder } from 'typeorm';
 
 export function createPaginatedQueryServiceProvider<Entity>(
   entity: EntityClassOrSchema,
-  filterBuilder: Class<FilterBuilder<FilterQueryService<Entity>, any>>,
-  assembler?: Class<Assembler<any, any, any, any, any, any>>
+  FilterBuilderClass: Class<FilterBuilder<FilterQueryService<Entity>, unknown>>,
+  assembler?: Class<Assembler<unknown, unknown, unknown, unknown, unknown, unknown>>
 ): FactoryProvider {
   return {
     provide: getPaginatedQueryServiceToken(entity),
@@ -45,7 +45,7 @@ export function createPaginatedQueryServiceProvider<Entity>(
       return new PaginatedDataProvider(
         queryService,
         paginationConfig,
-        new filterBuilder(filterServiceRegistry, filterCustomServiceRegistry)
+        new FilterBuilderClass(filterServiceRegistry, filterCustomServiceRegistry)
       );
     },
     inject: [

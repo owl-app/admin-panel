@@ -27,7 +27,6 @@ export class UserAssembler extends ClassTransformerAssembler<
     dto: CreateUserRequest
   ): Promise<DeepPartial<UserEntity>> {
     const model = new UserEntity();
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { passwordBcryptSaltRounds } =
       this.configService.get<IConfigApp>(APP_CONFIG_NAME);
 
@@ -63,7 +62,6 @@ export class UserAssembler extends ClassTransformerAssembler<
   async convertToUpdateEntity(
     dto: UserDto
   ): Promise<UserEntity> {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { passwordBcryptSaltRounds } =
       this.configService.get<IConfigApp>(APP_CONFIG_NAME);
 

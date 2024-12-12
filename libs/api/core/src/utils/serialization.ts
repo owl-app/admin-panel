@@ -1,4 +1,4 @@
-export const serializeObject = (value: any): string => {
+export const serializeObject = (value: unknown): string => {
   try {
     return JSON.stringify(value);
   } catch (error) {

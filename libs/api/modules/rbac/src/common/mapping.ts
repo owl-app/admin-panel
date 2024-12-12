@@ -1,8 +1,5 @@
 import { Type } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
-import moment from 'moment';
-
-import { Item } from '@owl-app/rbac-manager';
 
 import { Mapper } from '@owl-app/lib-api-core/types/mapper.interface';
 
@@ -17,6 +14,7 @@ export class RbacItemMapper<
   constructor(private response: Type<Response>, private item: Type<BaseItem>) {}
 
   toPersistence(request: Entity): BaseItem {
+    // eslint-disable-next-line new-cap
     return new (this.item)(
       request.name,
       request.description,
@@ -26,6 +24,7 @@ export class RbacItemMapper<
 
   toResponse(item: DeepPartial<BaseAuthItemEntity>): Response
   {
+    // eslint-disable-next-line new-cap
     const role = new (this.response);
     role.name = item.name;
     role.description = item.description;

@@ -2,7 +2,13 @@
   "name": "@owl-app/lib-api-module-client",
   "dependencies": {
     "@nestjs/common": "^10.3.1",
-    "@nestjs/swagger": "^7.3.0"
+    "@nestjs/swagger": "^7.3.0",
+    "@nestjs/cqrs": "^10.2.7",
+    "@nestjs/event-emitter": "^2.0.4",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "typeorm": "^0.3.20",
+    "ts-mapper": "^1.2.4"
   },
   "devDependencies": {
     "eslint": "~8.48.0",

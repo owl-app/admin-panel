@@ -10,22 +10,25 @@ export function createAppTypeOrmProviders(
   dataSource?: DataSource | DataSourceOptions | string
 ): Provider[] {
   return (entities || []).map(
-    ({ entity, repository = null, inject = null, repositoryToken = null }) => ({
+    ({ entity, repository: Repository = null, inject = null, repositoryToken = null }) => ({
       provide: repositoryToken ?? getRepositoryToken(entity, dataSource),
-      useFactory: (dataSource: DataSource, ...injectArgs) => {
-        const entityMetadata = dataSource.entityMetadatas.find(
+      useFactory: (ds: DataSource, ...injectArgs) => {
+        const entityMetadata = ds.entityMetadatas.find(
           (meta) => meta.target === entity
         );
         const isTreeEntity = typeof entityMetadata?.treeType !== 'undefined';
 
-        const baseRepo = isTreeEntity
-          ? dataSource.getTreeRepository(entity)
-          : dataSource.options.type === 'mongodb'
-          ? dataSource.getMongoRepository(entity)
-          : dataSource.getRepository(entity);
+        let baseRepo;
+        if (isTreeEntity) {
+          baseRepo = ds.getTreeRepository(entity);
+        } else if (ds.options.type === 'mongodb') {
+          baseRepo = ds.getMongoRepository(entity);
+        } else {
+          baseRepo = ds.getRepository(entity);
+        }
 
-        if (repository !== null) {
-          return new repository(
+        if (Repository !== null) {
+          return new Repository(
             baseRepo.target,
             baseRepo.manager,
             baseRepo.queryRunner,

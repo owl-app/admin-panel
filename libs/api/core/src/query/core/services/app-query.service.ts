@@ -1,4 +1,4 @@
-import { DeepPartial, QueryService, UpdateOneOptions, Filter, WithDeleted, Query } from '@owl-app/nestjs-query-core';
+import { DeepPartial, QueryService, Filter, Query } from '@owl-app/nestjs-query-core';
 import { QueryOptions } from '../interfaces/query-options';
 
 /**

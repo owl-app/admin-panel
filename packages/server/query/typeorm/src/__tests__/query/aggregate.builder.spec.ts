@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { AggregateQuery, GroupBy } from '@owl-app/nestjs-query-core';
 import { format as formatSql } from 'sql-formatter';
 

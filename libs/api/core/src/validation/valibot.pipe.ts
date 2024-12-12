@@ -7,8 +7,8 @@ import {
   ValiError,
   FlatErrors,
 } from 'valibot';
+
 import { ValidationErrorException } from './validation-error.exception';
-import { isObject } from '@owl-app/utils';
 
 export class ValibotValidationPipe implements PipeTransform {
   constructor(
@@ -20,6 +20,7 @@ export class ValibotValidationPipe implements PipeTransform {
       const parsedValue = parse(this.schema, value);
 
       return parsedValue;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       throw new ValidationErrorException(this.flattenErrors(error));
     }

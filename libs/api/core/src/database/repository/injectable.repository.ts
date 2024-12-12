@@ -7,6 +7,7 @@ import {
   SaveOptions,
   SelectQueryBuilder,
 } from 'typeorm';
+import { cloneDeep } from 'lodash';
 
 import { Registry } from '@owl-app/registry';
 
@@ -15,7 +16,6 @@ import { EntitySetter } from '../../registry/interfaces/entity-setter';
 
 import { BaseRepository } from './base.repository';
 import BaseEntity from '../entity/base.entity';
-import { cloneDeep } from 'lodash';
 
 function extendEntityManager<Entity>(
   manager: EntityManager,
@@ -63,11 +63,9 @@ export class InjectableRepository<
       target,
       // replace createQueryBuilder with extended version
       Object.assign(cloneDeep(manager), manager, {
-        createQueryBuilder: extendEntityManager<Entity>(
-          Object.assign(
-            {},
-            { ...manager, createQueryBuilder: manager.createQueryBuilder }
-          ) as EntityManager,
+        createQueryBuilder: extendEntityManager<Entity>({
+            ...manager, createQueryBuilder: manager.createQueryBuilder
+          } as EntityManager,
           filters
         ),
       }),
@@ -129,6 +127,6 @@ export class InjectableRepository<
       });
     }
 
-    return super.save(entityOrEntities as any, options);
+    return super.save(entityOrEntities as DeepPartial<Entity>, options) as Promise<T | T[]>;
   }
 }

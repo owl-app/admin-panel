@@ -41,7 +41,7 @@ export class AppNestjsQueryTypeOrmModule {
       opts: opts.queryService?.opts
     }
 
-    opts.entities.map((opt) => {
+    opts.entities.forEach((opt) => {
       if (!opt.repositoryToken) {
         opt.repositoryToken = getQueryServiceRepositoryToken(
           opt.entity
@@ -49,27 +49,25 @@ export class AppNestjsQueryTypeOrmModule {
       }
     });
 
-    const assemblers = opts.entities.reduce((assemblers, opt) => {
+    const assemblers = opts.entities.reduce((assemblersReduced, opt) => {
       if (opt.assembler) {
-        assemblers.push(opt.assembler);
+        assemblersReduced.push(opt.assembler);
       }
 
-      return assemblers;
+      return assemblersReduced;
     }, []);
 
-    const entities = opts.entities.map((opt) => {
-      return {
-        entity: opt.entity,
-        repository: {
-          obj: getQueryServiceRepositoryToken(opt.entity),
-          injectInProviders: true,
-        },
-      };
-    });
+    const entities = opts.entities.map((opt) => ({
+      entity: opt.entity,
+      repository: {
+        obj: getQueryServiceRepositoryToken(opt.entity),
+        injectInProviders: true,
+      },
+    }));
 
-    const dataProviders = opts.entities.reduce((dataProviders, opt) => {
+    const dataProviders = opts.entities.reduce((dataProvidersReduced, opt) => {
       if (opt.dataProvider) {
-        dataProviders.push(
+        dataProvidersReduced.push(
           createPaginatedQueryServiceProvider(
             opt.entity,
             opt.dataProvider.filterBuilder,
@@ -78,7 +76,7 @@ export class AppNestjsQueryTypeOrmModule {
         );
       }
 
-      return dataProviders;
+      return dataProvidersReduced;
     }, []);
 
     return {
@@ -108,7 +106,7 @@ export class AppNestjsQueryTypeOrmModule {
                 ],
                 ...(opts.importsQueryTypeOrm ?? [])
               ],
-              queryService: queryService,
+              queryService,
               typeOrmModule: TypeOrmModule.forFeature(
                 { entities: opts.entities },
                 dataSource

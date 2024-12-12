@@ -9,7 +9,7 @@
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx", "*.vue"],
+      "files": ["*.ts", "*.tsx", "*.js", "*.vue"],
       "rules": {
         "vue/multi-word-component-names": "off"
       }

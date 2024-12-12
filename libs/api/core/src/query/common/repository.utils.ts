@@ -8,7 +8,7 @@ import { DEFAULT_DATA_SOURCE_NAME } from '../../contants';
 export function getQueryServiceRepositoryToken(
   entity: EntityClassOrSchema,
   dataSource: DataSource | DataSourceOptions | string = DEFAULT_DATA_SOURCE_NAME
-): string | Function | Type<DataSource> {
+): string | Type<DataSource> {
   const dataSourcePrefix = getDataSourcePrefix(dataSource) || '';
 
   if (entity instanceof EntitySchema) {

@@ -1,4 +1,4 @@
-import { SelectQueryBuilder } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Query } from '@owl-app/nestjs-query-core';
 import { FilterQueryBuilder as BaseFilterQueryBuilder } from '@owl-app/nestjs-query-typeorm';
 import { Registry } from '@owl-app/registry';
@@ -9,7 +9,7 @@ import { ForceFilters } from '../../core/interfaces/force-filters.interface';
 export class FilterQueryBuilder<Entity> extends BaseFilterQueryBuilder<Entity> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(
-    readonly repo: any,
+    readonly repo: Repository<Entity>,
     readonly filters?: Registry<FilterQuery<Entity>>
   ) {
     super(repo);

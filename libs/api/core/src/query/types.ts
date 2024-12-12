@@ -16,12 +16,12 @@ import { AppTypeOrmQueryServiceOpts } from './typeorm/services/app-typeorm-query
 export interface AppNestjsQueryTypeOrmModuleOpts {
   entities: AppNestjsQueryTypeOrmEntitiesOpts[];
   queryService?: {
-    classService?: Class<QueryService<any>>;
+    classService?: Class<QueryService<unknown>>;
     inject?: Array<InjectionToken | OptionalFactoryDependency>;
     opts?: AppTypeOrmQueryServiceOpts<unknown>
   };
   importsQueryTypeOrm?: Array<
-    Class<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
+    Class<unknown> | DynamicModule | Promise<DynamicModule> | ForwardReference
   >;
 }
 
@@ -31,5 +31,5 @@ export interface AppNestjsQueryTypeOrmEntitiesOpts extends AppTypeOrmEntitesOpts
 }
 
 export interface AppNestjsQueryTypeOrmProviderOpts {
-  filterBuilder?: Class<FilterBuilder<Filter<EntityClassOrSchema>, any>>;
+  filterBuilder?: Class<FilterBuilder<Filter<EntityClassOrSchema>, unknown>>;
 }

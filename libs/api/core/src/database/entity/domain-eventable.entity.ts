@@ -5,18 +5,18 @@ import { DomainEvent } from '../../event/domain-event.base';
 
 export default class DomainEventableEntity {
   @Exclude()
-  private _domainEvents: DomainEvent[] = [];
+  private availableDomainEvents: DomainEvent[] = [];
 
   get domainEvents(): DomainEvent[] {
-    return this._domainEvents;
+    return this.availableDomainEvents;
   }
 
   public addEvent(domainEvent: DomainEvent): void {
-    this._domainEvents.push(domainEvent);
+    this.availableDomainEvents.push(domainEvent);
   }
 
   public clearEvents(): void {
-    this._domainEvents = [];
+    this.availableDomainEvents = [];
   }
 
   public async publishEvents(
@@ -25,10 +25,12 @@ export default class DomainEventableEntity {
   ): Promise<void> {
     await Promise.all(
       this.domainEvents.map(async (event) => {
-        return await eventEmitter.emitAsync(
+        const result = await eventEmitter.emitAsync(
           event.eventName ?? event.constructor.name,
           Object.assign(event, { id })
         );
+
+        return result;
       })
     );
     this.clearEvents();

@@ -76,7 +76,7 @@ export default registerAs(JWT_CONFIG_NAME, (): IJwtConfig => {
         .description('minutes after which refresh tokens expire'),
     },
     tokenClockTolerance: {
-      value: parseInt(process.env.JWT_TOKEN_CLOCK_TOLERANCE) || 2,
+      value: parseInt(process.env.JWT_TOKEN_CLOCK_TOLERANCE, 10) || 2,
       joi: Joi.number()
         .default('30m')
         .description('minutes after which refresh tokens expire'),

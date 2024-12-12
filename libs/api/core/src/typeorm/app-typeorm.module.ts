@@ -32,14 +32,12 @@ export class AppTypeOrmModule {
       | DataSourceOptions
       | string = DEFAULT_DATA_SOURCE_NAME
   ): DynamicModule {
-    const optsWithRegistries = opts.entities.map((entity) => {
-      return {
-        ...entity,
-        inject: [FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT, EventEmitter2],
-      };
-    });
+    const optsWithRegistries = opts.entities.map((entity) => ({
+      ...entity,
+      inject: [FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT, EventEmitter2],
+    }));
 
-    const newOptions = Object.assign({
+    const newOptions = {
       opts,
       entities: optsWithRegistries,
       imports: [
@@ -62,7 +60,7 @@ export class AppTypeOrmModule {
         }),
         EventEmitter2,
       ],
-    });
+    };
 
     return {
       imports: [TypeOrmModule.forFeature(newOptions, dataSource)],

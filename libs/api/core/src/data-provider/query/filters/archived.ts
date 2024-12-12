@@ -1,10 +1,10 @@
+import { SelectQueryBuilder } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 
 import { ArchiveOptions } from '@owl-app/lib-contracts';
 
 import { FilterCustom } from '../../filtering/filter-custom';
-import { SelectQueryBuilder } from 'typeorm';
 
 export interface FilterArchivedQuery {
   archived?: ArchiveOptions;

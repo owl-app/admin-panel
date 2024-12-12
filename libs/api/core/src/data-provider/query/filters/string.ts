@@ -6,9 +6,9 @@ import {
   FilterFieldComparison,
   Filter as FilterQueryService,
 } from '@owl-app/nestjs-query-core';
+import { isEmpty } from '@owl-app/utils';
 
 import { Filter } from '../../filtering/filter';
-import { isEmpty } from '@owl-app/utils';
 
 export interface FilterStringQuery {
   type?: string;
@@ -76,7 +76,7 @@ export class StringFilter<Entity>
     )
       return {};
 
-    fields.map((field) => {
+    fields.forEach((field) => {
       filters[field as keyof Entity] = this.getQuery(
         data.type,
         data.value

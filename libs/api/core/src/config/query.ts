@@ -10,10 +10,8 @@ export interface IConfigQuery {
   pagination: PaginationConfigQuery;
 }
 
-export default registerAs(QUERY_CONFIG_NAME, (): IConfigQuery => {
-  return {
-    pagination: {
-      default_limit: 10,
-    },
-  };
-});
+export default registerAs(QUERY_CONFIG_NAME, (): IConfigQuery => ({
+  pagination: {
+    default_limit: 10,
+  },
+}));

@@ -8,7 +8,7 @@ export class TransactionalRepository<Entity> extends Repository<Entity> {
    * results of all event handlers in one operation
    */
   public async transaction<T>(handler: () => Promise<T>): Promise<T> {
-    return await this.getManager().transaction(async (connection) => {
+    const  resultTransaction = await this.getManager().transaction(async (connection) => {
       if (!RequestContextService.getTransactionConnection()) {
         RequestContextService.setTransactionConnection(connection);
       }
@@ -21,6 +21,7 @@ export class TransactionalRepository<Entity> extends Repository<Entity> {
         RequestContextService.cleanTransactionConnection();
       }
     });
+    return resultTransaction;
   }
 
   /**
