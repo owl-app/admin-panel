@@ -105,7 +105,7 @@ watch(
   ()=> [props.loading],
   async () => {
     if (props.options && props.eagerLoading) {
-      availableOptions.value = props.options.map((item) => getOption(item));
+      availableOptions.value = props.options.map((item: unknown) => getOption(item));
       model.value = getValuesFromFilter();
     }
     
