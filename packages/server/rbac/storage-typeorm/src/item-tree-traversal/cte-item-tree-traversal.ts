@@ -166,6 +166,7 @@ export abstract class CteItemTreeTraversal<RawItem> extends BaseStorage implemen
         names: string|string[],
         baseOuterQueryBuilder:  SelectQueryBuilder<RawItem>,
         areParents = true,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): Promise<any> {
       let cteSelectRelationName = '';
       let cteConditionRelationName = 'child';

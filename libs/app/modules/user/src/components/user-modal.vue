@@ -67,11 +67,11 @@ import RolesSelect from './roles-select.vue'
 
 const model = defineModel<boolean>();
 
-const emit = defineEmits<{
+defineEmits<{
   (event: 'saved',): void
 }>()
 
-const props = defineProps<{
+defineProps<{
 	user?: User | null;
 }>();
 

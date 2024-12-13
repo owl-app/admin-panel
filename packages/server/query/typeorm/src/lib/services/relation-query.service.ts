@@ -13,7 +13,6 @@ import omit from 'lodash.omit';
 import {
   RelationQueryBuilder as TypeOrmRelationQueryBuilder,
   Repository,
-  DeepPartial,
 } from 'typeorm';
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 
@@ -615,7 +614,7 @@ export abstract class RelationQueryService<Entity> {
     if (typeof relationMeta.type === 'string') {
       const relationMetaData =
         this.repo.manager.connection.entityMetadatas.find(
-          (em) => em.targetName == relationMeta.type
+          (em) => em.targetName === relationMeta.type
         );
 
       if (relationMetaData) {

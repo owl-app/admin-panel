@@ -1,7 +1,7 @@
 import { Filter } from '@owl-app/nestjs-query-core';
 import { format as formatSql } from 'sql-formatter';
 
-import { WhereBuilder } from '../../src/query';
+import { WhereBuilder } from '../../lib/query';
 import {
   closeTestConnection,
   createTestConnection,

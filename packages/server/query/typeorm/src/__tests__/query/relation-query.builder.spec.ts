@@ -1,12 +1,13 @@
+import { format as formatSql } from 'sql-formatter';
+
 import {
   Class,
   Query,
   SortDirection,
   SortNulls,
 } from '@owl-app/nestjs-query-core';
-import { format as formatSql } from 'sql-formatter';
 
-import { RelationQueryBuilder } from '../../src/query';
+import { RelationQueryBuilder } from '../../lib/query';
 import {
   closeTestConnection,
   createTestConnection,
@@ -244,6 +245,7 @@ describe('RelationQueryBuilder', (): void => {
         boolType: true,
         numberType: 1,
         stringType: 'str',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         manyToOneRelation: 'test-relation-id-1' as any,
       },
       {
@@ -252,6 +254,7 @@ describe('RelationQueryBuilder', (): void => {
         boolType: false,
         numberType: 2,
         stringType: 'str',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         manyToOneRelation: 'test-relation-id-2' as any,
       },
     ];

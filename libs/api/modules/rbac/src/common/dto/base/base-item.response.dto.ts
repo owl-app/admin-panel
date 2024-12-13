@@ -2,9 +2,9 @@ import { ApiPropertyOptional } from "@nestjs/swagger"
 import { IsOptional } from "class-validator"
 import { Exclude } from "class-transformer";
 
-import type { IBaseRbacItemResponse } from '@owl-app/lib-contracts'
+import type { RbacItemResponse } from '@owl-app/lib-contracts'
 
-export abstract class BaseRbacItemResponse implements IBaseRbacItemResponse {
+export abstract class BaseRbacItemResponse implements RbacItemResponse {
 
   @Exclude()
   type: string;

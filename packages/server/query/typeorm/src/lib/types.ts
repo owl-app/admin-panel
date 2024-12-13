@@ -14,6 +14,7 @@ export interface NestjsQueryTypeOrmModuleOpts {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   entities: NestjsQueryTypeOrmModuleEntitiesOpts[];
   imports?: Array<
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Class<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
   >;
   typeOrmModule?: DynamicModule;
@@ -22,8 +23,10 @@ export interface NestjsQueryTypeOrmModuleOpts {
 }
 
 export interface NestjsQueryTypeOrmModuleQueryServiceOpts {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   classService: Class<QueryService<any>>;
   inject?: Array<InjectionToken | OptionalFactoryDependency>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   opts?: TypeOrmQueryServiceOpts<any>;
 }
 

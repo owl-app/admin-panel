@@ -3,7 +3,8 @@
  * @param item
  * @returns {boolean}
  */
-export function isFunction(item: any): boolean {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isFunction(item: unknown): boolean {
   return item && typeof item === 'function' && !Array.isArray(item);
 }
 
@@ -13,7 +14,7 @@ export function isFunction(item: any): boolean {
  * @returns {boolean}
  * From https://stackoverflow.com/a/34749873/772859
  */
-export function isObject(item: any) {
+export function isObject(item: unknown) {
   return item && typeof item === 'object' && !Array.isArray(item);
 }
 
@@ -22,7 +23,7 @@ export function isObject(item: any) {
  * @param item
  * @returns {boolean}
  */
-export function isObjectOrFunction(item: any): boolean {
+export function isObjectOrFunction(item: unknown): boolean {
   return isFunction(item) || isObject(item);
 }
 
@@ -31,7 +32,7 @@ export function isObjectOrFunction(item: any): boolean {
  * @param item
  * @returns {boolean}
  */
-export function isClassInstance(item: any): boolean {
+export function isClassInstance(item: unknown): boolean {
   return isObject(item) && item.constructor.name !== 'Object';
 }
 
@@ -40,19 +41,23 @@ export function isClassInstance(item: any): boolean {
  * @param item
  * @returns {boolean}
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isEmpty(item: any) {
   if (item instanceof Array) {
+    // eslint-disable-next-line no-param-reassign
     item = item.filter((val) => !isEmpty(val));
     return item.length === 0;
-  } else if (item && typeof item === 'object') {
-    return Object.keys(item).length === 0;
-  } else {
-    return (
-      !item ||
-      (item + '').toLocaleLowerCase() === 'null' ||
-      (item + '').toLocaleLowerCase() === 'undefined'
-    );
   }
+
+  if (item && typeof item === 'object') {
+    return Object.keys(item).length === 0;
+  }
+
+  return (
+    !item ||
+    (`${item}''`).toLocaleLowerCase() === 'null' ||
+    (`${item}''`).toLocaleLowerCase() === 'undefined'
+  );
 }
 
 /**
@@ -60,18 +65,20 @@ export function isEmpty(item: any) {
  * @param item
  * @returns {boolean}
  */
-export function isNotEmpty(item: any): boolean {
+export function isNotEmpty(item: unknown): boolean {
   return !isEmpty(item);
 }
 
-export function isJsObject(object: any) {
+export function isJsObject(object: unknown) {
   return object !== null && object !== undefined && typeof object === 'object';
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isNumeric(val: any): boolean {
   return !(val instanceof Array) && (val - parseFloat(val) + 1) >= 0;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function instanceOf <T>(value: any, fieldName: string): value is T {
   return fieldName in value;
 }

@@ -12,7 +12,7 @@ export default function createUserSeeder(passwordBcryptSaltRounds: number): Clas
 
     public async run(
         dataSource: DataSource
-    ): Promise<any> {
+    ): Promise<void> {
       const repository =  dataSource.getRepository(USER_ENTITY);
 
       const user: Partial<User> = {

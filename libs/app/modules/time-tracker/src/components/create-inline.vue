@@ -191,8 +191,7 @@ import { useLocalStorage } from '@vueuse/core';
 import type { Tag, Time, Project } from '@owl-app/lib-contracts';
 
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
-import { useApi } from '@owl-app/lib-app-core/composables/use-system'
-import { useStores } from '@owl-app/lib-app-core/composables/use-system'
+import { useApi, useStores } from '@owl-app/lib-app-core/composables/use-system'
 import { DateInputModelValue } from 'vuestic-ui/dist/types/components/va-date-input/types';
 
 interface Props {
@@ -255,7 +254,7 @@ if (isTimerStart.value && !props.isManualOnly) {
   isManual.value = false
 }
 
-let oldData: TimeFormData = {
+const oldData: TimeFormData = {
   timeIntervalStart: new Date(defaultValue.timeIntervalStart), 
   timeIntervalEnd: new Date(defaultValue.timeIntervalEnd), 
   date: new Date(defaultValue.date),
@@ -315,7 +314,7 @@ function parseDefaultValue(value?: Time): TimeFormData {
       .fromJSDate(new Date(value.timeIntervalStart))
       .set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 })
       .toJSDate(),
-    timeSum: timeSum,
+    timeSum,
     project: value?.project || null,
     tags: value?.tags || [],
   }
@@ -338,12 +337,13 @@ function changeTimeSum(data: { ref: TimeFormData }) {
   if(hours === 0 && minutes === 0 && seconds === 0) return;
 
   const dateTo = dateFrom.plus({
-    hours: hours,
-    minutes: minutes,
-    seconds: seconds
+    hours,
+    minutes,
+    seconds
   });
 
-  oldData.timeIntervalEnd = data.ref.timeIntervalEnd = dateTo.toJSDate();
+  data.ref.timeIntervalEnd = dateTo.toJSDate();
+  oldData.timeIntervalEnd = data.ref.timeIntervalEnd;
 
   setChangedScope(dateFrom, dateTo, hours);
 

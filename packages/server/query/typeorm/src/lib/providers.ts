@@ -33,6 +33,7 @@ export function createTypeOrmQueryServiceProvider<Entity>(
       if (isObject(RepositoryObj) && !injectInProviders) {
         const RepositoryClass = RepositoryObj as new (
           repo: Repository<Entity>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ) => any;
 
         return new classService(

@@ -5,7 +5,7 @@ export class BaseStorage {
     this.dataSource = dataSource;
   }
 
-  protected async transactional(callback: (queryRunner: QueryRunner) => Promise<any>): Promise<void>
+  protected async transactional(callback: (queryRunner: QueryRunner) => Promise<void>): Promise<void>
   {
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -22,7 +22,8 @@ export class BaseStorage {
     }
   }
 
-  protected async singleQuery(sql: string, parameters?: any[]): Promise<any> 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected async singleQuery(sql: string, parameters?: unknown[]): Promise<any> 
   {
     const queryRunner = this.dataSource.createQueryRunner();
     const result = await queryRunner.query(sql, parameters);

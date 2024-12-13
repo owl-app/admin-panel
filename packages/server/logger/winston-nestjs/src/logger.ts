@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Logger } from 'winston';
 import { LoggerService } from '@nestjs/common';
 
@@ -11,9 +12,10 @@ export class WinstonLogger implements LoggerService {
   }
 
   public log(message: any, context?: string): any {
+    // eslint-disable-next-line no-param-reassign
     context = context || this.context;
 
-    if('object' === typeof message) {
+    if(typeof message === 'object') {
       const { message: msg, ...meta } = message;
 
       return this.logger.info(msg as string, { context, value: message, ...meta });
@@ -23,6 +25,7 @@ export class WinstonLogger implements LoggerService {
   }
 
   public error(message: any, trace?: string, context?: string): any {
+    // eslint-disable-next-line no-param-reassign
     context = context || this.context;
 
     if(message instanceof Error) {
@@ -32,7 +35,7 @@ export class WinstonLogger implements LoggerService {
       return this.logger.error(msg, { context, stack: [trace || message.stack], value: message, ...meta });
     }
 
-    if('object' === typeof message) {
+    if(typeof message === 'object') {
       const { message: msg, ...meta } = message;
 
       return this.logger.error(msg as string, { context, stack: [trace], value: message, ...meta });
@@ -42,9 +45,10 @@ export class WinstonLogger implements LoggerService {
   }
 
   public warn(message: any, context?: string): any {
+    // eslint-disable-next-line no-param-reassign
     context = context || this.context;
 
-    if('object' === typeof message) {
+    if(typeof message === 'object') {
       const { message: msg, ...meta } = message;
 
       return this.logger.warn(msg as string, { context, value: message, ...meta });
@@ -54,9 +58,10 @@ export class WinstonLogger implements LoggerService {
   }
 
   public debug?(message: any, context?: string): any {
+    // eslint-disable-next-line no-param-reassign
     context = context || this.context;
 
-    if('object' === typeof message) {
+    if(typeof message === 'object') {
       const { message: msg, ...meta } = message;
 
       return this.logger.debug(msg as string, { context, value: message, ...meta });
@@ -66,9 +71,10 @@ export class WinstonLogger implements LoggerService {
   }
 
   public verbose?(message: any, context?: string): any {
+    // eslint-disable-next-line no-param-reassign
     context = context || this.context;
 
-    if('object' === typeof message) {
+    if(typeof message === 'object') {
       const { message: msg, ...meta } = message;
 
       return this.logger.verbose(msg as string, { context, value: message, ...meta });

@@ -3,8 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { createServiceRegistryProvider } from './providers';
 
 export interface RegistryServiceModuleOpts<T> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   name: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   imports?: Array<Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference>,
   providers?: Provider[],
   services?: Record<string, Type<T>>

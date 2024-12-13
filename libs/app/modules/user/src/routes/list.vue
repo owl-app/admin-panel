@@ -17,7 +17,6 @@ const { t } = useI18n();
 const showModalUser = ref(false);
 const showDeleteModal = ref(false);
 const editUser = ref<User|null>();
-const deleteClient = ref<User>();
 const deleteUser = ref<User>();
 const gridRef = ref<InstanceType<typeof Grid>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();

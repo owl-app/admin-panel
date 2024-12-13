@@ -16,8 +16,10 @@
     "lodash.omit": "^4.5.0"
   },
   "devDependencies": {
+    "@nestjs/testing": "^10.0.2",
     "@types/uuid": "^9.0.8",
     "@nestjs/typeorm": "^10.0.2",
+    "sql-formatter": "^15.4.6",
     "tsconfig": "^0.0.1",
     "@types/lodash.filter": "^4.6.9",
     "@types/lodash.merge": "^4.6.9",

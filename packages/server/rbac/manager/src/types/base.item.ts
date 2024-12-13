@@ -32,25 +32,25 @@ export abstract class Item {
   /**
    * Representing the item creation time.
    */
-  private _createdAt: Date | null = null;
+  private createdDate: Date | null = null;
 
   /**
    * Representing the item updating time.
    */
-  private _updatedAt: Date | null = null;
+  private updatedDate: Date | null = null;
 
   constructor(
     name: string,
     description: string | null = null,
     ruleName: string | null = null,
-    createdAt: Date | null = null,
-    updatedAt: Date | null = null,
+    createdDate: Date | null = null,
+    updatedDate: Date | null = null,
   ) {
     this.name = name;
     this.description = description;
     this.ruleName = ruleName;
-    this._createdAt = createdAt;
-    this._updatedAt = updatedAt;
+    this.createdDate = createdDate;
+    this.updatedDate = updatedDate;
   }
 
   getName(): string
@@ -60,27 +60,27 @@ export abstract class Item {
 
 
   public get createdAt(): Date | null {
-    return this._createdAt;
+    return this.createdDate;
   }
 
-  public set createdAt(createdAt: Date | null) {
-    this._createdAt = createdAt;
+  public set createdAt(createdDate: Date | null) {
+    this.createdDate = createdDate;
   }
 
   public get updatedAt(): Date | null {
-    return this._updatedAt;
+    return this.updatedDate;
   }
 
-  public set updatedAt(updatedAt: Date | null) {
-    this._updatedAt = updatedAt;
+  public set updatedAt(updatedDate: Date | null) {
+    this.updatedDate = updatedDate;
   }
 
   public hasCreatedAt(): boolean {
-    return this._createdAt !== null;
+    return this.createdDate !== null;
   }
 
   public hasUpdatedAt(): boolean {
-    return this._updatedAt !== null;
+    return this.updatedDate !== null;
   }
 
   toArray(): [string, string | null, string | null, Date | null, Date | null]
@@ -89,8 +89,8 @@ export abstract class Item {
       this.name,
       this.description,
       this.ruleName,
-      this._createdAt,
-      this._updatedAt
+      this.createdDate,
+      this.updatedDate
     ];
   }
 }

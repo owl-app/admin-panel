@@ -1,7 +1,7 @@
 import { CommonFieldComparisonBetweenType } from '@owl-app/nestjs-query-core';
 
-import { randomString } from '../../src/common';
-import { SQLComparisonBuilder } from '../../src/query';
+import { randomString } from '../../lib/common';
+import { SQLComparisonBuilder } from '../../lib/query';
 import { TestEntity } from '../__fixtures__/test.entity';
 
 jest.mock('../../src/common/randomString', () => ({ randomString: jest.fn() }));
@@ -12,6 +12,7 @@ describe('SQLComparisonBuilder', (): void => {
 
   beforeEach(() => {
     let index = -1;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (randomString as jest.Mock<any, any>).mockImplementation(() => {
       index += 1;
       return index.toString();

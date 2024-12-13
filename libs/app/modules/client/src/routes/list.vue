@@ -9,9 +9,9 @@ import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import ArchivedFilter from '@owl-app/lib-app-core/components/grid/components/filters/archived.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
-import ArchiveModal from '../components/archive-modal.vue';
 import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 
+import ArchiveModal from '../components/archive-modal.vue';
 import CreateInline from '../components/create-inline.vue';
 import ClientModal from '../components/client-modal.vue'
 

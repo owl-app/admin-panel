@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import { DateTime } from 'luxon'
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
-import { useI18n } from 'vue-i18n';
 
 import { type Time, type Tag, type Project, AvalilableCollections, TimeActions } from "@owl-app/lib-contracts";
 
@@ -16,9 +15,13 @@ import { useApi } from '@owl-app/lib-app-core/composables/use-system'
 
 import CreateInline from '../components/create-inline.vue';
 
-type GroupedWeeksAndDays = Record<string, Record<string, Time[]>>;
+type GroupedWeeksAndDaysItem = {
+  sum: Duration,
+  items: Record<string, Time[]>
+};
 
-const { t } = useI18n();
+type GroupedWeeksAndDays = Record<string, Record<string, GroupedWeeksAndDaysItem>>;
+
 const api = useApi();
 const { hasRoutePermission } = usePermissions(AvalilableCollections.TIME);
 
@@ -111,7 +114,7 @@ function groupByWeek(items: Time[]) {
     return acc;
   }, {} as GroupedWeeksAndDays);
 
-  for (const weekKey in groupedWeeks) {
+  Object.keys(groupedWeeks).forEach((weekKey) => {
     groupedWeeks[weekKey].items = Object.keys(groupedWeeks[weekKey].items)
       .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
       .reduce((sortedAcc: { [date: string]: Time[] }, dateKey: string) => {
@@ -119,12 +122,12 @@ function groupByWeek(items: Time[]) {
           return sortedAcc;
       }, {});
 
-    for (const dateKey in groupedWeeks[weekKey].items) {
-      groupedWeeks[weekKey].items[dateKey].items.sort(
+      Object.keys(groupedWeeks[weekKey].items).forEach((dateKey) => {
+        groupedWeeks[weekKey].items[dateKey].items.sort(
           (a, b) => (b.timeIntervalStart as Date).getTime() - (a.timeIntervalStart as Date).getTime()
-      );
-    }
-  }
+        );
+      })
+  });
 
   const sortedByWeeks = Object.entries(groupedWeeks)
     .sort((a, b) => {
@@ -133,8 +136,8 @@ function groupByWeek(items: Time[]) {
 
       return new Date(fromB).getTime() - new Date(fromA).getTime();
     })
-    .reduce((acc: GroupedWeeksAndDays, [week, items]) => {
-      acc[week] = items;
+    .reduce((acc: GroupedWeeksAndDays, [week, groupedItems]) => {
+      acc[week] = groupedItems;
       return acc;
     }, {});
 
@@ -214,7 +217,6 @@ async function exportCsv(filters: Record<string, string | string[]>) {
               :remove-filter="removeFilter"
             />
           </div>
-          {{ !!filters?.clients }}
           <div class="col-start-6 col-end-8">
             <select-filter
               :url="`projects?pageable=0${getProjectUrlFilter(filters?.clients)}`"

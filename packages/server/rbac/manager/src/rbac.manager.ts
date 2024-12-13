@@ -16,7 +16,9 @@ import { ItemAlreadyExistsException } from "./exceptions/item-alredy-exists.exce
 import { RuntimeException } from "./exceptions/runtime.exception";
 
 export class RbacManager<Permission extends BasePermission, Role extends BaseRole> {
+
   private defaultRoleNames: string[] = [];
+
   private guestRoleName: string | null = null;
 
   constructor(
@@ -32,7 +34,7 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
   async userHasPermission(
       userId: string | number | null,
       permissionName: string,
-      parameters: Record<string, any> = {},
+      parameters: Record<string, unknown> = {},
   ): Promise<boolean> {
     const item = await this.itemsStorage.get(permissionName);
     if (!item) return false;
@@ -72,12 +74,13 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
 
       let hasPermission = true;
 
-      Object.values(hierarchyValues[i].children).forEach((childItem: AccessType) => {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const childItem of Object.values(hierarchyValues[i].children)) {
         if (!this.executeRule(userId ? String(userId) : null, childItem, parameters)) {
           hasPermission = false;
-          return;
+          break;
         }
-      });
+      }
 
       if (hasPermission) {
           return true;
@@ -350,7 +353,7 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
     }
   }
 
-  private executeRule(user: string, item: Item, params: Record<string, any>): boolean {
+  private executeRule(user: string, item: Item, params: Record<string, unknown>): boolean {
     if (
       item.ruleName === null ||
       item.ruleName === null ||

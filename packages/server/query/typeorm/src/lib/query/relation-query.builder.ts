@@ -387,12 +387,9 @@ export class RelationQueryBuilder<Entity, Relation> {
 
       batchSelect: (queryBuilder, entities) => {
         this.existingAlias = queryBuilder.expressionMap.aliases.find(
-          (alias) => {
-            return (
-              alias.type === 'join' &&
-              alias.target === relation.entityMetadata.target
-            );
-          }
+          (alias) =>
+            alias.type === 'join' &&
+            alias.target === relation.entityMetadata.target
         );
 
         // Set the alias to use for the join
@@ -419,6 +416,7 @@ export class RelationQueryBuilder<Entity, Relation> {
 
         // Only add the joins if there was not an existing one yet for this relation
         if (!this.existingAlias) {
+          // eslint-disable-next-line no-param-reassign
           queryBuilder = joins.reduce((qb, join) => {
             const conditions = join.conditions.map(
               ({ leftHand, rightHand }) => `${leftHand} = ${rightHand}`
@@ -551,24 +549,20 @@ export class RelationQueryBuilder<Entity, Relation> {
         entity: Entity,
         relations: Relation[],
         rawRelations: RawRelation[]
-      ): Relation[] => {
-        return this.batchMapRelationsManyToMany<RawRelation>(
-          joinAlias,
-          relation.joinColumns,
-          entity,
-          relations,
-          rawRelations
-        );
-      },
+      ): Relation[] => this.batchMapRelationsManyToMany<RawRelation>(
+        joinAlias,
+        relation.joinColumns,
+        entity,
+        relations,
+        rawRelations
+      ),
 
-      batchSelect: (qb, entities: Entity[]) => {
-        return this.batchSelectManyToMany(
-          qb,
-          entities,
-          joinAlias,
-          relation.joinColumns
-        );
-      },
+      batchSelect: (qb, entities: Entity[]) => this.batchSelectManyToMany(
+        qb,
+        entities,
+        joinAlias,
+        relation.joinColumns
+      ),
 
       whereCondition: (entity: Entity): SQLFragment => {
         const params: ObjectLiteral = {};
@@ -623,27 +617,23 @@ export class RelationQueryBuilder<Entity, Relation> {
         entity: Entity,
         relations: Relation[],
         rawRelations: RawRelation[]
-      ): Relation[] => {
-        return this.batchMapRelationsManyToMany<RawRelation>(
-          joinAlias,
-          relation.inverseRelation.inverseJoinColumns,
-          entity,
-          relations,
-          rawRelations
-        );
-      },
+      ): Relation[] => this.batchMapRelationsManyToMany<RawRelation>(
+        joinAlias,
+        relation.inverseRelation.inverseJoinColumns,
+        entity,
+        relations,
+        rawRelations
+      ),
 
       batchSelect: (
         qb: SelectQueryBuilder<Relation>,
         entities: Entity[]
-      ): SelectQueryBuilder<Relation> => {
-        return this.batchSelectManyToMany(
-          qb,
-          entities,
-          joinAlias,
-          relation.inverseRelation.inverseJoinColumns
-        );
-      },
+      ): SelectQueryBuilder<Relation> => this.batchSelectManyToMany(
+        qb,
+        entities,
+        joinAlias,
+        relation.inverseRelation.inverseJoinColumns
+      ),
 
       whereCondition: (entity: Entity): SQLFragment => {
         const params: ObjectLiteral = {};

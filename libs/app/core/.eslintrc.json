@@ -5,6 +5,9 @@
     "../../../.eslintrc.base.json"
   ],
   "ignorePatterns": ["!**/*"],
+  "rules": {
+    "import/no-cycle": "off"
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.vue"],

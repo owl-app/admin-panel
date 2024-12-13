@@ -1,6 +1,9 @@
 {
-  "extends": ["custom/server", "../../../.eslintrc.base.json"],
+  "extends": ["eslint-config-custom/base", "../../../.eslintrc.base.json"],
   "ignorePatterns": ["!**/*"],
+  "rules": {
+    "import/prefer-default-export": "off"
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],

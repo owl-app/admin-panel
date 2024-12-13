@@ -9,7 +9,7 @@ export class WinstonLoggerModule {
   {
     const providers = createWinstonProviders(options);
 
-    return {module: WinstonLoggerModule, providers: providers, exports: providers};
+    return {module: WinstonLoggerModule, providers, exports: providers};
   }
 
   public static forRootAsync(options : WinstonModuleAsyncOptions): DynamicModule
@@ -19,7 +19,7 @@ export class WinstonLoggerModule {
     return {
       module: WinstonLoggerModule,
       imports: options.imports,
-      providers: providers,
+      providers,
       exports: providers
     } as DynamicModule;
   }

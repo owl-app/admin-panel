@@ -1,7 +1,7 @@
+import chalk from 'chalk';
 import { ClassSerializerInterceptor, INestApplication } from '@nestjs/common'
 import { NestFactory, Reflector } from '@nestjs/core'
 import { NestExpressApplication } from '@nestjs/platform-express'
-import chalk from 'chalk'
 import { urlencoded, json } from 'express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config'
@@ -11,7 +11,7 @@ import { RoutePermissionGuard } from '@owl-app/lib-api-core/rbac/guards/route-pe
 import cookieParser from 'cookie-parser'
 
 export async function bootstrap(
-    bootstrapModule: any
+    bootstrapModule: INestApplication
 ): Promise<INestApplication> {
     const app = await NestFactory.create<NestExpressApplication>(bootstrapModule, {
         logger: ['log', 'error', 'warn', 'debug', 'verbose'],
@@ -39,7 +39,6 @@ export async function bootstrap(
     app.use(json({ limit: '10mb' }));
     app.use(urlencoded({ extended: true, limit: '10mb' }));
     app.use(cookieParser());
-    app.use
 
     app.enableCors({
         origin: true,
@@ -51,7 +50,7 @@ export async function bootstrap(
 
     const configService = app.get(ConfigService);
     const { version } = configService.get<IConfigApp>(APP_CONFIG_NAME);
-    const globalPrefix = 'api/' + version;
+    const globalPrefix = `api/${version}`;
 
     app.setGlobalPrefix(globalPrefix);
 

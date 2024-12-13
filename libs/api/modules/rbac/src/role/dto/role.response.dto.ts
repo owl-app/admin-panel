@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { Exclude, Expose, Transform, TransformFnParams, Type } from "class-transformer";
 
-import { IRoleResponse } from "@owl-app/lib-contracts";
+import { RoleRbacResponse } from "@owl-app/lib-contracts";
 
 import { BaseRbacItemResponse } from '../../common/dto/base/base-item.response.dto'
 
@@ -23,7 +23,7 @@ export class RoleSettingResponse {
 
 }
 
-export class RoleResponse extends BaseRbacItemResponse implements IRoleResponse{
+export class RoleResponse extends BaseRbacItemResponse implements RoleRbacResponse{
 
   @ApiProperty({ type: () => RoleSettingResponse })
   @Expose()

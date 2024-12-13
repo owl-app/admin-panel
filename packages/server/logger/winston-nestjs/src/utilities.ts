@@ -1,8 +1,9 @@
 import { Format } from 'logform';
-import { NestLikeConsoleFormatOptions } from './interfaces';
 import { format } from 'winston';
 import { inspect } from 'util';
 import safeStringify from 'fast-safe-stringify';
+
+import { NestLikeConsoleFormatOptions } from './interfaces';
 
 const clc = {
   bold: (text: string) => `\x1B[1m${text}\x1B[0m`,
@@ -29,11 +30,12 @@ const nestLikeConsoleFormat = (
   },
 ): Format =>
   format.printf(({ context, level, timestamp, message, ms, ...meta }) => {
-    if ('undefined' !== typeof timestamp) {
+    if (typeof timestamp !== 'undefined') {
       // Only format the timestamp to a locale representation if it's ISO 8601 format. Any format
       // that is not a valid date string will throw, just ignore it (it will be printed as-is).
       try {
         if (timestamp === new Date(timestamp as string).toISOString()) {
+          // eslint-disable-next-line no-param-reassign
           timestamp = new Date(timestamp).toLocaleString();
         }
       } catch (error) {
@@ -50,17 +52,11 @@ const nestLikeConsoleFormat = (
       ? inspect(JSON.parse(stringifiedMeta), { colors: options.colors, depth: null })
       : stringifiedMeta;
 
-    return (
-      `${color(`[${appName}]`)} ` +
-      `${yellow(level.charAt(0).toUpperCase() + level.slice(1))}\t` +
-      ('undefined' !== typeof timestamp ? `${timestamp} ` : '') +
-      ('undefined' !== typeof context
-        ? `${yellow('[' + context + ']')} `
-        : '') +
-      `${color(message as string)} - ` +
-      `${formattedMeta}` +
-      ('undefined' !== typeof ms ? ` ${yellow(ms as string)}` : '')
-    );
+    return `${color(`[${appName}]`)} ${yellow(level.charAt(0).toUpperCase() + level.slice(1))}\t` +
+      `${typeof timestamp !== 'undefined' ? `${timestamp} ` : ''}` +
+      `${typeof context !== 'undefined' ? `${yellow(`[${context}]`)} ` : ''}` +
+      `${color(message as string)} - ${formattedMeta}` +
+      `${typeof ms !== 'undefined' ? ` ${yellow(ms as string)}` : ''}`;
   });
 
 export const utilities = {

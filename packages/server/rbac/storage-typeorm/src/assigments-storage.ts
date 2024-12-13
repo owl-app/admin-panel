@@ -137,6 +137,7 @@ export class TypeOrmAssignmentsStorage extends BaseStorage implements Assignment
     return result.length > 0;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   renameItem(oldName: string, newName: string): void
   {
     // skip

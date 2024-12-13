@@ -19,7 +19,7 @@ import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
 import { Tag } from '@owl-app/lib-contracts';
 import { isEmpty } from '@owl-app/utils';
 
-const emit = defineEmits<{
+defineEmits<{
   (event: 'saved', tagSaved: Tag): void
 }>()
 </script>

@@ -30,7 +30,7 @@ export class ItemTreeTraversalFactory {
       namesSeparator: string
     ): ItemTreeTraversal<RawItem> {
         const driver = dataSource.options.type;
-        const args = [dataSource, tableName, childrenTableName, namesSeparator];
+        // const args = [dataSource, tableName, childrenTableName, namesSeparator];
 
         switch (driver) {
           // case 'sqlite':

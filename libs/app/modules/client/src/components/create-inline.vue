@@ -19,7 +19,7 @@ import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
 import { Client } from '@owl-app/lib-contracts';
 import { isEmpty } from '@owl-app/utils';
 
-const emit = defineEmits<{
+defineEmits<{
   (event: 'saved', clientSaved: Client): void
 }>()
 </script>

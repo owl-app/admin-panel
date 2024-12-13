@@ -2,13 +2,24 @@ import { Seeder } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 
 import { ROLE_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
-import { AvalilableCollections, PermissionReferType, CrudActions, Permission, UserActions, TimeActions, RoleActions, TagActions, ProjectActions, CommonActions, Role } from '@owl-app/lib-contracts';
+import { 
+  AvalilableCollections,
+  PermissionReferType,
+  CrudActions,
+  Permission,
+  UserActions,
+  TimeActions,
+  RoleActions,
+  TagActions,
+  ProjectActions,
+  CommonActions
+} from '@owl-app/lib-contracts';
 
 export default class RbacSeeder implements Seeder {
 
     public async run(
         dataSource: DataSource
-    ): Promise<any> {
+    ): Promise<void> {
       const repository =  dataSource.getRepository(ROLE_ENTITY);
 
       const permissions: Permission[] = [
@@ -59,7 +70,7 @@ export default class RbacSeeder implements Seeder {
           name: this.getRouteName(collection, valueAction),
           description: `${collection} ${valueAction.toLowerCase()}`,
           refer: PermissionReferType.ROUTE,
-          collection: collection,
+          collection,
         });
       });
 

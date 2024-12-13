@@ -12,9 +12,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter'
 
 import { WinstonLoggerModule, WINSTON_MODULE_NEST_PROVIDER } from '@owl-app/winston-logger-nestjs'
 
+import { ErrorHandlersFilter } from '@owl-app/lib-api-core/filters/error-handlers.filter'
+
 import { AppModule } from './app.module'
 import loggerFactory from './logger.factory'
-import { ErrorHandlersFilter } from '@owl-app/lib-api-core/filters/error-handlers.filter'
 
 @Module({
   imports: [

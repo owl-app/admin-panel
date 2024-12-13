@@ -33,7 +33,7 @@ export default createIconsConfig({
     {
       name: 'mso-{content}',
       class: 'material-symbols-outlined',
-      resolve: ({ content }) => ({ content: content }),
+      resolve: ({ content }) => ({ content }),
     },
   ],
 })

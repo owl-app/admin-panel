@@ -1,18 +1,25 @@
 {
-  "extends": ["../../.eslintrc.base.json"],
+  "root": true,
+  "extends": ["eslint-config-custom/server", "../../.eslintrc.base.json"],
   "ignorePatterns": ["!**/*"],
+  "rules": {
+    "import/no-extraneous-dependencies": [
+      "error", {
+        "devDependencies": true,
+        "optionalDependencies": true,
+        "peerDependencies": true
+      }
+    ],
+    "no-console": ["error", { "allow": ["warn", "error", "log"] }]
+  },
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {}
-    },
-    {
       "files": ["*.ts", "*.tsx"],
-      "rules": {}
-    },
-    {
-      "files": ["*.js", "*.jsx"],
-      "rules": {}
+      "parserOptions": {
+        "project": [
+          "apps/api-e2e/tsconfig.eslint.json"
+        ]
+      }
     }
   ]
 }

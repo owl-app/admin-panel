@@ -55,7 +55,7 @@ import OwlForm from '@owl-app/lib-app-core/components/form/form.vue'
 
 const model = defineModel<boolean>();
 
-const emit = defineEmits<{
+defineEmits<{
   (event: 'saved',): void
 }>()
 

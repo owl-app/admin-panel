@@ -80,7 +80,7 @@ defineExpose({
   show,
 })
 
-const emit = defineEmits<{
+defineEmits<{
   (event: 'saved',): void
 }>()
 

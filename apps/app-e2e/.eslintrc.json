@@ -1,10 +1,23 @@
 {
-  "extends": ["plugin:cypress/recommended", "../../.eslintrc.base.json"],
+  "root": true,
+  "extends": [
+    "eslint-config-custom/front",
+    "../../.eslintrc.base.json"
+  ],
   "ignorePatterns": ["!**/*"],
+  "rules": {
+    "no-console": ["error", { "allow": ["warn", "error", "log", "timeEnd", "info", "time"] }]
+  },
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {}
+      "files": ["*.ts", "*.tsx", "*.js", "*.vue"],
+      "parserOptions": {
+        "project": [
+          "apps/app-e2e/tsconfig.eslint.json"
+        ]
+      }
     }
   ]
 }
+
+

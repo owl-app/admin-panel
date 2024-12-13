@@ -254,34 +254,32 @@ export class FilterQueryBuilder<Entity> {
   public applyAggregateGroupBy<T extends Groupable<Entity>>(
     qb: T,
     aggregatedGroupBy?: AggregateQueryField<Entity>[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     alias?: string
   ): T {
     if (!aggregatedGroupBy) {
       return qb;
     }
 
-    return aggregatedGroupBy.reduce((prevQb, aggregatedField) => {
-      return prevQb.addGroupBy(
+    return aggregatedGroupBy.reduce((prevQb, aggregatedField) => prevQb.addGroupBy(
         prevQb.escape(AggregateBuilder.getGroupByAlias(aggregatedField.field))
-      );
-    }, qb);
+      ), qb);
   }
 
   public applyAggregateSorting<T extends Sortable<Entity>>(
     qb: T,
     aggregatedGroupBy?: AggregateQueryField<Entity>[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     alias?: string
   ): T {
     if (!aggregatedGroupBy) {
       return qb;
     }
 
-    return aggregatedGroupBy.reduce((prevQb, aggregatedField) => {
-      return prevQb.addOrderBy(
+    return aggregatedGroupBy.reduce((prevQb, aggregatedField) => prevQb.addOrderBy(
         prevQb.escape(AggregateBuilder.getGroupByAlias(aggregatedField.field)),
         'ASC'
-      );
-    }, qb);
+      ), qb);
   }
 
   /**
@@ -377,9 +375,9 @@ export class FilterQueryBuilder<Entity> {
           // } else if (relation.isOneToMany) {
           //   TODO
           // return false
-        } else {
-          return true;
-        }
+        } 
+
+        return true;
       }).length > 0
     );
   }
@@ -420,7 +418,9 @@ export class FilterQueryBuilder<Entity> {
     return referencedFields.reduce((prev, curr) => {
       const currFilterValue = filter[curr];
       if ((curr === 'and' || curr === 'or') && currFilterValue) {
+        // eslint-disable-next-line no-restricted-syntax
         for (const subFilter of currFilterValue) {
+          // eslint-disable-next-line no-param-reassign
           prev = merge(
             prev,
             this.getReferencedRelationsRecursive(metadata, subFilter)

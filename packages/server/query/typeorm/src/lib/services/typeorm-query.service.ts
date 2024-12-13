@@ -380,16 +380,14 @@ export class TypeOrmQueryService<Entity>
             .execute();
         }
       }
+    } else if (this.useSoftDelete || opts?.useSoftDelete) {
+      deleteResult = await this.filterQueryBuilder
+        .softDelete({ filter })
+        .execute();
     } else {
-      if (this.useSoftDelete || opts?.useSoftDelete) {
-        deleteResult = await this.filterQueryBuilder
-          .softDelete({ filter })
-          .execute();
-      } else {
-        deleteResult = await this.filterQueryBuilder
-          .delete({ filter })
-          .execute();
-      }
+      deleteResult = await this.filterQueryBuilder
+        .delete({ filter })
+        .execute();
     }
 
     return { deletedCount: deleteResult?.affected || 0 };

@@ -154,6 +154,7 @@ export class TypeOrmItemsStorage extends BaseStorage implements ItemsStorage<Per
       }
     })
   }
+
   async remove(name: string): Promise<void>
   {
     await this.transactional(async (queryRunner: QueryRunner): Promise<void> => {

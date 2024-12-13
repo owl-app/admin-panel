@@ -21,6 +21,16 @@
   "rules": {
     "import/prefer-default-export": "off",
     "class-methods-use-this": "off",
+    "no-param-reassign": [2, {"props": false}],
+    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
+    "import/no-extraneous-dependencies": [
+      "error", {
+        "devDependencies": true,
+        "optionalDependencies": true,
+        "peerDependencies": true
+      }
+    ],
+    "vue/multi-word-component-names": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/naming-convention": "warn",
     "@typescript-eslint/no-empty-interface": "warn",
@@ -29,17 +39,6 @@
         "Function": false
       }
     }],
-    "no-param-reassign": [2, {"props": false}],
-    "vue/multi-word-component-names": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "import/no-cycle": "off",
-    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
-    "import/no-extraneous-dependencies": [
-      "error", {
-        "devDependencies": true,
-        "optionalDependencies": true,
-        "peerDependencies": true
-      }
-    ]
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }

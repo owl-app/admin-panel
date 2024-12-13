@@ -49,12 +49,21 @@
 
         <template #actions="{ validate, data }">
           <div class="auth-layout__options flex flex-col sm:flex-row sm:items-center justify-start">
-            <RouterLink :to="{ name: 'recovery-password' }" class="mt-2 sm:mt-0 font-semibold text-primary ml-auto">
+            <RouterLink 
+              class="mt-2 sm:mt-0 font-semibold text-primary ml-auto"
+              :to="{ name: 'recovery-password' }"
+            >
               Forgot password?
             </RouterLink>
           </div>
           <div class="flex justify-center mt-4">
-            <va-button class="w-full" :loading="userStore.loading" @click="validate(true) && login(data.value)">Login</va-button>
+            <va-button
+              class="w-full"
+              :loading="userStore.loading"
+              @click="validate(true) && login(data.ref.email, data.ref.password)"
+            >
+              Login
+            </va-button>
           </div>
         </template>
       </owl-form>
@@ -63,18 +72,19 @@
 </template>
 
 <script lang="ts" setup>
-import { useToast } from 'vuestic-ui'
+import { useToast } from 'vuestic-ui';
+
 import { loginValidationSchema } from "@owl-app/lib-contracts";
 import { useUserStore } from '@owl-app/lib-app-core/stores/user';
 import { router } from '@owl-app/lib-app-core/application/router';
-import OwlForm from '@owl-app/lib-app-core/components/form/form.vue'
+import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
 
 const userStore = useUserStore()
 const { init: notify } = useToast();
 
-const login = async (data: { [x: string]: any; }) => {
+const login = async (email: string, password: string) => {
   try {
-    await userStore.login(data.email, data.password);
+    await userStore.login(email, password);
 
     router.push({ path: 'times' });
   } catch (error: any) {

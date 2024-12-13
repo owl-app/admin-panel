@@ -21,8 +21,10 @@ export interface WinstonModuleOptionsFactory {
 
 export interface WinstonModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
   useFactory?: (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...args: any[]
   ) => Promise<WinstonModuleOptions> | WinstonModuleOptions;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   inject?: any[];
   useClass?: Type<WinstonModuleOptionsFactory>;
 }

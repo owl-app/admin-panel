@@ -1,9 +1,10 @@
 
+import { AvalilableCollections, CrudActions, PermissionReferType } from '@owl-app/lib-contracts';
+
 import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
 import { checkPermission } from '@owl-app/lib-app-core/utils/check-permission'
 
 import ListRoute from './routes/list.vue';
-import { AvalilableCollections, CrudActions, PermissionReferType } from '@owl-app/lib-contracts';
 
 export default defineModule({
   id: 'client',

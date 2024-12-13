@@ -91,8 +91,7 @@ export class AggregateBuilder<Entity> {
   public static convertToAggregateResponse<Entity>(
     rawAggregates: Record<string, unknown>[]
   ): AggregateResponse<Entity>[] {
-    return rawAggregates.map((response) => {
-      return Object.keys(response).reduce(
+    return rawAggregates.map((response) => Object.keys(response).reduce(
         (agg: AggregateResponse<Entity>, resultField: string) => {
           const matchResult = AGG_REGEXP.exec(resultField);
           if (!matchResult) {
@@ -111,8 +110,7 @@ export class AggregateBuilder<Entity> {
           };
         },
         {}
-      );
-    });
+      ));
   }
 
   /**

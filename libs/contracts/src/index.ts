@@ -1,6 +1,5 @@
 export * from './rbac';
 export * from './auth';
-export * from './lang';
 export * from './user';
 export * from './client';
 export * from './tenant';

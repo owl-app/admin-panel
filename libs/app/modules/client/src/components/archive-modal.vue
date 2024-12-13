@@ -52,8 +52,8 @@ const model = defineModel<boolean>();
 const { primaryKey, archiving, archive, item, loading, getItem } = useItem<Item>(props.collection);
 const { hasRoutePermission } = usePermissions();
 
-let archived = ref(false);
-let withProjects = ref(false);
+const archived = ref(false);
+const withProjects = ref(false);
 
 const onDelete = async () => {
   await archive(archived.value, { withProjects: withProjects.value });

@@ -4,8 +4,8 @@ import { Filter, SortDirection } from '@owl-app/nestjs-query-core';
 import { plainToClass } from 'class-transformer';
 import { Repository } from 'typeorm';
 
-import { TypeOrmQueryService } from '../../src';
-import { FilterQueryBuilder } from '../../src/query';
+import { TypeOrmQueryService } from '../..';
+import { FilterQueryBuilder } from '../../lib/query';
 import {
   closeTestConnection,
   CONNECTION_OPTIONS,
@@ -211,7 +211,7 @@ describe('TypeOrmQueryService', (): void => {
             },
           });
           expect(queryResults).toHaveLength(6);
-          queryResults.map((e, idx) => {
+          queryResults.forEach((e, idx) => {
             expect(e).toMatchObject(TEST_RELATIONS[idx]);
           });
         });
@@ -231,7 +231,7 @@ describe('TypeOrmQueryService', (): void => {
             },
           });
           expect(queryResults).toHaveLength(6);
-          queryResults.map((e, idx) => {
+          queryResults.forEach((e, idx) => {
             expect(e).toMatchObject(TEST_RELATIONS[idx]);
           });
         });
@@ -260,9 +260,9 @@ describe('TypeOrmQueryService', (): void => {
             paging: { limit: 3 },
           });
           expect(queryResults).toHaveLength(3);
-          queryResults.map((e, idx) => {
+            queryResults.forEach((e: TestRelation, idx: number) => {
             expect(e).toMatchObject(TEST_RELATIONS[idx]);
-          });
+            });
         });
       });
 

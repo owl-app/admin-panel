@@ -3,8 +3,8 @@ import { getQueryServiceToken } from '@owl-app/nestjs-query-core';
 import { instance, mock } from 'ts-mockito';
 import { Repository } from 'typeorm';
 
-import { createTypeOrmQueryServiceProviders } from '../src/providers';
-import { TypeOrmQueryService } from '../src/services';
+import { createTypeOrmQueryServiceProviders } from '../lib/providers';
+import { TypeOrmQueryService } from '../lib/services';
 
 describe('createTypeOrmQueryServiceProviders', () => {
   it('should create a provider for the entity', () => {

@@ -1,17 +1,17 @@
 {
+  "root": true,
   "extends": [
-    "plugin:vue/vue3-essential",
-    "eslint:recommended",
-    "@vue/eslint-config-typescript",
-    "@vue/eslint-config-prettier/skip-formatting",
+    "eslint-config-custom/front",
     "../../../../.eslintrc.base.json"
   ],
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.vue"],
-      "rules": {
-        "vue/multi-word-component-names": "off"
+      "files": ["*.ts", "*.tsx", "*.vue"],
+      "parserOptions": {
+        "project": [
+          "libs/app/modules/client/tsconfig.eslint.json"
+        ]
       }
     }
   ]

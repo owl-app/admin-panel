@@ -1,3 +1,7 @@
+import { QueryBuilder, WhereExpressionBuilder } from 'typeorm';
+import { format as formatSql } from 'sql-formatter';
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+
 import {
   Class,
   Filter,
@@ -5,11 +9,8 @@ import {
   SortDirection,
   SortNulls,
 } from '@owl-app/nestjs-query-core';
-import { format as formatSql } from 'sql-formatter';
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { QueryBuilder, WhereExpressionBuilder } from 'typeorm';
 
-import { FilterQueryBuilder, WhereBuilder } from '../../src/query';
+import { FilterQueryBuilder, WhereBuilder } from '../../lib/query';
 import {
   closeTestConnection,
   createTestConnection,

@@ -20,7 +20,7 @@ const { t } = useI18n();
 const route = useRoute();
 const api = useApi();
 
-let permissions = ref<any>([]);
+const permissions = ref<any>([]);
 
 loadPermissions();
 
@@ -32,7 +32,7 @@ async function loadPermissions(): Promise<void> {
     (groupedPermissions: Record<string, GroupedPermission[]>, permission: Permission) => {
       if (permission.collection) {
         if (!groupedPermissions[permission.collection]) {
-          groupedPermissions = {...groupedPermissions, ...{ [permission.collection]: [] }}
+          groupedPermissions[permission.collection] = [];
         }
 
         groupedPermissions[permission.collection].push(
@@ -46,6 +46,8 @@ async function loadPermissions(): Promise<void> {
 
         return groupedPermissions;
       }
+
+      return null;
     }, {});
 }
 

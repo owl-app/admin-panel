@@ -19,9 +19,7 @@ export function createWinstonProviders(loggerOpts: WinstonModuleOptions): Provid
     },
     {
       provide: WINSTON_MODULE_NEST_PROVIDER,
-      useFactory: (logger: Logger) => {
-        return new WinstonLogger(logger);
-      },
+      useFactory: (logger: Logger) => new WinstonLogger(logger),
       inject: [WINSTON_MODULE_PROVIDER],
     },
   ];
@@ -36,9 +34,7 @@ export function createWinstonAsyncProviders(options: WinstonModuleAsyncOptions):
     },
     {
       provide: WINSTON_MODULE_NEST_PROVIDER,
-      useFactory: (logger: Logger) => {
-        return new WinstonLogger(logger);
-      },
+      useFactory: (logger: Logger) => new WinstonLogger(logger),
       inject: [WINSTON_MODULE_PROVIDER],
     },
   ];
@@ -48,8 +44,9 @@ export function createWinstonAsyncProviders(options: WinstonModuleAsyncOptions):
     providers.push(...[
       {
         provide: WINSTON_MODULE_OPTIONS,
-        useFactory: async (optionsFactory: WinstonModuleOptionsFactory) =>
-          await optionsFactory.createWinstonModuleOptions(),
+        useFactory: async (optionsFactory: WinstonModuleOptionsFactory) => {
+          await optionsFactory.createWinstonModuleOptions()
+        },
         inject: [useClass],
       },
       {

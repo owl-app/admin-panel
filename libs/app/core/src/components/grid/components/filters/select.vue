@@ -181,7 +181,7 @@ function getOption(item: any) {
       </template>
       <template #option-content="{ option }">
         <span :class="`${(option as Archivable)?.archived ? 'line-through' : ''}`">
-          {{ option && (option as Record<string, any>)[props.trackBy] }}
+          {{ option && (option as Record<string, any>)[props.textBy] }}
         </span>
       </template>
     </va-select>

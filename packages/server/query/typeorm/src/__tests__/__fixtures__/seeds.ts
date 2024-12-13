@@ -115,7 +115,7 @@ export const seed = async (
       te.oneTestRelation = testRelations.find(
         (tr) => tr.testRelationPk === `test-relations-${te.testEntityPk}-1`
       );
-      te.oneSoftDeleteTestRelation = testSoftDeleteRelations[0];
+      [te.oneSoftDeleteTestRelation] = testSoftDeleteRelations;
       if (te.numberType % 2 === 0) {
         // eslint-disable-next-line no-param-reassign
         te.manyTestRelations = testRelations.filter((tr) =>
