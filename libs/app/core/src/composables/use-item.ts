@@ -24,7 +24,7 @@ export type UsableItem<T extends Item> = {
   getItem: (params?: Record<string, any>) => Promise<void>;
   isNew: ComputedRef<boolean>;
   saving: Ref<boolean>;
-  save: (data: T, method?: SaveMethodOptions) => Promise<void>;
+  save: (data: T, method?: SaveMethodOptions) => Promise<void|null>;
   deleting: Ref<boolean>;
   remove: () => Promise<void>;
   archiving: Ref<boolean>;

@@ -3,6 +3,8 @@ import { isEqual } from 'lodash';
 import { PropType, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n'
 
+import { Archivable } from '@owl-app/lib-contracts';
+
 import { useApi } from '../../../../composables/use-system'
 
 const props = defineProps({
@@ -15,6 +17,7 @@ const props = defineProps({
   url: {
     type: String,
     required: false,
+    default: '',
   },
   loading: {
     type: Boolean,
@@ -116,7 +119,7 @@ async function loadData() {
 
   const result = await api.get(props.url);
 
-  availableOptions.value = result?.data?.items?.map((item) => getOption(item)) ?? [];
+  availableOptions.value = result?.data?.items?.map((item: unknown) => getOption(item)) ?? [];
 
   model.value = getValuesFromFilter();
 
@@ -177,8 +180,8 @@ function getOption(item: any) {
         />
       </template>
       <template #option-content="{ option }">
-        <span :class="`${(option as Tag)?.archived ? 'line-through' : ''}`">
-          {{ (option as Tag)?.name }}
+        <span :class="`${(option as Archivable)?.archived ? 'line-through' : ''}`">
+          {{ option && (option as Record<string, any>)[props.trackBy] }}
         </span>
       </template>
     </va-select>

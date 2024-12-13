@@ -21,8 +21,6 @@ export default async function bootstrap(app: App, config: ApplicationConfig) {
 
   const registeredModules = registerModules(config.modules);
 
-  // appRegistry.set('layouts', shallowRef(registerLayouts(layouts, app)));
-
   config.events.request = [...defineModuleRequestEvent(registeredModules, config.modules), ...config.events.request ?? []]
 
   watch(
