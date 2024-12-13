@@ -46,7 +46,7 @@ export const ClientEntitySchema = new EntitySchema<ClientEntity>({
     projects: {
       type: 'one-to-many',
       target: PROJECTT_ENTITY,
-      inverseSide: 'client'
+      inverseSide: 'client',
     },
   },
 });

@@ -1,8 +1,7 @@
-import { TypeMapper } from 'ts-mapper'
+import { TypeMapper } from 'ts-mapper';
 
-import { ClientResponse } from './dto/client.response'
+import { ClientResponse } from './dto/client.response';
 import { ClientEntity } from '../domain/entity/client.entity';
-
 
 export class MapperClient extends TypeMapper {
   constructor() {
@@ -19,7 +18,7 @@ export class MapperClient extends TypeMapper {
       .map(
         (src) => src.name,
         (dest) => dest.name
-      )
+      );
   }
 }
 

@@ -8,16 +8,11 @@ import { QueryFilterBuilder } from '@owl-app/lib-api-core/data-provider/query/qu
 
 import { FilterClientDto } from './dto';
 
-export class ListFilterBuilder extends QueryFilterBuilder<
-  Client,
-  FilterClientDto
-> {
+export class ListFilterBuilder extends QueryFilterBuilder<Client, FilterClientDto> {
   build(data: FilterClientDto): Filter<Client> {
     const filters: Filter<Client>[] = [];
 
-    filters.push(
-      this.filterRegistry.get('string').apply(['name'], data?.search)
-    );
+    filters.push(this.filterRegistry.get('string').apply(['name'], data?.search));
 
     return {
       or: filters,

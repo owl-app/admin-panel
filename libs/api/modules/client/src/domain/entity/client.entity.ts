@@ -5,7 +5,7 @@ import BaseEntity from '@owl-app/lib-api-core/database/entity/base.entity';
 export class ClientEntity extends BaseEntity implements Client {
   tenant: Tenant;
 
-  projects: Project[]
+  projects: Project[];
 
   name: string;
 

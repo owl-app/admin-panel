@@ -26,13 +26,11 @@ import {
   ClientActions,
   CrudActions,
   createClientValidationSchema,
-  updateClientValidationSchema
+  updateClientValidationSchema,
 } from '@owl-app/lib-contracts';
 
 import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query';
-import {
-  InjectAssemblerQueryService,
-} from '@owl-app/nestjs-query-core';
+import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe';
 import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response';
 import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider';
@@ -63,11 +61,7 @@ export class ClientCrudController {
     @InjectAssemblerQueryService(ClientAssembler)
     readonly service: AppAssemblerQueryService<ClientResponse, ClientEntity>,
     @InjectPaginatedQueryService(ClientEntity)
-    readonly paginatedService: DataProvider<
-      Paginated<ClientEntity>,
-      FilterClientDto,
-      ClientEntity
-    >
+    readonly paginatedService: DataProvider<Paginated<ClientEntity>, FilterClientDto, ClientEntity>
   ) {}
 
   @ApiOperation({ summary: 'Find client by id' })
@@ -89,7 +83,7 @@ export class ClientCrudController {
     findOneQuery: FindOneQuery
   ): Promise<ClientResponse> {
     return this.service.getById(id, {
-      relations: findOneQuery.withProjects ? [{ name: 'projects', query: {} } ] : [],
+      relations: findOneQuery.withProjects ? [{ name: 'projects', query: {} }] : [],
     });
   }
 
@@ -100,8 +94,7 @@ export class ClientCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Post()
   @RoutePermissions(AvalilableCollections.CLIENT, CrudActions.CREATE)
@@ -125,8 +118,7 @@ export class ClientCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Put(':id')
@@ -165,14 +157,10 @@ export class ClientCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Get()
-  @RoutePermissions(AvalilableCollections.CLIENT, [
-    CrudActions.LIST,
-    ClientActions.AVAILABLE,
-  ])
+  @RoutePermissions(AvalilableCollections.CLIENT, [CrudActions.LIST, ClientActions.AVAILABLE])
   async paginated(
     @Query('filters') filters: FilterClientDto,
     @Query() pagination: PaginatedQuery
