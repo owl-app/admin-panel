@@ -17,7 +17,6 @@
     ],
     "sharedGlobals": ["{workspaceRoot}/packages/**/*"]
   },
-  "nxCloudAccessToken": "OWJiODI5MjItOWRiYS00ZmViLTg4NWEtZWFiNzBmYmM1NTA4fHJlYWQtd3JpdGU=",
   "targetDefaults": {
     "build": {
       "inputs": ["production", "^production"],
