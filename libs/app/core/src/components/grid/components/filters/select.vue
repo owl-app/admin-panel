@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { isEqual } from 'lodash';
 import { PropType, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n';
 
 import { Archivable } from '@owl-app/lib-contracts';
 
-import { useApi } from '../../../../composables/use-system'
+import { useApi } from '../../../../composables/use-system';
 
 const props = defineProps({
   data: {
     type: null as unknown as PropType<string | null>,
     required: true,
     nullable: true,
-    default: null
+    default: null,
   },
   url: {
     type: String,
@@ -55,63 +55,65 @@ const props = defineProps({
   clearable: {
     type: Boolean,
     required: false,
-    default: false
+    default: false,
   },
   eagerLoading: {
     type: Boolean,
     required: false,
-    default: false
+    default: false,
   },
 });
 
-defineEmits([
-  'clear',
-]);
-const model = ref<any[]>([])
+defineEmits(['clear']);
+const model = ref<any[]>([]);
 
 const api = useApi();
-const { t } = useI18n()
+const { t } = useI18n();
 
 const availableOptions = ref<any[]>([]);
 const loadingData = ref(props.loading);
 
-if(!props.eagerLoading) {
+if (!props.eagerLoading) {
   loadData();
 }
 
 watch(
-  ()=> [props.data],
+  () => [props.data],
   () => {
-    const dataFromFilter = getValuesFromFilter()
+    const dataFromFilter = getValuesFromFilter();
 
     if (!isEqual(dataFromFilter, model.value)) {
       model.value = dataFromFilter;
     }
-  },
+  }
 );
 
 watch(
-  ()=> [props.url],
+  () => [props.url],
   async () => {
     await loadData();
 
     props.changeFilter({
-      [props.name]: (model.value.map((item: any) => item[props.trackBy])).join(','),
+      [props.name]: model.value
+        .map((item: any) => item[props.trackBy])
+        .join(','),
     });
-  },
+  }
 );
 
 watch(
-  ()=> [props.loading],
+  () => [props.loading],
   async () => {
     if (props.options && props.eagerLoading) {
-      availableOptions.value = props.options.map((item: unknown) => getOption(item));
+      availableOptions.value = props.options.map((item: unknown) =>
+        getOption(item)
+      );
       model.value = getValuesFromFilter();
     }
-    
+
     loadingData.value = props.loading;
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 async function loadData() {
@@ -119,7 +121,8 @@ async function loadData() {
 
   const result = await api.get(props.url);
 
-  availableOptions.value = result?.data?.items?.map((item: unknown) => getOption(item)) ?? [];
+  availableOptions.value =
+    result?.data?.items?.map((item: unknown) => getOption(item)) ?? [];
 
   model.value = getValuesFromFilter();
 
@@ -134,7 +137,7 @@ function change() {
   }
 
   props.changeFilter({
-    [props.name]: (model.value.map((item: any) => item[props.trackBy])).join(','),
+    [props.name]: model.value.map((item: any) => item[props.trackBy]).join(','),
   });
 }
 
@@ -150,39 +153,43 @@ function getValuesFromFilter() {
 }
 
 function getOption(item: any) {
-  return { [props.trackBy as string]: item[props.trackBy], [props.textBy]: item[props.textBy], archived: item?.archived ?? false };
+  return {
+    [props.trackBy as string]: item[props.trackBy],
+    [props.textBy]: item[props.textBy],
+    archived: item?.archived ?? false,
+  };
 }
 </script>
 
 <template>
-   <va-select
-      v-model="model"
-      searchable
-      multiple
-      background="#fff"
-      :label="`${t(label)}`"
-      :placeholder="`${t('select_option')}`"
-      :options="availableOptions"
-      :clearable="clearable"
-      :text-by="textBy"
-      :track-by="trackBy"
-      :loading="loadingData"
-      @clear="clear"
-      @update:isOpen="(isOpen: boolean) => !isOpen && change()"
-    >
-      <template #content="{ valueArray }">
-        <va-badge
-          v-for="v in valueArray"
-          :class="`mr-0.5 mt-0.5 ${v?.archived ? 'line-through' : ''}`"
-          :color="v.color ?? 'primary'"
-          :text="v.name"
-          :key="v"
-        />
-      </template>
-      <template #option-content="{ option }">
-        <span :class="`${(option as Archivable)?.archived ? 'line-through' : ''}`">
-          {{ option && (option as Record<string, any>)[props.textBy] }}
-        </span>
-      </template>
-    </va-select>
+  <va-select
+    v-model="model"
+    searchable
+    multiple
+    background="#fff"
+    :label="`${t(label)}`"
+    :placeholder="`${t('select_option')}`"
+    :options="availableOptions"
+    :clearable="clearable"
+    :text-by="textBy"
+    :track-by="trackBy"
+    :loading="loadingData"
+    @clear="clear"
+    @update:isOpen="(isOpen: boolean) => !isOpen && change()"
+  >
+    <template #content="{ valueArray }">
+      <va-badge
+        v-for="v in valueArray"
+        :class="`mr-0.5 mt-0.5 ${v?.archived ? 'line-through' : ''}`"
+        :color="v.color ?? 'primary'"
+        :text="v.name"
+        :key="v"
+      />
+    </template>
+    <template #option-content="{ option }">
+      <div :class="(option as Archivable)?.archived ? 'line-through' : ''">
+        {{ option[props.textBy] }}
+      </div>
+    </template>
+  </va-select>
 </template>

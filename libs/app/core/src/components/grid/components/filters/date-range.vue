@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { DateTime } from 'luxon';
 import { PropType } from 'vue';
-import { DateInputDate, DateInputModelValue, DateInputRange } from 'vuestic-ui/dist/types/components/va-date-input/types';
+import {
+  DateInputDate,
+  DateInputModelValue,
+  DateInputRange,
+} from 'vuestic-ui/dist/types/components/va-date-input/types';
 
 const model = defineModel<DateInputRange<DateInputDate> | null>();
 
@@ -11,13 +15,13 @@ const props = defineProps({
     required: true,
   },
   data: {
-    type: Object as PropType<{ start?: string, end?: string } | null>,
+    type: Object as PropType<{ start?: string; end?: string } | null>,
     required: false,
     default: () => null,
   },
   label: {
     type: String as PropType<string>,
-    required: false
+    required: false,
   },
   changeFilter: {
     type: Function as PropType<Function>,
@@ -32,7 +36,7 @@ const props = defineProps({
 function change() {
   if (model?.value?.start === null && model.value.end === null) {
     props.removeFilter(props.name);
-    model.value = null
+    model.value = null;
 
     return;
   }
@@ -47,14 +51,13 @@ function clear() {
   props.removeFilter(props.name);
 }
 
-function formatDate(date: Date ): string {
-  return (DateTime.fromJSDate(new Date(date ?? ''))).toFormat('LLL dd, yyyy');
+function formatDate(date: Date): string {
+  return DateTime.fromJSDate(new Date(date ?? '')).toFormat('LLL dd, yyyy');
 }
 
 function formatValue(date: DateInputModelValue): string {
-  return (DateTime.fromJSDate(new Date(date as string))).toFormat('yyyy-MM-dd');
+  return DateTime.fromJSDate(new Date(date as string)).toFormat('yyyy-MM-dd');
 }
-
 </script>
 
 <template>

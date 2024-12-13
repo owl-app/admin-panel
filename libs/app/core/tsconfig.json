@@ -1,4 +1,5 @@
 {
+  "extends": ["tsconfig/front.json", "../../../tsconfig.base.json"],
   "compilerOptions": {
     "allowJs": true,
     "esModuleInterop": false,
@@ -18,6 +19,5 @@
     {
       "path": "./tsconfig.spec.json"
     }
-  ],
-  "extends": ["tsconfig/front.json", "../../../tsconfig.base.json"]
+  ]
 }

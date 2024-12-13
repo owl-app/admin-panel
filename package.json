@@ -13,7 +13,9 @@
     "build:app": "cross-env NODE_ENV=production env-cmd -f .env.production npx nx build app",
     "build:api": "cross-env NODE_ENV=production env-cmd -f .env.production npx nx build api",
     "start:build": "cross-env NODE_ENV=production env-cmd -f .env.production bun dist/apps/api/main.js",
-    "data:sync": "npx nx build:sync api && npx nx sync api"
+    "data:sync": "npx nx build:sync api && npx nx sync api",
+    "prettier:check": "npx prettier . --check",
+    "prettier:write": "npx prettier . --write"
   },
   "dependencies": {
     "@fast-csv/format": "^5.0.2",
