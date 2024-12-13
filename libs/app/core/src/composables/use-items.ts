@@ -25,30 +25,14 @@ export type UsableItems = {
 };
 
 export type ComputedQuery = {
-  limit:
-    | Ref<Query['limit']>
-    | WritableComputedRef<Query['limit']>;
-  sort:
-    | Ref<Query['sort']>
-    | WritableComputedRef<Query['sort']>;
-  filter:
-    | Ref<Query['filter']>
-    | WritableComputedRef<Query['filter']>;
-  page: 
-    | Ref<Query['page']> 
-    | WritableComputedRef<Query['page']>;
+  limit: Ref<Query['limit']> | WritableComputedRef<Query['limit']>;
+  sort: Ref<Query['sort']> | WritableComputedRef<Query['sort']>;
+  filter: Ref<Query['filter']> | WritableComputedRef<Query['filter']>;
+  page: Ref<Query['page']> | WritableComputedRef<Query['page']>;
 };
 
-export function useItems(
-  url: string,
-  query: ComputedQuery
-): UsableItems {
-  const {
-    limit,
-    sort,
-    filter,
-    page,
-  } = query;
+export function useItems(url: string, query: ComputedQuery): UsableItems {
+  const { limit, sort, filter, page } = query;
 
   const items = ref<Item[]>([]);
   const loading = ref(true);
@@ -61,10 +45,7 @@ export function useItems(
     return Math.ceil(totalCount.value / (unref(limit) ?? 100));
   });
 
-  const existingRequests: Record<
-    'items' | 'total' | 'filter',
-    AbortController | null
-  > = {
+  const existingRequests: Record<'items' | 'total' | 'filter', AbortController | null> = {
     items: null,
     total: null,
     filter: null,
@@ -78,7 +59,7 @@ export function useItems(
   watch(
     [limit, sort, filter, page],
     async (after, before) => {
-      if(firstLoad) {
+      if (firstLoad) {
         firstLoad = false;
         fetchItems();
         return;
@@ -91,13 +72,10 @@ export function useItems(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [oldLimit, oldSort, oldFilter, oldPage] = before;
 
-      if (
-        !isEqual(newFilter, oldFilter) ||
-        newLimit !== oldLimit
-      ) {
-          page.value = 1;
+      if (!isEqual(newFilter, oldFilter) || newLimit !== oldLimit) {
+        page.value = 1;
 
-        if(newPage !== oldPage) {
+        if (newPage !== oldPage) {
           return;
         }
       }
@@ -141,7 +119,7 @@ export function useItems(
           limit: unref(limit),
           sort: unref(sort),
           page: unref(page),
-          filters: unref(filter)
+          filters: unref(filter),
         },
         signal: existingRequests.items.signal,
       });
@@ -153,9 +131,9 @@ export function useItems(
 
       items.value = fetchedItems;
 
-			if (page && fetchedItems.length === 0 && page?.value !== 1) {
-				page.value = 1;
-			}
+      if (page && fetchedItems.length === 0 && page?.value !== 1) {
+        page.value = 1;
+      }
     } catch (err: any) {
       if (axios.isCancel(err)) {
         isCurrentRequestCanceled = true;
@@ -173,13 +151,13 @@ export function useItems(
   }
 
   function reset() {
-		items.value = [];
-		page.value = 1;
-		filter.value = {};
+    items.value = [];
+    page.value = 1;
+    filter.value = {};
     sort.value = [];
     limit.value = 10;
     firstLoad = true;
-	}
+  }
 
   function addItem(item: Item) {
     items.value.unshift(item);

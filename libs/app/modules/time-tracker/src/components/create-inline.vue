@@ -2,7 +2,7 @@
   <div class="time-tracker-inline">
     <owl-form
       ref="timerForm"
-      :collection="url" 
+      :collection="url"
       class-form="flex space-x-4 items-center bg-white p-3"
       :default-value="defaultValue"
       :clear-form-after-save="false"
@@ -35,7 +35,11 @@
           name="description"
           background="#fff"
           :error="!!validation['description']"
-          @change="() => { if (isSavedAfterChange) saveAfterChange(data.ref) }"
+          @change="
+            () => {
+              if (isSavedAfterChange) saveAfterChange(data.ref);
+            }
+          "
         />
         <va-select
           v-model="data.ref.project"
@@ -65,9 +69,9 @@
             </div>
           </template>
           <template #option-content="{ option }">
-              <span :class="`${(option as Tag)?.archived ? 'line-through' : ''}`">
-                {{ (option as Tag)?.name }}
-              </span>
+            <span :class="`${(option as Tag)?.archived ? 'line-through' : ''}`">
+              {{ (option as Tag)?.name }}
+            </span>
           </template>
         </va-select>
         <va-select
@@ -95,17 +99,21 @@
             />
           </template>
           <template #option-content="{ option }">
-              <span :class="`${(option as Tag)?.archived ? 'line-through' : ''}`">
-                {{ (option as Tag)?.name }}
-              </span>
+            <span :class="`${(option as Tag)?.archived ? 'line-through' : ''}`">
+              {{ (option as Tag)?.name }}
+            </span>
           </template>
-          <template #appendInner >
-            <va-icon name="sell" class="mr-1 material-symbols-outlined" v-if="data.ref.tags.length === 0" />
+          <template #appendInner>
+            <va-icon
+              name="sell"
+              class="mr-1 material-symbols-outlined"
+              v-if="data.ref.tags.length === 0"
+            />
           </template>
         </va-select>
         <va-divider vertical class="self-stretch" />
         <div @focusout="() => changeTime(data)" v-if="isManual">
-          <va-time-input 
+          <va-time-input
             class="w-24"
             v-model="data.ref.timeIntervalStart"
             manual-input
@@ -113,10 +121,7 @@
           />
         </div>
         <div @focusout="() => changeTime(data)" v-if="isManual">
-          <va-badge 
-            overlap
-            :text="diffDays(data.ref.timeIntervalStart, data.ref.timeIntervalEnd)"
-          >
+          <va-badge overlap :text="diffDays(data.ref.timeIntervalStart, data.ref.timeIntervalEnd)">
             <va-time-input
               class="w-24"
               v-model="data.ref.timeIntervalEnd"
@@ -180,58 +185,58 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, Ref, watch } from 'vue'
+import { computed, onMounted, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { DateTime } from 'luxon'
+import { DateTime } from 'luxon';
 import { snakeCase } from 'lodash';
-import { useInputMask, createRegexMask } from 'vuestic-ui'
+import { useInputMask, createRegexMask } from 'vuestic-ui';
 import { useToast } from 'vuestic-ui/web-components';
 import { useLocalStorage } from '@vueuse/core';
 
 import type { Tag, Time, Project } from '@owl-app/lib-contracts';
 
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
-import { useApi, useStores } from '@owl-app/lib-app-core/composables/use-system'
+import { useApi, useStores } from '@owl-app/lib-app-core/composables/use-system';
 import { DateInputModelValue } from 'vuestic-ui/dist/types/components/va-date-input/types';
 
 interface Props {
-  url: string,
-  defaultValue?: Time,
-  isManual?: boolean,
-  manualNameStorage?: string
-  isSavedAfterChange?: boolean
-  isManualOnly?: boolean,
-  tagOptions?: Tag[],
-  projectOptions?: Project[],
+  url: string;
+  defaultValue?: Time;
+  isManual?: boolean;
+  manualNameStorage?: string;
+  isSavedAfterChange?: boolean;
+  isManualOnly?: boolean;
+  tagOptions?: Tag[];
+  projectOptions?: Project[];
 }
 
 export type TimeFormData = {
-  description?: string
-  timeIntervalStart: Date,
-  timeIntervalEnd: Date,
-  date: Date|string,
-  timeSum: string,
-  project: Project|null,
+  description?: string;
+  timeIntervalStart: Date;
+  timeIntervalEnd: Date;
+  date: Date | string;
+  timeSum: string;
+  project: Project | null;
   tags: {
-    value?: string,
-    text?: string,
-    color?: string,
-  }[],
-}
+    value?: string;
+    text?: string;
+    color?: string;
+  }[];
+};
 
 const props = withDefaults(defineProps<Props>(), {
   isManual: true,
   isSavedAfterChange: false,
   isManualOnly: true,
-})
+});
 
 const emit = defineEmits<{
-  (event: 'saved', timeSaved: Time): void,
-}>()
+  (event: 'saved', timeSaved: Time): void;
+}>();
 
 defineExpose({
-  startTimer
-})
+  startTimer,
+});
 
 const api = useApi();
 const { t } = useI18n();
@@ -240,23 +245,27 @@ const { useTimeStore } = useStores();
 const timeStore = useTimeStore();
 
 let hasChangedScope = false;
-const now = DateTime.now().set({ second: 0, millisecond: 0.00 });
-const defaultValue: TimeFormData = parseDefaultValue(!props.isManualOnly ? timeStore.active : props.defaultValue);
+const now = DateTime.now().set({ second: 0, millisecond: 0.0 });
+const defaultValue: TimeFormData = parseDefaultValue(
+  !props.isManualOnly ? timeStore.active : props.defaultValue
+);
 
-const timerForm = ref<any>(null)
+const timerForm = ref<any>(null);
 const inputTimeSum = ref();
-const isManual = props.manualNameStorage ? useLocalStorage(props.manualNameStorage, false) : ref(props.isManual);
-const iconColorManual = computed(() => isManual.value ? 'primary' : 'secondary');
-const iconColorTimer = computed(() => isManual.value ? 'secondary' : 'primary');
+const isManual = props.manualNameStorage
+  ? useLocalStorage(props.manualNameStorage, false)
+  : ref(props.isManual);
+const iconColorManual = computed(() => (isManual.value ? 'primary' : 'secondary'));
+const iconColorTimer = computed(() => (isManual.value ? 'secondary' : 'primary'));
 const isTimerStart = ref(timeStore.active ?? false);
 
 if (isTimerStart.value && !props.isManualOnly) {
-  isManual.value = false
+  isManual.value = false;
 }
 
 const oldData: TimeFormData = {
-  timeIntervalStart: new Date(defaultValue.timeIntervalStart), 
-  timeIntervalEnd: new Date(defaultValue.timeIntervalEnd), 
+  timeIntervalStart: new Date(defaultValue.timeIntervalStart),
+  timeIntervalEnd: new Date(defaultValue.timeIntervalEnd),
   date: new Date(defaultValue.date),
   timeSum: defaultValue.timeSum,
   tags: defaultValue.tags,
@@ -275,14 +284,14 @@ onMounted(() => {
             message: error.join(', '),
             color: 'danger',
             position: 'bottom-right',
-            offsetY: 30
-          })
+            offsetY: 30,
+          });
         });
       }
     },
-    { immediate: false },
-  )
-})
+    { immediate: false }
+  );
+});
 
 function parseDefaultValue(value?: Time): TimeFormData {
   if (!value) {
@@ -290,18 +299,18 @@ function parseDefaultValue(value?: Time): TimeFormData {
       description: '',
       timeIntervalStart: now.toJSDate(),
       timeIntervalEnd: now.toJSDate(),
-      date: now.set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 }).toJSDate(),
+      date: now.set({ hour: 0, minute: 0, second: 0, millisecond: 0.0 }).toJSDate(),
       timeSum: '00:00:00',
       project: null,
-      tags: []
-    }
-  };
+      tags: [],
+    };
+  }
 
   const timeIntervalStart = DateTime.fromJSDate(new Date(value.timeIntervalStart));
   const timeIntervalEnd = DateTime.fromJSDate(new Date(value.timeIntervalEnd));
   const timeSum = timeIntervalEnd
-      .diff(timeIntervalStart, ["hours", "minutes", "seconds"])
-      .toFormat('hh:mm:ss');
+    .diff(timeIntervalStart, ['hours', 'minutes', 'seconds'])
+    .toFormat('hh:mm:ss');
   const [hour = 0] = parseTime(timeSum);
 
   setChangedScope(timeIntervalStart, timeIntervalEnd, hour);
@@ -310,14 +319,13 @@ function parseDefaultValue(value?: Time): TimeFormData {
     description: value.description,
     timeIntervalStart: timeIntervalStart.toJSDate(),
     timeIntervalEnd: timeIntervalEnd.toJSDate(),
-    date: DateTime
-      .fromJSDate(new Date(value.timeIntervalStart))
-      .set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 })
+    date: DateTime.fromJSDate(new Date(value.timeIntervalStart))
+      .set({ hour: 0, minute: 0, second: 0, millisecond: 0.0 })
       .toJSDate(),
     timeSum,
     project: value?.project || null,
     tags: value?.tags || [],
-  }
+  };
 }
 
 function changeManual(value: boolean, data: { ref: TimeFormData }) {
@@ -326,7 +334,9 @@ function changeManual(value: boolean, data: { ref: TimeFormData }) {
   if (value) {
     data.ref.timeIntervalStart = now.toJSDate();
     data.ref.timeIntervalEnd = now.toJSDate();
-    data.ref.date = DateTime.fromJSDate(new Date()).set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 }).toJSDate()
+    data.ref.date = DateTime.fromJSDate(new Date())
+      .set({ hour: 0, minute: 0, second: 0, millisecond: 0.0 })
+      .toJSDate();
   }
 }
 
@@ -334,12 +344,12 @@ function changeTimeSum(data: { ref: TimeFormData }) {
   const dateFrom = DateTime.fromJSDate(new Date(data.ref.timeIntervalStart));
   const [hours = 0, minutes = 0, seconds = 0] = parseTime(data.ref.timeSum);
 
-  if(hours === 0 && minutes === 0 && seconds === 0) return;
+  if (hours === 0 && minutes === 0 && seconds === 0) return;
 
   const dateTo = dateFrom.plus({
     hours,
     minutes,
-    seconds
+    seconds,
   });
 
   data.ref.timeIntervalEnd = dateTo.toJSDate();
@@ -348,7 +358,7 @@ function changeTimeSum(data: { ref: TimeFormData }) {
   setChangedScope(dateFrom, dateTo, hours);
 
   if (props.isSavedAfterChange && oldData.timeSum !== data.ref.timeSum) {
-    saveAfterChange(data.ref)
+    saveAfterChange(data.ref);
     oldData.timeSum = data.ref.timeSum;
   }
 }
@@ -362,10 +372,16 @@ function changeTime(data: { ref: TimeFormData }) {
     let dateTo = DateTime.fromJSDate(new Date(data.ref.timeIntervalEnd));
 
     if (hasChangedScope) {
-      const currentDateTo = dateTo.set({ hour: dateFrom.hour, minute: dateFrom.minute, second: dateFrom.second });
+      const currentDateTo = dateTo.set({
+        hour: dateFrom.hour,
+        minute: dateFrom.minute,
+        second: dateFrom.second,
+      });
 
       if (dateTo >= currentDateTo) {
-        dateTo = dateTo.minus({ days: 1 }).set({ hour: dateTo.hour, minute: dateTo.minute, second: dateTo.second });
+        dateTo = dateTo
+          .minus({ days: 1 })
+          .set({ hour: dateTo.hour, minute: dateTo.minute, second: dateTo.second });
         hasChangedScope = false;
       }
     } else if (dateTo < dateFrom) {
@@ -375,11 +391,9 @@ function changeTime(data: { ref: TimeFormData }) {
 
     data.ref.timeIntervalEnd = dateTo.toJSDate();
 
-    data.ref.timeSum = dateTo
-      .diff(dateFrom, ["hours", "minutes", "seconds"])
-      .toFormat('hh:mm:ss');
+    data.ref.timeSum = dateTo.diff(dateFrom, ['hours', 'minutes', 'seconds']).toFormat('hh:mm:ss');
 
-    if(props.isSavedAfterChange) {
+    if (props.isSavedAfterChange) {
       saveAfterChange(data.ref);
     }
 
@@ -393,47 +407,50 @@ function changeDate(value: string, data: { ref: TimeFormData }) {
   const dateFrom = DateTime.fromJSDate(new Date(data.ref.timeIntervalStart));
   const dateTo = DateTime.fromJSDate(new Date(data.ref.timeIntervalEnd));
 
-  const { days: diffDaysWithOldDate } = date
-    .diff(DateTime.fromJSDate(new Date(oldData.date)), ["days"]);
+  const { days: diffDaysWithOldDate } = date.diff(DateTime.fromJSDate(new Date(oldData.date)), [
+    'days',
+  ]);
 
   data.ref.timeIntervalStart = dateFrom.plus({ days: diffDaysWithOldDate }).toJSDate();
   data.ref.timeIntervalEnd = dateTo.plus({ days: diffDaysWithOldDate }).toJSDate();
 
   oldData.date = new Date(value);
 
-  if(props.isSavedAfterChange) {
-    saveAfterChange(data.ref)
+  if (props.isSavedAfterChange) {
+    saveAfterChange(data.ref);
   }
 }
 
 function diffDays(timeIntervalStart: string, timeIntervalEnd: string) {
-  const dateFrom = (DateTime.fromJSDate(new Date(timeIntervalStart)))
-  const dateTo = (DateTime.fromJSDate(new Date(timeIntervalEnd)))
+  const dateFrom = DateTime.fromJSDate(new Date(timeIntervalStart));
+  const dateTo = DateTime.fromJSDate(new Date(timeIntervalEnd));
 
-  return dateTo.startOf("day").diff(dateFrom.startOf("day"), "days").days;
+  return dateTo.startOf('day').diff(dateFrom.startOf('day'), 'days').days;
 }
 
 function afterSave(savedData: Time, dataForm: Ref<TimeFormData>) {
   const [hour = 0, minutes = 0, seconds = 0] = parseTime(dataForm.value.timeSum);
-  const timeIntervalStart = DateTime
-    .fromJSDate(new Date(savedData.timeIntervalStart))
-    .plus({ hour, minutes, seconds });
-  const timeIntervalEnd = DateTime
-    .fromJSDate(new Date(savedData.timeIntervalEnd))
-    .plus({ hour, minutes, seconds });
+  const timeIntervalStart = DateTime.fromJSDate(new Date(savedData.timeIntervalStart)).plus({
+    hour,
+    minutes,
+    seconds,
+  });
+  const timeIntervalEnd = DateTime.fromJSDate(new Date(savedData.timeIntervalEnd)).plus({
+    hour,
+    minutes,
+    seconds,
+  });
 
   dataForm.value = {
     timeIntervalStart: timeIntervalStart.toJSDate(),
     timeIntervalEnd: timeIntervalEnd.toJSDate(),
-    date: timeIntervalEnd
-      .set({ hour: 0, minute: 0, second: 0, millisecond: 0.00 })
-      .toJSDate(),
+    date: timeIntervalEnd.set({ hour: 0, minute: 0, second: 0, millisecond: 0.0 }).toJSDate(),
     timeSum: timeIntervalEnd
-      .diff(timeIntervalStart, ["hours", "minutes", "seconds"])
+      .diff(timeIntervalStart, ['hours', 'minutes', 'seconds'])
       .toFormat('hh:mm:ss'),
     tags: [],
-    project: null
-  }
+    project: null,
+  };
 
   hasChangedScope = false;
 
@@ -447,8 +464,8 @@ async function saveAfterChange(data: any) {
     message: t('item_update_success'),
     color: 'success',
     position: 'bottom-right',
-    offsetY: 30
-  })
+    offsetY: 30,
+  });
 
   emit('saved', response.data);
 }
@@ -458,13 +475,13 @@ async function startTimer(time?: Time) {
 
   if (timeStore.intervalTimer) {
     timeStore.stopInterval();
-  };
+  }
 
   if (time) {
     timerForm.value.formData = {
       description: time.description,
-      tags: time.tags
-    }
+      tags: time.tags,
+    };
   }
 
   try {
@@ -474,7 +491,6 @@ async function startTimer(time?: Time) {
       if (oldTime) {
         emit('saved', oldTime);
       }
-
     } else {
       const { description, project, tags } = timerForm.value.formData;
 
@@ -488,11 +504,13 @@ async function startTimer(time?: Time) {
       timerForm.value.validationServerErrors = error.response?.data?.errors;
     } else {
       notify({
-        message: t(`error.timer.${snakeCase((error?.response?.message as string).replace(/\s+/g,"_"))}`),
+        message: t(
+          `error.timer.${snakeCase((error?.response?.message as string).replace(/\s+/g, '_'))}`
+        ),
         color: 'danger',
         position: 'bottom-right',
-        offsetY: 30
-      })
+        offsetY: 30,
+      });
     }
   }
 }
@@ -500,11 +518,7 @@ async function startTimer(time?: Time) {
 async function endTimer() {
   try {
     const { description, project, tags } = timerForm.value.formData;
-    const time = await timeStore.stopTimer(
-      description,
-      project,
-      tags ?? [],
-    );
+    const time = await timeStore.stopTimer(description, project, tags ?? []);
     isTimerStart.value = false;
     timerForm.value.formData.description = '';
     timerForm.value.formData.project = null;
@@ -516,14 +530,16 @@ async function endTimer() {
       timerForm.value.validationServerErrors = error.response?.data?.errors;
     } else {
       notify({
-        message: t(`error.timer.${snakeCase((error?.response?.message as string).replace(/\s+/g,"_"))}`),
+        message: t(
+          `error.timer.${snakeCase((error?.response?.message as string).replace(/\s+/g, '_'))}`
+        ),
         color: 'danger',
         position: 'bottom-right',
-        offsetY: 30
-      })
+        offsetY: 30,
+      });
     }
   }
-};
+}
 
 function parseInputTime(value: string, date: Date): Date {
   const dateTimeTo = DateTime.fromJSDate(new Date(date));
@@ -537,7 +553,7 @@ function parseTime(text: string) {
 }
 
 function setChangedScope(dateFrom: DateTime, dateTo: DateTime, hours: number) {
-  if (dateTo.startOf("day").diff(dateFrom.startOf("day"), "days").days > Math.floor(hours / 24)) {
+  if (dateTo.startOf('day').diff(dateFrom.startOf('day'), 'days').days > Math.floor(hours / 24)) {
     hasChangedScope = true;
   } else {
     hasChangedScope = false;
@@ -553,7 +569,10 @@ function setChangedScope(dateFrom: DateTime, dateTo: DateTime, hours: number) {
 
   :deep() {
     &:hover {
-      .va-input, .va-time-input, .va-date-input, .va-select {
+      .va-input,
+      .va-time-input,
+      .va-date-input,
+      .va-select {
         --va-input-wrapper-border-color: var(--va-background-border);
       }
     }
@@ -585,7 +604,7 @@ function setChangedScope(dateFrom: DateTime, dateTo: DateTime, hours: number) {
         flex: 0 0 auto !important;
         width: fit-content;
       }
-     
+
       .va-input-wrapper {
         &__field {
           --va-input-wrapper-items-gap: 0;
@@ -594,16 +613,16 @@ function setChangedScope(dateFrom: DateTime, dateTo: DateTime, hours: number) {
           margin-right: 0.5rem;
 
           .va-select-content {
-            color:  var(--va-primary);
+            color: var(--va-primary);
 
             .project-dot {
               display: flex;
-              margin-right: .7143rem;
-              width: .4111rem;
-              height: .4111rem;
+              margin-right: 0.7143rem;
+              width: 0.4111rem;
+              height: 0.4111rem;
               vertical-align: middle;
               border-radius: 50%;
-              background-color: var(--va-primary);;
+              background-color: var(--va-primary);
             }
           }
         }

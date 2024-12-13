@@ -1,5 +1,5 @@
 import type { ComputedRef, Ref } from 'vue';
-import { computed, ref} from 'vue';
+import { computed, ref } from 'vue';
 import { useToast } from 'vuestic-ui/web-components';
 
 import { isEmpty } from '@owl-app/utils';
@@ -24,19 +24,19 @@ export type UsableItem<T extends Item> = {
   getItem: (params?: Record<string, any>) => Promise<void>;
   isNew: ComputedRef<boolean>;
   saving: Ref<boolean>;
-  save: (data: T, method?: SaveMethodOptions) => Promise<void|null>;
+  save: (data: T, method?: SaveMethodOptions) => Promise<void | null>;
   deleting: Ref<boolean>;
   remove: () => Promise<void>;
   archiving: Ref<boolean>;
   archive: (value: boolean, custom: Record<string, any>) => Promise<void>;
   validationServerErrors: Ref<any>;
-  action: Ref<string|null>;
+  action: Ref<string | null>;
 };
 
 export function useItem<T extends Item>(
   // change to collection like in directus with permissions
   collection: string,
-  id?: PrimaryKey | undefined,
+  id?: PrimaryKey | undefined
 ): UsableItem<T> {
   const { init: notify } = useToast();
 
@@ -45,11 +45,11 @@ export function useItem<T extends Item>(
   const saving = ref(false);
   const deleting = ref(false);
   const archiving = ref(false);
-  const action = ref<string|null>(null);
+  const action = ref<string | null>(null);
   const error = ref<any>(null);
   const validationServerErrors = ref<any>({});
   const primaryKey = ref<PrimaryKey | undefined | null>(id ?? null);
-  const isNew = computed(() =>  isEmpty(primaryKey.value));
+  const isNew = computed(() => isEmpty(primaryKey.value));
 
   const endpoint = computed(() => {
     if (isNew.value && !action.value) {
@@ -57,7 +57,7 @@ export function useItem<T extends Item>(
     }
 
     const actionUrl = action.value ? `${action.value}/` : '';
-    const primaryKeyUrl = primaryKey.value ? encodeURIComponent(primaryKey.value as string) : ''
+    const primaryKeyUrl = primaryKey.value ? encodeURIComponent(primaryKey.value as string) : '';
 
     return `${collection}/${actionUrl}${primaryKeyUrl}`;
   });
@@ -93,7 +93,7 @@ export function useItem<T extends Item>(
       loading.value = false;
     }
   }
-  async function save(data: T, method?: SaveMethodOptions): Promise<void|null> {
+  async function save(data: T, method?: SaveMethodOptions): Promise<void | null> {
     saving.value = true;
     let saveMethod = method;
 
@@ -107,17 +107,15 @@ export function useItem<T extends Item>(
       const response = await api.request({
         url: endpoint.value,
         data,
-        method: saveMethod
+        method: saveMethod,
       });
 
       notify({
-        message: i18n.global.t(
-          `item_${saveMethod === 'post' ? 'create' : 'update'}_success`
-        , 1),
+        message: i18n.global.t(`item_${saveMethod === 'post' ? 'create' : 'update'}_success`, 1),
         color: 'success',
         position: 'bottom-right',
-        offsetY: 30
-      })
+        offsetY: 30,
+      });
 
       item.value = response.data;
       validationServerErrors.value = {};
@@ -145,8 +143,8 @@ export function useItem<T extends Item>(
         message: i18n.global.t('item_delete_success', 1),
         color: 'success',
         position: 'bottom-right',
-        offsetY: 30
-      })
+        offsetY: 30,
+      });
     } catch (errorResponse) {
       error.value = errorResponse;
       throw errorResponse;
@@ -161,7 +159,7 @@ export function useItem<T extends Item>(
 
     try {
       await delay(500);
-      await api.patch(endpoint.value, {...{ archived: value }, ...custom});
+      await api.patch(endpoint.value, { ...{ archived: value }, ...custom });
 
       item.value = null;
 
@@ -169,8 +167,8 @@ export function useItem<T extends Item>(
         message: i18n.global.t(`item_${value ? 'archive' : 'restore'}_success`, 1),
         color: 'success',
         position: 'bottom-right',
-        offsetY: 30
-      })
+        offsetY: 30,
+      });
     } catch (errorResponse) {
       error.value = errorResponse;
       throw errorResponse;
@@ -182,7 +180,7 @@ export function useItem<T extends Item>(
 
   function saveErrorHandler(errorResponse: any) {
     if (errorResponse?.response?.data?.errors) {
-      validationServerErrors.value = errorResponse.response.data.errors
+      validationServerErrors.value = errorResponse.response.data.errors;
     } else {
       throw errorResponse;
     }
