@@ -27,10 +27,7 @@ import {
   CrudActions,
   permissionValidationSchema,
 } from '@owl-app/lib-contracts';
-import {
-  AssemblerQueryService,
-  InjectAssemblerQueryService,
-} from '@owl-app/nestjs-query-core';
+import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 import { Paginated } from '@owl-app/lib-api-core/pagination/pagination';
 import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider';
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider/query/decorators/inject-paginated-query.decorator';
@@ -54,10 +51,7 @@ import { PermissionPaginatedQuery } from './dto/permission-paginated.query';
 export class RbacPermissionCrudController {
   constructor(
     @InjectAssemblerQueryService(PermissionAssembler)
-    readonly service: AssemblerQueryService<
-      PermissionResponse,
-      PermissionEntity
-    >,
+    readonly service: AssemblerQueryService<PermissionResponse, PermissionEntity>,
     @InjectPaginatedQueryService(PermissionEntity)
     readonly paginatedService: DataProvider<
       Paginated<PermissionResponse>,
@@ -92,8 +86,7 @@ export class RbacPermissionCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @ApiResponse({
     status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -120,8 +113,7 @@ export class RbacPermissionCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Put(':name')
   @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.UPDATE)
@@ -130,10 +122,7 @@ export class RbacPermissionCrudController {
     @Body(new ValibotValidationPipe(permissionValidationSchema))
     updatePermissionDto: UpdatePermissionRequest
   ) {
-    const updatedPermission = await this.service.updateOne(
-      name,
-      updatePermissionDto
-    );
+    const updatedPermission = await this.service.updateOne(name, updatePermissionDto);
 
     return updatedPermission;
   }
@@ -162,8 +151,7 @@ export class RbacPermissionCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Get()
   @RoutePermissions(AvalilableCollections.PERMISSION, CrudActions.LIST)

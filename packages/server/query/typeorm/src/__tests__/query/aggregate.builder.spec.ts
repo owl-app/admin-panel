@@ -16,15 +16,10 @@ describe('AggregateBuilder', (): void => {
 
   const getRepo = () => getTestConnection().getRepository(TestEntity);
   const getQueryBuilder = () => getRepo().createQueryBuilder();
-  const createAggregateBuilder = () =>
-    new AggregateBuilder<TestEntity>(getRepo());
+  const createAggregateBuilder = () => new AggregateBuilder<TestEntity>(getRepo());
 
   const expectSQLSnapshot = (agg: AggregateQuery<TestEntity>): void => {
-    const selectQueryBuilder = createAggregateBuilder().build(
-      getQueryBuilder(),
-      agg,
-      'TestEntity'
-    );
+    const selectQueryBuilder = createAggregateBuilder().build(getQueryBuilder(), agg, 'TestEntity');
     const [sql, params] = selectQueryBuilder.getQueryAndParameters();
 
     expect(formatSql(sql, { params })).toMatchSnapshot();
@@ -101,9 +96,7 @@ describe('AggregateBuilder', (): void => {
           MIN_numberType: 1,
         },
       ];
-      expect(
-        AggregateBuilder.convertToAggregateResponse<TestEntity>(dbResult)
-      ).toEqual([
+      expect(AggregateBuilder.convertToAggregateResponse<TestEntity>(dbResult)).toEqual([
         {
           groupBy: { stringType: 'z' },
           count: { testEntityPk: 10 },
@@ -121,9 +114,9 @@ describe('AggregateBuilder', (): void => {
           COUNTtestEntityPk: 10,
         },
       ];
-      expect(() =>
-        AggregateBuilder.convertToAggregateResponse<TestEntity>(dbResult)
-      ).toThrow('Unknown aggregate column encountered.');
+      expect(() => AggregateBuilder.convertToAggregateResponse<TestEntity>(dbResult)).toThrow(
+        'Unknown aggregate column encountered.'
+      );
     });
   });
 });

@@ -1,7 +1,6 @@
-import DomainEventableEntity from "@owl-app/lib-api-core/database/entity/domain-eventable.entity";
+import DomainEventableEntity from '@owl-app/lib-api-core/database/entity/domain-eventable.entity';
 
-export abstract class BaseAuthItemEntity extends DomainEventableEntity
-{
+export abstract class BaseAuthItemEntity extends DomainEventableEntity {
   type: string;
 
   name: string;

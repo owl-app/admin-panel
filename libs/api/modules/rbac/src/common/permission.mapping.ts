@@ -15,19 +15,18 @@ export class RbacPermissionMapper<
 
   toPersistence(request: Entity): BaseItem {
     // eslint-disable-next-line new-cap
-    return new (this.item)(
+    return new this.item(
       request.name,
       request.description,
       request.ruleName,
       request.createdAt || new Date(),
-      request.updatedAt || new Date(),
+      request.updatedAt || new Date()
     );
   }
 
-  toResponse(item: DeepPartial<PermissionEntity>): Response
-  {
+  toResponse(item: DeepPartial<PermissionEntity>): Response {
     // eslint-disable-next-line new-cap
-    const role = new (this.response);
+    const role = new this.response();
     role.name = item.name;
     role.description = item.description;
     role.ruleName = item.ruleName;

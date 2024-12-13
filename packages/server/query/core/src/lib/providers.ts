@@ -17,10 +17,7 @@ function createServiceProvider<DTO, Entity, C, CE, U, UE>(
   }
   const { EntityClass } = classes;
 
-  const {
-    classService = AssemblerQueryService,
-    inject = [],
-  } = opts ?? {};
+  const { classService = AssemblerQueryService, inject = [] } = opts ?? {};
 
   return {
     provide: getAssemblerQueryServiceToken(opts.classAssembler),
@@ -37,6 +34,5 @@ function createServiceProvider<DTO, Entity, C, CE, U, UE>(
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export const createServices = (
-  opts: NestjsQueryCoreModuleAssemblersOpts[]
-): Provider[] => opts.map((opt) => createServiceProvider(opt));
+export const createServices = (opts: NestjsQueryCoreModuleAssemblersOpts[]): Provider[] =>
+  opts.map((opt) => createServiceProvider(opt));

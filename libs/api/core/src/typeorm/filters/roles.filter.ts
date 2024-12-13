@@ -10,24 +10,21 @@ import { ROLE_ENTITY } from '../../entity-tokens';
 import { FilterQuery } from '../../registry/interfaces/filter-query';
 
 @Injectable()
-export class RolesFilter<Entity extends Role>
-  implements FilterQuery<Entity>
-{
+export class RolesFilter<Entity extends Role> implements FilterQuery<Entity> {
   constructor(readonly configService: ConfigService) {}
 
   supports(metadata: EntityMetadata): boolean {
     return (
       metadata.name === ROLE_ENTITY &&
       RequestContextService.getCurrentUser() &&
-      RequestContextService.getCurrentUser().roles.includes(
-        RolesEnum.ROLE_ADMIN_COMPANY
-      )
+      RequestContextService.getCurrentUser().roles.includes(RolesEnum.ROLE_ADMIN_COMPANY)
     );
   }
 
   execute(qb: SelectQueryBuilder<Entity>): void {
-    qb
-      .andWhere(`${qb.alias}.name IN(:roles)`)
-      .setParameter('roles', [RolesEnum.ROLE_ADMIN_COMPANY, RolesEnum.ROLE_USER]);
+    qb.andWhere(`${qb.alias}.name IN(:roles)`).setParameter('roles', [
+      RolesEnum.ROLE_ADMIN_COMPANY,
+      RolesEnum.ROLE_USER,
+    ]);
   }
 }

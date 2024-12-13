@@ -56,9 +56,10 @@ export class RefreshTokenController {
     @Res({ passthrough: true }) response: Response
   ): Promise<TokenResponse> {
     try {
-      const result = await this.commandBus.execute<RefreshToken, Record<'accessToken' | 'refreshToken', Token>>(
-        new RefreshToken({ token: request.cookies?.refresh_token, email: request.user.email })
-      );
+      const result = await this.commandBus.execute<
+        RefreshToken,
+        Record<'accessToken' | 'refreshToken', Token>
+      >(new RefreshToken({ token: request.cookies?.refresh_token, email: request.user.email }));
 
       response.cookie('access_token', result.accessToken.token, {
         httpOnly: true,
@@ -74,7 +75,7 @@ export class RefreshTokenController {
 
       return {
         accessTokenExpires: result.accessToken.expiresIn,
-        refreshTokenExpires: result.refreshToken.expiresIn
+        refreshTokenExpires: result.refreshToken.expiresIn,
       };
     } catch (error: unknown) {
       if (error instanceof InvalidAuthenticationError) {

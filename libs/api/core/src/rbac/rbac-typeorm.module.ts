@@ -8,9 +8,7 @@ import { RegistryServiceModule } from '@owl-app/registry-nestjs';
 import { ExtendedItemFactory } from './item.factory';
 
 export class RbacTypeOrmModule {
-  static forFeature(
-    rules?: Record<string, Type<Rule>>
-  ): DynamicModule {
+  static forFeature(rules?: Record<string, Type<Rule>>): DynamicModule {
     return {
       module: RbacTypeOrmModule,
       imports: [
@@ -25,8 +23,8 @@ export class RbacTypeOrmModule {
         rbacManagerFactoryProvider,
         {
           provide: 'ITEM_STORAGE_ITEM_FACTORY',
-          useFactory: () =>  new ExtendedItemFactory()
-        }
+          useFactory: () => new ExtendedItemFactory(),
+        },
       ],
       exports: [rbacManagerFactoryProvider],
     };

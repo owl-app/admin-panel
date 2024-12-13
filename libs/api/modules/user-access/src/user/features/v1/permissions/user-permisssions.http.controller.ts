@@ -10,7 +10,6 @@ import { UserPermissionResponse } from './dto/user-permission.response';
 @ApiTags('User')
 @ApiBearerAuth()
 export class UserPermissionsController {
-
   @ApiOperation({ description: 'permissions' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -23,5 +22,4 @@ export class UserPermissionsController {
 
     return new UserPermissionResponse(routes, fields);
   }
-
 }

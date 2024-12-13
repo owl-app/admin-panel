@@ -1,18 +1,17 @@
-export interface Registry<T>
-{
-    all(): Record<string, T>;
+export interface Registry<T> {
+  all(): Record<string, T>;
 
-    register(identifier: string, service: T): void;
+  register(identifier: string, service: T): void;
 
-    /**
-     * @throws NonExistingServiceException
-     */
-    unregister(identifier: string): void;
+  /**
+   * @throws NonExistingServiceException
+   */
+  unregister(identifier: string): void;
 
-    has(identifier: string): boolean;
+  has(identifier: string): boolean;
 
-    /**
-     * @throws NonExistingServiceException
-     */
-    get(identifier: string): T;
+  /**
+   * @throws NonExistingServiceException
+   */
+  get(identifier: string): T;
 }

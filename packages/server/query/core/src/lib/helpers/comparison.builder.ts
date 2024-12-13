@@ -1,7 +1,4 @@
-import {
-  CommonFieldComparisonBetweenType,
-  FilterComparisonOperators,
-} from '../interfaces';
+import { CommonFieldComparisonBetweenType, FilterComparisonOperators } from '../interfaces';
 import {
   BetweenComparisonOperators,
   BooleanComparisonOperators,
@@ -41,11 +38,7 @@ export class ComparisonBuilder {
     }
 
     if (isBetweenComparisonOperators(cmp)) {
-      return this.betweenComparison(
-        cmp,
-        field,
-        val as CommonFieldComparisonBetweenType<DTO[F]>
-      );
+      return this.betweenComparison(cmp, field, val as CommonFieldComparisonBetweenType<DTO[F]>);
     }
     throw new Error(`unknown operator ${JSON.stringify(cmp)}`);
   }
@@ -93,30 +86,18 @@ export class ComparisonBuilder {
   ): FilterFn<DTO> {
     if (cmp === 'like') {
       const likeRegexp = this.likeSearchToRegexp(val);
-      return compare(
-        (dto) => likeRegexp.test(dto[field] as unknown as string),
-        false
-      );
+      return compare((dto) => likeRegexp.test(dto[field] as unknown as string), false);
     }
     if (cmp === 'notLike') {
       const likeRegexp = this.likeSearchToRegexp(val);
-      return compare(
-        (dto) => !likeRegexp.test(dto[field] as unknown as string),
-        true
-      );
+      return compare((dto) => !likeRegexp.test(dto[field] as unknown as string), true);
     }
     if (cmp === 'iLike') {
       const likeRegexp = this.likeSearchToRegexp(val, true);
-      return compare(
-        (dto) => likeRegexp.test(dto[field] as unknown as string),
-        false
-      );
+      return compare((dto) => likeRegexp.test(dto[field] as unknown as string), false);
     }
     const likeRegexp = this.likeSearchToRegexp(val, true);
-    return compare(
-      (dto) => !likeRegexp.test(dto[field] as unknown as string),
-      true
-    );
+    return compare((dto) => !likeRegexp.test(dto[field] as unknown as string), true);
   }
 
   private static inComparison<DTO, F extends keyof DTO>(
@@ -148,10 +129,7 @@ export class ComparisonBuilder {
     }, false);
   }
 
-  private static likeSearchToRegexp(
-    likeStr: string,
-    caseInsensitive = false
-  ): RegExp {
+  private static likeSearchToRegexp(likeStr: string, caseInsensitive = false): RegExp {
     const replaced = likeStr.replace(/%/g, '.*');
     return new RegExp(`^${replaced}$`, caseInsensitive ? 'ig' : 'g');
   }

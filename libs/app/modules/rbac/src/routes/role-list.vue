@@ -3,14 +3,14 @@ import { ref } from 'vue';
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import { AvalilableCollections, CrudActions, RoleActions } from "@owl-app/lib-contracts";
+import { AvalilableCollections, CrudActions, RoleActions } from '@owl-app/lib-contracts';
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
 import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 
-import RoleModal from '../components/role-modal.vue'
+import RoleModal from '../components/role-modal.vue';
 
 const { t } = useI18n();
 
@@ -26,7 +26,7 @@ const headerBar = {
   title: t('roles'),
   description: 'Managing roles in system',
   icon: 'admin_panel_settings',
-}
+};
 
 const columns = defineVaDataTableColumns([
   { label: 'Name', key: 'settingDsiplayName', sortable: true },
@@ -34,7 +34,7 @@ const columns = defineVaDataTableColumns([
   { label: 'Theme', key: 'setting.theme', sortable: true },
   { label: 'Canonical name', key: 'name', sortable: true },
   { label: ' ', key: 'actions' },
-])
+]);
 </script>
 
 <template>
@@ -63,7 +63,7 @@ const columns = defineVaDataTableColumns([
 
       <template #filters="{ filters, changeFilter, removeFilter }">
         <div class="grid grid-cols-3 gap-4">
-          <string-filter 
+          <string-filter
             :data="filters?.search"
             :change-filter="changeFilter"
             :remove-filter="removeFilter"
@@ -71,7 +71,13 @@ const columns = defineVaDataTableColumns([
         </div>
       </template>
 
-      <template #cell(settingDsiplayName)="{ rowData: { setting: { displayName } } }">
+      <template
+        #cell(settingDsiplayName)="{
+          rowData: {
+            setting: { displayName },
+          },
+        }"
+      >
         <va-chip>
           {{ displayName }}
         </va-chip>
@@ -110,12 +116,8 @@ const columns = defineVaDataTableColumns([
         </div>
       </template>
     </grid>
-    <role-modal
-      ref="roleModal"
-      v-model="showModal"
-      @saved="gridRef?.reloadGrid()"
-    />
-    <delete-modal 
+    <role-modal ref="roleModal" v-model="showModal" @saved="gridRef?.reloadGrid()" />
+    <delete-modal
       ref="deleteModal"
       collection="rbac/roles"
       v-model="showDeleteModal"

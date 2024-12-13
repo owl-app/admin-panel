@@ -1,7 +1,7 @@
-import { defineVuesticConfig } from 'vuestic-ui'
+import { defineVuesticConfig } from 'vuestic-ui';
 
-import iconsConfig from './icons-config/icons-config'
-import colors from './themes'
+import iconsConfig from './icons-config/icons-config';
+import colors from './themes';
 
 export default defineVuesticConfig({
   colors,
@@ -53,4 +53,4 @@ export default defineVuesticConfig({
       },
     },
   },
-})
+});

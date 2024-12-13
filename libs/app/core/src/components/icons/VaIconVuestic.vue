@@ -1,5 +1,11 @@
 <template>
-  <svg class="va-icon-vuestic" height="31" viewBox="0 0 304 31" width="304" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    class="va-icon-vuestic"
+    height="31"
+    viewBox="0 0 304 31"
+    width="304"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <defs>
       <linearGradient :id="'ORIGINAL'" x1="0%" y1="50%" y2="50%">
         <stop offset="0%" stop-color="#4AE387" />
@@ -29,13 +35,13 @@ export default {
   inject: ['contextConfig'],
   computed: {
     themeGradientId() {
-      return this.contextConfig.invertedColor ? 'CORPORATE' : 'ORIGINAL'
+      return this.contextConfig.invertedColor ? 'CORPORATE' : 'ORIGINAL';
     },
     textColor() {
-      return this.contextConfig.invertedColor ? '#6E85E8' : '#E4FF32'
+      return this.contextConfig.invertedColor ? '#6E85E8' : '#E4FF32';
     },
   },
-}
+};
 </script>
 
 <style lang="scss">

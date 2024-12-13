@@ -17,7 +17,7 @@ export class Logout {
 export class LogoutHandler implements ICommandHandler<Logout> {
   constructor(
     @Inject(IJwtTokenService)
-    private readonly jwtTokenService: IJwtTokenService<UserEntity>,
+    private readonly jwtTokenService: IJwtTokenService<UserEntity>
   ) {}
 
   async execute(data: Logout): Promise<void> {

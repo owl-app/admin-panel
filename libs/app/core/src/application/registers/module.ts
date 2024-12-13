@@ -18,7 +18,7 @@ export function registerModules(modules: ModuleConfig[]): ShallowRef<ModuleConfi
   const registeredModules = shallowRef<ModuleConfig[]>([]);
 
   for (const module of modules) {
-    if(module.routes?.public ?? false) {
+    if (module.routes?.public ?? false) {
       router.addRoute({
         name: module.id,
         path: `/`,

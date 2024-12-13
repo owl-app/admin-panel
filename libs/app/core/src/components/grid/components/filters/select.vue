@@ -94,9 +94,7 @@ watch(
     await loadData();
 
     props.changeFilter({
-      [props.name]: model.value
-        .map((item: any) => item[props.trackBy])
-        .join(','),
+      [props.name]: model.value.map((item: any) => item[props.trackBy]).join(','),
     });
   }
 );
@@ -105,9 +103,7 @@ watch(
   () => [props.loading],
   async () => {
     if (props.options && props.eagerLoading) {
-      availableOptions.value = props.options.map((item: unknown) =>
-        getOption(item)
-      );
+      availableOptions.value = props.options.map((item: unknown) => getOption(item));
       model.value = getValuesFromFilter();
     }
 
@@ -121,8 +117,7 @@ async function loadData() {
 
   const result = await api.get(props.url);
 
-  availableOptions.value =
-    result?.data?.items?.map((item: unknown) => getOption(item)) ?? [];
+  availableOptions.value = result?.data?.items?.map((item: unknown) => getOption(item)) ?? [];
 
   model.value = getValuesFromFilter();
 

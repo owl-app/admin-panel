@@ -11,5 +11,5 @@ export class TenantEntity extends BaseEntity implements Tenant {
   constructor(partial?: Partial<TenantEntity>) {
     super();
     Object.assign(this, partial);
-}
+  }
 }

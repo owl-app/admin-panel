@@ -15,7 +15,7 @@ export const RoleSettingEntitySchema = new EntitySchema<RoleSettingEntity>({
       primary: true,
     },
     displayName: {
-      name: "display_name",
+      name: 'display_name',
       type: String,
       nullable: true,
     },
@@ -33,6 +33,6 @@ export const RoleSettingEntitySchema = new EntitySchema<RoleSettingEntity>({
       },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
-    }
+    },
   },
 });

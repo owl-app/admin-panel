@@ -6,10 +6,10 @@ import { RequestContextService } from '@owl-app/lib-api-core/context/app-request
 import { InjectRepository } from '@owl-app/lib-api-core/typeorm/common/typeorm.decorators';
 import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-permission';
 
-import { UserEntity } from '../../../domain/entity/user.entity'
-import {type  IUserRepository } from '../../../database/repository/user-repository.interface';
-import userMapper from '../../mapping'
-import { UserResponseAuth } from '../../dto/user.response'
+import { UserEntity } from '../../../domain/entity/user.entity';
+import { type IUserRepository } from '../../../database/repository/user-repository.interface';
+import userMapper from '../../mapping';
+import { UserResponseAuth } from '../../dto/user.response';
 
 import { UserWithPermissionResponse } from './dto/user-with-permission.response';
 
@@ -26,17 +26,19 @@ export class GetMeController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Found current user',
-    type: UserWithPermissionResponse
+    type: UserWithPermissionResponse,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'User not found'
+    description: 'User not found',
   })
   @Get('/me')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @RoutePermissions(AvalilableCollections.USER, UserActions.ME)
   async getMe(): Promise<UserWithPermissionResponse> {
-    const user = await this.userRepository.findOneByIdString(RequestContextService.getCurrentUserId());
+    const user = await this.userRepository.findOneByIdString(
+      RequestContextService.getCurrentUserId()
+    );
 
     return {
       user: userMapper.map<User, UserResponseAuth>(user, new UserResponseAuth()),

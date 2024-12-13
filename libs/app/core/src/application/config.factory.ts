@@ -11,6 +11,6 @@ export function createApplicationConfig(
   return {
     modules,
     layouts,
-    events
-  }
+    events,
+  };
 }

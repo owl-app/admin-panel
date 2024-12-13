@@ -5,14 +5,14 @@
 <script lang="ts" setup>
 withDefaults(
   defineProps<{
-    height?: number
-    start?: string
-    end?: string
+    height?: number;
+    start?: string;
+    end?: string;
   }>(),
   {
     height: 18,
     start: 'primary',
     end: undefined,
-  },
-)
+  }
+);
 </script>

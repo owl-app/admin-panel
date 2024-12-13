@@ -1,9 +1,5 @@
 <template>
-  <VaModal
-    v-model="model"
-    ok-text="Apply"
-    hide-default-actions
-  >
+  <VaModal v-model="model" ok-text="Apply" hide-default-actions>
     <template #header>
       <header-bar
         :title="(user ? 'Edit' : 'Create') + ' user'"
@@ -11,16 +7,19 @@
         :bordered-bottom="true"
       />
     </template>
-    <template #default="{ ok, cancel}">
+    <template #default="{ ok, cancel }">
       <owl-form
         class-form="flex flex-col gap-2"
         collection="users"
         :primaryKey="user?.id"
         :schema="user?.id ? updateUserValidationSchema : createUserValidationSchema"
-        @saved="ok(); $emit('saved');"
+        @saved="
+          ok();
+          $emit('saved');
+        "
       >
         <template #fields="{ data, validation }">
-          <va-input 
+          <va-input
             v-model="data.ref.email"
             label="E-mail"
             name="email"
@@ -29,12 +28,9 @@
             :required-mark="true"
           />
           <div>
-            <roles-select
-              v-model="data.ref.role"
-              :validation="validation"
-            />
+            <roles-select v-model="data.ref.role" :validation="validation" />
           </div>
-          <va-input 
+          <va-input
             v-model="data.ref.password"
             label="Password"
             name="password"
@@ -49,7 +45,9 @@
 
         <template #actions="{ save, validate, isLoading }">
           <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">
-            <va-button :disabled="isLoading" preset="secondary" color="secondary" @click="cancel">Cancel</va-button>
+            <va-button :disabled="isLoading" preset="secondary" color="secondary" @click="cancel"
+              >Cancel</va-button
+            >
             <va-button @click="validate(true) && save()">Save</va-button>
           </div>
         </template>
@@ -59,21 +57,25 @@
 </template>
 
 <script setup lang="ts">
-import { type User, createUserValidationSchema, updateUserValidationSchema } from "@owl-app/lib-contracts";
-import OwlForm from '@owl-app/lib-app-core/components/form/form.vue'
-import HeaderBar from '@owl-app/lib-app-core/layouts/panel/components/header-bar.vue'
+import {
+  type User,
+  createUserValidationSchema,
+  updateUserValidationSchema,
+} from '@owl-app/lib-contracts';
+import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
+import HeaderBar from '@owl-app/lib-app-core/layouts/panel/components/header-bar.vue';
 
-import RolesSelect from './roles-select.vue'
+import RolesSelect from './roles-select.vue';
 
 const model = defineModel<boolean>();
 
 defineEmits<{
-  (event: 'saved',): void
-}>()
-
-defineProps<{
-	user?: User | null;
+  (event: 'saved'): void;
 }>();
 
-const required = (v: string) => !!v || 'This field is required'
+defineProps<{
+  user?: User | null;
+}>();
+
+const required = (v: string) => !!v || 'This field is required';
 </script>

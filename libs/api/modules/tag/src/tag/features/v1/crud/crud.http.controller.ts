@@ -28,10 +28,7 @@ import {
   tagValidationSchema,
 } from '@owl-app/lib-contracts';
 
-import {
-  AssemblerQueryService,
-  InjectAssemblerQueryService,
-} from '@owl-app/nestjs-query-core';
+import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe';
 import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response';
 import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider';
@@ -43,12 +40,7 @@ import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.
 import { TagEntity } from '../../../../domain/entity/tag.entity';
 import { TagResponse } from '../../../dto/tag.response';
 
-import {
-  CreateTagRequest,
-  UpdateTagDto,
-  FilterTagDto,
-  TagPaginatedResponse,
-} from './dto';
+import { CreateTagRequest, UpdateTagDto, FilterTagDto, TagPaginatedResponse } from './dto';
 import { TagAssembler } from './tag.assembler';
 import { TagPaginatedQuery } from './dto/tag-paginated.query';
 
@@ -61,11 +53,7 @@ export class TagCrudController {
     @InjectAssemblerQueryService(TagAssembler)
     readonly service: AssemblerQueryService<TagResponse, TagEntity>,
     @InjectPaginatedQueryService(TagEntity)
-    readonly paginatedService: DataProvider<
-      Paginated<TagEntity>,
-      FilterTagDto,
-      TagEntity
-    >
+    readonly paginatedService: DataProvider<Paginated<TagEntity>, FilterTagDto, TagEntity>
   ) {}
 
   @ApiOperation({ summary: 'Find tag by id' })
@@ -94,8 +82,7 @@ export class TagCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Post()
   @RoutePermissions(AvalilableCollections.TAG, CrudActions.CREATE)
@@ -119,8 +106,7 @@ export class TagCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Put(':id')
@@ -159,14 +145,10 @@ export class TagCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Get()
-  @RoutePermissions(AvalilableCollections.TAG, [
-    CrudActions.LIST,
-    TagActions.AVAILABLE,
-  ])
+  @RoutePermissions(AvalilableCollections.TAG, [CrudActions.LIST, TagActions.AVAILABLE])
   async paginated(
     @Query('filters') filters: FilterTagDto,
     @Query(new ValidationPipe({ transform: true }))

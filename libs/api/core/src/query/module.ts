@@ -30,22 +30,21 @@ import { UserListFilter } from '../typeorm/filters/user-list.filter';
 export class AppNestjsQueryTypeOrmModule {
   static forFeature(
     opts: AppNestjsQueryTypeOrmModuleOpts,
-    dataSource:
-      | DataSource
-      | DataSourceOptions
-      | string = DEFAULT_DATA_SOURCE_NAME
+    dataSource: DataSource | DataSourceOptions | string = DEFAULT_DATA_SOURCE_NAME
   ): DynamicModule {
     const queryService = {
       classService: opts.queryService?.classService ?? AppTypeOrmQueryService,
-      inject: [FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT, ...opts.queryService?.inject ?? []],
-      opts: opts.queryService?.opts
-    }
+      inject: [
+        FILTER_REGISTRY_TENANT,
+        SETTER_REGISTRY_TENANT,
+        ...(opts.queryService?.inject ?? []),
+      ],
+      opts: opts.queryService?.opts,
+    };
 
     opts.entities.forEach((opt) => {
       if (!opt.repositoryToken) {
-        opt.repositoryToken = getQueryServiceRepositoryToken(
-          opt.entity
-        ) as string;
+        opt.repositoryToken = getQueryServiceRepositoryToken(opt.entity) as string;
       }
     });
 
@@ -93,7 +92,7 @@ export class AppNestjsQueryTypeOrmModule {
                       roles: RolesFilter<Role>,
                       archived: NonArchivedFilter<Archivable>,
                       user: OwnerRelationFilter<UserAware>,
-                      user_list: UserListFilter<User>
+                      user_list: UserListFilter<User>,
                     },
                   }),
                   RegistryServiceModule.forFeature<EntitySetter<ObjectLiteral>>({
@@ -104,13 +103,10 @@ export class AppNestjsQueryTypeOrmModule {
                     },
                   }),
                 ],
-                ...(opts.importsQueryTypeOrm ?? [])
+                ...(opts.importsQueryTypeOrm ?? []),
               ],
               queryService,
-              typeOrmModule: TypeOrmModule.forFeature(
-                { entities: opts.entities },
-                dataSource
-              ),
+              typeOrmModule: TypeOrmModule.forFeature({ entities: opts.entities }, dataSource),
               entities,
             }),
           ],

@@ -36,15 +36,12 @@ export class DomainEvent {
 
   constructor(props: DomainEventProps<unknown>) {
     if (Guard.isEmpty(props)) {
-      throw new ArgumentNotProvidedException(
-        'DomainEvent props should not be empty'
-      );
+      throw new ArgumentNotProvidedException('DomainEvent props should not be empty');
     }
     this.id = props.id;
     this.eventName = props.eventName ?? null;
     this.metadata = {
-      correlationId:
-        props?.metadata?.correlationId || RequestContextService.getRequestId(),
+      correlationId: props?.metadata?.correlationId || RequestContextService.getRequestId(),
       causationId: props?.metadata?.causationId,
       timestamp: props?.metadata?.timestamp || Date.now(),
       userId: props?.metadata?.userId,

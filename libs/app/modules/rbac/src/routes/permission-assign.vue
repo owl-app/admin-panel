@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from "vue-router";
+import { useRoute } from 'vue-router';
 import { debounce } from 'lodash';
 
 import { Permission } from '@owl-app/lib-contracts';
 
-import HeaderBar from '@owl-app/lib-app-core/layouts/panel/components/header-bar.vue'
-import { useApi } from '@owl-app/lib-app-core/composables/use-system'
+import HeaderBar from '@owl-app/lib-app-core/layouts/panel/components/header-bar.vue';
+import { useApi } from '@owl-app/lib-app-core/composables/use-system';
 
 export type GroupedPermission = {
   name: string;
   value: boolean;
   description?: string;
   loading: boolean;
-}
+};
 
 const { t } = useI18n();
 const route = useRoute();
@@ -26,7 +26,9 @@ loadPermissions();
 
 async function loadPermissions(): Promise<void> {
   const result = await api.get('rbac/permissions?pageable=0');
-  const assignedPermissions = (await api.get(`rbac/roles/assigned-permissions/${route.params?.roleId}`)).data;
+  const assignedPermissions = (
+    await api.get(`rbac/roles/assigned-permissions/${route.params?.roleId}`)
+  ).data;
 
   permissions.value = result?.data?.items.reduce(
     (groupedPermissions: Record<string, GroupedPermission[]>, permission: Permission) => {
@@ -35,20 +37,20 @@ async function loadPermissions(): Promise<void> {
           groupedPermissions[permission.collection] = [];
         }
 
-        groupedPermissions[permission.collection].push(
-          {
-            name: permission.name,
-            value: assignedPermissions.includes(permission.name),
-            description: permission.description,
-            loading: false
-          }
-        )
+        groupedPermissions[permission.collection].push({
+          name: permission.name,
+          value: assignedPermissions.includes(permission.name),
+          description: permission.description,
+          loading: false,
+        });
 
         return groupedPermissions;
       }
 
       return null;
-    }, {});
+    },
+    {}
+  );
 }
 
 async function change(value: string, permission: GroupedPermission) {
@@ -74,10 +76,7 @@ async function change(value: string, permission: GroupedPermission) {
       icon="join"
     />
     <div class="grid grid-cols-3 gap-4">
-      <va-card
-        tag="b"
-        v-for="(group, key) in permissions" :key="key"
-      >
+      <va-card tag="b" v-for="(group, key) in permissions" :key="key">
         <va-card-title>
           <va-chip color="#d9efff" size="small">{{ key }}</va-chip>
         </va-card-title>

@@ -23,7 +23,7 @@ export const BaseAuthEntitySchema = new EntitySchema<BaseAuthItemEntity>({
       nullable: true,
     },
     ruleName: {
-      name: "rule_name",
+      name: 'rule_name',
       type: String,
       nullable: true,
     },
@@ -31,10 +31,10 @@ export const BaseAuthEntitySchema = new EntitySchema<BaseAuthItemEntity>({
       type: String,
       nullable: true,
     },
-    ...TimestampableSchemaPart
+    ...TimestampableSchemaPart,
   },
   inheritance: {
-    pattern: "STI",
-    column: "type",
+    pattern: 'STI',
+    column: 'type',
   },
 });

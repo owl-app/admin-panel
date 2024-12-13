@@ -1,7 +1,7 @@
 import { AvalilableCollections, CrudActions, PermissionReferType } from '@owl-app/lib-contracts';
 
 import { checkPermission } from '@owl-app/lib-app-core/utils/check-permission';
-import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
+import { defineModule } from '@owl-app/lib-app-core/application/defines/module';
 
 import ListRoute from './routes/list.vue';
 
@@ -22,10 +22,15 @@ export default defineModule({
         meta: {
           private: true,
         },
-      }
-    ]
+      },
+    ],
   },
   preRegisterCheck(user, permissions) {
-    return checkPermission(permissions, AvalilableCollections.TAG, CrudActions.LIST, PermissionReferType.ROUTE);
-	},
-})
+    return checkPermission(
+      permissions,
+      AvalilableCollections.TAG,
+      CrudActions.LIST,
+      PermissionReferType.ROUTE
+    );
+  },
+});

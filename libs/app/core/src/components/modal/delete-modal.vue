@@ -8,7 +8,9 @@
   >
     <strong>Are you sure you want to delete ?</strong>
     <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">
-      <va-button :disabled="deleting" preset="secondary" color="secondary" @click="cancel">Cancel</va-button>
+      <va-button :disabled="deleting" preset="secondary" color="secondary" @click="cancel"
+        >Cancel</va-button
+      >
       <va-button :loading="deleting" color="danger" @click="onDelete">Delete</va-button>
     </div>
   </VaModal>
@@ -19,16 +21,16 @@ import type { Item, PrimaryKey } from '../../types/item';
 import { useItem } from '../../composables/use-item';
 
 const props = defineProps<{
-  collection: string,
-}>()
+  collection: string;
+}>();
 
 const emit = defineEmits<{
-  (event: 'deleted'): void
-}>()
+  (event: 'deleted'): void;
+}>();
 
 defineExpose({
   show,
-})
+});
 
 const model = defineModel<boolean>();
 
@@ -40,7 +42,7 @@ const onDelete = async () => {
   emit('deleted');
 
   model.value = false;
-}
+};
 
 function show(id?: PrimaryKey): void {
   model.value = true;

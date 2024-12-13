@@ -39,7 +39,7 @@ invariant(
   `Could not find project "${name}" in the workspace. Is the project.json configured correctly?`
 );
 
-console.log(project.data?.targets?.publish?.options?.packageDir)
+console.log(project.data?.targets?.publish?.options?.packageDir);
 
 const outputPath = project.data?.targets?.publish?.options?.packageDir;
 invariant(

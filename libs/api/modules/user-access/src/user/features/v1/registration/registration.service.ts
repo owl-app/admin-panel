@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
 import { Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
@@ -6,7 +6,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RolesEnum } from '@owl-app/lib-contracts';
 
 import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-core/config';
-import { InjectQueryServiceRepository } from '@owl-app/lib-api-core/query/common/repository.decorator'
+import { InjectQueryServiceRepository } from '@owl-app/lib-api-core/query/common/repository.decorator';
 
 import { UserEntity } from '../../../../domain/entity/user.entity';
 import type { IUserRepository } from '../../../../database/repository/user-repository.interface';
@@ -36,7 +36,7 @@ export class RegistrationHandler implements ICommandHandler<RegistrationCommand>
     const user = UserEntity.register({
       ...command,
       passwordHash: await bcrypt.hash(command.passwordNew, passwordBcryptSaltRounds),
-      roles: [{ name: RolesEnum.ROLE_ADMIN_COMPANY}],
+      roles: [{ name: RolesEnum.ROLE_ADMIN_COMPANY }],
       registrationToken: nanoid(64),
     });
 

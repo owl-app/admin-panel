@@ -31,7 +31,10 @@ export function defineModuleRequestEvent(
             modules.map(async (module) => {
               if (!module.preRegisterCheck) return module;
 
-              const allowed = await module.preRegisterCheck(userStore.currentUser, permissionsStore.permissions?.routes ?? []);
+              const allowed = await module.preRegisterCheck(
+                userStore.currentUser,
+                permissionsStore.permissions?.routes ?? []
+              );
 
               if (allowed) return module;
 
@@ -60,11 +63,7 @@ export function defineModuleRequestEvent(
         const appStore = useAppStore();
         const userStore = useUserStore();
 
-        if (
-          !appStore.initialized ||
-          userStore.authenticated
-        )
-          return;
+        if (!appStore.initialized || userStore.authenticated) return;
 
         registeredModules.value = [];
 
@@ -77,8 +76,7 @@ export function defineModuleRequestEvent(
         }
 
         appStore.initialized = false;
-
       },
-    })
-  ]
+    }),
+  ];
 }

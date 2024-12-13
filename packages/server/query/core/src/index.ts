@@ -34,12 +34,8 @@ export {
   transformSort,
 } from './lib/helpers';
 export * from './lib/interfaces';
-export {
-  NestjsQueryCoreModule,
-} from './lib/module';
-export type { 
-  NestjsQueryCoreModuleOpts, NestjsQueryCoreModuleAssemblersOpts 
-} from './lib/types';
+export { NestjsQueryCoreModule } from './lib/module';
+export type { NestjsQueryCoreModuleOpts, NestjsQueryCoreModuleAssemblersOpts } from './lib/types';
 export {
   AssemblerQueryService,
   NoOpQueryService,

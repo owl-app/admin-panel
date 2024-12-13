@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useBreakpoint } from 'vuestic-ui'
-import OwlLogo from '../../components/logo-white.vue'
+import { useBreakpoint } from 'vuestic-ui';
+import OwlLogo from '../../components/logo-white.vue';
 
-const breakpoint = useBreakpoint()
+const breakpoint = useBreakpoint();
 </script>
 
 <template>
@@ -39,4 +39,3 @@ const breakpoint = useBreakpoint()
     </template>
   </VaLayout>
 </template>
-

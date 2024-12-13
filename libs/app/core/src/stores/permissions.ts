@@ -11,7 +11,7 @@ export const usePermissionsStore = defineStore({
     permissions: {
       routes: [],
       fields: [],
-    }
+    },
   }),
   actions: {
     async hydrate() {
@@ -23,14 +23,24 @@ export const usePermissionsStore = defineStore({
     dehydrate() {
       this.$reset();
     },
-    getPermission(collection: AvalilableCollections, action: string, referType: PermissionReferType) {
+    getPermission(
+      collection: AvalilableCollections,
+      action: string,
+      referType: PermissionReferType
+    ) {
       const permission = this.permissions.routes.find(
-        (permissionName) => permissionName === `${referType.toUpperCase()}_${collection.toUpperCase()}_${action.toUpperCase()}`
+        (permissionName) =>
+          permissionName ===
+          `${referType.toUpperCase()}_${collection.toUpperCase()}_${action.toUpperCase()}`
       );
 
       return permission || null;
     },
-    hasPermission(collection: AvalilableCollections, action: string, referType: PermissionReferType) {
+    hasPermission(
+      collection: AvalilableCollections,
+      action: string,
+      referType: PermissionReferType
+    ) {
       return checkPermission(this.permissions.routes, collection, action, referType);
     },
   },

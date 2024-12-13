@@ -1,25 +1,9 @@
 import { Response } from 'express';
 
-import {
-  Controller,
-  HttpStatus,
-  Get,
-  Query,
-  Injectable,
-  Inject,
-  Res,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { Controller, HttpStatus, Get, Query, Injectable, Inject, Res } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
-import {
-  AvalilableCollections,
-  TimeActions,
-} from '@owl-app/lib-contracts';
+import { AvalilableCollections, TimeActions } from '@owl-app/lib-contracts';
 
 import { SortDirection } from '@owl-app/nestjs-query-core';
 
@@ -30,11 +14,8 @@ import { Paginated } from '@owl-app/lib-api-core/pagination/pagination';
 
 import { TimeEntity } from '../../../../domain/entity/time.entity';
 import { TimeResponse } from '../../../dto/time.response';
-import {
-  FilterTimeRequest,
-} from '../../../dto';
+import { FilterTimeRequest } from '../../../dto';
 import { CsvGenerator } from './csv.generator';
-
 
 @ApiTags('Time Tracker Manage')
 @Controller('times')
@@ -51,8 +32,7 @@ export class ExportController {
   @ApiOperation({ summary: 'Export all times by filters' })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Get('export-csv')
   @RoutePermissions(AvalilableCollections.TIME, TimeActions.EXPORT_CSV)
@@ -60,13 +40,10 @@ export class ExportController {
     @Query('filters') filters: FilterTimeRequest,
     @Res({ passthrough: true }) response: Response
   ) {
-    const data = await this.paginatedService.getData(
-      filters,
-      null, {
-        field: 'timeIntervalEnd',
-        direction: SortDirection.DESC,
-      }
-    );
+    const data = await this.paginatedService.getData(filters, null, {
+      field: 'timeIntervalEnd',
+      direction: SortDirection.DESC,
+    });
 
     this.csvGenerator.generate(data, response);
   }

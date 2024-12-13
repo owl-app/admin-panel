@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon'
+import { DateTime } from 'luxon';
 import { debounce } from 'lodash';
 
 import { Project, Tag, Time } from '@owl-app/lib-contracts';
@@ -29,7 +29,6 @@ export const useTimeStore = defineStore({
         } else {
           this.active = null;
         }
-
       } finally {
         debounce(() => {
           this.loading = false;
@@ -43,22 +42,21 @@ export const useTimeStore = defineStore({
       try {
         this.startInterval();
 
-        const { data }  = await api.post('/times/stopwatch', {
+        const { data } = await api.post('/times/stopwatch', {
           description,
           project,
           tags,
         });
 
         this.active = data;
-
       } catch (error: any) {
         this.stopInterval();
-        throw error
+        throw error;
       }
     },
 
     async continueTimer(id: string) {
-      const { data }  = await api.post(`/times/stopwatch/${id}`);
+      const { data } = await api.post(`/times/stopwatch/${id}`);
 
       this.active = data;
 
@@ -79,27 +77,25 @@ export const useTimeStore = defineStore({
     },
 
     startInterval() {
-      const startTime = DateTime.fromJSDate(new Date(this.active?.timeIntervalStart ||  new Date()));
+      const startTime = DateTime.fromJSDate(new Date(this.active?.timeIntervalStart || new Date()));
 
       this.timer = DateTime.now()
-        .diff(startTime, ["hours", "minutes", "seconds"])
+        .diff(startTime, ['hours', 'minutes', 'seconds'])
         .toFormat('hh:mm:ss');
 
       this.intervalTimer = setInterval(() => {
         const now = DateTime.now();
 
-        this.timer = now
-          .diff(startTime, ["hours", "minutes", "seconds"])
-          .toFormat('hh:mm:ss');
+        this.timer = now.diff(startTime, ['hours', 'minutes', 'seconds']).toFormat('hh:mm:ss');
       }, 1000);
     },
 
     stopInterval() {
-      if(this.intervalTimer) {
+      if (this.intervalTimer) {
         clearInterval(this.intervalTimer);
         this.intervalTimer = null;
         this.timer = '00:00:00';
       }
-    }
+    },
   },
 });

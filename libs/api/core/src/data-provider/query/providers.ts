@@ -13,15 +13,9 @@ import {
 import { getQueryServiceToken } from '@owl-app/nestjs-query-typeorm';
 
 import { FilterBuilder } from '../filter.builder';
-import {
-  PAGINATION_CONFIG_PROVIDER,
-  PaginationConfig,
-} from '../../config/pagination';
+import { PAGINATION_CONFIG_PROVIDER, PaginationConfig } from '../../config/pagination';
 import { Filter } from '../filtering/filter';
-import {
-  DATA_PROVIDER_FILTER_REGISTRY,
-  DATA_PROVIDER_FILTER_CUSTOM_REGISTRY,
-} from '../contants';
+import { DATA_PROVIDER_FILTER_REGISTRY, DATA_PROVIDER_FILTER_CUSTOM_REGISTRY } from '../contants';
 
 import { PaginatedDataProvider } from './paginated-query.provider';
 import { getPaginatedQueryServiceToken } from './decorators/helpers';
@@ -38,9 +32,7 @@ export function createPaginatedQueryServiceProvider<Entity>(
       queryService: QueryService<Entity>,
       paginationConfig: PaginationConfig,
       filterServiceRegistry: Registry<Filter<FilterQueryService<Entity>>>,
-      filterCustomServiceRegistry: Registry<
-        FilterCustom<SelectQueryBuilder<Entity>>
-      >
+      filterCustomServiceRegistry: Registry<FilterCustom<SelectQueryBuilder<Entity>>>
     ) {
       return new PaginatedDataProvider(
         queryService,
@@ -49,9 +41,7 @@ export function createPaginatedQueryServiceProvider<Entity>(
       );
     },
     inject: [
-      !assembler
-        ? getQueryServiceToken(entity)
-        : getAssemblerQueryServiceToken(assembler),
+      !assembler ? getQueryServiceToken(entity) : getAssemblerQueryServiceToken(assembler),
       PAGINATION_CONFIG_PROVIDER,
       DATA_PROVIDER_FILTER_REGISTRY,
       DATA_PROVIDER_FILTER_CUSTOM_REGISTRY,

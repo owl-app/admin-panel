@@ -1,23 +1,14 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpStatus,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { Response } from 'express';
 
 import { ValidationErrorException } from '../validation/validation-error.exception';
 
 @Catch()
-export class ErrorHandlersFilter
-  extends BaseExceptionFilter
-  implements ExceptionFilter
-{
+export class ErrorHandlersFilter extends BaseExceptionFilter implements ExceptionFilter {
   public catch(exception: unknown, host: ArgumentsHost): void {
     const applicationRef =
-      this.applicationRef ||
-      (this.httpAdapterHost && this.httpAdapterHost.httpAdapter);
+      this.applicationRef || (this.httpAdapterHost && this.httpAdapterHost.httpAdapter);
 
     if (exception instanceof ValidationErrorException) {
       const response = host.switchToHttp().getResponse<Response>();

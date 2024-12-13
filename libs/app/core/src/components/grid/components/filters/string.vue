@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { debounce, DebouncedFunc } from 'lodash';
 import { reactive, watch, PropType } from 'vue';
-import { isEmpty } from "@owl-app/utils";
+import { isEmpty } from '@owl-app/utils';
 
 export type SelectTypeOption = {
-  value:string,
-  text?: string
-}
+  value: string;
+  text?: string;
+};
 
 const props = defineProps({
   data: {
-    type: Object as PropType<{ type: string, value: string }>,
+    type: Object as PropType<{ type: string; value: string }>,
     required: true,
     default: () => ({ type: 'equal', value: '' }),
   },
@@ -31,7 +31,7 @@ const props = defineProps({
     type: String as PropType<string>,
     required: false,
     default: 'Search text',
-  }
+  },
 });
 
 const types = [
@@ -45,36 +45,43 @@ const types = [
   { value: 'ends_with', text: 'Ends with' },
   { value: 'in', text: 'In' },
   { value: 'not_in', text: 'Not in' },
-]
+];
 
-const form: { type: SelectTypeOption, text: string } = reactive({
-    type: { value: props.data?.type, text: types.filter(t => t.value === props.data?.type)[0]?.text },
-    text: props.data?.value,
+const form: { type: SelectTypeOption; text: string } = reactive({
+  type: {
+    value: props.data?.type,
+    text: types.filter((t) => t.value === props.data?.type)[0]?.text,
+  },
+  text: props.data?.value,
 });
 
 let textDebounce: DebouncedFunc<(...args: any[]) => any>;
 
-watch(() => props.data, () => {
-  form.type = { value: props.data?.type, text: types.filter(t => t.value === props.data?.type)[0]?.text };
-  form.text = props.data?.value;
-}, { immediate: true });
+watch(
+  () => props.data,
+  () => {
+    form.type = {
+      value: props.data?.type,
+      text: types.filter((t) => t.value === props.data?.type)[0]?.text,
+    };
+    form.text = props.data?.value;
+  },
+  { immediate: true }
+);
 
 function change(field: string) {
-  const { type , text } = form;
+  const { type, text } = form;
 
-  if(textDebounce) {
+  if (textDebounce) {
     textDebounce.cancel();
   }
 
   const searchType = props.singleFilter === '' ? type?.value : props.singleFilter;
 
-  if (
-    isEmpty(text) &&
-    (!['not_empty', 'empty'].includes(searchType))
-  ) {
+  if (isEmpty(text) && !['not_empty', 'empty'].includes(searchType)) {
     if (field === 'text') props.removeFilter('search');
 
-    return
+    return;
   }
 
   if (field === 'text') {
@@ -82,8 +89,8 @@ function change(field: string) {
       props.changeFilter({
         search: {
           type: searchType,
-          value: text
-        }
+          value: text,
+        },
       });
     }, 500);
 
@@ -92,8 +99,8 @@ function change(field: string) {
     props.changeFilter({
       search: {
         type: props.singleFilter === '' ? searchType : props.singleFilter,
-        value: text
-      }
+        value: text,
+      },
     });
   }
 }
@@ -121,7 +128,6 @@ function clear() {
           :options="types"
           @update:modelValue="change('type')"
           v-if="singleFilter === ''"
-          
         />
         <va-input
           v-model="form.text"
@@ -132,11 +138,7 @@ function clear() {
           @update:modelValue="change('text')"
         >
           <template #prependInner>
-            <va-icon
-              name="manage_search"
-              class="search-input-icon mr-1"
-              color="secondary"
-            />
+            <va-icon name="manage_search" class="search-input-icon mr-1" color="secondary" />
           </template>
         </va-input>
       </div>
@@ -166,9 +168,9 @@ function clear() {
       width: 1.5rem;
       height: 1.5rem;
       border-radius: 50%;
-      border: .125rem solid var(--va-danger);
+      border: 0.125rem solid var(--va-danger);
       font-weight: bold;
-      margin-bottom: .4rem;
+      margin-bottom: 0.4rem;
     }
   }
 }

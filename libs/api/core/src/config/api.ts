@@ -15,14 +15,16 @@ export interface IConfigApp {
   query: QueryConfig;
 }
 
-export default registerAs(APP_CONFIG_NAME, (): IConfigApp => ({
-  version: process.env.APP_API_VERSION,
-  app_name: process.env.APP_NAME,
-  host: process.env.API_HOST || 'localhost',
-  port: parseInt(process.env.API_PORT, 10) || 3000,
-  query: {
-    default_limit: 10,
-  },
-  passwordBcryptSaltRounds:
-    parseInt(process.env.PASSWORD_BCRYPT_SALT_ROUNDS, 10) || 12,
-}));
+export default registerAs(
+  APP_CONFIG_NAME,
+  (): IConfigApp => ({
+    version: process.env.APP_API_VERSION,
+    app_name: process.env.APP_NAME,
+    host: process.env.API_HOST || 'localhost',
+    port: parseInt(process.env.API_PORT, 10) || 3000,
+    query: {
+      default_limit: 10,
+    },
+    passwordBcryptSaltRounds: parseInt(process.env.PASSWORD_BCRYPT_SALT_ROUNDS, 10) || 12,
+  })
+);

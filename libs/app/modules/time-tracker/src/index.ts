@@ -1,5 +1,4 @@
-
-import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
+import { defineModule } from '@owl-app/lib-app-core/application/defines/module';
 
 import TimeListRoute from './routes/time-list.vue';
 
@@ -16,7 +15,7 @@ export default defineModule({
         meta: {
           private: true,
         },
-      }
-    ]
-  }
-})
+      },
+    ],
+  },
+});

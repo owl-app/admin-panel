@@ -1,4 +1,4 @@
-import chalk from 'chalk'
+import chalk from 'chalk';
 import { DataSource } from 'typeorm';
 import { runSeeders } from 'typeorm-extension';
 import { NestFactory } from '@nestjs/core';

@@ -1,5 +1,5 @@
-import { Item } from "../types";
-import { BaseException } from "./base.exception";
+import { Item } from '../types';
+import { BaseException } from './base.exception';
 
 export class ItemAlreadyExistsException extends BaseException {
   constructor(item: Item) {

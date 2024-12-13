@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import VaIconNotification from '../../../../../../components/icons/VaIconNotification.vue'
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import VaIconNotification from '../../../../../../components/icons/VaIconNotification.vue';
 
-const { t, locale } = useI18n()
+const { t, locale } = useI18n();
 
-const baseNumberOfVisibleNotifications = 4
-const rtf = new Intl.RelativeTimeFormat(locale.value, { style: 'short' })
-const displayAllNotifications = ref(false)
+const baseNumberOfVisibleNotifications = 4;
+const rtf = new Intl.RelativeTimeFormat(locale.value, { style: 'short' });
+const displayAllNotifications = ref(false);
 
 interface INotification {
-  message: string
-  icon: string
-  id: number
-  separator?: boolean
-  updateTimestamp: Date
+  message: string;
+  icon: string;
+  id: number;
+  separator?: boolean;
+  updateTimestamp: Date;
 }
 
 const makeDateFromNow = (timeFromNow: number) => {
-  const date = new Date()
-  date.setTime(date.getTime() + timeFromNow)
-  return date
-}
+  const date = new Date();
+  date.setTime(date.getTime() + timeFromNow);
+  return date;
+};
 
 const notifications: INotification[] = [
   {
@@ -46,7 +46,8 @@ const notifications: INotification[] = [
     updateTimestamp: makeDateFromNow(-2 * 24 * 60 * 60 * 1000),
   },
   {
-    message: 'It looks like your timezone is set incorrectly, please change it to avoid issues with Memory.',
+    message:
+      'It looks like your timezone is set incorrectly, please change it to avoid issues with Memory.',
     icon: 'schedule',
     id: 4,
     updateTimestamp: makeDateFromNow(-2 * 7 * 24 * 60 * 60 * 1000),
@@ -79,7 +80,7 @@ const notifications: INotification[] = [
     separator: true,
     updateTimestamp: makeDateFromNow(-1 * 24 * 60 * 60 * 1000),
   },
-].sort((a, b) => new Date(b.updateTimestamp).getTime() - new Date(a.updateTimestamp).getTime())
+].sort((a, b) => new Date(b.updateTimestamp).getTime() - new Date(a.updateTimestamp).getTime());
 
 const TIME_NAMES = {
   second: 1000,
@@ -89,31 +90,37 @@ const TIME_NAMES = {
   week: 1000 * 60 * 60 * 24 * 7,
   month: 1000 * 60 * 60 * 24 * 30,
   year: 1000 * 60 * 60 * 24 * 365,
-}
+};
 
 const getTimeName = (differenceTime: number) => {
   return Object.keys(TIME_NAMES).reduce(
     (acc, key) => (TIME_NAMES[key as keyof typeof TIME_NAMES] < differenceTime ? key : acc),
-    'month',
-  ) as keyof typeof TIME_NAMES
-}
+    'month'
+  ) as keyof typeof TIME_NAMES;
+};
 
 const notificationsWithRelativeTime = computed(() => {
-  const list = displayAllNotifications.value ? notifications : notifications.slice(0, baseNumberOfVisibleNotifications)
+  const list = displayAllNotifications.value
+    ? notifications
+    : notifications.slice(0, baseNumberOfVisibleNotifications);
 
   return list.map((item, index) => {
-    const timeDifference = Math.round(new Date().getTime() - new Date(item.updateTimestamp).getTime())
-    const timeName = getTimeName(timeDifference)
+    const timeDifference = Math.round(
+      new Date().getTime() - new Date(item.updateTimestamp).getTime()
+    );
+    const timeName = getTimeName(timeDifference);
 
-    let separator = false
+    let separator = false;
 
-    const nextItem = list[index + 1]
+    const nextItem = list[index + 1];
     if (nextItem) {
-      const nextItemDifference = Math.round(new Date().getTime() - new Date(nextItem.updateTimestamp).getTime())
-      const nextItemTimeName = getTimeName(nextItemDifference)
+      const nextItemDifference = Math.round(
+        new Date().getTime() - new Date(nextItem.updateTimestamp).getTime()
+      );
+      const nextItemTimeName = getTimeName(nextItemDifference);
 
       if (timeName !== nextItemTimeName) {
-        separator = true
+        separator = true;
       }
     }
 
@@ -121,13 +128,18 @@ const notificationsWithRelativeTime = computed(() => {
       ...item,
       updateTimestamp: rtf.format(-1 * Math.round(timeDifference / TIME_NAMES[timeName]), timeName),
       separator,
-    }
-  })
-})
+    };
+  });
+});
 </script>
 
 <template>
-  <VaDropdown :offset="[13, 0]" class="notification-dropdown" stick-to-edges :close-on-content-click="false">
+  <VaDropdown
+    :offset="[13, 0]"
+    class="notification-dropdown"
+    stick-to-edges
+    :close-on-content-click="false"
+  >
     <template #anchor>
       <VaButton preset="secondary" color="textPrimary">
         <VaBadge overlap>
@@ -151,11 +163,17 @@ const notificationsWithRelativeTime = computed(() => {
                 {{ item.updateTimestamp }}
               </VaListItemSection>
             </VaListItem>
-            <VaListSeparator v-if="item.separator && index !== notificationsWithRelativeTime.length - 1" class="mx-3" />
+            <VaListSeparator
+              v-if="item.separator && index !== notificationsWithRelativeTime.length - 1"
+              class="mx-3"
+            />
           </template>
         </VaList>
 
-        <VaButton preset="primary" class="w-full" @click="displayAllNotifications = !displayAllNotifications"
+        <VaButton
+          preset="primary"
+          class="w-full"
+          @click="displayAllNotifications = !displayAllNotifications"
           >{{ displayAllNotifications ? t('notifications.less') : t('notifications.all') }}
         </VaButton>
       </section>

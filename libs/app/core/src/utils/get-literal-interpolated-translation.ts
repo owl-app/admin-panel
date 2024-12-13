@@ -8,6 +8,6 @@
  * @see {@link https://github.com/directus/directus/pull/11287}
  */
 export function getLiteralInterpolatedTranslation(translation: string, keepCurlyBrackets = false) {
-	const interpolatedCharacters = keepCurlyBrackets ? '@$|' : '{}@$|';
-	return translation.replace(new RegExp(`([${interpolatedCharacters}])`, 'g'), "{'$1'}");
+  const interpolatedCharacters = keepCurlyBrackets ? '@$|' : '{}@$|';
+  return translation.replace(new RegExp(`([${interpolatedCharacters}])`, 'g'), "{'$1'}");
 }

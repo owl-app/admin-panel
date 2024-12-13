@@ -12,16 +12,14 @@ export class RoutePermissionGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     if (!isPublicRoute(this.reflector, context)) {
-      const permissions = this.reflector.getAllAndOverride<string[]>(
-        ROUTE_PERMISSIONS_KEY,
-        [context.getHandler(), context.getClass()]
-      );
+      const permissions = this.reflector.getAllAndOverride<string[]>(ROUTE_PERMISSIONS_KEY, [
+        context.getHandler(),
+        context.getClass(),
+      ]);
 
-      const { user }: { user: AuthUserData } = context
-        .switchToHttp()
-        .getRequest();
+      const { user }: { user: AuthUserData } = context.switchToHttp().getRequest();
 
-      return permissions.some(permission => user.permissions?.routes.includes(permission));
+      return permissions.some((permission) => user.permissions?.routes.includes(permission));
     }
 
     return true;

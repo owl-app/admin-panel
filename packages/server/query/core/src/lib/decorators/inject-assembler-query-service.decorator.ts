@@ -13,5 +13,4 @@ export const InjectAssemblerQueryService = <
   UE = CE
 >(
   AssemblerClass: Class<Assembler<DTO, Entity, C, CE, U, UE>>
-): ReturnType<typeof Inject> =>
-  Inject(getAssemblerQueryServiceToken(AssemblerClass));
+): ReturnType<typeof Inject> => Inject(getAssemblerQueryServiceToken(AssemblerClass));

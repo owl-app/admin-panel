@@ -1,8 +1,4 @@
-import {
-  Filter,
-  FilterComparisons,
-  FilterFieldComparison,
-} from '../interfaces';
+import { Filter, FilterComparisons, FilterFieldComparison } from '../interfaces';
 import { FilterBuilder } from './filter.builder';
 import { QueryFieldMap } from './query.helpers';
 
@@ -12,27 +8,19 @@ export type BetweenComparisonOperators = 'between' | 'notBetween';
 export type RangeComparisonOperators = 'gt' | 'gte' | 'lt' | 'lte';
 export type BooleanComparisonOperators = 'eq' | 'neq' | 'is' | 'isNot';
 
-export const isLikeComparisonOperator = (
-  op: unknown
-): op is LikeComparisonOperators =>
+export const isLikeComparisonOperator = (op: unknown): op is LikeComparisonOperators =>
   op === 'like' || op === 'notLike' || op === 'iLike' || op === 'notILike';
 
-export const isInComparisonOperators = (
-  op: unknown
-): op is InComparisonOperators => op === 'in' || op === 'notIn';
+export const isInComparisonOperators = (op: unknown): op is InComparisonOperators =>
+  op === 'in' || op === 'notIn';
 
-export const isBetweenComparisonOperators = (
-  op: unknown
-): op is BetweenComparisonOperators => op === 'between' || op === 'notBetween';
+export const isBetweenComparisonOperators = (op: unknown): op is BetweenComparisonOperators =>
+  op === 'between' || op === 'notBetween';
 
-export const isRangeComparisonOperators = (
-  op: unknown
-): op is RangeComparisonOperators =>
+export const isRangeComparisonOperators = (op: unknown): op is RangeComparisonOperators =>
   op === 'gt' || op === 'gte' || op === 'lt' || op === 'lte';
 
-export const isBooleanComparisonOperators = (
-  op: unknown
-): op is BooleanComparisonOperators =>
+export const isBooleanComparisonOperators = (op: unknown): op is BooleanComparisonOperators =>
   op === 'eq' || op === 'neq' || op === 'is' || op === 'isNot';
 
 export const isComparison = <DTO, K extends keyof DTO>(
@@ -54,10 +42,7 @@ export const isComparison = <DTO, K extends keyof DTO>(
 };
 
 // TODO: test
-export const getFilterFieldComparison = <
-  DTO,
-  K extends keyof FilterComparisons<DTO>
->(
+export const getFilterFieldComparison = <DTO, K extends keyof FilterComparisons<DTO>>(
   obj: FilterComparisons<DTO>,
   field: K
 ): FilterFieldComparison<DTO[K]> & Filter<DTO[K]> =>
@@ -74,26 +59,19 @@ export const transformFilter = <From, To>(
     if (filterField === 'and' || filterField === 'or') {
       return {
         ...newFilter,
-        [filterField]: filter[filterField]?.map((f) =>
-          transformFilter(f, fieldMap)
-        ),
+        [filterField]: filter[filterField]?.map((f) => transformFilter(f, fieldMap)),
       };
     }
     const fromField = filterField as keyof From;
     const otherKey = fieldMap[fromField];
     if (!otherKey) {
-      throw new Error(
-        `No corresponding field found for '${filterField}' when transforming Filter`
-      );
+      throw new Error(`No corresponding field found for '${filterField}' when transforming Filter`);
     }
     return { ...newFilter, [otherKey as string]: filter[fromField] };
   }, {} as Filter<To>);
 };
 
-export const mergeFilter = <T>(
-  base: Filter<T>,
-  source: Filter<T>
-): Filter<T> => {
+export const mergeFilter = <T>(base: Filter<T>, source: Filter<T>): Filter<T> => {
   if (!Object.keys(base).length) {
     return source;
   }
@@ -112,10 +90,7 @@ export const getFilterFields = <DTO>(filter: Filter<DTO>): string[] => {
         if (andOrFilters !== undefined) {
           return andOrFilters.reduce(
             (andOrFields, andOrFilter) =>
-              new Set<string>([
-                ...andOrFields,
-                ...getFilterFields(andOrFilter),
-              ]),
+              new Set<string>([...andOrFields, ...getFilterFields(andOrFilter)]),
             fields
           );
         }
@@ -131,10 +106,7 @@ export const getFilterFields = <DTO>(filter: Filter<DTO>): string[] => {
   return [...fieldSet];
 };
 
-export const getFilterComparisons = <
-  DTO,
-  K extends keyof FilterComparisons<DTO>
->(
+export const getFilterComparisons = <DTO, K extends keyof FilterComparisons<DTO>>(
   filter: Filter<DTO>,
   key: K
 ): FilterFieldComparison<DTO[K]>[] => {
@@ -143,16 +115,11 @@ export const getFilterComparisons = <
   if (filter.and || filter.or) {
     const filters = [...(filter.and ?? []), ...(filter.or ?? [])];
     filters.forEach((f) =>
-      getFilterComparisons(f, key).forEach((comparison) =>
-        results.push(comparison)
-      )
+      getFilterComparisons(f, key).forEach((comparison) => results.push(comparison))
     );
   }
 
-  const comparison = getFilterFieldComparison(
-    filter as FilterComparisons<DTO>,
-    key
-  );
+  const comparison = getFilterFieldComparison(filter as FilterComparisons<DTO>, key);
   if (isComparison(comparison)) {
     results.push(comparison);
   }
@@ -226,10 +193,7 @@ export const getFilterOmitting = <DTO>(
 
 export function applyFilter<DTO>(dto: DTO[], filter: Filter<DTO>): DTO[];
 export function applyFilter<DTO>(dto: DTO, filter: Filter<DTO>): boolean;
-export function applyFilter<DTO>(
-  dtoOrArray: DTO | DTO[],
-  filter: Filter<DTO>
-): boolean | DTO[] {
+export function applyFilter<DTO>(dtoOrArray: DTO | DTO[], filter: Filter<DTO>): boolean | DTO[] {
   const filterFunc = FilterBuilder.build(filter);
   if (Array.isArray(dtoOrArray)) {
     return dtoOrArray.filter((dto) => filterFunc(dto));

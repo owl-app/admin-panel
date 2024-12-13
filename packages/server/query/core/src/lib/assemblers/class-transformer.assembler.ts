@@ -32,15 +32,11 @@ export abstract class ClassTransformerAssembler<
     return query as unknown as Query<Entity>;
   }
 
-  convertAggregateQuery(
-    aggregate: AggregateQuery<DTO>
-  ): AggregateQuery<Entity> {
+  convertAggregateQuery(aggregate: AggregateQuery<DTO>): AggregateQuery<Entity> {
     return aggregate as unknown as AggregateQuery<Entity>;
   }
 
-  convertAggregateResponse(
-    aggregate: AggregateResponse<Entity>
-  ): AggregateResponse<DTO> {
+  convertAggregateResponse(aggregate: AggregateResponse<Entity>): AggregateResponse<DTO> {
     return aggregate as unknown as AggregateResponse<DTO>;
   }
 
@@ -95,9 +91,7 @@ export abstract class ClassTransformerAssembler<
       }
     } else if (entityOrDto && 'constructor' in (entityOrDto as object)) {
       // eslint-disable-next-line @typescript-eslint/ban-types
-      const serializer = getAssemblerSerializer(
-        entityOrDto.constructor as Class<unknown>
-      );
+      const serializer = getAssemblerSerializer(entityOrDto.constructor as Class<unknown>);
 
       if (serializer) {
         return serializer(entityOrDto);

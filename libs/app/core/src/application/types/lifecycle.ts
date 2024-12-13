@@ -23,7 +23,4 @@ export type RequestEventType =
   | typeof LIFECYCLE_EVENTS.REQUEST.ON_AFTER_EACH
   | typeof LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH;
 
-export type RequestEvent = LifecycleEvent<
-  RequestEventType,
-  RequestEventCallbackType
->;
+export type RequestEvent = LifecycleEvent<RequestEventType, RequestEventCallbackType>;

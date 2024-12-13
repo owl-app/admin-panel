@@ -1,9 +1,4 @@
-import {
-  Assembler,
-  AssemblerFactory,
-  ClassTransformerAssembler,
-  DefaultAssembler
-} from '../..';
+import { Assembler, AssemblerFactory, ClassTransformerAssembler, DefaultAssembler } from '../..';
 
 class TestFrom {
   first!: string;
@@ -26,12 +21,8 @@ describe('@Assembler', () => {
       }
     }
 
-    expect(AssemblerFactory.getAssembler(TestFrom, TestTo)).toBeInstanceOf(
-      TestAssembler
-    );
-    expect(AssemblerFactory.getAssembler(TestTo, TestFrom)).toBeInstanceOf(
-      DefaultAssembler
-    );
+    expect(AssemblerFactory.getAssembler(TestFrom, TestTo)).toBeInstanceOf(TestAssembler);
+    expect(AssemblerFactory.getAssembler(TestTo, TestFrom)).toBeInstanceOf(DefaultAssembler);
   });
 
   it('should throw an error when registering an assembler for the same From To combo', () => {

@@ -18,14 +18,14 @@ export const TenantEntitySchema = new EntitySchema<TenantEntity>({
     name: {
       type: String,
     },
-    ...TimestampableSchemaPart
+    ...TimestampableSchemaPart,
   },
   relations: {
     users: {
       type: 'one-to-many',
       target: USER_ENTITY,
       cascade: true,
-      inverseSide: 'tenant'
+      inverseSide: 'tenant',
     },
   },
 });

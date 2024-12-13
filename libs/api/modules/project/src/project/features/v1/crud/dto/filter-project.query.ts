@@ -1,17 +1,16 @@
-import { ArchiveOptions } from "@owl-app/lib-contracts";
+import { ArchiveOptions } from '@owl-app/lib-contracts';
 
-import { FilterStringQuery } from "@owl-app/lib-api-core/data-provider/query/filters/string";
+import { FilterStringQuery } from '@owl-app/lib-api-core/data-provider/query/filters/string';
 
 /**
  * Filter User DTO
  */
 export class FilterProjectQuery {
+  readonly search?: FilterStringQuery;
 
-    readonly search?: FilterStringQuery;
+  readonly email?: string;
 
-    readonly email?: string;
+  readonly archived?: ArchiveOptions;
 
-    readonly archived?: ArchiveOptions;
-
-    readonly clients?: string;
+  readonly clients?: string;
 }

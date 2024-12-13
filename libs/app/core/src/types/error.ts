@@ -1,4 +1,4 @@
 export type ApiValidationError = {
-	message: string;
-	path: string[];
+  message: string;
+  path: string[];
 };

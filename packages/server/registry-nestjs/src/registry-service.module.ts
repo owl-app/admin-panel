@@ -1,13 +1,13 @@
-import { DynamicModule, ForwardReference, Provider, Type } from '@nestjs/common'
+import { DynamicModule, ForwardReference, Provider, Type } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { createServiceRegistryProvider } from './providers';
 
 export interface RegistryServiceModuleOpts<T> {
-  name: string,
+  name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  imports?: Array<Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference>,
-  providers?: Provider[],
-  services?: Record<string, Type<T>>
+  imports?: Array<Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference>;
+  providers?: Provider[];
+  services?: Record<string, Type<T>>;
 }
 
 export class RegistryServiceModule {
@@ -17,14 +17,14 @@ export class RegistryServiceModule {
     const servicesProviders: Array<Type<T>> = [];
 
     Object.values(services).forEach((service: Type<T>) => {
-      servicesProviders.push(service)
-    })
+      servicesProviders.push(service);
+    });
 
     return {
       module: RegistryServiceModule,
       imports: [...imports, ConfigModule],
       providers: [...providers, ...servicesProviders, serviceRegistry],
       exports: [...imports, RegistryServiceModule, ConfigModule, serviceRegistry],
-    }
+    };
   }
 }

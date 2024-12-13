@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { useTimeStore } from '../../../../../stores/time'
+import { useTimeStore } from '../../../../../stores/time';
 
-import ProfileDropdown from './dropdowns/profile-dropdown.vue'
+import ProfileDropdown from './dropdowns/profile-dropdown.vue';
 // import NotificationDropdown from './dropdowns/notification-dropdown.vue'
 
 defineProps({
   isMobile: { type: Boolean, default: false },
-})
+});
 
 const timeStore = useTimeStore();
 </script>
@@ -16,7 +16,7 @@ const timeStore = useTimeStore();
     <div v-if="timeStore.active">
       <VaInnerLoading size="1.4rem" :loading="timeStore.loading" color="#fff">
         <VaButton :visible="false" icon="schedule" color="danger" class="mr-4 w-36">
-          <span :class="{ invisible: timeStore.loading }"> 
+          <span :class="{ invisible: timeStore.loading }">
             {{ timeStore.timer }}
           </span>
         </VaButton>

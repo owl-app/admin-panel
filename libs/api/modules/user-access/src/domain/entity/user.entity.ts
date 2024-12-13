@@ -42,7 +42,7 @@ export class UserEntity extends BaseEntity implements User {
     user.addEvent(
       new UserRegisteredDomainEvent({
         email: registerProps.email,
-      }),
+      })
     );
 
     return user;

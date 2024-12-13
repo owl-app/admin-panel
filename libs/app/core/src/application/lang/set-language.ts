@@ -10,9 +10,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
   } else {
     if (loadedLanguages.includes(lang) === false) {
       try {
-        const { default: translations } = await import(
-          `./translations/${lang}.yaml`
-        );
+        const { default: translations } = await import(`./translations/${lang}.yaml`);
         i18n.global.mergeLocaleMessage(lang, translations);
         loadedLanguages.push(lang);
       } catch (err: any) {

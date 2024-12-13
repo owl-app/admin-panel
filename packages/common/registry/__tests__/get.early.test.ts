@@ -31,9 +31,7 @@ describe('ServiceRegistry.get() get method', () => {
       const identifier = 'nonExistentService';
 
       // Act & Assert: Attempting to get a non-registered service should throw an exception
-      expect(() => registry.get(identifier)).toThrow(
-        NonExistingServiceException
-      );
+      expect(() => registry.get(identifier)).toThrow(NonExistingServiceException);
     });
 
     it('should handle services with complex nested structures', () => {

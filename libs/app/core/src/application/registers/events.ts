@@ -10,10 +10,7 @@ import { ApplicationLifecycleEvents } from '../types/lifecycle';
 import InitializeAuthenticationEvent from '../events/auth-user-event';
 import HydrateUserEvent from '../events/hydrate-user-event';
 
-export function registerEvents(
-  app: App,
-  customEvents: ApplicationLifecycleEvents
-): void {
+export function registerEvents(app: App, customEvents: ApplicationLifecycleEvents): void {
   const appLifecycleRegistry = useAppLifecycleEventRegistry();
 
   appLifecycleRegistry.request.push(InitializeAuthenticationEvent);

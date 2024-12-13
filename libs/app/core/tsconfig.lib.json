@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../../dist/out-tsc",
-    "types": ["vite/client", "@modyfi/vite-plugin-yaml/modules"],
+    "types": ["vite/client", "@modyfi/vite-plugin-yaml/modules"]
   },
   "exclude": [
     "src/**/__tests__/*",
@@ -17,11 +17,5 @@
     "src/**/*.spec.vue",
     "src/**/*.test.vue"
   ],
-  "include": [
-    "src/**/*.js",
-    "src/**/*.jsx",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
-]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

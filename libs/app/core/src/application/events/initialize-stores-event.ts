@@ -5,7 +5,7 @@ import { defineRequestEvent } from '../defines/events';
 import { useAppStore } from '../../stores/app';
 import { useUserStore } from '../../stores/user';
 import { usePermissionsStore } from '../../stores/permissions';
-import { useTimeStore } from "../../stores/time";
+import { useTimeStore } from '../../stores/time';
 
 type GenericStore = {
   $id: string;
@@ -16,11 +16,7 @@ type GenericStore = {
 };
 
 export function useStores(
-  stores = [
-    useUserStore,
-    usePermissionsStore,
-    useTimeStore,
-  ],
+  stores = [useUserStore, usePermissionsStore, useTimeStore]
 ): GenericStore[] {
   return stores.map((useStore) => useStore()) as GenericStore[];
 }
@@ -29,9 +25,7 @@ export default defineRequestEvent({
   name: 'initialize-stores',
   priority: 500,
   event: LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH,
-  callback: async (
-    to: RouteLocationNormalized,
-  ): Promise<void> => {
+  callback: async (to: RouteLocationNormalized): Promise<void> => {
     const stores = useStores();
     const appStore = useAppStore();
     const userStore = useUserStore();
@@ -39,7 +33,7 @@ export default defineRequestEvent({
     if (
       to.meta?.public === true ||
       appStore.initialized ||
-      appStore.initializing || 
+      appStore.initializing ||
       !userStore.authenticated
     )
       return;
@@ -49,11 +43,8 @@ export default defineRequestEvent({
     try {
       const hydratedStores = ['userStore'];
       await Promise.all(
-        stores
-          .filter(({ $id }) => !hydratedStores.includes($id))
-          .map((store) => store.hydrate?.())
+        stores.filter(({ $id }) => !hydratedStores.includes($id)).map((store) => store.hydrate?.())
       );
-
     } catch (error: any) {
       appStore.error = error;
     }

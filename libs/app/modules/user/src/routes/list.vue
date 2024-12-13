@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
-import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 
-import { AvalilableCollections, CrudActions, User } from "@owl-app/lib-contracts";
+import { AvalilableCollections, CrudActions, User } from '@owl-app/lib-contracts';
 
-import Grid from '@owl-app/lib-app-core/components/grid/grid.vue'
-import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue'
+import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
+import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
 import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 
-import UserModal from '../components/user-modal.vue'
+import UserModal from '../components/user-modal.vue';
 
 const { t } = useI18n();
 
 const showModalUser = ref(false);
 const showDeleteModal = ref(false);
-const editUser = ref<User|null>();
+const editUser = ref<User | null>();
 const deleteUser = ref<User>();
 const gridRef = ref<InstanceType<typeof Grid>>();
 const deleteModal = ref<InstanceType<typeof DeleteModal>>();
@@ -25,7 +25,7 @@ const headerBar = {
   title: t('users'),
   description: 'Managing users who have access to the panel',
   icon: 'people_alt',
-}
+};
 
 const columns = defineVaDataTableColumns([
   { label: 'Full Name', key: 'fullname', sortable: true },
@@ -33,20 +33,14 @@ const columns = defineVaDataTableColumns([
   { label: 'Phone number', key: 'phoneNumber', sortable: true },
   { label: 'Role', key: 'role', sortable: true },
   { label: ' ', key: 'actions' },
-])
+]);
 
 const { hasRoutePermission } = usePermissions(AvalilableCollections.USER);
 </script>
 
 <template>
   <panel-layout>
-    <grid
-      ref="gridRef"
-      url="users"
-      :columns="columns"
-      defaultSort="id"
-      :headerBar="headerBar"
-    >
+    <grid ref="gridRef" url="users" :columns="columns" defaultSort="id" :headerBar="headerBar">
       <template #header-bar-actions>
         <VaButton
           preset="primary"
@@ -63,9 +57,9 @@ const { hasRoutePermission } = usePermissions(AvalilableCollections.USER);
         </VaButton>
       </template>
       <template #filters="{ filters, changeFilter, removeFilter }">
-        {{ filters?.search}}
+        {{ filters?.search }}
         <div class="grid grid-cols-3 gap-4">
-          <string-filter 
+          <string-filter
             :data="filters?.search"
             :change-filter="changeFilter"
             :remove-filter="removeFilter"
@@ -75,7 +69,7 @@ const { hasRoutePermission } = usePermissions(AvalilableCollections.USER);
 
       <template #cell(fullname)="{ rowData }">
         <div class="flex items-center gap-2 max-w-[230px] ellipsis">
-          {{ rowData.firstName }} {{ rowData.lastName }} 
+          {{ rowData.firstName }} {{ rowData.lastName }}
         </div>
       </template>
 
@@ -117,15 +111,11 @@ const { hasRoutePermission } = usePermissions(AvalilableCollections.USER);
             @click="deleteModal?.show(user?.id)"
             v-if="hasRoutePermission(CrudActions.DELETE)"
           />
-      </div>
+        </div>
       </template>
     </grid>
-    <user-modal
-      v-model="showModalUser"
-      :user="editUser"
-      @saved="gridRef?.reloadGrid()"
-    />
-    <delete-modal 
+    <user-modal v-model="showModalUser" :user="editUser" @saved="gridRef?.reloadGrid()" />
+    <delete-modal
       ref="deleteModal"
       collection="users"
       v-model="showDeleteModal"

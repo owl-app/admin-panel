@@ -1,6 +1,6 @@
-import { TypeMapper } from 'ts-mapper'
+import { TypeMapper } from 'ts-mapper';
 
-import { UserDto } from './dto/user.dto'
+import { UserDto } from './dto/user.dto';
 import { UserEntity } from '../domain/entity/user.entity';
 
 export class Mapper extends TypeMapper {
@@ -30,7 +30,7 @@ export class Mapper extends TypeMapper {
       .map(
         (src) => src.phoneNumber,
         (dest) => dest.phoneNumber
-      )
+      );
   }
 }
 

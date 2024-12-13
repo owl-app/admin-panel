@@ -8,9 +8,7 @@ import { isPublicRoute } from '../utils/route';
 export class RbacGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
-  canActivate(
-    context: ExecutionContext
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     if (!isPublicRoute(this.reflector, context)) {
       return true;
     }

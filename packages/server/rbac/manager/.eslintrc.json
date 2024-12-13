@@ -5,9 +5,7 @@
     {
       "files": ["*.ts", "*.tsx"],
       "parserOptions": {
-        "project": [
-          "packages/server/rbac/manager/tsconfig.eslint.json"
-        ]
+        "project": ["packages/server/rbac/manager/tsconfig.eslint.json"]
       }
     }
   ]

@@ -1,7 +1,15 @@
 import { Logger, LoggerOptions, createLogger } from 'winston';
 import { Provider, Type } from '@nestjs/common';
-import { WINSTON_MODULE_NEST_PROVIDER, WINSTON_MODULE_OPTIONS, WINSTON_MODULE_PROVIDER } from './constants';
-import { WinstonModuleAsyncOptions, WinstonModuleOptions, WinstonModuleOptionsFactory } from './interfaces';
+import {
+  WINSTON_MODULE_NEST_PROVIDER,
+  WINSTON_MODULE_OPTIONS,
+  WINSTON_MODULE_PROVIDER,
+} from './constants';
+import {
+  WinstonModuleAsyncOptions,
+  WinstonModuleOptions,
+  WinstonModuleOptionsFactory,
+} from './interfaces';
 import { WinstonLogger } from './logger';
 
 export function createNestWinstonLogger(loggerOpts: WinstonModuleOptions): WinstonLogger {
@@ -41,29 +49,29 @@ export function createWinstonAsyncProviders(options: WinstonModuleAsyncOptions):
 
   if (options.useClass) {
     const useClass = options.useClass as Type<WinstonModuleOptionsFactory>;
-    providers.push(...[
-      {
-        provide: WINSTON_MODULE_OPTIONS,
-        useFactory: async (optionsFactory: WinstonModuleOptionsFactory) => {
-          await optionsFactory.createWinstonModuleOptions()
+    providers.push(
+      ...[
+        {
+          provide: WINSTON_MODULE_OPTIONS,
+          useFactory: async (optionsFactory: WinstonModuleOptionsFactory) => {
+            await optionsFactory.createWinstonModuleOptions();
+          },
+          inject: [useClass],
         },
-        inject: [useClass],
-      },
-      {
-        provide: useClass,
-        useClass,
-      },
-    ]);
+        {
+          provide: useClass,
+          useClass,
+        },
+      ]
+    );
   }
 
   if (options.useFactory) {
-    providers.push(
-      {
-        provide: WINSTON_MODULE_OPTIONS,
-        useFactory: options.useFactory,
-        inject: options.inject || [],
-      },
-    );
+    providers.push({
+      provide: WINSTON_MODULE_OPTIONS,
+      useFactory: options.useFactory,
+      inject: options.inject || [],
+    });
   }
 
   return providers;

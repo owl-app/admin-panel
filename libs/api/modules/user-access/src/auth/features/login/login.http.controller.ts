@@ -35,7 +35,7 @@ export class LoginController {
   constructor(
     private readonly commandBus: CommandBus,
     @Inject(JWT_CONFIG_PROVIDER)
-    private jwtConfig: IJwtConfig,
+    private jwtConfig: IJwtConfig
   ) {}
 
   @ApiOperation({ description: 'login' })
@@ -64,7 +64,10 @@ export class LoginController {
     @Res({ passthrough: true }) response: Response
   ): Promise<AuthResponse> {
     try {
-      const result = await this.commandBus.execute<Login, Record<'accessToken' | 'refreshToken', Token>>(new Login(auth));
+      const result = await this.commandBus.execute<
+        Login,
+        Record<'accessToken' | 'refreshToken', Token>
+      >(new Login(auth));
 
       response.cookie('access_token', result.accessToken.token, {
         httpOnly: this.jwtConfig.cookie.http_only,
@@ -76,13 +79,13 @@ export class LoginController {
       response.cookie('refresh_token', result.refreshToken.token, {
         httpOnly: this.jwtConfig.cookie.http_only,
         secure: this.jwtConfig.cookie.secure,
-        maxAge:result.refreshToken.expiresIn,
+        maxAge: result.refreshToken.expiresIn,
         domain: this.jwtConfig.cookie.domain,
       });
 
       return {
         accessTokenExpires: result.accessToken.expiresIn,
-        refreshTokenExpires: result.refreshToken.expiresIn
+        refreshTokenExpires: result.refreshToken.expiresIn,
       };
     } catch (error: unknown) {
       if (error instanceof InvalidAuthenticationError) {

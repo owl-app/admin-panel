@@ -27,7 +27,7 @@ export type RoleSetting = {
   id?: string;
   displayName?: string;
   theme?: string;
-}
+};
 
 export interface RbacItemResponse {
   name: string;
@@ -47,13 +47,13 @@ export interface IBaseRbacItemRequest {
   ruleName?: string;
 }
 
-export interface ICreatePermissionRequest extends IBaseRbacItemRequest{}
+export interface ICreatePermissionRequest extends IBaseRbacItemRequest {}
 
-export interface IUpdatePermissionRequest extends IBaseRbacItemRequest{}
+export interface IUpdatePermissionRequest extends IBaseRbacItemRequest {}
 
-export interface ICreateRoleRequest extends IBaseRbacItemRequest{}
+export interface ICreateRoleRequest extends IBaseRbacItemRequest {}
 
-export interface IUpdateRoleRequest extends IBaseRbacItemRequest{}
+export interface IUpdateRoleRequest extends IBaseRbacItemRequest {}
 
 export enum RolesEnum {
   ROLE_ADMIN_SYSTEM = 'ROLE_ADMIN_SYSTEM',

@@ -1,11 +1,6 @@
 import { format as formatSql } from 'sql-formatter';
 
-import {
-  Class,
-  Query,
-  SortDirection,
-  SortNulls,
-} from '@owl-app/nestjs-query-core';
+import { Class, Query, SortDirection, SortNulls } from '@owl-app/nestjs-query-core';
 
 import { RelationQueryBuilder } from '../../lib/query';
 import {
@@ -25,10 +20,7 @@ describe('RelationQueryBuilder', (): void => {
     EntityClass: Class<Entity>,
     relationName: string
   ): RelationQueryBuilder<Entity, Relation> =>
-    new RelationQueryBuilder(
-      getTestConnection().getRepository(EntityClass),
-      relationName
-    );
+    new RelationQueryBuilder(getTestConnection().getRepository(EntityClass), relationName);
 
   const expectSQLSnapshot = <Entity, Relation>(
     EntityClass: Class<Entity>,
@@ -92,12 +84,7 @@ describe('RelationQueryBuilder', (): void => {
       });
 
       it('should work with a uni-directional relationship', () => {
-        expectSQLSnapshot(
-          TestRelation,
-          testRelation,
-          'testEntityUniDirectional',
-          {}
-        );
+        expectSQLSnapshot(TestRelation, testRelation, 'testEntityUniDirectional', {});
       });
     });
 
@@ -122,12 +109,7 @@ describe('RelationQueryBuilder', (): void => {
 
       describe('uni-directional many to many', () => {
         it('should create the correct sql', () => {
-          expectSQLSnapshot(
-            TestEntity,
-            testEntity,
-            'manyToManyUniDirectional',
-            {}
-          );
+          expectSQLSnapshot(TestEntity, testEntity, 'manyToManyUniDirectional', {});
         });
       });
     });
@@ -270,12 +252,7 @@ describe('RelationQueryBuilder', (): void => {
 
     describe('many to one', () => {
       it('should query with with multiple entities', () => {
-        expectBatchSQLSnapshot(
-          TestEntity,
-          testEntities,
-          'manyToOneRelation',
-          {}
-        );
+        expectBatchSQLSnapshot(TestEntity, testEntities, 'manyToOneRelation', {});
       });
     });
   });

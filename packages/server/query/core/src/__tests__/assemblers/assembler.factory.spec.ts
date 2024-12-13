@@ -1,9 +1,4 @@
-import {
-  Assembler,
-  AssemblerFactory,
-  ClassTransformerAssembler,
-  DefaultAssembler,
-} from '../..';
+import { Assembler, AssemblerFactory, ClassTransformerAssembler, DefaultAssembler } from '../..';
 
 describe('AssemblerFactory', () => {
   class TestDTO {
@@ -19,15 +14,11 @@ describe('AssemblerFactory', () => {
 
   describe('#getAssembler', () => {
     it('should return the correct assembler based on the classes', () => {
-      expect(AssemblerFactory.getAssembler(TestDTO, TestEntity)).toBeInstanceOf(
-        TestAssembler
-      );
+      expect(AssemblerFactory.getAssembler(TestDTO, TestEntity)).toBeInstanceOf(TestAssembler);
     });
 
     it('should return a default assembler if an assembler for the classes is not found', () => {
-      expect(AssemblerFactory.getAssembler(TestDTO, TestDTO)).toBeInstanceOf(
-        DefaultAssembler
-      );
+      expect(AssemblerFactory.getAssembler(TestDTO, TestDTO)).toBeInstanceOf(DefaultAssembler);
     });
   });
 });

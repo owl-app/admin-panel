@@ -1,8 +1,4 @@
-import {
-  Filter,
-  FilterComparisons,
-  FilterFieldComparison,
-} from '../interfaces';
+import { Filter, FilterComparisons, FilterFieldComparison } from '../interfaces';
 import { ComparisonBuilder } from './comparison.builder';
 import { getFilterFieldComparison, isComparison } from './filter.helpers';
 import { ComparisonField, FilterFn } from './types';
@@ -25,9 +21,7 @@ export class FilterBuilder {
     return this.andFilterFn(...filters);
   }
 
-  private static andFilterFn<DTO>(
-    ...filterFns: FilterFn<DTO>[]
-  ): FilterFn<DTO> {
+  private static andFilterFn<DTO>(...filterFns: FilterFn<DTO>[]): FilterFn<DTO> {
     return (dto) => filterFns.every((filter) => filter(dto));
   }
 
@@ -39,9 +33,7 @@ export class FilterBuilder {
     return this.andFilterFn(
       ...Object.keys(filter)
         .filter((k) => k !== 'and' && k !== 'or')
-        .map((fieldOrNested) =>
-          this.withComparison(filter, fieldOrNested as keyof DTO)
-        )
+        .map((fieldOrNested) => this.withComparison(filter, fieldOrNested as keyof DTO))
     );
   }
 
@@ -49,16 +41,10 @@ export class FilterBuilder {
     field: T,
     cmp: FilterFieldComparison<DTO[T]>
   ): FilterFn<DTO> {
-    const operators = Object.keys(cmp) as (keyof FilterFieldComparison<
-      DTO[T]
-    >)[];
+    const operators = Object.keys(cmp) as (keyof FilterFieldComparison<DTO[T]>)[];
     return this.orFilterFn(
       ...operators.map((operator) =>
-        ComparisonBuilder.build(
-          field,
-          operator,
-          cmp[operator] as ComparisonField<DTO, T>
-        )
+        ComparisonBuilder.build(field, operator, cmp[operator] as ComparisonField<DTO, T>)
       )
     );
   }

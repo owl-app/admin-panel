@@ -21,18 +21,21 @@ export default async function bootstrap(app: App, config: ApplicationConfig) {
 
   const registeredModules = registerModules(config.modules);
 
-  config.events.request = [...defineModuleRequestEvent(registeredModules, config.modules), ...config.events.request ?? []]
+  config.events.request = [
+    ...defineModuleRequestEvent(registeredModules, config.modules),
+    ...(config.events.request ?? []),
+  ];
 
   watch(
     [i18n.global.locale, registeredModules],
     () => {
-      appRegistry.set('modules', shallowRef(translate(registeredModules.value)))
+      appRegistry.set('modules', shallowRef(translate(registeredModules.value)));
     },
     { immediate: true }
   );
 
   registerEvents(app, config.events);
 
-    // Add router after loading application to ensure all routes are registered
+  // Add router after loading application to ensure all routes are registered
   app.use(router);
 }

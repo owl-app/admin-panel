@@ -1,22 +1,20 @@
 {
-  "extends": [
-    "./base.json"
-  ],
+  "extends": ["./base.json"],
   "rules": {
     "import/prefer-default-export": "off",
     "class-methods-use-this": "off",
-    "no-param-reassign": [2, {"props": false}],
-    "max-classes-per-file": [
-      "error",
-      { "ignoreExpressions": true, "max": 2 }
-    ],
+    "no-param-reassign": [2, { "props": false }],
+    "max-classes-per-file": ["error", { "ignoreExpressions": true, "max": 2 }],
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/naming-convention": "warn",
     "@typescript-eslint/no-empty-interface": "warn",
-    "@typescript-eslint/ban-types": ["error", {
-      "types": {
-        "Function": false
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "types": {
+          "Function": false
+        }
       }
-    }]
+    ]
   }
 }

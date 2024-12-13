@@ -1,10 +1,5 @@
 // this is needed to create a query builder in typeorm :(
-import {
-  Connection,
-  ConnectionOptions,
-  createConnection,
-  getConnection,
-} from 'typeorm';
+import { Connection, ConnectionOptions, createConnection, getConnection } from 'typeorm';
 
 import { RelationOfTestRelationEntity } from './relation-of-test-relation.entity';
 import { seed } from './seeds';
@@ -59,9 +54,7 @@ export const truncate = async (connection: Connection): Promise<void> => {
   }, Promise.resolve());
 };
 
-export const refresh = async (
-  connection: Connection = getConnection()
-): Promise<void> => {
+export const refresh = async (connection: Connection = getConnection()): Promise<void> => {
   await truncate(connection);
   return seed(connection);
 };

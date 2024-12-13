@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { useApi } from '@owl-app/lib-app-core/composables/use-system'
+import { useApi } from '@owl-app/lib-app-core/composables/use-system';
 
 import { type Role } from '@owl-app/lib-contracts';
 
@@ -39,8 +39,13 @@ const roles = ref<Role[]>([]);
 const model = defineModel({ type: Object, default: () => {} });
 
 defineProps({
-  validation: { type: Object, default() { return {} }},
-})
+  validation: {
+    type: Object,
+    default() {
+      return {};
+    },
+  },
+});
 
 loadRoles();
 
@@ -49,5 +54,4 @@ async function loadRoles(): Promise<void> {
 
   roles.value = result?.data?.items;
 }
-
 </script>

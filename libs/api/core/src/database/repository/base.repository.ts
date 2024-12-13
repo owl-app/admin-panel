@@ -1,10 +1,4 @@
-import {
-  DeepPartial,
-  EntityManager,
-  EntityTarget,
-  QueryRunner,
-  SaveOptions,
-} from 'typeorm';
+import { DeepPartial, EntityManager, EntityTarget, QueryRunner, SaveOptions } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import BaseEntity from '../entity/base.entity';
@@ -12,9 +6,7 @@ import BaseEntity from '../entity/base.entity';
 import { TransactionalRepository } from './transactional.repository';
 import DomainEventableEntity from '../entity/domain-eventable.entity';
 
-export class BaseRepository<
-  Entity extends BaseEntity
-> extends TransactionalRepository<Entity> {
+export class BaseRepository<Entity extends BaseEntity> extends TransactionalRepository<Entity> {
   constructor(
     target: EntityTarget<Entity>,
     manager: EntityManager,
@@ -46,9 +38,7 @@ export class BaseRepository<
    * Can copy properties from the given object into new entities.
    */
   create(
-    plainEntityLikeOrPlainEntityLikes?:
-      | DeepPartial<Entity>
-      | DeepPartial<Entity>[]
+    plainEntityLikeOrPlainEntityLikes?: DeepPartial<Entity> | DeepPartial<Entity>[]
   ): Entity | Entity[] {
     const newEntity: Entity | Entity[] = this.manager.create(
       this.metadata.target as EntityTarget<Entity>,
@@ -110,13 +100,11 @@ export class BaseRepository<
     );
 
     await Promise.all(
-      (!Array.isArray(savedEntity) ? [savedEntity] : savedEntity).map(
-        async (entity) => {
-          if (entity instanceof DomainEventableEntity) {
-            await entity.publishEvents(entity.id, this.eventEmitter);
-          }
+      (!Array.isArray(savedEntity) ? [savedEntity] : savedEntity).map(async (entity) => {
+        if (entity instanceof DomainEventableEntity) {
+          await entity.publishEvents(entity.id, this.eventEmitter);
         }
-      )
+      })
     );
 
     return savedEntity;

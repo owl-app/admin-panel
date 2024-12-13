@@ -1,5 +1,10 @@
 import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
-import { DynamicModule, ForwardReference, InjectionToken, OptionalFactoryDependency } from '@nestjs/common';
+import {
+  DynamicModule,
+  ForwardReference,
+  InjectionToken,
+  OptionalFactoryDependency,
+} from '@nestjs/common';
 
 import {
   NestjsQueryCoreModuleAssemblersOpts,
@@ -18,7 +23,7 @@ export interface AppNestjsQueryTypeOrmModuleOpts {
   queryService?: {
     classService?: Class<QueryService<unknown>>;
     inject?: Array<InjectionToken | OptionalFactoryDependency>;
-    opts?: AppTypeOrmQueryServiceOpts<unknown>
+    opts?: AppTypeOrmQueryServiceOpts<unknown>;
   };
   importsQueryTypeOrm?: Array<
     Class<unknown> | DynamicModule | Promise<DynamicModule> | ForwardReference

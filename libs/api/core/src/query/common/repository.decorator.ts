@@ -8,5 +8,4 @@ import { getQueryServiceRepositoryToken } from './repository.utils';
 export const InjectQueryServiceRepository = (
   entity: EntityClassOrSchema,
   dataSource: string = DEFAULT_DATA_SOURCE_NAME
-): ReturnType<typeof Inject> =>
-  Inject(getQueryServiceRepositoryToken(entity, dataSource));
+): ReturnType<typeof Inject> => Inject(getQueryServiceRepositoryToken(entity, dataSource));

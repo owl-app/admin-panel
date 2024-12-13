@@ -1,12 +1,12 @@
-import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
-import config from '@owl-app/lib-api-core/config'
-import { DatabaseModule } from '@owl-app/lib-api-core/database/database.module'
+import config from '@owl-app/lib-api-core/config';
+import { DatabaseModule } from '@owl-app/lib-api-core/database/database.module';
 
-import { AuthModule } from './auth/auth.module'
-import { UserModule } from './user/user.module'
-import { TenantModule } from './tenant/tenant.module'
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { TenantModule } from './tenant/tenant.module';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { TenantModule } from './tenant/tenant.module'
     }),
     AuthModule,
     TenantModule,
-    UserModule
-  ]
+    UserModule,
+  ],
 })
 export class UserAccessModule {}

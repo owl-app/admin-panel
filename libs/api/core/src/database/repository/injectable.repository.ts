@@ -26,11 +26,7 @@ function extendEntityManager<Entity>(
     alias?: string,
     queryRunner?: QueryRunner
   ): SelectQueryBuilder<Entity> => {
-    const qb = manager.createQueryBuilder<Entity>(
-      entityClass,
-      alias,
-      queryRunner
-    );
+    const qb = manager.createQueryBuilder<Entity>(entityClass, alias, queryRunner);
 
     if (alias) {
       const allFilters = filters?.all();
@@ -48,9 +44,7 @@ function extendEntityManager<Entity>(
   };
 }
 
-export class InjectableRepository<
-  Entity extends BaseEntity
-> extends BaseRepository<Entity> {
+export class InjectableRepository<Entity extends BaseEntity> extends BaseRepository<Entity> {
   constructor(
     target: EntityTarget<Entity>,
     manager: EntityManager,
@@ -63,8 +57,10 @@ export class InjectableRepository<
       target,
       // replace createQueryBuilder with extended version
       Object.assign(cloneDeep(manager), manager, {
-        createQueryBuilder: extendEntityManager<Entity>({
-            ...manager, createQueryBuilder: manager.createQueryBuilder
+        createQueryBuilder: extendEntityManager<Entity>(
+          {
+            ...manager,
+            createQueryBuilder: manager.createQueryBuilder,
           } as EntityManager,
           filters
         ),

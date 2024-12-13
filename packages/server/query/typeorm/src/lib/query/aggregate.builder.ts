@@ -35,50 +35,33 @@ export class AggregateBuilder<Entity> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
-  public static getAggregateSelects<Entity>(
-    query: AggregateQuery<Entity>
-  ): string[] {
-    return [
-      ...this.getAggregateGroupBySelects(query),
-      ...this.getAggregateFuncSelects(query),
+  public static getAggregateSelects<Entity>(query: AggregateQuery<Entity>): string[] {
+    return [...this.getAggregateGroupBySelects(query), ...this.getAggregateFuncSelects(query)];
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  private static getAggregateGroupBySelects<Entity>(query: AggregateQuery<Entity>): string[] {
+    return (query.groupBy ?? []).map(({ field }) => this.getGroupByAlias(field));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  private static getAggregateFuncSelects<Entity>(query: AggregateQuery<Entity>): string[] {
+    const aggs: [AggregateFuncs, AggregateQueryField<Entity>[] | undefined][] = [
+      [AggregateFuncs.COUNT, query.count],
+      [AggregateFuncs.SUM, query.sum],
+      [AggregateFuncs.AVG, query.avg],
+      [AggregateFuncs.MAX, query.max],
+      [AggregateFuncs.MIN, query.min],
     ];
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  private static getAggregateGroupBySelects<Entity>(
-    query: AggregateQuery<Entity>
-  ): string[] {
-    return (query.groupBy ?? []).map(({ field }) =>
-      this.getGroupByAlias(field)
-    );
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  private static getAggregateFuncSelects<Entity>(
-    query: AggregateQuery<Entity>
-  ): string[] {
-    const aggs: [AggregateFuncs, AggregateQueryField<Entity>[] | undefined][] =
-      [
-        [AggregateFuncs.COUNT, query.count],
-        [AggregateFuncs.SUM, query.sum],
-        [AggregateFuncs.AVG, query.avg],
-        [AggregateFuncs.MAX, query.max],
-        [AggregateFuncs.MIN, query.min],
-      ];
 
     return aggs.reduce((cols, [func, fields]) => {
-      const aliases = (fields ?? []).map(({ field }) =>
-        this.getAggregateAlias(func, field)
-      );
+      const aliases = (fields ?? []).map(({ field }) => this.getAggregateAlias(func, field));
       return [...cols, ...aliases];
     }, [] as string[]);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
-  public static getAggregateAlias<Entity>(
-    func: AggregateFuncs,
-    field: keyof Entity
-  ): string {
+  public static getAggregateAlias<Entity>(func: AggregateFuncs, field: keyof Entity): string {
     return `${func}_${field as string}`;
   }
 
@@ -91,26 +74,23 @@ export class AggregateBuilder<Entity> {
   public static convertToAggregateResponse<Entity>(
     rawAggregates: Record<string, unknown>[]
   ): AggregateResponse<Entity>[] {
-    return rawAggregates.map((response) => Object.keys(response).reduce(
-        (agg: AggregateResponse<Entity>, resultField: string) => {
-          const matchResult = AGG_REGEXP.exec(resultField);
-          if (!matchResult) {
-            throw new Error('Unknown aggregate column encountered.');
-          }
-          const [matchedFunc, matchedFieldName] = matchResult.slice(1);
-          const aggFunc = camelCase(
-            matchedFunc.toLowerCase()
-          ) as keyof AggregateResponse<Entity>;
-          const fieldName = matchedFieldName as keyof Entity;
-          const aggResult = agg[aggFunc] || {};
-          return {
-            ...agg,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            [aggFunc]: { ...aggResult, [fieldName]: response[resultField] },
-          };
-        },
-        {}
-      ));
+    return rawAggregates.map((response) =>
+      Object.keys(response).reduce((agg: AggregateResponse<Entity>, resultField: string) => {
+        const matchResult = AGG_REGEXP.exec(resultField);
+        if (!matchResult) {
+          throw new Error('Unknown aggregate column encountered.');
+        }
+        const [matchedFunc, matchedFieldName] = matchResult.slice(1);
+        const aggFunc = camelCase(matchedFunc.toLowerCase()) as keyof AggregateResponse<Entity>;
+        const fieldName = matchedFieldName as keyof Entity;
+        const aggResult = agg[aggFunc] || {};
+        return {
+          ...agg,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          [aggFunc]: { ...aggResult, [fieldName]: response[resultField] },
+        };
+      }, {})
+    );
   }
 
   /**
@@ -152,10 +132,7 @@ export class AggregateBuilder<Entity> {
     }
     return fields.map(({ field }) => {
       const col = alias ? `${alias}.${field as string}` : (field as string);
-      return [
-        `${func}(${col})`,
-        AggregateBuilder.getAggregateAlias(func, field),
-      ];
+      return [`${func}(${col})`, AggregateBuilder.getAggregateAlias(func, field)];
     });
   }
 
@@ -171,9 +148,7 @@ export class AggregateBuilder<Entity> {
       const col = alias
         ? `${alias}.${aggregatedField.field as string}`
         : (aggregatedField.field as string);
-      const groupByAlias = AggregateBuilder.getGroupByAlias(
-        aggregatedField.field as string
-      );
+      const groupByAlias = AggregateBuilder.getGroupByAlias(aggregatedField.field as string);
 
       if (this.isAggregateQueryGroupByField(aggregatedField)) {
         let query = `DATE(${col})`;
@@ -196,10 +171,6 @@ export class AggregateBuilder<Entity> {
     field: AggregateQueryField<Entity> | AggregateQueryGroupByField<Entity>
   ): field is AggregateQueryGroupByField<Entity> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return Boolean(
-      field &&
-        field.args &&
-        (field as AggregateQueryGroupByField<Entity>).args?.by
-    );
+    return Boolean(field && field.args && (field as AggregateQueryGroupByField<Entity>).args?.by);
   }
 }

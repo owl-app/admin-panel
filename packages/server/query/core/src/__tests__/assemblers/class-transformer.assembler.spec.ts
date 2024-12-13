@@ -8,7 +8,6 @@ import {
   ClassTransformerAssembler,
 } from '../..';
 
-
 describe('ClassTransformerAssembler', () => {
   const plainToClassSpy = jest.spyOn(classTransformer, 'plainToClass');
 
@@ -25,10 +24,7 @@ describe('ClassTransformerAssembler', () => {
   }
 
   @Assembler(TestDTO, TestEntity)
-  class TestClassAssembler extends ClassTransformerAssembler<
-    TestDTO,
-    TestEntity
-  > {}
+  class TestClassAssembler extends ClassTransformerAssembler<TestDTO, TestEntity> {}
 
   beforeEach(() => jest.clearAllMocks());
 

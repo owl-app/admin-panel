@@ -46,8 +46,7 @@ export interface CommonFieldComparisonBetweenType<FieldType> {
  *
  * @typeparam FieldType - The TS type of the field.
  */
-export interface CommonFieldComparisonType<FieldType>
-  extends BooleanFieldComparisons {
+export interface CommonFieldComparisonType<FieldType> extends BooleanFieldComparisons {
   /**
    * Field equality.
    *
@@ -143,8 +142,7 @@ export interface CommonFieldComparisonType<FieldType>
 /**
  * Field comparisons for `string` types.
  */
-export interface StringFieldComparisons
-  extends CommonFieldComparisonType<string> {
+export interface StringFieldComparisons extends CommonFieldComparisonType<string> {
   /**
    * Like comparison.
    *
@@ -205,10 +203,9 @@ type BuiltInTypes =
  * * all other types use [[CommonFieldComparisonType]]
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-type FilterFieldComparisonType<
-  FieldType,
-  IsKeys extends true | false
-> = FieldType extends string | string
+type FilterFieldComparisonType<FieldType, IsKeys extends true | false> = FieldType extends
+  | string
+  | string
   ? StringFieldComparisons // eslint-disable-next-line @typescript-eslint/ban-types
   : FieldType extends boolean | Boolean
   ? BooleanFieldComparisons
@@ -217,9 +214,7 @@ type FilterFieldComparisonType<
   : FieldType extends Array<infer U>
   ? CommonFieldComparisonType<U> | Filter<U> // eslint-disable-next-line @typescript-eslint/ban-types
   : IsKeys extends true
-  ? CommonFieldComparisonType<FieldType> &
-      StringFieldComparisons &
-      Filter<FieldType>
+  ? CommonFieldComparisonType<FieldType> & StringFieldComparisons & Filter<FieldType>
   : CommonFieldComparisonType<FieldType> | Filter<FieldType>;
 
 /**
@@ -230,15 +225,11 @@ type FilterFieldComparisonType<
  * * all other types use [[CommonFieldComparisonType]]
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type FilterFieldComparison<FieldType> = FilterFieldComparisonType<
-  FieldType,
-  false
->;
+export type FilterFieldComparison<FieldType> = FilterFieldComparisonType<FieldType, false>;
 
 /**
  * Type for all comparison operators for a field type.
  *
  * @typeparam FieldType - The TS type of the field.
  */
-export type FilterComparisonOperators<FieldType> =
-  keyof FilterFieldComparisonType<FieldType, true>;
+export type FilterComparisonOperators<FieldType> = keyof FilterFieldComparisonType<FieldType, true>;

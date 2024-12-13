@@ -15,8 +15,6 @@ describe('createTypeOrmQueryServiceProviders', () => {
     expect(providers).toHaveLength(1);
     expect(providers[0].provide).toBe(getQueryServiceToken(TestEntity));
     expect(providers[0].inject).toEqual([getRepositoryToken(TestEntity)]);
-    expect(providers[0].useFactory(instance(mockRepo))).toBeInstanceOf(
-      TypeOrmQueryService
-    );
+    expect(providers[0].useFactory(instance(mockRepo))).toBeInstanceOf(TypeOrmQueryService);
   });
 });

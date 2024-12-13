@@ -1,7 +1,10 @@
-import { Component } from "vue";
+import { Component } from 'vue';
 
 export interface LayoutContext {
-    emit: (event: 'update:selection' | 'update:layoutOptions' | 'update:layoutQuery', ...args: any[]) => void;
+  emit: (
+    event: 'update:selection' | 'update:layoutOptions' | 'update:layoutQuery',
+    ...args: any[]
+  ) => void;
 }
 
 export interface LayoutProps<Options = any, Query = any> {
@@ -23,9 +26,9 @@ export interface LayoutConfig<Options = any, Query = any> {
   icon: string;
   component: Component;
   slots: {
-      options: Component;
-      sidebar: Component;
-      actions: Component;
+    options: Component;
+    sidebar: Component;
+    actions: Component;
   };
   smallHeader?: boolean;
   headerShadow?: boolean;

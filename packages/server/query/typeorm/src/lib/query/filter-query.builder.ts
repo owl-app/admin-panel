@@ -29,11 +29,7 @@ import { WhereBuilder } from './where.builder';
  * Interface that for Typeorm query builders that are sortable.
  */
 interface Sortable<Entity> extends QueryBuilder<Entity> {
-  addOrderBy(
-    sort: string,
-    order?: 'ASC' | 'DESC',
-    nulls?: 'NULLS FIRST' | 'NULLS LAST'
-  ): this;
+  addOrderBy(sort: string, order?: 'ASC' | 'DESC', nulls?: 'NULLS FIRST' | 'NULLS LAST'): this;
 }
 
 interface Groupable<Entity> extends QueryBuilder<Entity> {
@@ -73,9 +69,7 @@ export class FilterQueryBuilder<Entity> {
   constructor(
     readonly repo: Repository<Entity>,
     readonly whereBuilder: WhereBuilder<Entity> = new WhereBuilder<Entity>(),
-    readonly aggregateBuilder: AggregateBuilder<Entity> = new AggregateBuilder<Entity>(
-      repo
-    )
+    readonly aggregateBuilder: AggregateBuilder<Entity> = new AggregateBuilder<Entity>(repo)
   ) {}
 
   /**
@@ -87,20 +81,12 @@ export class FilterQueryBuilder<Entity> {
     let qb = this.createQueryBuilder();
     qb = this.applyRelationJoinsRecursive(
       qb,
-      this.getReferencedRelationsRecursive(
-        this.repo.metadata,
-        query.filter,
-        query.relations
-      ),
+      this.getReferencedRelationsRecursive(this.repo.metadata, query.filter, query.relations),
       query.relations
     );
     qb = this.applyFilter(qb, query.filter, qb.alias);
     qb = this.applySorting(qb, query.sorting, qb.alias);
-    qb = this.applyPaging(
-      qb,
-      query.paging,
-      this.shouldUseSkipTake(query.filter)
-    );
+    qb = this.applyPaging(qb, query.paging, this.shouldUseSkipTake(query.filter));
     return qb;
   }
 
@@ -136,10 +122,7 @@ export class FilterQueryBuilder<Entity> {
    * @param query - the query to apply.
    */
   public delete(query: Query<Entity>): DeleteQueryBuilder<Entity> {
-    return this.applyFilter(
-      this.repo.createQueryBuilder().delete(),
-      query.filter
-    );
+    return this.applyFilter(this.repo.createQueryBuilder().delete(), query.filter);
   }
 
   /**
@@ -149,9 +132,7 @@ export class FilterQueryBuilder<Entity> {
    */
   public softDelete(query: Query<Entity>): SoftDeleteQueryBuilder<Entity> {
     return this.applyFilter(
-      this.repo
-        .createQueryBuilder()
-        .softDelete() as SoftDeleteQueryBuilder<Entity>,
+      this.repo.createQueryBuilder().softDelete() as SoftDeleteQueryBuilder<Entity>,
       query.filter
     );
   }
@@ -162,10 +143,7 @@ export class FilterQueryBuilder<Entity> {
    * @param query - the query to apply.
    */
   public update(query: Query<Entity>): UpdateQueryBuilder<Entity> {
-    const qb = this.applyFilter(
-      this.repo.createQueryBuilder().update(),
-      query.filter
-    );
+    const qb = this.applyFilter(this.repo.createQueryBuilder().update(), query.filter);
     return this.applySorting(qb, query.sorting);
   }
 
@@ -175,11 +153,7 @@ export class FilterQueryBuilder<Entity> {
    * @param paging - the Paging options.
    * @param useSkipTake - if skip/take should be used instead of limit/offset.
    */
-  public applyPaging<P extends Pageable<Entity>>(
-    qb: P,
-    paging?: Paging,
-    useSkipTake?: boolean
-  ): P {
+  public applyPaging<P extends Pageable<Entity>>(qb: P, paging?: Paging, useSkipTake?: boolean): P {
     if (!paging) {
       return qb;
     }
@@ -261,9 +235,11 @@ export class FilterQueryBuilder<Entity> {
       return qb;
     }
 
-    return aggregatedGroupBy.reduce((prevQb, aggregatedField) => prevQb.addGroupBy(
-        prevQb.escape(AggregateBuilder.getGroupByAlias(aggregatedField.field))
-      ), qb);
+    return aggregatedGroupBy.reduce(
+      (prevQb, aggregatedField) =>
+        prevQb.addGroupBy(prevQb.escape(AggregateBuilder.getGroupByAlias(aggregatedField.field))),
+      qb
+    );
   }
 
   public applyAggregateSorting<T extends Sortable<Entity>>(
@@ -276,10 +252,14 @@ export class FilterQueryBuilder<Entity> {
       return qb;
     }
 
-    return aggregatedGroupBy.reduce((prevQb, aggregatedField) => prevQb.addOrderBy(
-        prevQb.escape(AggregateBuilder.getGroupByAlias(aggregatedField.field)),
-        'ASC'
-      ), qb);
+    return aggregatedGroupBy.reduce(
+      (prevQb, aggregatedField) =>
+        prevQb.addOrderBy(
+          prevQb.escape(AggregateBuilder.getGroupByAlias(aggregatedField.field)),
+          'ASC'
+        ),
+      qb
+    );
   }
 
   /**
@@ -314,8 +294,7 @@ export class FilterQueryBuilder<Entity> {
     return referencedRelations.reduce((rqb, relation) => {
       // TODO:: Change to find and also apply the query for the relation
       const selectRelation =
-        selectRelations &&
-        selectRelations.find(({ name }) => name === relation);
+        selectRelations && selectRelations.find(({ name }) => name === relation);
 
       if (selectRelation) {
         return this.applyRelationJoinsRecursive(
@@ -346,10 +325,7 @@ export class FilterQueryBuilder<Entity> {
     }
 
     const { relationNames } = this;
-    return (
-      getFilterFields(filter).filter((f) => relationNames.includes(f)).length >
-      0
-    );
+    return getFilterFields(filter).filter((f) => relationNames.includes(f)).length > 0;
   }
 
   /**
@@ -375,7 +351,7 @@ export class FilterQueryBuilder<Entity> {
           // } else if (relation.isOneToMany) {
           //   TODO
           // return false
-        } 
+        }
 
         return true;
       }).length > 0
@@ -387,9 +363,7 @@ export class FilterQueryBuilder<Entity> {
     filter: Filter<unknown> = {},
     selectRelations: SelectRelation<Entity>[] = []
   ): NestedRecord {
-    const referencedFields = Array.from(
-      new Set(Object.keys(filter) as (keyof Filter<unknown>)[])
-    );
+    const referencedFields = Array.from(new Set(Object.keys(filter) as (keyof Filter<unknown>)[]));
 
     const referencedRelations = selectRelations.reduce(
       (relations: Record<string, NestedRecord>, selectRelation) => {
@@ -421,16 +395,11 @@ export class FilterQueryBuilder<Entity> {
         // eslint-disable-next-line no-restricted-syntax
         for (const subFilter of currFilterValue) {
           // eslint-disable-next-line no-param-reassign
-          prev = merge(
-            prev,
-            this.getReferencedRelationsRecursive(metadata, subFilter)
-          );
+          prev = merge(prev, this.getReferencedRelationsRecursive(metadata, subFilter));
         }
       }
 
-      const referencedRelation = metadata.relations.find(
-        (r) => r.propertyName === curr
-      );
+      const referencedRelation = metadata.relations.find((r) => r.propertyName === curr);
       if (!referencedRelation) {
         return prev;
       }

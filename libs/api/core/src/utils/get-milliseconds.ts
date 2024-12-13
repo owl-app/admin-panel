@@ -1,13 +1,7 @@
 import ms from 'ms';
 
-export function getMilliseconds<T = undefined>(
-  value: unknown,
-  fallback?: T
-): number | T {
-  if (
-    (typeof value !== 'string' && typeof value !== 'number') ||
-    value === ''
-  ) {
+export function getMilliseconds<T = undefined>(value: unknown, fallback?: T): number | T {
+  if ((typeof value !== 'string' && typeof value !== 'number') || value === '') {
     return fallback as T;
   }
 

@@ -1,16 +1,10 @@
-import {
-  Assembler,
-  ClassTransformerAssembler,
-} from '@owl-app/nestjs-query-core';
+import { Assembler, ClassTransformerAssembler } from '@owl-app/nestjs-query-core';
 
 import { TimeEntity } from '../../domain/entity/time.entity';
 import { TimeResponse } from '../dto/time.response';
 
 @Assembler(TimeResponse, TimeEntity)
-export class TimeAssembler extends ClassTransformerAssembler<
-  TimeResponse,
-  TimeEntity
-> {
+export class TimeAssembler extends ClassTransformerAssembler<TimeResponse, TimeEntity> {
   async convertAsyncToDTOsWithCount(
     entities: Promise<[TimeEntity[], number]>
   ): Promise<[TimeResponse[], number]> {
@@ -19,12 +13,8 @@ export class TimeAssembler extends ClassTransformerAssembler<
     return [await this.customConvertAsyncToDTOs(items), count];
   }
 
-  async customConvertAsyncToDTOs(
-    entities: TimeEntity[]
-  ): Promise<TimeResponse[]> {
-    const result = await Promise.all(
-      entities.map((entity) => this.customConvertToDTO(entity))
-    );
+  async customConvertAsyncToDTOs(entities: TimeEntity[]): Promise<TimeResponse[]> {
+    const result = await Promise.all(entities.map((entity) => this.customConvertToDTO(entity)));
 
     return result;
   }
@@ -39,10 +29,10 @@ export class TimeAssembler extends ClassTransformerAssembler<
     dto.tags = await entity.tags;
 
     if (entity.project) {
-      dto.project = { 
-        id: entity.project.id, 
-        name: entity.project.name, 
-        archived: entity.project.archived 
+      dto.project = {
+        id: entity.project.id,
+        name: entity.project.name,
+        archived: entity.project.archived,
       };
     }
 
@@ -55,8 +45,7 @@ export class TimeAssembler extends ClassTransformerAssembler<
     return this.customConvertToDTO(time);
   }
 
-  async convertAsyncToDTOs(entities: Promise<TimeEntity[]>): Promise<TimeResponse[]>
-  {
+  async convertAsyncToDTOs(entities: Promise<TimeEntity[]>): Promise<TimeResponse[]> {
     const items = await entities;
 
     return this.customConvertAsyncToDTOs(items);

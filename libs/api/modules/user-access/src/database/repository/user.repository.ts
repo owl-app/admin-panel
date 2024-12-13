@@ -6,13 +6,11 @@ import { UserEntity } from '../../domain/entity/user.entity';
 
 import { IUserRepository } from './user-repository.interface';
 
-export class UserRepository extends BaseRepository <UserEntity> implements IUserRepository {
-
-  async findOneByIdString(id: string): Promise<User>
-  {
+export class UserRepository extends BaseRepository<UserEntity> implements IUserRepository {
+  async findOneByIdString(id: string): Promise<User> {
     let user = null;
 
-    if(id) {
+    if (id) {
       user = await this.findOne({
         where: {
           id,
@@ -24,7 +22,7 @@ export class UserRepository extends BaseRepository <UserEntity> implements IUser
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    if(email) {
+    if (email) {
       const user = await this.findOne({
         where: {
           email,
@@ -47,9 +45,9 @@ export class UserRepository extends BaseRepository <UserEntity> implements IUser
       {
         email,
       },
-      { 
-        hashRefreshToken: refreshToken 
-      },
+      {
+        hashRefreshToken: refreshToken,
+      }
     );
   }
 
@@ -59,8 +57,8 @@ export class UserRepository extends BaseRepository <UserEntity> implements IUser
         email,
       },
       {
-        lastLogin: () => 'CURRENT_TIMESTAMP'
-      },
+        lastLogin: () => 'CURRENT_TIMESTAMP',
+      }
     );
   }
 

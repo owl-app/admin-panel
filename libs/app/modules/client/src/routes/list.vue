@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import { AvalilableCollections, Client, CommonActions, CrudActions } from "@owl-app/lib-contracts";
+import { AvalilableCollections, Client, CommonActions, CrudActions } from '@owl-app/lib-contracts';
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
@@ -13,7 +13,7 @@ import { usePermissions } from '@owl-app/lib-app-core/composables/use-permission
 
 import ArchiveModal from '../components/archive-modal.vue';
 import CreateInline from '../components/create-inline.vue';
-import ClientModal from '../components/client-modal.vue'
+import ClientModal from '../components/client-modal.vue';
 
 const { t } = useI18n();
 
@@ -31,21 +31,21 @@ const headerBar = {
   title: t('clients'),
   description: 'Managing clients in system',
   icon: 'person',
-}
+};
 
 const columns = defineVaDataTableColumns([
   { label: 'Name', key: 'name', sortable: true, tdClass: ['is-line-through'] },
   { label: ' ', key: 'actions' },
-])
+]);
 
 const getRowBind = (row: Client): Record<string, string> => {
   if (row.archived) {
     return {
-      class: "archived"
+      class: 'archived',
     };
   }
   return {};
-}
+};
 </script>
 
 <template>
@@ -59,8 +59,11 @@ const getRowBind = (row: Client): Record<string, string> => {
       :headerBar="headerBar"
       :row-bind="getRowBind"
     >
-      <template  #content-filter="{ filters, changeFilter, removeFilter }">
-        <div class="grid grid-cols-12 gap-2 grid-flow-col" style="margin-left:auto; grid-auto-flow: column;">
+      <template #content-filter="{ filters, changeFilter, removeFilter }">
+        <div
+          class="grid grid-cols-12 gap-2 grid-flow-col"
+          style="margin-left: auto; grid-auto-flow: column"
+        >
           <div class="col-start-1 col-end-3">
             <archived-filter
               :modelValue="filters.archived"
@@ -69,22 +72,25 @@ const getRowBind = (row: Client): Record<string, string> => {
             />
           </div>
           <div class="col-start-3 col-end-6">
-                <div>
-                  <div class="grid grid-cols-1 gap-4">
-                    <string-filter
-                      single-filter="contains"
-                      labelSearchInput="Search by name"
-                      :data="filters?.search"
-                      :change-filter="changeFilter"
-                      :remove-filter="removeFilter"
-                    />
-                  </div>
-                </div>
-            </div>
-            <div class="col-end-13 col-span-3 content-end">
-              <create-inline @saved="gridRef?.addItem" v-if="hasRoutePermission(CrudActions.CREATE)" />
+            <div>
+              <div class="grid grid-cols-1 gap-4">
+                <string-filter
+                  single-filter="contains"
+                  labelSearchInput="Search by name"
+                  :data="filters?.search"
+                  :change-filter="changeFilter"
+                  :remove-filter="removeFilter"
+                />
+              </div>
             </div>
           </div>
+          <div class="col-end-13 col-span-3 content-end">
+            <create-inline
+              @saved="gridRef?.addItem"
+              v-if="hasRoutePermission(CrudActions.CREATE)"
+            />
+          </div>
+        </div>
         <div class="my-4">
           <va-divider />
         </div>
@@ -137,21 +143,9 @@ const getRowBind = (row: Client): Record<string, string> => {
       :user="editClient"
       @saved="gridRef?.reloadGrid()"
     />
-    <delete-modal 
-      ref="deleteModal"
-      collection="clients"
-      @deleted="gridRef?.reloadGrid"
-    />
-    <archive-modal 
-      ref="archiveModal"
-      collection="clients"
-      @archived="gridRef?.reloadGrid"
-    />
-    <archive-modal 
-      ref="restoreModal"
-      collection="clients"
-      @archived="gridRef?.reloadGrid"
-    />
+    <delete-modal ref="deleteModal" collection="clients" @deleted="gridRef?.reloadGrid" />
+    <archive-modal ref="archiveModal" collection="clients" @archived="gridRef?.reloadGrid" />
+    <archive-modal ref="restoreModal" collection="clients" @archived="gridRef?.reloadGrid" />
   </panel-layout>
 </template>
 

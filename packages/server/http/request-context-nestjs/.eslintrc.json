@@ -5,12 +5,8 @@
     {
       "files": ["*.ts", "*.tsx"],
       "parserOptions": {
-        "project": [
-          "packages/server/http/request-context-nestjs/tsconfig.eslint.json"
-        ]
+        "project": ["packages/server/http/request-context-nestjs/tsconfig.eslint.json"]
       }
     }
   ]
 }
-
-

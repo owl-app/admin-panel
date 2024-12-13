@@ -15,4 +15,4 @@ export default {
       backgroundCardSecondary: '#0f172a',
     },
   },
-}
+};

@@ -1,2 +1,2 @@
-export * from './filter-permission.dto'
-export * from './permission-paginated.response.dto'
+export * from './filter-permission.dto';
+export * from './permission-paginated.response.dto';

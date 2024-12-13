@@ -9,10 +9,7 @@ import { AppTypeOrmOpts } from './types';
 import { DEFAULT_DATA_SOURCE_NAME } from '../contants';
 import { TypeOrmModule } from './typeorm.module';
 
-import {
-  FILTER_REGISTRY_TENANT,
-  SETTER_REGISTRY_TENANT,
-} from '../registry/constants';
+import { FILTER_REGISTRY_TENANT, SETTER_REGISTRY_TENANT } from '../registry/constants';
 import { TenantRelationFilter } from './filters/tenant-relation.filter';
 import { FilterQuery } from '../registry/interfaces/filter-query';
 import { TenantRelationSetter } from './setters/tenant-relation.setter';
@@ -27,10 +24,7 @@ import { UserListFilter } from './filters/user-list.filter';
 export class AppTypeOrmModule {
   static forFeature(
     opts: AppTypeOrmOpts,
-    dataSource:
-      | DataSource
-      | DataSourceOptions
-      | string = DEFAULT_DATA_SOURCE_NAME
+    dataSource: DataSource | DataSourceOptions | string = DEFAULT_DATA_SOURCE_NAME
   ): DynamicModule {
     const optsWithRegistries = opts.entities.map((entity) => ({
       ...entity,
@@ -48,7 +42,7 @@ export class AppTypeOrmModule {
             roles: RolesFilter<Role>,
             archived: NonArchivedFilter<Archivable>,
             user: OwnerRelationFilter<UserAware>,
-            user_list: UserListFilter<User>
+            user_list: UserListFilter<User>,
           },
         }),
         RegistryServiceModule.forFeature<EntitySetter<ObjectLiteral>>({

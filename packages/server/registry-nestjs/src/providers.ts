@@ -1,10 +1,5 @@
-import {
-  FactoryProvider,
-  InjectionToken,
-  OptionalFactoryDependency,
-  Type,
-} from '@nestjs/common';
-import { ServiceRegistry, Registry} from "@owl-app/registry";
+import { FactoryProvider, InjectionToken, OptionalFactoryDependency, Type } from '@nestjs/common';
+import { ServiceRegistry, Registry } from '@owl-app/registry';
 
 export function createServiceRegistryProvider<T>(
   nameService: string,

@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
-import config from '@owl-app/lib-api-core/config'
-import { DatabaseModule } from '@owl-app/lib-api-core/database/database.module'
+import config from '@owl-app/lib-api-core/config';
+import { DatabaseModule } from '@owl-app/lib-api-core/database/database.module';
 
-import { RbacPermissionModule } from './permission/permission.module'
-import { RbacRoleModule } from './role/role.module'
+import { RbacPermissionModule } from './permission/permission.module';
+import { RbacRoleModule } from './role/role.module';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { RbacRoleModule } from './role/role.module'
       load: config,
     }),
     RbacPermissionModule,
-    RbacRoleModule
-  ]
+    RbacRoleModule,
+  ],
 })
 export class RbacModule {}

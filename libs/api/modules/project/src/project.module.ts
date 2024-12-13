@@ -1,23 +1,25 @@
+import { Module } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { Module } from '@nestjs/common'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import { AppNestjsQueryTypeOrmModule } from '@owl-app/lib-api-core/query/module';
+import { AppTypeOrmModule } from '@owl-app/lib-api-core/typeorm/app-typeorm.module';
+import {
+  ArchiveService,
+  DefaultArchiveService,
+} from '@owl-app/lib-api-core/actions/archive/archive.service';
+import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository';
+import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository';
+import { getRepositoryToken } from '@owl-app/lib-api-core/typeorm/common/typeorm.utils';
+import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service';
 
-import { AppNestjsQueryTypeOrmModule } from '@owl-app/lib-api-core/query/module'
-import { AppTypeOrmModule } from '@owl-app/lib-api-core/typeorm/app-typeorm.module'
-import { ArchiveService, DefaultArchiveService } from '@owl-app/lib-api-core/actions/archive/archive.service'
-import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository'
-import { BaseRepository } from '@owl-app/lib-api-core/database/repository/base.repository'
-import { getRepositoryToken } from '@owl-app/lib-api-core/typeorm/common/typeorm.utils'
-import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/services/app-assembler-query.service'
+import { ProjectEntitySchema } from './database/entity-schema/project.entity-schema';
 
-import { ProjectEntitySchema } from './database/entity-schema/project.entity-schema'
-
-import { ProjectCrudController } from './project/features/v1/crud/crud.http.controller'
-import { ProjectAssembler } from './project/features/v1/crud/project.assembler'
-import { ListFilterBuilder } from './project/features/v1/crud/list-filter.builder'
-import { ArchiveControllerController } from './project/features/v1/archive/archive.http.controller'
-import { ProjectEntity } from './domain/entity/project.entity'
-import { ArchiveProjectsWhenClientIsArchivedDomainEventHandler } from './project/event-handlers/archive-projects-when-client-is-archived.domain-event-handler'
+import { ProjectCrudController } from './project/features/v1/crud/crud.http.controller';
+import { ProjectAssembler } from './project/features/v1/crud/project.assembler';
+import { ListFilterBuilder } from './project/features/v1/crud/list-filter.builder';
+import { ArchiveControllerController } from './project/features/v1/archive/archive.http.controller';
+import { ProjectEntity } from './domain/entity/project.entity';
+import { ArchiveProjectsWhenClientIsArchivedDomainEventHandler } from './project/event-handlers/archive-projects-when-client-is-archived.domain-event-handler';
 
 @Module({
   imports: [
@@ -26,8 +28,8 @@ import { ArchiveProjectsWhenClientIsArchivedDomainEventHandler } from './project
         {
           entity: ProjectEntitySchema,
           repository: InjectableRepository,
-        }
-      ]
+        },
+      ],
     }),
     AppNestjsQueryTypeOrmModule.forFeature({
       entities: [
@@ -40,23 +42,21 @@ import { ArchiveProjectsWhenClientIsArchivedDomainEventHandler } from './project
           },
           assembler: {
             classService: AppAssemblerQueryService,
-            classAssembler: ProjectAssembler
-          }
-        }
+            classAssembler: ProjectAssembler,
+          },
+        },
       ],
     }),
   ],
-  controllers: [
-    ProjectCrudController,
-    ArchiveControllerController,
-  ],
+  controllers: [ProjectCrudController, ArchiveControllerController],
   providers: [
     ArchiveProjectsWhenClientIsArchivedDomainEventHandler,
     {
       provide: ArchiveService,
-      useFactory: (repository: InjectableRepository<ProjectEntity>) => new DefaultArchiveService(repository),
+      useFactory: (repository: InjectableRepository<ProjectEntity>) =>
+        new DefaultArchiveService(repository),
       inject: [getRepositoryToken(ProjectEntitySchema)],
-    }
-  ]
+    },
+  ],
 })
 export class ProjectModule {}

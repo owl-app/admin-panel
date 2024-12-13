@@ -17,17 +17,17 @@ export class ArchiveProjectsWhenClientIsArchivedDomainEventHandler {
     private readonly projectRepository: InjectableRepository<ProjectEntity>
   ) {}
 
-  @OnEvent('CLIENT_ENTITY_ARCHIVED', { async: true, promisify: true, suppressErrors: false})
+  @OnEvent('CLIENT_ENTITY_ARCHIVED', { async: true, promisify: true, suppressErrors: false })
   async handle(event: DomainEvent & Client & { withProjects: boolean }): Promise<void> {
     if (
-        event.withProjects &&
-        checkPermissionToRoute(AvalilableCollections.PROJECT, CommonActions.ARCHIVE)
-      ) {
+      event.withProjects &&
+      checkPermissionToRoute(AvalilableCollections.PROJECT, CommonActions.ARCHIVE)
+    ) {
       await this.projectRepository.update(
         {
           client: { id: event.id },
         },
-        { archived: event.archived },
+        { archived: event.archived }
       );
     }
   }

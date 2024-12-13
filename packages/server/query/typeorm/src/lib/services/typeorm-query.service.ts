@@ -19,12 +19,7 @@ import {
   UpdateManyResponse,
   UpdateOneOptions,
 } from '@owl-app/nestjs-query-core';
-import {
-  DeleteResult,
-  EntitySchema,
-  FindOptionsWhere,
-  Repository,
-} from 'typeorm';
+import { DeleteResult, EntitySchema, FindOptionsWhere, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { UpdateResult } from 'typeorm/query-builder/result/UpdateResult';
 
@@ -60,13 +55,9 @@ export class TypeOrmQueryService<Entity>
 
   readonly useSoftDelete: boolean;
 
-  constructor(
-    readonly repo: Repository<Entity>,
-    opts?: TypeOrmQueryServiceOpts<Entity>
-  ) {
+  constructor(readonly repo: Repository<Entity>, opts?: TypeOrmQueryServiceOpts<Entity>) {
     super();
-    this.filterQueryBuilder =
-      opts?.filterQueryBuilder ?? new FilterQueryBuilder<Entity>(this.repo);
+    this.filterQueryBuilder = opts?.filterQueryBuilder ?? new FilterQueryBuilder<Entity>(this.repo);
     this.useSoftDelete = opts?.useSoftDelete ?? false;
   }
 
@@ -98,10 +89,7 @@ export class TypeOrmQueryService<Entity>
    * ```
    * @param query - The Query used to filter, page, and sort rows.
    */
-  public async query(
-    query: Query<Entity>,
-    opts?: QueryOptions
-  ): Promise<Entity[]> {
+  public async query(query: Query<Entity>, opts?: QueryOptions): Promise<Entity[]> {
     const qb = this.filterQueryBuilder.select(query);
 
     if (opts?.withDeleted) {
@@ -141,10 +129,7 @@ export class TypeOrmQueryService<Entity>
     return AggregateBuilder.asyncConvertToAggregateResponse(resultPromise);
   }
 
-  public async count(
-    filter: Filter<Entity>,
-    opts?: CountOptions
-  ): Promise<number> {
+  public async count(filter: Filter<Entity>, opts?: CountOptions): Promise<number> {
     const qb = this.filterQueryBuilder.select({ filter });
 
     if (opts?.withDeleted) {
@@ -192,16 +177,11 @@ export class TypeOrmQueryService<Entity>
    * @param id - The id of the record to find.
    * @param opts
    */
-  public async getById(
-    id: string | number,
-    opts?: GetByIdOptions<Entity>
-  ): Promise<Entity> {
+  public async getById(id: string | number, opts?: GetByIdOptions<Entity>): Promise<Entity> {
     const entity = await this.findById(id, opts);
 
     if (!entity) {
-      throw new NotFoundException(
-        `Unable to find ${this.EntityClassName} with id: ${id}`
-      );
+      throw new NotFoundException(`Unable to find ${this.EntityClassName} with id: ${id}`);
     }
 
     return entity;
@@ -235,9 +215,7 @@ export class TypeOrmQueryService<Entity>
    * @param records - The entities to create.
    */
   public async createMany(records: DeepPartial<Entity>[]): Promise<Entity[]> {
-    const entities = await Promise.all(
-      records.map((r) => this.ensureIsEntityAndDoesNotExist(r))
-    );
+    const entities = await Promise.all(records.map((r) => this.ensureIsEntityAndDoesNotExist(r)));
 
     return this.repo.save(entities);
   }
@@ -289,9 +267,7 @@ export class TypeOrmQueryService<Entity>
     if (this.filterQueryBuilder.filterHasRelations(filter)) {
       const builder = this.filterQueryBuilder.select({ filter }).distinct(true);
 
-      const distinctRecords = await builder
-        .addSelect(`${builder.alias}.id`)
-        .getRawMany();
+      const distinctRecords = await builder.addSelect(`${builder.alias}.id`).getRawMany();
 
       const ids: unknown[] = distinctRecords.map(({ id }) => id as unknown);
       const idsFilter = { id: { in: ids } } as unknown as Filter<Entity>;
@@ -323,16 +299,12 @@ export class TypeOrmQueryService<Entity>
    * @param filter Additional filter to use when finding the entity to delete.
    * @param opts - Additional options.
    */
-  public async deleteOne(
-    id: string | number,
-    opts?: DeleteOneOptions<Entity>
-  ): Promise<Entity> {
+  public async deleteOne(id: string | number, opts?: DeleteOneOptions<Entity>): Promise<Entity> {
     const entity = await this.getById(id, opts);
     if (
       (this.useSoftDelete && opts?.useSoftDelete === undefined) ||
       (opts?.useSoftDelete !== undefined && opts.useSoftDelete === true)
     ) {
-
       return this.repo.softRemove(entity);
     }
 
@@ -362,32 +334,22 @@ export class TypeOrmQueryService<Entity>
     if (this.filterQueryBuilder.filterHasRelations(filter)) {
       const builder = this.filterQueryBuilder.select({ filter }).distinct(true);
 
-      const distinctRecords = await builder
-        .addSelect(`${builder.alias}.id`)
-        .getRawMany();
+      const distinctRecords = await builder.addSelect(`${builder.alias}.id`).getRawMany();
 
       const ids: unknown[] = distinctRecords.map(({ id }) => id as unknown);
       const idsFilter = { id: { in: ids } } as unknown as Filter<Entity>;
 
       if (ids.length > 0) {
         if (this.useSoftDelete || opts?.useSoftDelete) {
-          deleteResult = await this.filterQueryBuilder
-            .softDelete({ filter: idsFilter })
-            .execute();
+          deleteResult = await this.filterQueryBuilder.softDelete({ filter: idsFilter }).execute();
         } else {
-          deleteResult = await this.filterQueryBuilder
-            .delete({ filter: idsFilter })
-            .execute();
+          deleteResult = await this.filterQueryBuilder.delete({ filter: idsFilter }).execute();
         }
       }
     } else if (this.useSoftDelete || opts?.useSoftDelete) {
-      deleteResult = await this.filterQueryBuilder
-        .softDelete({ filter })
-        .execute();
+      deleteResult = await this.filterQueryBuilder.softDelete({ filter }).execute();
     } else {
-      deleteResult = await this.filterQueryBuilder
-        .delete({ filter })
-        .execute();
+      deleteResult = await this.filterQueryBuilder.delete({ filter }).execute();
     }
 
     return { deletedCount: deleteResult?.affected || 0 };
@@ -405,10 +367,7 @@ export class TypeOrmQueryService<Entity>
    * @param id - The `id` of the entity to restore.
    * @param opts Additional filter to use when finding the entity to restore.
    */
-  public async restoreOne(
-    id: string | number,
-    opts?: Filterable<Entity>
-  ): Promise<Entity> {
+  public async restoreOne(id: string | number, opts?: Filterable<Entity>): Promise<Entity> {
     this.ensureSoftDeleteEnabled();
     await this.repo.restore(id);
     return this.getById(id, opts);
@@ -427,27 +386,17 @@ export class TypeOrmQueryService<Entity>
    *
    * @param filter - A `Filter` to find records to delete.
    */
-  public async restoreMany(
-    filter: Filter<Entity>
-  ): Promise<UpdateManyResponse> {
+  public async restoreMany(filter: Filter<Entity>): Promise<UpdateManyResponse> {
     this.ensureSoftDeleteEnabled();
-    const result = await this.filterQueryBuilder
-      .softDelete({ filter })
-      .restore()
-      .execute();
+    const result = await this.filterQueryBuilder.softDelete({ filter }).restore().execute();
     return { updatedCount: result.affected || 0 };
   }
 
-  async ensureIsEntityAndDoesNotExist(
-    entity: DeepPartial<Entity>
-  ): Promise<Entity> {
+  async ensureIsEntityAndDoesNotExist(entity: DeepPartial<Entity>): Promise<Entity> {
     if (
       (this.EntityClass instanceof EntitySchema &&
         this.EntityClass.options.name !== entity.constructor.name) ||
-      !(
-        !(this.EntityClass instanceof EntitySchema) &&
-        entity instanceof this.EntityClass
-      )
+      !(!(this.EntityClass instanceof EntitySchema) && entity instanceof this.EntityClass)
     ) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
@@ -458,9 +407,7 @@ export class TypeOrmQueryService<Entity>
 
   async ensureEntityDoesNotExist(e: Entity): Promise<Entity> {
     if (this.repo.hasId(e)) {
-      const where = this.repo.metadata.getEntityIdMap(
-        e
-      ) as FindOptionsWhere<Entity>;
+      const where = this.repo.metadata.getEntityIdMap(e) as FindOptionsWhere<Entity>;
       const found = await this.repo.findOne({ where });
 
       if (found) {

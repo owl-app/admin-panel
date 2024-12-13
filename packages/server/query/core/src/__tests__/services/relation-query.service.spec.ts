@@ -1,16 +1,10 @@
 import { deepEqual, instance, mock, reset, when } from 'ts-mockito';
 
-import {
-  AggregateQuery,
-  QueryService,
-  RelationQueryService,
-} from '../..';
+import { AggregateQuery, QueryService, RelationQueryService } from '../..';
 
 describe('RelationQueryService', () => {
-  const mockQueryService: QueryService<TestType> =
-    mock<QueryService<TestType>>();
-  const mockRelationService: QueryService<TestType> =
-    mock<QueryService<TestType>>();
+  const mockQueryService: QueryService<TestType> = mock<QueryService<TestType>>();
+  const mockRelationService: QueryService<TestType> = mock<QueryService<TestType>>();
   const testRelationFn = jest.fn();
 
   class TestType {
@@ -43,9 +37,9 @@ describe('RelationQueryService', () => {
       const id = 1;
       const relationIds = [1, 2, 3];
       const result = { foo: 'bar' };
-      when(
-        mockQueryService.addRelations(relationName, id, relationIds, undefined)
-      ).thenResolve(result);
+      when(mockQueryService.addRelations(relationName, id, relationIds, undefined)).thenResolve(
+        result
+      );
       return expect(
         queryService.addRelations(relationName, id, relationIds, undefined)
       ).resolves.toBe(result);
@@ -59,14 +53,10 @@ describe('RelationQueryService', () => {
       const result = { foo: 'bar' };
       const query = { filter: { foo: { eq: 'bar' } } };
       testRelationFn.mockReturnValue(query);
-      when(
-        mockRelationService.query(deepEqual({ ...query, paging: { limit: 1 } }))
-      ).thenResolve([result]);
-      const findResult = await queryService.findRelation(
-        TestType,
-        relationName,
-        dto
-      );
+      when(mockRelationService.query(deepEqual({ ...query, paging: { limit: 1 } }))).thenResolve([
+        result,
+      ]);
+      const findResult = await queryService.findRelation(TestType, relationName, dto);
       expect(findResult).toBe(result);
       return expect(testRelationFn).toHaveBeenCalledWith(dto);
     });
@@ -78,9 +68,9 @@ describe('RelationQueryService', () => {
       testRelationFn.mockReturnValue(query);
       const resultRelations = [{ foo: 'baz' }];
       const result = new Map([[dtos[0], resultRelations[0]]]);
-      when(
-        mockRelationService.query(deepEqual({ ...query, paging: { limit: 1 } }))
-      ).thenResolve(resultRelations);
+      when(mockRelationService.query(deepEqual({ ...query, paging: { limit: 1 } }))).thenResolve(
+        resultRelations
+      );
       await expect(
         queryService.findRelation(TestType, relationName, dtos, undefined)
       ).resolves.toEqual(result);
@@ -91,9 +81,9 @@ describe('RelationQueryService', () => {
       const relationName = 'otherRelation';
       const dto = new TestType();
       const result = { foo: 'baz' };
-      when(
-        mockQueryService.findRelation(TestType, relationName, dto, undefined)
-      ).thenResolve(result);
+      when(mockQueryService.findRelation(TestType, relationName, dto, undefined)).thenResolve(
+        result
+      );
       await expect(
         queryService.findRelation(TestType, relationName, dto, undefined)
       ).resolves.toEqual(result);
@@ -104,12 +94,12 @@ describe('RelationQueryService', () => {
       const relationName = 'otherRelation';
       const dtos = [new TestType()];
       const result = new Map([[dtos[0], { foo: 'baz' }]]);
-      when(
-        mockQueryService.findRelation(TestType, relationName, dtos, undefined)
-      ).thenResolve(result);
-      await expect(
-        queryService.findRelation(TestType, relationName, dtos)
-      ).resolves.toEqual(result);
+      when(mockQueryService.findRelation(TestType, relationName, dtos, undefined)).thenResolve(
+        result
+      );
+      await expect(queryService.findRelation(TestType, relationName, dtos)).resolves.toEqual(
+        result
+      );
       return expect(testRelationFn).not.toHaveBeenCalled();
     });
   });
@@ -122,12 +112,10 @@ describe('RelationQueryService', () => {
       const query = {};
       const relationQuery = { filter: {} };
       testRelationFn.mockReturnValue(relationQuery);
-      when(
-        mockRelationService.query(deepEqual({ ...relationQuery }))
-      ).thenResolve(result);
-      await expect(
-        queryService.queryRelations(TestType, relationName, dto, query)
-      ).resolves.toBe(result);
+      when(mockRelationService.query(deepEqual({ ...relationQuery }))).thenResolve(result);
+      await expect(queryService.queryRelations(TestType, relationName, dto, query)).resolves.toBe(
+        result
+      );
       return expect(testRelationFn).toHaveBeenCalledWith(dto);
     });
 
@@ -139,9 +127,7 @@ describe('RelationQueryService', () => {
       const relationResult: TestType[] = [];
       const result = new Map([[dtos[0], relationResult]]);
       testRelationFn.mockReturnValue(relationQuery);
-      when(
-        mockRelationService.query(deepEqual({ ...relationQuery }))
-      ).thenResolve(relationResult);
+      when(mockRelationService.query(deepEqual({ ...relationQuery }))).thenResolve(relationResult);
       return expect(
         queryService.queryRelations(TestType, relationName, dtos, query)
       ).resolves.toEqual(result);
@@ -152,12 +138,10 @@ describe('RelationQueryService', () => {
       const dto = new TestType();
       const query = {};
       const result = [{ foo: 'bar' }];
-      when(
-        mockQueryService.queryRelations(TestType, relationName, dto, query)
-      ).thenResolve(result);
-      return expect(
-        queryService.queryRelations(TestType, relationName, dto, query)
-      ).resolves.toBe(result);
+      when(mockQueryService.queryRelations(TestType, relationName, dto, query)).thenResolve(result);
+      return expect(queryService.queryRelations(TestType, relationName, dto, query)).resolves.toBe(
+        result
+      );
     });
 
     it('should proxy to the underlying service when calling queryRelations with many dtos and a unknown relation', () => {
@@ -165,12 +149,12 @@ describe('RelationQueryService', () => {
       const dtos = [new TestType()];
       const query = {};
       const result = new Map([[{ foo: 'bar' }, []]]);
-      when(
-        mockQueryService.queryRelations(TestType, relationName, dtos, query)
-      ).thenResolve(result);
-      return expect(
-        queryService.queryRelations(TestType, relationName, dtos, query)
-      ).resolves.toBe(result);
+      when(mockQueryService.queryRelations(TestType, relationName, dtos, query)).thenResolve(
+        result
+      );
+      return expect(queryService.queryRelations(TestType, relationName, dtos, query)).resolves.toBe(
+        result
+      );
     });
   });
 
@@ -186,19 +170,10 @@ describe('RelationQueryService', () => {
       };
       testRelationFn.mockReturnValue({ filter: relationFilter });
       when(
-        mockRelationService.aggregate(
-          deepEqual(relationFilter),
-          relationAggregateQuery
-        )
+        mockRelationService.aggregate(deepEqual(relationFilter), relationAggregateQuery)
       ).thenResolve(result);
       await expect(
-        queryService.aggregateRelations(
-          TestType,
-          relationName,
-          dto,
-          filter,
-          relationAggregateQuery
-        )
+        queryService.aggregateRelations(TestType, relationName, dto, filter, relationAggregateQuery)
       ).resolves.toBe(result);
       return expect(testRelationFn).toHaveBeenCalledWith(dto);
     });
@@ -215,10 +190,7 @@ describe('RelationQueryService', () => {
       };
       testRelationFn.mockReturnValue({ filter: relationFilter });
       when(
-        mockRelationService.aggregate(
-          deepEqual(relationFilter),
-          relationAggregateQuery
-        )
+        mockRelationService.aggregate(deepEqual(relationFilter), relationAggregateQuery)
       ).thenResolve(relationResults);
       return expect(
         queryService.aggregateRelations(
@@ -240,22 +212,10 @@ describe('RelationQueryService', () => {
       };
       const result = [{ count: { foo: 1 } }];
       when(
-        mockQueryService.aggregateRelations(
-          TestType,
-          relationName,
-          dto,
-          filter,
-          aggregateQuery
-        )
+        mockQueryService.aggregateRelations(TestType, relationName, dto, filter, aggregateQuery)
       ).thenResolve(result);
       return expect(
-        queryService.aggregateRelations(
-          TestType,
-          relationName,
-          dto,
-          filter,
-          aggregateQuery
-        )
+        queryService.aggregateRelations(TestType, relationName, dto, filter, aggregateQuery)
       ).resolves.toBe(result);
     });
 
@@ -268,22 +228,10 @@ describe('RelationQueryService', () => {
       };
       const result = new Map([[dtos[0], [{ count: { foo: 1 } }]]]);
       when(
-        mockQueryService.aggregateRelations(
-          TestType,
-          relationName,
-          dtos,
-          filter,
-          aggregateQuery
-        )
+        mockQueryService.aggregateRelations(TestType, relationName, dtos, filter, aggregateQuery)
       ).thenResolve(result);
       return expect(
-        queryService.aggregateRelations(
-          TestType,
-          relationName,
-          dtos,
-          filter,
-          aggregateQuery
-        )
+        queryService.aggregateRelations(TestType, relationName, dtos, filter, aggregateQuery)
       ).resolves.toBe(result);
     });
   });
@@ -296,12 +244,10 @@ describe('RelationQueryService', () => {
       const query = {};
       const relationQuery = {};
       testRelationFn.mockReturnValue(relationQuery);
-      when(
-        mockRelationService.count(deepEqual({ ...relationQuery }))
-      ).thenResolve(result);
-      await expect(
-        queryService.countRelations(TestType, relationName, dto, query)
-      ).resolves.toBe(result);
+      when(mockRelationService.count(deepEqual({ ...relationQuery }))).thenResolve(result);
+      await expect(queryService.countRelations(TestType, relationName, dto, query)).resolves.toBe(
+        result
+      );
       return expect(testRelationFn).toHaveBeenCalledWith(dto);
     });
 
@@ -313,9 +259,7 @@ describe('RelationQueryService', () => {
       const relationResult = 1;
       const result = new Map([[dtos[0], relationResult]]);
       testRelationFn.mockReturnValue(relationQuery);
-      when(
-        mockRelationService.count(deepEqual({ ...relationQuery }))
-      ).thenResolve(relationResult);
+      when(mockRelationService.count(deepEqual({ ...relationQuery }))).thenResolve(relationResult);
       return expect(
         queryService.countRelations(TestType, relationName, dtos, query)
       ).resolves.toEqual(result);
@@ -326,12 +270,10 @@ describe('RelationQueryService', () => {
       const dto = new TestType();
       const query = {};
       const result = 1;
-      when(
-        mockQueryService.countRelations(TestType, relationName, dto, query)
-      ).thenResolve(result);
-      return expect(
-        queryService.countRelations(TestType, relationName, dto, query)
-      ).resolves.toBe(result);
+      when(mockQueryService.countRelations(TestType, relationName, dto, query)).thenResolve(result);
+      return expect(queryService.countRelations(TestType, relationName, dto, query)).resolves.toBe(
+        result
+      );
     });
 
     it('should proxy to the underlying service when calling queryRelations with many dtos and a unknown relation', () => {
@@ -339,12 +281,12 @@ describe('RelationQueryService', () => {
       const dtos = [new TestType()];
       const query = {};
       const result = new Map([[{ foo: 'bar' }, 1]]);
-      when(
-        mockQueryService.countRelations(TestType, relationName, dtos, query)
-      ).thenResolve(result);
-      return expect(
-        queryService.countRelations(TestType, relationName, dtos, query)
-      ).resolves.toBe(result);
+      when(mockQueryService.countRelations(TestType, relationName, dtos, query)).thenResolve(
+        result
+      );
+      return expect(queryService.countRelations(TestType, relationName, dtos, query)).resolves.toBe(
+        result
+      );
     });
   });
 
@@ -354,12 +296,12 @@ describe('RelationQueryService', () => {
       const id = 1;
       const relationId = 2;
       const result = { foo: 'bar' };
-      when(
-        mockQueryService.removeRelation(relationName, id, relationId, undefined)
-      ).thenResolve(result);
-      return expect(
-        queryService.removeRelation(relationName, id, relationId)
-      ).resolves.toBe(result);
+      when(mockQueryService.removeRelation(relationName, id, relationId, undefined)).thenResolve(
+        result
+      );
+      return expect(queryService.removeRelation(relationName, id, relationId)).resolves.toBe(
+        result
+      );
     });
   });
 
@@ -369,17 +311,12 @@ describe('RelationQueryService', () => {
       const id = 1;
       const relationIds = [2];
       const result = { foo: 'bar' };
-      when(
-        mockQueryService.removeRelations(
-          relationName,
-          id,
-          relationIds,
-          undefined
-        )
-      ).thenResolve(result);
-      return expect(
-        queryService.removeRelations(relationName, id, relationIds)
-      ).resolves.toBe(result);
+      when(mockQueryService.removeRelations(relationName, id, relationIds, undefined)).thenResolve(
+        result
+      );
+      return expect(queryService.removeRelations(relationName, id, relationIds)).resolves.toBe(
+        result
+      );
     });
   });
   describe('#setRelation', () => {
@@ -388,12 +325,10 @@ describe('RelationQueryService', () => {
       const id = 1;
       const relationId = 2;
       const result = { foo: 'bar' };
-      when(
-        mockQueryService.setRelation(relationName, id, relationId, undefined)
-      ).thenResolve(result);
-      return expect(
-        queryService.setRelation(relationName, id, relationId)
-      ).resolves.toBe(result);
+      when(mockQueryService.setRelation(relationName, id, relationId, undefined)).thenResolve(
+        result
+      );
+      return expect(queryService.setRelation(relationName, id, relationId)).resolves.toBe(result);
     });
   });
   describe('#setRelations', () => {
@@ -402,12 +337,10 @@ describe('RelationQueryService', () => {
       const id = 1;
       const relationIds = [2];
       const result = { foo: 'bar' };
-      when(
-        mockQueryService.setRelations(relationName, id, relationIds, undefined)
-      ).thenResolve(result);
-      return expect(
-        queryService.setRelations(relationName, id, relationIds)
-      ).resolves.toBe(result);
+      when(mockQueryService.setRelations(relationName, id, relationIds, undefined)).thenResolve(
+        result
+      );
+      return expect(queryService.setRelations(relationName, id, relationIds)).resolves.toBe(result);
     });
   });
 });

@@ -1,10 +1,5 @@
 import { SelectQueryBuilder } from 'typeorm';
-import {
-  AssemblerQueryService,
-  Filter,
-  Query,
-  QueryService,
-} from '@owl-app/nestjs-query-core';
+import { AssemblerQueryService, Filter, Query, QueryService } from '@owl-app/nestjs-query-core';
 import { TypeOrmQueryService } from '@owl-app/nestjs-query-typeorm';
 import { instanceOf } from '@owl-app/utils';
 
@@ -44,8 +39,7 @@ export class PaginatedDataProvider<Entity, FiltersData>
       };
 
       if (paginationQuery.page && paginationQuery.page > 0) {
-        query.paging.offset =
-          (paginationQuery.page - 1) * paginationQuery.limit;
+        query.paging.offset = (paginationQuery.page - 1) * paginationQuery.limit;
       }
 
       if (
@@ -56,21 +50,11 @@ export class PaginatedDataProvider<Entity, FiltersData>
       }
     }
 
-    if (
-      instanceOf<FilterBuilder<Filter<Entity>, FiltersData>>(
-        this.filterBuilder,
-        'build'
-      )
-    ) {
+    if (instanceOf<FilterBuilder<Filter<Entity>, FiltersData>>(this.filterBuilder, 'build')) {
       query.filter = this.filterBuilder.build(filtersData);
     }
 
-    if (
-      instanceOf<QueryFilterBuilder<Entity, FiltersData>>(
-        this.filterBuilder,
-        'buildRelations'
-      )
-    ) {
+    if (instanceOf<QueryFilterBuilder<Entity, FiltersData>>(this.filterBuilder, 'buildRelations')) {
       query.relations = this.filterBuilder.buildRelations(filtersData);
     }
 
@@ -80,12 +64,7 @@ export class PaginatedDataProvider<Entity, FiltersData>
 
     const qb = queryService.filterQueryBuilder.select(query);
 
-    if (
-      instanceOf<QueryFilterBuilder<Entity, FiltersData>>(
-        this.filterBuilder,
-        'buildCustom'
-      )
-    ) {
+    if (instanceOf<QueryFilterBuilder<Entity, FiltersData>>(this.filterBuilder, 'buildCustom')) {
       this.filterBuilder.buildCustom(filtersData, qb);
     }
 
@@ -108,13 +87,9 @@ export class PaginatedDataProvider<Entity, FiltersData>
     return queryService;
   }
 
-  private getManyAndCount(
-    qb: SelectQueryBuilder<Entity>
-  ): Promise<[Entity[], number]> {
+  private getManyAndCount(qb: SelectQueryBuilder<Entity>): Promise<[Entity[], number]> {
     if (this.queryService instanceof AssemblerQueryService) {
-      return this.queryService.assembler.convertAsyncToDTOsWithCount(
-        qb.getManyAndCount()
-      );
+      return this.queryService.assembler.convertAsyncToDTOsWithCount(qb.getManyAndCount());
     }
 
     return qb.getManyAndCount();

@@ -8,15 +8,11 @@ import { ForceFilters } from '../../core/interfaces/force-filters.interface';
 
 export class FilterQueryBuilder<Entity> extends BaseFilterQueryBuilder<Entity> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(
-    readonly repo: Repository<Entity>,
-    readonly filters?: Registry<FilterQuery<Entity>>
-  ) {
+  constructor(readonly repo: Repository<Entity>, readonly filters?: Registry<FilterQuery<Entity>>) {
     super(repo);
   }
 
-  select(query: Query<Entity>, opts?: ForceFilters): SelectQueryBuilder<Entity> 
-  {
+  select(query: Query<Entity>, opts?: ForceFilters): SelectQueryBuilder<Entity> {
     const qb = super.select(query);
 
     const filters = this.filters?.all();

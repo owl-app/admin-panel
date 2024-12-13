@@ -368,18 +368,10 @@ describe('applyFilter', () => {
       const grandParentFilter: Filter<GrandParentDTO> = {
         child: { child: { first: { like: '%foo' } } },
       };
-      expect(applyFilter(withChild({ first: 'afoo' }), parentFilter)).toBe(
-        true
-      );
-      expect(applyFilter(withChild({ first: 'bar' }), parentFilter)).toBe(
-        false
-      );
-      expect(
-        applyFilter(withGrandChild({ first: 'afoo' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withChild({ first: 'afoo' }), parentFilter)).toBe(true);
+      expect(applyFilter(withChild({ first: 'bar' }), parentFilter)).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'afoo' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle notLike comparisons', () => {
@@ -390,15 +382,9 @@ describe('applyFilter', () => {
         child: { child: { first: { notLike: '%foo' } } },
       };
       expect(applyFilter(withChild({ first: 'bar' }), parentFilter)).toBe(true);
-      expect(applyFilter(withChild({ first: 'afoo' }), parentFilter)).toBe(
-        false
-      );
-      expect(
-        applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'afoo' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withChild({ first: 'afoo' }), parentFilter)).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'afoo' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle iLike comparisons', () => {
@@ -408,18 +394,10 @@ describe('applyFilter', () => {
       const grandParentFilter: Filter<GrandParentDTO> = {
         child: { child: { first: { iLike: '%foo' } } },
       };
-      expect(applyFilter(withChild({ first: 'AFOO' }), parentFilter)).toBe(
-        true
-      );
-      expect(applyFilter(withChild({ first: 'bar' }), parentFilter)).toBe(
-        false
-      );
-      expect(
-        applyFilter(withGrandChild({ first: 'AFOO' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withChild({ first: 'AFOO' }), parentFilter)).toBe(true);
+      expect(applyFilter(withChild({ first: 'bar' }), parentFilter)).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'AFOO' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle notILike comparisons', () => {
@@ -430,15 +408,9 @@ describe('applyFilter', () => {
         child: { child: { first: { notILike: '%foo' } } },
       };
       expect(applyFilter(withChild({ first: 'bar' }), parentFilter)).toBe(true);
-      expect(applyFilter(withChild({ first: 'AFOO' }), parentFilter)).toBe(
-        false
-      );
-      expect(
-        applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'AFOO' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withChild({ first: 'AFOO' }), parentFilter)).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'AFOO' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle in comparisons', () => {
@@ -449,15 +421,9 @@ describe('applyFilter', () => {
         child: { child: { first: { in: ['foo'] } } },
       };
       expect(applyFilter(withChild({ first: 'foo' }), parentFilter)).toBe(true);
-      expect(applyFilter(withChild({ first: 'bar' }), parentFilter)).toBe(
-        false
-      );
-      expect(
-        applyFilter(withGrandChild({ first: 'foo' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withChild({ first: 'bar' }), parentFilter)).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'foo' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle notIn comparisons', () => {
@@ -468,15 +434,9 @@ describe('applyFilter', () => {
         child: { child: { first: { notIn: ['foo'] } } },
       };
       expect(applyFilter(withChild({ first: 'bar' }), parentFilter)).toBe(true);
-      expect(applyFilter(withChild({ first: 'foo' }), parentFilter)).toBe(
-        false
-      );
-      expect(
-        applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'foo' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withChild({ first: 'foo' }), parentFilter)).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'foo' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle between comparisons', () => {
@@ -488,12 +448,8 @@ describe('applyFilter', () => {
       };
       expect(applyFilter(withChild({ first: 'b' }), parentFilter)).toBe(true);
       expect(applyFilter(withChild({ first: 'd' }), parentFilter)).toBe(false);
-      expect(
-        applyFilter(withGrandChild({ first: 'b' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'd' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'b' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'd' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle notBetween comparisons', () => {
@@ -505,12 +461,8 @@ describe('applyFilter', () => {
       };
       expect(applyFilter(withChild({ first: 'd' }), parentFilter)).toBe(true);
       expect(applyFilter(withChild({ first: 'b' }), parentFilter)).toBe(false);
-      expect(
-        applyFilter(withGrandChild({ first: 'd' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'b' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'd' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'b' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle gt comparisons', () => {
@@ -521,15 +473,9 @@ describe('applyFilter', () => {
       expect(applyFilter(withChild({ first: 'd' }), parentFilter)).toBe(true);
       expect(applyFilter(withChild({ first: 'b' }), parentFilter)).toBe(false);
       expect(applyFilter(withChild({ first: 'c' }), parentFilter)).toBe(false);
-      expect(
-        applyFilter(withGrandChild({ first: 'd' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'b' }), grandParentFilter)
-      ).toBe(false);
-      expect(
-        applyFilter(withGrandChild({ first: 'c' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'd' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'b' }), grandParentFilter)).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'c' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle gte comparisons', () => {
@@ -542,15 +488,9 @@ describe('applyFilter', () => {
       expect(applyFilter(withChild({ first: 'c' }), parentFilter)).toBe(true);
       expect(applyFilter(withChild({ first: 'd' }), parentFilter)).toBe(true);
       expect(applyFilter(withChild({ first: 'b' }), parentFilter)).toBe(false);
-      expect(
-        applyFilter(withGrandChild({ first: 'c' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'd' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'b' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'c' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'd' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'b' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle lt comparisons', () => {
@@ -561,15 +501,9 @@ describe('applyFilter', () => {
       expect(applyFilter(withChild({ first: 'b' }), parentFilter)).toBe(true);
       expect(applyFilter(withChild({ first: 'd' }), parentFilter)).toBe(false);
       expect(applyFilter(withChild({ first: 'c' }), parentFilter)).toBe(false);
-      expect(
-        applyFilter(withGrandChild({ first: 'b' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'd' }), grandParentFilter)
-      ).toBe(false);
-      expect(
-        applyFilter(withGrandChild({ first: 'c' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'b' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'd' }), grandParentFilter)).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'c' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle lte comparisons', () => {
@@ -582,15 +516,9 @@ describe('applyFilter', () => {
       expect(applyFilter(withChild({ first: 'c' }), parentFilter)).toBe(true);
       expect(applyFilter(withChild({ first: 'b' }), parentFilter)).toBe(true);
       expect(applyFilter(withChild({ first: 'd' }), parentFilter)).toBe(false);
-      expect(
-        applyFilter(withGrandChild({ first: 'c' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'b' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'd' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'c' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'b' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'd' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle eq comparisons', () => {
@@ -601,15 +529,9 @@ describe('applyFilter', () => {
         child: { child: { first: { eq: 'foo' } } },
       };
       expect(applyFilter(withChild({ first: 'foo' }), parentFilter)).toBe(true);
-      expect(applyFilter(withChild({ first: 'bar' }), parentFilter)).toBe(
-        false
-      );
-      expect(
-        applyFilter(withGrandChild({ first: 'foo' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withChild({ first: 'bar' }), parentFilter)).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'foo' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle neq comparisons', () => {
@@ -620,15 +542,9 @@ describe('applyFilter', () => {
         child: { child: { first: { neq: 'foo' } } },
       };
       expect(applyFilter(withChild({ first: 'bar' }), parentFilter)).toBe(true);
-      expect(applyFilter(withChild({ first: 'foo' }), parentFilter)).toBe(
-        false
-      );
-      expect(
-        applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: 'foo' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withChild({ first: 'foo' }), parentFilter)).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'bar' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: 'foo' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle is comparisons', () => {
@@ -640,16 +556,10 @@ describe('applyFilter', () => {
       };
       expect(applyFilter(withChild({ first: null }), parentFilter)).toBe(true);
       expect(applyFilter(withChild({}), parentFilter)).toBe(true); // undefined
-      expect(applyFilter(withChild({ first: 'foo' }), parentFilter)).toBe(
-        false
-      );
-      expect(
-        applyFilter(withGrandChild({ first: null }), grandParentFilter)
-      ).toBe(true);
+      expect(applyFilter(withChild({ first: 'foo' }), parentFilter)).toBe(false);
+      expect(applyFilter(withGrandChild({ first: null }), grandParentFilter)).toBe(true);
       expect(applyFilter(withGrandChild({}), grandParentFilter)).toBe(true); // undefined
-      expect(
-        applyFilter(withGrandChild({ first: 'foo' }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'foo' }), grandParentFilter)).toBe(false);
     });
 
     it('should handle isNot comparisons', () => {
@@ -662,12 +572,8 @@ describe('applyFilter', () => {
       expect(applyFilter(withChild({ first: 'foo' }), parentFilter)).toBe(true);
       expect(applyFilter(withChild({ first: null }), parentFilter)).toBe(false);
       expect(applyFilter(withChild({}), parentFilter)).toBe(false); // undefined
-      expect(
-        applyFilter(withGrandChild({ first: 'foo' }), grandParentFilter)
-      ).toBe(true);
-      expect(
-        applyFilter(withGrandChild({ first: null }), grandParentFilter)
-      ).toBe(false);
+      expect(applyFilter(withGrandChild({ first: 'foo' }), grandParentFilter)).toBe(true);
+      expect(applyFilter(withGrandChild({ first: null }), grandParentFilter)).toBe(false);
       expect(applyFilter(withGrandChild({}), grandParentFilter)).toBe(false); // undefined
     });
   });
@@ -679,9 +585,7 @@ describe('applyFilter', () => {
     const doubleNestedNull = (): GrandParentDTO => ({ child: null });
 
     it('should handle like comparisons', () => {
-      expect(
-        applyFilter(singleNestedNull(), { child: { first: { like: '%foo' } } })
-      ).toBe(false);
+      expect(applyFilter(singleNestedNull(), { child: { first: { like: '%foo' } } })).toBe(false);
       expect(
         applyFilter(doubleNestedNull(), {
           child: { child: { first: { like: '%foo' } } },
@@ -703,9 +607,7 @@ describe('applyFilter', () => {
     });
 
     it('should handle iLike comparisons', () => {
-      expect(
-        applyFilter(singleNestedNull(), { child: { first: { iLike: '%foo' } } })
-      ).toBe(false);
+      expect(applyFilter(singleNestedNull(), { child: { first: { iLike: '%foo' } } })).toBe(false);
       expect(
         applyFilter(doubleNestedNull(), {
           child: { child: { first: { iLike: '%foo' } } },
@@ -727,9 +629,7 @@ describe('applyFilter', () => {
     });
 
     it('should handle in comparisons', () => {
-      expect(
-        applyFilter(singleNestedNull(), { child: { first: { in: ['foo'] } } })
-      ).toBe(false);
+      expect(applyFilter(singleNestedNull(), { child: { first: { in: ['foo'] } } })).toBe(false);
       expect(
         applyFilter(doubleNestedNull(), {
           child: { child: { first: { in: ['foo'] } } },
@@ -781,9 +681,7 @@ describe('applyFilter', () => {
     });
 
     it('should handle gt comparisons', () => {
-      expect(
-        applyFilter(singleNestedNull(), { child: { first: { gt: 'foo' } } })
-      ).toBe(false);
+      expect(applyFilter(singleNestedNull(), { child: { first: { gt: 'foo' } } })).toBe(false);
       expect(
         applyFilter(doubleNestedNull(), {
           child: { child: { first: { gt: 'foo' } } },
@@ -792,9 +690,7 @@ describe('applyFilter', () => {
     });
 
     it('should handle gte comparisons', () => {
-      expect(
-        applyFilter(singleNestedNull(), { child: { first: { gte: 'foo' } } })
-      ).toBe(false);
+      expect(applyFilter(singleNestedNull(), { child: { first: { gte: 'foo' } } })).toBe(false);
       expect(
         applyFilter(doubleNestedNull(), {
           child: { child: { first: { gte: 'foo' } } },
@@ -803,9 +699,7 @@ describe('applyFilter', () => {
     });
 
     it('should handle lt comparisons', () => {
-      expect(
-        applyFilter(singleNestedNull(), { child: { first: { lt: 'foo' } } })
-      ).toBe(false);
+      expect(applyFilter(singleNestedNull(), { child: { first: { lt: 'foo' } } })).toBe(false);
       expect(
         applyFilter(doubleNestedNull(), {
           child: { child: { first: { lt: 'foo' } } },
@@ -814,9 +708,7 @@ describe('applyFilter', () => {
     });
 
     it('should handle lte comparisons', () => {
-      expect(
-        applyFilter(singleNestedNull(), { child: { first: { lte: 'foo' } } })
-      ).toBe(false);
+      expect(applyFilter(singleNestedNull(), { child: { first: { lte: 'foo' } } })).toBe(false);
       expect(
         applyFilter(doubleNestedNull(), {
           child: { child: { first: { lte: 'foo' } } },
@@ -825,9 +717,7 @@ describe('applyFilter', () => {
     });
 
     it('should handle eq comparisons', () => {
-      expect(
-        applyFilter(singleNestedNull(), { child: { first: { eq: 'foo' } } })
-      ).toBe(false);
+      expect(applyFilter(singleNestedNull(), { child: { first: { eq: 'foo' } } })).toBe(false);
       expect(
         applyFilter(doubleNestedNull(), {
           child: { child: { first: { eq: 'foo' } } },
@@ -836,9 +726,7 @@ describe('applyFilter', () => {
     });
 
     it('should handle neq comparisons', () => {
-      expect(
-        applyFilter(singleNestedNull(), { child: { first: { neq: 'foo' } } })
-      ).toBe(true);
+      expect(applyFilter(singleNestedNull(), { child: { first: { neq: 'foo' } } })).toBe(true);
       expect(
         applyFilter(doubleNestedNull(), {
           child: { child: { first: { neq: 'foo' } } },
@@ -847,9 +735,7 @@ describe('applyFilter', () => {
     });
 
     it('should handle is comparisons', () => {
-      expect(
-        applyFilter(singleNestedNull(), { child: { first: { is: null } } })
-      ).toBe(true);
+      expect(applyFilter(singleNestedNull(), { child: { first: { is: null } } })).toBe(true);
       expect(
         applyFilter(doubleNestedNull(), {
           child: { child: { first: { is: null } } },
@@ -858,9 +744,7 @@ describe('applyFilter', () => {
     });
 
     it('should handle isNot comparisons', () => {
-      expect(
-        applyFilter(singleNestedNull(), { child: { first: { isNot: null } } })
-      ).toBe(false);
+      expect(applyFilter(singleNestedNull(), { child: { first: { isNot: null } } })).toBe(false);
       expect(
         applyFilter(doubleNestedNull(), {
           child: { child: { first: { isNot: null } } },
@@ -887,11 +771,7 @@ describe('getFilterFields', () => {
         boolField: { is: false },
       },
     };
-    expect(getFilterFields(filter).sort()).toEqual([
-      'boolField',
-      'strField',
-      'testRelation',
-    ]);
+    expect(getFilterFields(filter).sort()).toEqual(['boolField', 'strField', 'testRelation']);
   });
 
   it('should get all fields in and', () => {
@@ -906,11 +786,7 @@ describe('getFilterFields', () => {
         },
       ],
     };
-    expect(getFilterFields(filter).sort()).toEqual([
-      'boolField',
-      'strField',
-      'testRelation',
-    ]);
+    expect(getFilterFields(filter).sort()).toEqual(['boolField', 'strField', 'testRelation']);
   });
 
   it('should get all fields in or', () => {
@@ -925,11 +801,7 @@ describe('getFilterFields', () => {
         },
       ],
     };
-    expect(getFilterFields(filter).sort()).toEqual([
-      'boolField',
-      'strField',
-      'testRelation',
-    ]);
+    expect(getFilterFields(filter).sort()).toEqual(['boolField', 'strField', 'testRelation']);
   });
 
   it('should merge all identifiers  between root, and, or', () => {
@@ -939,11 +811,7 @@ describe('getFilterFields', () => {
         boolField: { is: false },
       },
     };
-    expect(getFilterFields(filter).sort()).toEqual([
-      'boolField',
-      'strField',
-      'testRelation',
-    ]);
+    expect(getFilterFields(filter).sort()).toEqual(['boolField', 'strField', 'testRelation']);
   });
 });
 
@@ -996,9 +864,7 @@ describe('transformAggregateQuery', () => {
       ],
     };
     // @ts-expect-error
-    expect(() =>
-      transformAggregateQuery(aggQuery, { last: 'lastName' })
-    ).toThrow(
+    expect(() => transformAggregateQuery(aggQuery, { last: 'lastName' })).toThrow(
       "No corresponding field found for 'first' when transforming aggregateQuery"
     );
   });
@@ -1042,9 +908,7 @@ describe('transformAggregateResponse', () => {
         ageInYears: 1,
       },
     };
-    expect(transformAggregateResponse(aggResponse, fieldMap)).toEqual(
-      entityAggResponse
-    );
+    expect(transformAggregateResponse(aggResponse, fieldMap)).toEqual(entityAggResponse);
   });
 
   it('should handle empty aggregate fields', () => {
@@ -1058,9 +922,7 @@ describe('transformAggregateResponse', () => {
         firstName: 2,
       },
     };
-    expect(transformAggregateResponse(aggResponse, fieldMap)).toEqual(
-      entityAggResponse
-    );
+    expect(transformAggregateResponse(aggResponse, fieldMap)).toEqual(entityAggResponse);
   });
 
   it('should throw an error if the field is not found', () => {
@@ -1070,9 +932,7 @@ describe('transformAggregateResponse', () => {
       },
     };
     // @ts-expect-error
-    expect(() =>
-      transformAggregateResponse(aggResponse, { last: 'lastName' })
-    ).toThrow(
+    expect(() => transformAggregateResponse(aggResponse, { last: 'lastName' })).toThrow(
       "No corresponding field found for 'first' when transforming aggregateQuery"
     );
 
@@ -1082,9 +942,7 @@ describe('transformAggregateResponse', () => {
       },
     };
     // @ts-expect-error
-    expect(() =>
-      transformAggregateResponse(aggResponse, { last: 'lastName' })
-    ).toThrow(
+    expect(() => transformAggregateResponse(aggResponse, { last: 'lastName' })).toThrow(
       "No corresponding field found for 'age' when transforming aggregateQuery"
     );
   });
@@ -1105,18 +963,8 @@ describe('applySort', () => {
       {
         description: 'sort strings asc',
         sortFields: [{ field: 'first', direction: SortDirection.ASC }],
-        input: [
-          { first: 'bob' },
-          { first: 'sally' },
-          { first: 'zane' },
-          { first: 'alice' },
-        ],
-        expected: [
-          { first: 'alice' },
-          { first: 'bob' },
-          { first: 'sally' },
-          { first: 'zane' },
-        ],
+        input: [{ first: 'bob' }, { first: 'sally' }, { first: 'zane' }, { first: 'alice' }],
+        expected: [{ first: 'alice' }, { first: 'bob' }, { first: 'sally' }, { first: 'zane' }],
       },
       {
         description: 'sort strings with nulls asc',
@@ -1199,22 +1047,8 @@ describe('applySort', () => {
       {
         description: 'sort numbers with nulls asc',
         sortFields: [{ field: 'age', direction: SortDirection.ASC }],
-        input: [
-          { age: 30 },
-          { age: 33 },
-          { age: 31 },
-          { age: 32 },
-          { age: null },
-          {},
-        ],
-        expected: [
-          { age: 30 },
-          { age: 31 },
-          { age: 32 },
-          { age: 33 },
-          { age: null },
-          {},
-        ],
+        input: [{ age: 30 }, { age: 33 }, { age: 31 }, { age: 32 }, { age: null }, {}],
+        expected: [{ age: 30 }, { age: 31 }, { age: 32 }, { age: 33 }, { age: null }, {}],
       },
       {
         description: 'sort numbers with nulls first asc',
@@ -1225,22 +1059,8 @@ describe('applySort', () => {
             nulls: SortNulls.NULLS_FIRST,
           },
         ],
-        input: [
-          { age: 30 },
-          { age: 33 },
-          { age: 31 },
-          { age: 32 },
-          { age: null },
-          {},
-        ],
-        expected: [
-          {},
-          { age: null },
-          { age: 30 },
-          { age: 31 },
-          { age: 32 },
-          { age: 33 },
-        ],
+        input: [{ age: 30 }, { age: 33 }, { age: 31 }, { age: 32 }, { age: null }, {}],
+        expected: [{}, { age: null }, { age: 30 }, { age: 31 }, { age: 32 }, { age: 33 }],
       },
       {
         description: 'sort numbers with nulls last asc',
@@ -1251,22 +1071,8 @@ describe('applySort', () => {
             nulls: SortNulls.NULLS_LAST,
           },
         ],
-        input: [
-          { age: 30 },
-          { age: 33 },
-          { age: 31 },
-          { age: 32 },
-          { age: null },
-          {},
-        ],
-        expected: [
-          { age: 30 },
-          { age: 31 },
-          { age: 32 },
-          { age: 33 },
-          { age: null },
-          {},
-        ],
+        input: [{ age: 30 }, { age: 33 }, { age: 31 }, { age: 32 }, { age: null }, {}],
+        expected: [{ age: 30 }, { age: 31 }, { age: 32 }, { age: 33 }, { age: null }, {}],
       },
       {
         description: 'sort booleans asc',
@@ -1457,18 +1263,8 @@ describe('applySort', () => {
       {
         description: 'sort strings desc',
         sortFields: [{ field: 'first', direction: SortDirection.DESC }],
-        input: [
-          { first: 'bob' },
-          { first: 'sally' },
-          { first: 'zane' },
-          { first: 'alice' },
-        ],
-        expected: [
-          { first: 'zane' },
-          { first: 'sally' },
-          { first: 'bob' },
-          { first: 'alice' },
-        ],
+        input: [{ first: 'bob' }, { first: 'sally' }, { first: 'zane' }, { first: 'alice' }],
+        expected: [{ first: 'zane' }, { first: 'sally' }, { first: 'bob' }, { first: 'alice' }],
       },
       {
         description: 'sort strings with nulls desc',
@@ -1551,22 +1347,8 @@ describe('applySort', () => {
       {
         description: 'sort numbers with nulls desc',
         sortFields: [{ field: 'age', direction: SortDirection.DESC }],
-        input: [
-          { age: 30 },
-          { age: 33 },
-          { age: 31 },
-          { age: 32 },
-          { age: null },
-          {},
-        ],
-        expected: [
-          {},
-          { age: null },
-          { age: 33 },
-          { age: 32 },
-          { age: 31 },
-          { age: 30 },
-        ],
+        input: [{ age: 30 }, { age: 33 }, { age: 31 }, { age: 32 }, { age: null }, {}],
+        expected: [{}, { age: null }, { age: 33 }, { age: 32 }, { age: 31 }, { age: 30 }],
       },
       {
         description: 'sort numbers with nulls first desc',
@@ -1577,22 +1359,8 @@ describe('applySort', () => {
             nulls: SortNulls.NULLS_FIRST,
           },
         ],
-        input: [
-          { age: 30 },
-          { age: 33 },
-          { age: 31 },
-          { age: 32 },
-          { age: null },
-          {},
-        ],
-        expected: [
-          {},
-          { age: null },
-          { age: 33 },
-          { age: 32 },
-          { age: 31 },
-          { age: 30 },
-        ],
+        input: [{ age: 30 }, { age: 33 }, { age: 31 }, { age: 32 }, { age: null }, {}],
+        expected: [{}, { age: null }, { age: 33 }, { age: 32 }, { age: 31 }, { age: 30 }],
       },
       {
         description: 'sort numbers with nulls last desc',
@@ -1603,22 +1371,8 @@ describe('applySort', () => {
             nulls: SortNulls.NULLS_LAST,
           },
         ],
-        input: [
-          { age: 30 },
-          { age: 33 },
-          { age: 31 },
-          { age: 32 },
-          { age: null },
-          {},
-        ],
-        expected: [
-          { age: 33 },
-          { age: 32 },
-          { age: 31 },
-          { age: 30 },
-          { age: null },
-          {},
-        ],
+        input: [{ age: 30 }, { age: 33 }, { age: 31 }, { age: 32 }, { age: null }, {}],
+        expected: [{ age: 33 }, { age: 32 }, { age: 31 }, { age: 30 }, { age: null }, {}],
       },
       {
         description: 'sort booleans desc',
@@ -1994,20 +1748,8 @@ describe('applySort', () => {
             nulls: SortNulls.NULLS_FIRST,
           },
         ],
-        input: [
-          { last: 'a' },
-          { last: null },
-          { last: 'b' },
-          {},
-          { last: 'c' },
-        ],
-        expected: [
-          {},
-          { last: null },
-          { last: 'a' },
-          { last: 'b' },
-          { last: 'c' },
-        ],
+        input: [{ last: 'a' }, { last: null }, { last: 'b' }, {}, { last: 'c' }],
+        expected: [{}, { last: null }, { last: 'a' }, { last: 'b' }, { last: 'c' }],
       },
     ];
     testCases.forEach(({ description, input, expected, sortFields }) => {
@@ -2220,15 +1962,9 @@ describe('getFilterComparisons', () => {
       or: [{ baz: { lt: 4 }, bar: { lt: 5 } }],
     };
     expect(getFilterComparisons(f0, 'bar')).toEqual(expect.arrayContaining([]));
-    expect(getFilterComparisons(f1, 'bar')).toEqual(
-      expect.arrayContaining([{ gt: 0 }])
-    );
-    expect(getFilterComparisons(f2, 'bar')).toEqual(
-      expect.arrayContaining([{ gt: 0 }, { lt: 3 }])
-    );
-    expect(getFilterComparisons(f3, 'bar')).toEqual(
-      expect.arrayContaining([{ gt: 0 }, { lt: 5 }])
-    );
+    expect(getFilterComparisons(f1, 'bar')).toEqual(expect.arrayContaining([{ gt: 0 }]));
+    expect(getFilterComparisons(f2, 'bar')).toEqual(expect.arrayContaining([{ gt: 0 }, { lt: 3 }]));
+    expect(getFilterComparisons(f3, 'bar')).toEqual(expect.arrayContaining([{ gt: 0 }, { lt: 5 }]));
     expect(getFilterComparisons(f4, 'bar')).toEqual(
       expect.arrayContaining([{ gt: 0 }, { lt: 3 }, { lt: 5 }])
     );

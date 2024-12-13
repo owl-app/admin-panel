@@ -9,10 +9,7 @@ import { IJwtTokenPayload, IJwtTokenService } from '../jwt-token.interface';
 import { extractJWT } from '../extract-jwt';
 
 @Injectable()
-export class JwtRefreshStrategy extends PassportStrategy(
-  Strategy,
-  'jwt-refresh'
-) {
+export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor(
     @Inject(JWT_CONFIG_PROVIDER)
     private jwtConfig: IJwtConfig,

@@ -29,10 +29,7 @@ abstract class Reflector {
   constructor(readonly metaKey: string) {}
 
   // eslint-disable-next-line @typescript-eslint/ban-types
-  protected getMetadata<Data>(
-    target: Function,
-    includeParents: boolean
-  ): MetaValue<Data> {
+  protected getMetadata<Data>(target: Function, includeParents: boolean): MetaValue<Data> {
     if (includeParents) {
       return Reflect.getMetadata(this.metaKey, target) as MetaValue<Data>;
     }
@@ -50,10 +47,7 @@ export class ValueReflector extends Reflector {
     this.defineMetadata(data, DTOClass);
   }
 
-  get<DTO, Data>(
-    DTOClass: Class<DTO>,
-    includeParents = false
-  ): MetaValue<Data> {
+  get<DTO, Data>(DTOClass: Class<DTO>, includeParents = false): MetaValue<Data> {
     return this.getMetadata(DTOClass, includeParents);
   }
 
@@ -74,16 +68,12 @@ export class ValueReflector extends Reflector {
 
 export class ArrayReflector extends Reflector {
   append<DTO, Data>(DTOClass: Class<DTO>, data: Data): void {
-    const metadata =
-      getClassMetadata<DTO, Data[]>(DTOClass, this.metaKey, false) ?? [];
+    const metadata = getClassMetadata<DTO, Data[]>(DTOClass, this.metaKey, false) ?? [];
     metadata.push(data);
     this.defineMetadata(metadata, DTOClass);
   }
 
-  get<DTO, Data>(
-    DTOClass: Class<DTO>,
-    includeParents = false
-  ): MetaValue<Data[]> {
+  get<DTO, Data>(DTOClass: Class<DTO>, includeParents = false): MetaValue<Data[]> {
     return this.getMetadata(DTOClass, includeParents);
   }
 }
@@ -91,21 +81,13 @@ export class ArrayReflector extends Reflector {
 export class MapReflector<K = string> extends Reflector {
   set<DTO, Data>(DTOClass: Class<DTO>, key: K, value: Data): void {
     const metadata =
-      getClassMetadata<DTO, Map<K, Data>>(DTOClass, this.metaKey, false) ??
-      new Map<K, Data>();
+      getClassMetadata<DTO, Map<K, Data>>(DTOClass, this.metaKey, false) ?? new Map<K, Data>();
     metadata.set(key, value);
     this.defineMetadata(metadata, DTOClass);
   }
 
-  get<DTO, Data>(
-    DTOClass: Class<DTO>,
-    includeParents?: boolean
-  ): MetaValue<Map<K, Data>>;
-  get<DTO, Data>(
-    DTOClass: Class<DTO>,
-    key: K,
-    includeParents?: boolean
-  ): MetaValue<Data>;
+  get<DTO, Data>(DTOClass: Class<DTO>, includeParents?: boolean): MetaValue<Map<K, Data>>;
+  get<DTO, Data>(DTOClass: Class<DTO>, key: K, includeParents?: boolean): MetaValue<Data>;
   get<DTO, Data>(
     DTOClass: Class<DTO>,
     key: K | boolean | undefined,
@@ -114,27 +96,16 @@ export class MapReflector<K = string> extends Reflector {
     if (typeof key === 'boolean' || typeof key === 'undefined') {
       return this.getMetadata<Map<K, Data>>(DTOClass, includeParents ?? false);
     }
-    return this.getMetadata<Map<K, Data>>(
-      DTOClass,
-      includeParents ?? false
-    )?.get(key);
+    return this.getMetadata<Map<K, Data>>(DTOClass, includeParents ?? false)?.get(key);
   }
 
-  getValues<DTO, Data>(
-    DTOClass: Class<DTO>,
-    includeParents = false
-  ): MetaValue<Data[]> {
-    const values = this.getMetadata<Map<K, Data>>(
-      DTOClass,
-      includeParents
-    )?.values();
+  getValues<DTO, Data>(DTOClass: Class<DTO>, includeParents = false): MetaValue<Data[]> {
+    const values = this.getMetadata<Map<K, Data>>(DTOClass, includeParents)?.values();
     return values ? [...values] : undefined;
   }
 
   has<DTO>(DTOClass: Class<DTO>, key: K): boolean {
-    return (
-      this.getMetadata<Map<K, unknown>>(DTOClass, false)?.has(key) ?? false
-    );
+    return this.getMetadata<Map<K, unknown>>(DTOClass, false)?.has(key) ?? false;
   }
 
   memoize<DTO, Data>(DTOClass: Class<DTO>, key: K, fn: () => Data): Data {

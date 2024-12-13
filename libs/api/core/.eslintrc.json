@@ -6,9 +6,7 @@
     {
       "files": ["*.ts", "*.tsx"],
       "parserOptions": {
-        "project": [
-          "libs/api/core/tsconfig.eslint.json"
-        ]
+        "project": ["libs/api/core/tsconfig.eslint.json"]
       }
     }
   ]

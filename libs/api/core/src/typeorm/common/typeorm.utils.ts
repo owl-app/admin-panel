@@ -27,8 +27,7 @@ export function getRepositoryToken(
   const dataSourcePrefix = getDataSourcePrefix(dataSource);
   if (
     entity instanceof Function &&
-    (entity.prototype instanceof Repository ||
-      entity.prototype instanceof AbstractRepository)
+    (entity.prototype instanceof Repository || entity.prototype instanceof AbstractRepository)
   ) {
     if (!dataSourcePrefix) {
       return entity;

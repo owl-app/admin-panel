@@ -1,17 +1,10 @@
-import {
-  Filter,
-  FilterComparisons,
-  FilterFieldComparison,
-} from '@owl-app/nestjs-query-core';
+import { Filter, FilterComparisons, FilterFieldComparison } from '@owl-app/nestjs-query-core';
 import { Brackets } from 'typeorm';
 
 import type { WhereExpressionBuilder } from 'typeorm';
 
 import { NestedRecord } from './filter-query.builder';
-import {
-  EntityComparisonField,
-  SQLComparisonBuilder,
-} from './sql-comparison.builder';
+import { EntityComparisonField, SQLComparisonBuilder } from './sql-comparison.builder';
 
 /**
  * @internal
@@ -62,10 +55,7 @@ export class WhereBuilder<Entity> {
   ): Where {
     return where.andWhere(
       new Brackets((qb) =>
-        filters.reduce(
-          (w, f) => qb.andWhere(this.createBrackets(f, relationNames, alias)),
-          qb
-        )
+        filters.reduce((w, f) => qb.andWhere(this.createBrackets(f, relationNames, alias)), qb)
       )
     );
   }
@@ -86,10 +76,7 @@ export class WhereBuilder<Entity> {
   ): Where {
     return where.andWhere(
       new Brackets((qb) =>
-        filter.reduce(
-          (w, f) => qb.orWhere(this.createBrackets(f, relationNames, alias)),
-          qb
-        )
+        filter.reduce((w, f) => qb.orWhere(this.createBrackets(f, relationNames, alias)), qb)
       )
     );
   }
@@ -146,10 +133,7 @@ export class WhereBuilder<Entity> {
     return obj[field] as FilterFieldComparison<Entity[K]>;
   }
 
-  private withFilterComparison<
-    T extends keyof Entity,
-    Where extends WhereExpressionBuilder
-  >(
+  private withFilterComparison<T extends keyof Entity, Where extends WhereExpressionBuilder>(
     where: Where,
     field: T,
     cmp: FilterFieldComparison<Entity[T]>,
@@ -166,9 +150,7 @@ export class WhereBuilder<Entity> {
     }
     return where.andWhere(
       new Brackets((qb) => {
-        const opts = Object.keys(cmp) as (keyof FilterFieldComparison<
-          Entity[T]
-        >)[];
+        const opts = Object.keys(cmp) as (keyof FilterFieldComparison<Entity[T]>)[];
         const sqlComparisons = opts.map((cmpType) =>
           this.sqlComparisonBuilder.build(
             field,
@@ -182,10 +164,7 @@ export class WhereBuilder<Entity> {
     );
   }
 
-  private withRelationFilter<
-    T extends keyof Entity,
-    Where extends WhereExpressionBuilder
-  >(
+  private withRelationFilter<T extends keyof Entity, Where extends WhereExpressionBuilder>(
     where: Where,
     field: T,
     cmp: Filter<Entity[T]>,

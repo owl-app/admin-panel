@@ -26,9 +26,7 @@ import {
   createUserValidationSchema,
   updateUserValidationSchema,
 } from '@owl-app/lib-contracts';
-import {
-  InjectAssemblerQueryService,
-} from '@owl-app/nestjs-query-core';
+import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 
 import type { AppQueryService } from '@owl-app/lib-api-core/query/core/services/app-query.service';
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
@@ -45,12 +43,7 @@ import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-pe
 import { UserEntity } from '../../../../domain/entity/user.entity';
 import { UserDto } from '../../../dto/user.dto';
 
-import {
-  CreateUserRequest,
-  UpdateUserRequest,
-  FilterUserDto,
-  UserPaginatedResponse,
-} from './dto';
+import { CreateUserRequest, UpdateUserRequest, FilterUserDto, UserPaginatedResponse } from './dto';
 import { UserAssembler } from './user.assembler';
 
 @ApiTags('User')
@@ -62,11 +55,7 @@ export class UserCrudController {
     @InjectAssemblerQueryService(UserAssembler)
     readonly service: AppQueryService<UserEntity>,
     @InjectPaginatedQueryService(UserEntity)
-    readonly paginatedService: DataProvider<
-      Paginated<UserEntity>,
-      FilterUserDto,
-      UserEntity
-    >
+    readonly paginatedService: DataProvider<Paginated<UserEntity>, FilterUserDto, UserEntity>
   ) {}
 
   @ApiOperation({ summary: 'Find user by id' })
@@ -108,8 +97,7 @@ export class UserCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Post()
   @RoutePermissions(AvalilableCollections.USER, CrudActions.CREATE)
@@ -117,9 +105,7 @@ export class UserCrudController {
     @Body(new ValibotValidationPipe(createUserValidationSchema))
     createUserRequest: CreateUserRequest
   ) {
-    const createdUser = await this.service.createWithRelations(
-      createUserRequest,
-    );
+    const createdUser = await this.service.createWithRelations(createUserRequest);
 
     return createdUser;
   }
@@ -135,8 +121,7 @@ export class UserCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Put(':id')
@@ -146,10 +131,7 @@ export class UserCrudController {
     @Body(new ValibotValidationPipe(updateUserValidationSchema))
     updateUserRequest: UpdateUserRequest
   ): Promise<UserDto> {
-    const updatedUser = await this.service.updateWithRelations(
-      id,
-      updateUserRequest,
-    );
+    const updatedUser = await this.service.updateWithRelations(id, updateUserRequest);
 
     return updatedUser;
   }
@@ -178,8 +160,7 @@ export class UserCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @ApiFilterQuery([
     {

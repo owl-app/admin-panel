@@ -3,11 +3,15 @@ import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 import { cloneDeep, omit } from 'lodash';
 import { NotFoundException } from '@nestjs/common';
 
+import { TypeOrmQueryService, TypeOrmQueryServiceOpts } from '@owl-app/nestjs-query-typeorm';
 import {
-  TypeOrmQueryService,
-  TypeOrmQueryServiceOpts,
-} from '@owl-app/nestjs-query-typeorm';
-import { DeepPartial, UpdateOneOptions, Filter, WithDeleted, FilterComparisons, Query } from '@owl-app/nestjs-query-core';
+  DeepPartial,
+  UpdateOneOptions,
+  Filter,
+  WithDeleted,
+  FilterComparisons,
+  Query,
+} from '@owl-app/nestjs-query-core';
 import { convertToSnakeCase } from '@owl-app/utils';
 import { Registry } from '@owl-app/registry';
 
@@ -22,14 +26,14 @@ import { AppQueryService } from '../../core/services/app-query.service';
 
 import { QueryOptions } from '../../core/interfaces/query-options';
 
-export interface AppTypeOrmQueryServiceOpts<Entity>
-  extends TypeOrmQueryServiceOpts<Entity> {
+export interface AppTypeOrmQueryServiceOpts<Entity> extends TypeOrmQueryServiceOpts<Entity> {
   useTransaction?: boolean;
 }
 
-export class AppTypeOrmQueryService<
-  Entity extends DomainEventableEntity
-> extends TypeOrmQueryService<Entity> implements AppQueryService<Entity> {
+export class AppTypeOrmQueryService<Entity extends DomainEventableEntity>
+  extends TypeOrmQueryService<Entity>
+  implements AppQueryService<Entity>
+{
   readonly filterQueryBuilder: FilterQueryBuilder<Entity>;
 
   readonly useTransaction: boolean;
@@ -51,9 +55,7 @@ export class AppTypeOrmQueryService<
     this.useTransaction = opts?.useTransaction ?? true;
   }
 
-  public getRelationQueryBuilder<Relation>(
-    name: string
-  ): RelationQueryBuilder<Entity, Relation> {
+  public getRelationQueryBuilder<Relation>(name: string): RelationQueryBuilder<Entity, Relation> {
     return new RelationQueryBuilder(
       this.repo,
       name,
@@ -61,10 +63,7 @@ export class AppTypeOrmQueryService<
     );
   }
 
-  public async query(
-    query: Query<Entity>,
-    opts?: QueryOptions
-  ): Promise<Entity[]> {
+  public async query(query: Query<Entity>, opts?: QueryOptions): Promise<Entity[]> {
     const qb = this.filterQueryBuilder.select(query, opts);
 
     if (opts?.withDeleted) {
@@ -74,8 +73,7 @@ export class AppTypeOrmQueryService<
     return qb.getMany();
   }
 
-  async findByFilter(filter: Filter<Entity>, opts?: WithDeleted): Promise<Entity>
-  {
+  async findByFilter(filter: Filter<Entity>, opts?: WithDeleted): Promise<Entity> {
     const qb = this.filterQueryBuilder.select({ filter });
 
     if (opts?.withDeleted) {
@@ -88,12 +86,10 @@ export class AppTypeOrmQueryService<
       throw new NotFoundException('Entity not found');
     }
 
-    return entity
+    return entity;
   }
 
-  public async createOne(
-    record: DeepPartial<Entity>
-  ): Promise<Entity> {
+  public async createOne(record: DeepPartial<Entity>): Promise<Entity> {
     this.injectSetters(record);
 
     const entity = (await this.ensureIsEntityAndDoesNotExist(record)) as Entity;
@@ -148,7 +144,7 @@ export class AppTypeOrmQueryService<
   public async createWithRelations(
     record: DeepPartial<Entity>,
     filters?: Filter<Entity>,
-    opts?: QueryOptions,
+    opts?: QueryOptions
   ): Promise<Entity> {
     const entity = this.repo.create({} as Entity);
 
@@ -169,10 +165,12 @@ export class AppTypeOrmQueryService<
       if (this.repo instanceof TransactionalRepository) {
         const result = await this.repo.transaction(async () => {
           await Promise.all(
-            this.repo.metadata.relations.map(async (relation) => this.assingRelations(entity, record, relation))
-          ).then(() => entity)
+            this.repo.metadata.relations.map(async (relation) =>
+              this.assingRelations(entity, record, relation)
+            )
+          ).then(() => entity);
 
-          return this.repo.save(entity)
+          return this.repo.save(entity);
         });
 
         return result;
@@ -208,10 +206,12 @@ export class AppTypeOrmQueryService<
       if (this.repo instanceof TransactionalRepository) {
         const result = await this.repo.transaction(async () => {
           await Promise.all(
-            this.repo.metadata.relations.map(async (relation) => this.assingRelations(entity, update, relation))
-          ).then(() => entity)
+            this.repo.metadata.relations.map(async (relation) =>
+              this.assingRelations(entity, update, relation)
+            )
+          ).then(() => entity);
 
-          return this.repo.save(entity)
+          return this.repo.save(entity);
         });
 
         return result;
@@ -228,56 +228,58 @@ export class AppTypeOrmQueryService<
     update: DeepPartial<Entity>,
     relation: RelationMetadata
   ): Promise<void> {
-    const entityRelatedValue = relation.getEntityValue(entity)
+    const entityRelatedValue = relation.getEntityValue(entity);
     const objectRelatedValue = relation.getEntityValue(update);
 
     if (objectRelatedValue === undefined) return;
 
-    const objectRelatedArrayValue = Array.isArray(objectRelatedValue) ? objectRelatedValue : [objectRelatedValue];
+    const objectRelatedArrayValue = Array.isArray(objectRelatedValue)
+      ? objectRelatedValue
+      : [objectRelatedValue];
 
-    const existingRelations: Relation[] = entityRelatedValue ?? await this.createTypeormRelationQueryBuilder(
-      entity  ,
-      relation.propertyName,
-    ).loadMany();
-    const relationQueryBuilder =
-      this.getRelationQueryBuilder(relation.propertyName).filterQueryBuilder;
+    const existingRelations: Relation[] =
+      entityRelatedValue ??
+      (await this.createTypeormRelationQueryBuilder(entity, relation.propertyName).loadMany());
+    const relationQueryBuilder = this.getRelationQueryBuilder(
+      relation.propertyName
+    ).filterQueryBuilder;
 
-    let objectRelatedNewRelations = []
-    const objectRelatedExisting: Relation[] = []
+    let objectRelatedNewRelations = [];
+    const objectRelatedExisting: Relation[] = [];
 
-    objectRelatedNewRelations = objectRelatedArrayValue
-      .filter((objectRelatedValueItem) => 
-        objectRelatedValueItem && (existingRelations.length === 0 || !existingRelations.find(
-          entityRelatedValueItem => relation.inverseEntityMetadata.compareEntities(
-          objectRelatedValueItem,
-            entityRelatedValueItem,
-         )
-        ))
-      )
+    objectRelatedNewRelations = objectRelatedArrayValue.filter(
+      (objectRelatedValueItem) =>
+        objectRelatedValueItem &&
+        (existingRelations.length === 0 ||
+          !existingRelations.find((entityRelatedValueItem) =>
+            relation.inverseEntityMetadata.compareEntities(
+              objectRelatedValueItem,
+              entityRelatedValueItem
+            )
+          ))
+    );
 
     existingRelations.forEach((objectRelatedValueItem) => {
-      const objectRelatedValueEntity = (
-        objectRelatedArrayValue
-      ).find((entityRelatedValueItem) => relation.inverseEntityMetadata.compareEntities(
+      const objectRelatedValueEntity = objectRelatedArrayValue.find((entityRelatedValueItem) =>
+        relation.inverseEntityMetadata.compareEntities(
           objectRelatedValueItem,
-            entityRelatedValueItem,
+          entityRelatedValueItem
         )
-      )
+      );
 
-      if(objectRelatedValueEntity) {
-        objectRelatedExisting.push(objectRelatedValueItem)
-      } 
-    })
+      if (objectRelatedValueEntity) {
+        objectRelatedExisting.push(objectRelatedValueItem);
+      }
+    });
 
-    let objectRelatedNewRelationValues: unknown[] = []
+    let objectRelatedNewRelationValues: unknown[] = [];
 
     if (objectRelatedNewRelations.length) {
-      const newRelationsFilter: Filter<Entity>[] = []
+      const newRelationsFilter: Filter<Entity>[] = [];
 
       objectRelatedNewRelations.forEach((objectRelatedValueItem) => {
-        const inverseEntityMetadata = relation.inverseEntityMetadata.findInheritanceMetadata(
-          objectRelatedValueItem,
-        )
+        const inverseEntityMetadata =
+          relation.inverseEntityMetadata.findInheritanceMetadata(objectRelatedValueItem);
         const idMap = inverseEntityMetadata.getEntityIdMap(objectRelatedValueItem);
 
         Object.entries(idMap).forEach(([key, value]) => {
@@ -286,7 +288,7 @@ export class AppTypeOrmQueryService<
       });
 
       objectRelatedNewRelationValues = await relationQueryBuilder
-        .select({ filter: {or : newRelationsFilter }})
+        .select({ filter: { or: newRelationsFilter } })
         .getMany();
 
       if (objectRelatedNewRelationValues.length !== objectRelatedNewRelations.length) {
@@ -299,19 +301,16 @@ export class AppTypeOrmQueryService<
     const newRelations = objectRelatedNewRelationValues.concat(objectRelatedExisting);
 
     if (relation.isOneToMany || relation.isManyToMany) {
-      relation.setEntityValue(
-        entity,
-        newRelations
-      );
+      relation.setEntityValue(entity, newRelations);
     } else {
-      relation.setEntityValue(
-        entity,
-        newRelations.pop() ?? null
-      );
+      relation.setEntityValue(entity, newRelations.pop() ?? null);
     }
   }
 
-  async ensureEntityDoesNotExistByFilter(filter: Filter<Entity>, opts?: QueryOptions): Promise<void> {
+  async ensureEntityDoesNotExistByFilter(
+    filter: Filter<Entity>,
+    opts?: QueryOptions
+  ): Promise<void> {
     const entity = await this.filterQueryBuilder.select({ filter }, opts).getOne();
 
     if (entity) {
@@ -341,11 +340,10 @@ export class AppTypeOrmQueryService<
     return event;
   }
 
-  private copyRegularColumn(entity: Entity, record: DeepPartial<Entity> ): void {
+  private copyRegularColumn(entity: Entity, record: DeepPartial<Entity>): void {
     this.repo.metadata.nonVirtualColumns.forEach((column) => {
-      const objectColumnValue = column.getEntityValue(record)
-      if (objectColumnValue !== undefined)
-          column.setEntityValue(entity, objectColumnValue)
-    })
+      const objectColumnValue = column.getEntityValue(record);
+      if (objectColumnValue !== undefined) column.setEntityValue(entity, objectColumnValue);
+    });
   }
 }

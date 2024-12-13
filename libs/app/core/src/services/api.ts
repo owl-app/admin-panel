@@ -33,7 +33,7 @@ const registerRequest = (callback: Callback) => {
 
 const onRrefreshed = async () => {
   refreshRequests.forEach(async (callback) => {
-    await callback()
+    await callback();
   });
   refreshRequests = [];
 };
@@ -52,7 +52,9 @@ export const onRequest = async (config: RequestConfig): Promise<RequestConfig> =
       try {
         isRefreshing = true;
 
-        const { data } = await axios.post(`${baseURL}/auth/refresh`, null, { withCredentials: true });
+        const { data } = await axios.post(`${baseURL}/auth/refresh`, null, {
+          withCredentials: true,
+        });
 
         userStore.logged(data.accessTokenExpires, data.refreshTokenExpires);
 
@@ -90,7 +92,6 @@ export const onResponse = (response: AxiosResponse | Response): AxiosResponse | 
 };
 
 export const onError = async (error: RequestError): Promise<RequestError | void> => {
-
   if (error?.response?.status === 401) {
     const userStore = useUserStore();
 
@@ -108,8 +109,8 @@ export const onError = async (error: RequestError): Promise<RequestError | void>
       message: translateAPIError(data.message),
       color: 'danger',
       position: 'bottom-right',
-      offsetY: 30
-    })
+      offsetY: 30,
+    });
   }
 
   return Promise.reject(error);

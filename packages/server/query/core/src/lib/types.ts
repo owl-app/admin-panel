@@ -1,4 +1,9 @@
-import { DynamicModule, ForwardReference, InjectionToken, OptionalFactoryDependency } from '@nestjs/common';
+import {
+  DynamicModule,
+  ForwardReference,
+  InjectionToken,
+  OptionalFactoryDependency,
+} from '@nestjs/common';
 
 import { Assembler } from './assemblers';
 import { Class } from './common';

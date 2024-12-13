@@ -6,26 +6,21 @@ import { Filter, SelectRelation } from '@owl-app/nestjs-query-core';
 
 import { FilterTimeRequest } from '../../../dto';
 
-export class ListFilterBuilder extends QueryFilterBuilder<
-  Time,
-  FilterTimeRequest
-> {
+export class ListFilterBuilder extends QueryFilterBuilder<Time, FilterTimeRequest> {
   build(data: FilterTimeRequest): Filter<Time> {
     const filters: Filter<Time>[] = [];
 
-    filters.push(
-      this.filterRegistry.get('string').apply(['description'], data?.search)
-    );
+    filters.push(this.filterRegistry.get('string').apply(['description'], data?.search));
 
-    if(data?.clients) {
-      filters.push({ project: { client : { id: { in: data?.clients?.split(',') } } } });
+    if (data?.clients) {
+      filters.push({ project: { client: { id: { in: data?.clients?.split(',') } } } });
     }
 
-    if(data?.projects) {
+    if (data?.projects) {
       filters.push({ project: { id: { in: data?.projects?.split(',') } } });
     }
 
-    if(data?.tags) {
+    if (data?.tags) {
       filters.push({ tags: { id: { in: data?.tags?.split(',') } } });
     }
 

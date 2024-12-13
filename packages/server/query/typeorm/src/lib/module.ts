@@ -18,9 +18,7 @@ export class NestjsQueryTypeOrmModule {
           opt?.repository?.obj &&
           opt?.repository?.injectInProviders
       )
-      .map((opt) => opt.repository.obj) as unknown as Class<
-      Repository<ObjectLiteral>
-    >[];
+      .map((opt) => opt.repository.obj) as unknown as Class<Repository<ObjectLiteral>>[];
 
     const queryServiceProviders = opts.entities.map((opt) =>
       createTypeOrmQueryServiceProvider(
@@ -31,8 +29,7 @@ export class NestjsQueryTypeOrmModule {
       )
     );
 
-    const typeOrmModule =
-      opts.typeOrmModule ?? TypeOrmModule.forFeature(entities, opts.connection);
+    const typeOrmModule = opts.typeOrmModule ?? TypeOrmModule.forFeature(entities, opts.connection);
 
     return {
       imports: [typeOrmModule, ...(opts.imports ?? [])],

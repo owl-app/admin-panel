@@ -1,8 +1,6 @@
 {
   "name": "@owl-app/utils",
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "devDependencies": {
     "tsconfig": "^0.0.1"
   },

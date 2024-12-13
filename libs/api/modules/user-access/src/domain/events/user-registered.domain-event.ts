@@ -1,4 +1,4 @@
-import { DomainEvent, DomainEventProps } from "@owl-app/lib-api-core/event/domain-event.base";
+import { DomainEvent, DomainEventProps } from '@owl-app/lib-api-core/event/domain-event.base';
 
 export class UserRegisteredDomainEvent extends DomainEvent {
   readonly email: string;

@@ -1,12 +1,5 @@
 import { Request, Response } from 'express';
-import {
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Req,
-  Res,
-} from '@nestjs/common';
+import { Controller, HttpCode, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -41,11 +34,9 @@ export class LogoutController {
   @RoutePermissions(AvalilableCollections.USER, UserActions.LOGOUT)
   async logout(
     @Req() request: Request & { user: Partial<AuthUserData> },
-    @Res({ passthrough: true }) response: Response,
+    @Res({ passthrough: true }) response: Response
   ): Promise<void> {
-    await this.commandBus.execute<Logout, void>(
-      new Logout({ email: request.user.email })
-    );
+    await this.commandBus.execute<Logout, void>(new Logout({ email: request.user.email }));
 
     response.clearCookie('access_token');
     response.clearCookie('refresh_token');

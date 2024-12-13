@@ -2,10 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
-import {
-  FilterFieldComparison,
-  Filter as FilterQueryService,
-} from '@owl-app/nestjs-query-core';
+import { FilterFieldComparison, Filter as FilterQueryService } from '@owl-app/nestjs-query-core';
 import { isEmpty } from '@owl-app/utils';
 
 import { Filter } from '../../filtering/filter';
@@ -18,16 +15,12 @@ export interface FilterStringQuery {
 export class FilterStringApiProperty implements FilterStringQuery {
   @ApiPropertyOptional({ name: `type`, type: () => String })
   @IsOptional()
-  @Transform((params: TransformFnParams) =>
-    params.value ? params.value.trim() : null
-  )
+  @Transform((params: TransformFnParams) => (params.value ? params.value.trim() : null))
   type?: string;
 
   @ApiPropertyOptional({ name: `value`, type: () => String })
   @IsOptional()
-  @Transform((params: TransformFnParams) =>
-    params.value ? params.value.trim() : null
-  )
+  @Transform((params: TransformFnParams) => (params.value ? params.value.trim() : null))
   value?: string;
 }
 
@@ -36,9 +29,7 @@ export type StringFilterData = {
   value: string;
 };
 
-export class StringFilter<Entity>
-  implements Filter<FilterQueryService<Entity>>
-{
+export class StringFilter<Entity> implements Filter<FilterQueryService<Entity>> {
   static readonly NAME = 'string';
 
   static readonly TYPE_EQUAL = 'equal';
@@ -69,9 +60,7 @@ export class StringFilter<Entity>
 
     if (
       isEmpty(data?.type) ||
-      (![StringFilter.TYPE_NOT_EMPTY, StringFilter.TYPE_EMPTY].indexOf(
-        data.type
-      ) &&
+      (![StringFilter.TYPE_NOT_EMPTY, StringFilter.TYPE_EMPTY].indexOf(data.type) &&
         isEmpty(data.value))
     )
       return {};
@@ -86,10 +75,7 @@ export class StringFilter<Entity>
     return filters;
   }
 
-  private getQuery<K extends keyof Entity>(
-    type: string,
-    value: string
-  ): FilterFieldComparison<K> {
+  private getQuery<K extends keyof Entity>(type: string, value: string): FilterFieldComparison<K> {
     let filter = null;
 
     switch (type) {

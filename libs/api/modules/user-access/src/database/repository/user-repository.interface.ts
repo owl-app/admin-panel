@@ -1,4 +1,4 @@
-import { User } from "@owl-app/lib-contracts";
+import { User } from '@owl-app/lib-contracts';
 
 export interface IUserRepository {
   findOneByIdString(id: string): Promise<User>;

@@ -1,19 +1,23 @@
 import { EntitySchema } from 'typeorm';
 
-import { PERMISSION_ENITY, ROLE_ENTITY, ROLE_SETTING_ENTITY } from '@owl-app/lib-api-core/entity-tokens';
+import {
+  PERMISSION_ENITY,
+  ROLE_ENTITY,
+  ROLE_SETTING_ENTITY,
+} from '@owl-app/lib-api-core/entity-tokens';
 
-import { RoleEntity } from "../../domain/entity/role.entity";
+import { RoleEntity } from '../../domain/entity/role.entity';
 import { BaseAuthEntitySchema } from './base-auth.entity-schema';
 
 export const RoleEntitySchema = new EntitySchema<RoleEntity>({
   target: RoleEntity,
   name: ROLE_ENTITY,
-  type: "entity-child",
+  type: 'entity-child',
   // When saving instances of 'A', the "type" column will have the value
   // specified on the 'discriminatorValue' property
   discriminatorValue: 'role',
   columns: {
-      ...BaseAuthEntitySchema.options.columns,
+    ...BaseAuthEntitySchema.options.columns,
   },
   relations: {
     setting: {
@@ -37,4 +41,4 @@ export const RoleEntitySchema = new EntitySchema<RoleEntity>({
       },
     },
   },
-})
+});

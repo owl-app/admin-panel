@@ -1,6 +1,6 @@
-import { Registry } from "@owl-app/registry";
+import { Registry } from '@owl-app/registry';
 
-import { ItemsStorage, AssignmentsStorage, CustomFields } from "./storage";
+import { ItemsStorage, AssignmentsStorage, CustomFields } from './storage';
 
 import {
   Item,
@@ -12,29 +12,26 @@ import {
   Permission,
   Role,
 } from './types';
-import { ItemAlreadyExistsException } from "./exceptions/item-alredy-exists.exception";
-import { RuntimeException } from "./exceptions/runtime.exception";
+import { ItemAlreadyExistsException } from './exceptions/item-alredy-exists.exception';
+import { RuntimeException } from './exceptions/runtime.exception';
 
 export class RbacManager<Permission extends BasePermission, Role extends BaseRole> {
-
   private defaultRoleNames: string[] = [];
 
   private guestRoleName: string | null = null;
 
   constructor(
-      readonly itemsStorage: ItemsStorage<Permission, Role>,
-      readonly assignmentsStorage: AssignmentsStorage,
-      readonly serviceRegistryRules: Registry<Rule>,
-      readonly enableDirectPermissions = false,
-      readonly includeRolesInAccessChecks = false,
-  ) {
-
-  }
+    readonly itemsStorage: ItemsStorage<Permission, Role>,
+    readonly assignmentsStorage: AssignmentsStorage,
+    readonly serviceRegistryRules: Registry<Rule>,
+    readonly enableDirectPermissions = false,
+    readonly includeRolesInAccessChecks = false
+  ) {}
 
   async userHasPermission(
-      userId: string | number | null,
-      permissionName: string,
-      parameters: Record<string, unknown> = {},
+    userId: string | number | null,
+    permissionName: string,
+    parameters: Record<string, unknown> = {}
   ): Promise<boolean> {
     const item = await this.itemsStorage.get(permissionName);
     if (!item) return false;
@@ -49,21 +46,23 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
 
     const itemNames: string[] = [];
 
-    Object.values(hierarchy).forEach((treeItem: { item: AccessType, children: Record<string, AccessType> }) => {
-      itemNames.push(treeItem.item.getName());
-    });
+    Object.values(hierarchy).forEach(
+      (treeItem: { item: AccessType; children: Record<string, AccessType> }) => {
+        itemNames.push(treeItem.item.getName());
+      }
+    );
 
     const userItemNames = guestRole
-        ? [guestRole.getName()]
-        : await this.filterUserItemNames(String(userId), itemNames);
+      ? [guestRole.getName()]
+      : await this.filterUserItemNames(String(userId), itemNames);
 
     const userItemNamesMap: Record<string, null> = {};
-    
-    userItemNames.forEach(userItemName => {
-        userItemNamesMap[userItemName] = null;
+
+    userItemNames.forEach((userItemName) => {
+      userItemNamesMap[userItemName] = null;
     });
 
-    for (let i = 0; i <= hierarchyValues.length; i+=1) {
+    for (let i = 0; i <= hierarchyValues.length; i += 1) {
       if (
         !(hierarchyValues[i].item.getName() in userItemNamesMap) ||
         !this.executeRule(userId ? String(userId) : null, hierarchyValues[i].item, parameters)
@@ -83,7 +82,7 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
       }
 
       if (hasPermission) {
-          return true;
+        return true;
       }
     }
 
@@ -92,9 +91,9 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
 
   async canAddChild(parentName: string, childName: string): Promise<boolean> {
     try {
-        await this.assertFutureChild(parentName, childName);
+      await this.assertFutureChild(parentName, childName);
     } catch {
-        return false;
+      return false;
     }
     return true;
   }
@@ -121,7 +120,7 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
   }
 
   async hasChildren(parentName: string): Promise<boolean> {
-      return this.itemsStorage.hasChildren(parentName);
+    return this.itemsStorage.hasChildren(parentName);
   }
 
   async assign(itemName: string, userId: string | number, createdAt?: Date): Promise<this> {
@@ -131,25 +130,29 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
     if (!item) throw new Error(`There is no item named "${itemName}".`);
 
     if (!this.enableDirectPermissions && item.type === 'permission') {
-        throw new Error('Assigning permissions directly is disabled. Prefer assigning roles only.');
+      throw new Error('Assigning permissions directly is disabled. Prefer assigning roles only.');
     }
 
     if (this.assignmentsStorage.exists(itemName, parsedUserId)) return this;
 
-    const assignment = new Assignment(parsedUserId, itemName, createdAt instanceof Date ? createdAt : new Date());
+    const assignment = new Assignment(
+      parsedUserId,
+      itemName,
+      createdAt instanceof Date ? createdAt : new Date()
+    );
     this.assignmentsStorage.add(assignment.itemName, assignment.getUserId());
 
     return this;
   }
 
   async revoke(itemName: string, userId: string | number): Promise<this> {
-      await this.assignmentsStorage.remove(itemName, String(userId));
-      return this;
+    await this.assignmentsStorage.remove(itemName, String(userId));
+    return this;
   }
 
   async revokeAll(userId: string | number): Promise<this> {
-      await this.assignmentsStorage.removeByUserId(String(userId));
-      return this;
+    await this.assignmentsStorage.removeByUserId(String(userId));
+    return this;
   }
 
   async getItemsByUserId(userId: string | number): Promise<Item[]> {
@@ -158,9 +161,9 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
     const assignmentNames = Object.keys(assignments);
 
     return [
-        ...Object.values(this.getDefaultRoles()),
-        ...Object.values(await this.itemsStorage.getByNames(assignmentNames)),
-        ...Object.values(await this.itemsStorage.getAllChildren(assignmentNames)),
+      ...Object.values(this.getDefaultRoles()),
+      ...Object.values(await this.itemsStorage.getByNames(assignmentNames)),
+      ...Object.values(await this.itemsStorage.getAllChildren(assignmentNames)),
     ];
   }
 
@@ -178,10 +181,10 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
 
   async getChildRoles(roleName: string): Promise<Record<string, Role>> {
     if (!this.itemsStorage.roleExists(roleName)) {
-        throw new Error(`Role "${roleName}" not found.`);
+      throw new Error(`Role "${roleName}" not found.`);
     }
 
-    const allChildRoles = await this.itemsStorage.getAllChildRoles(roleName)
+    const allChildRoles = await this.itemsStorage.getAllChildRoles(roleName);
 
     return allChildRoles;
   }
@@ -200,8 +203,8 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
     const assignmentNames = Object.keys(assignments);
 
     return [
-        ...Object.values(await this.itemsStorage.getPermissionsByNames(assignmentNames)),
-        ...Object.values(await this.itemsStorage.getAllChildPermissions(assignmentNames)),
+      ...Object.values(await this.itemsStorage.getPermissionsByNames(assignmentNames)),
+      ...Object.values(await this.itemsStorage.getAllChildPermissions(assignmentNames)),
     ];
   }
 
@@ -210,7 +213,7 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
 
     const assigments = await this.assignmentsStorage.getByItemNames(roleNames);
 
-    return assigments.map(assignment => assignment.getUserId());
+    return assigments.map((assignment) => assignment.getUserId());
   }
 
   async addRole(role: Role): Promise<this> {
@@ -285,7 +288,7 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
   }
 
   async getGuestRole(): Promise<Role | null> {
-    if(!this.guestRoleName) return null;
+    if (!this.guestRoleName) return null;
 
     const role = await this.getRole(this.guestRoleName);
 
@@ -301,7 +304,7 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
   }
 
   private async removeItem(name: string): Promise<void> {
-    if (!await this.itemsStorage.exists(name)) {
+    if (!(await this.itemsStorage.exists(name))) {
       return;
     }
 
@@ -321,35 +324,35 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
 
   async assertFutureChild(parentName: string, childName: string): Promise<void> {
     if (parentName === childName) {
-        throw new RuntimeException("Cannot add \"$parentName\" as a child of itself.");
+      throw new RuntimeException('Cannot add "$parentName" as a child of itself.');
     }
 
     const parent = await this.itemsStorage.get(parentName);
 
     if (parent === null) {
-        throw new RuntimeException(`Parent ${parentName} does not exist.`);
+      throw new RuntimeException(`Parent ${parentName} does not exist.`);
     }
 
     const child = await this.itemsStorage.get(childName);
 
     if (child === null) {
-        throw new RuntimeException(`Child ${childName} does not exist.`);
+      throw new RuntimeException(`Child ${childName} does not exist.`);
     }
 
     if (parent instanceof Permission && child instanceof Role) {
-        throw new RuntimeException(
-            `Can not add ${childName} role as a child of ${parentName} permission.`,
-        );
+      throw new RuntimeException(
+        `Can not add ${childName} role as a child of ${parentName} permission.`
+      );
     }
 
     if (await this.itemsStorage.hasDirectChild(parentName, childName)) {
-        throw new RuntimeException(`The item ${parentName} already has a child ${childName}.`);
+      throw new RuntimeException(`The item ${parentName} already has a child ${childName}.`);
     }
 
     if (await this.itemsStorage.hasChild(childName, parentName)) {
-        throw new RuntimeException(
-            `Cannot add ${childName} as a child of ${parentName}. A loop has been detected.`,
-        );
+      throw new RuntimeException(
+        `Cannot add ${childName} as a child of ${parentName}. A loop has been detected.`
+      );
     }
   }
 
@@ -362,9 +365,7 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
       return true;
     }
 
-    return this.serviceRegistryRules
-      .get(item.ruleName)
-      .execute(user, item, params);
+    return this.serviceRegistryRules.get(item.ruleName).execute(user, item, params);
   }
 
   private async getDefaultRoles(): Promise<Record<string, Role | null>> {
@@ -376,11 +377,11 @@ export class RbacManager<Permission extends BasePermission, Role extends BaseRol
   }
 
   async filterUserItemNames(userId: string, itemNames: string[]): Promise<string[]> {
-    const filterUserItemNames = await this.assignmentsStorage.filterUserItemNames(userId, itemNames);
+    const filterUserItemNames = await this.assignmentsStorage.filterUserItemNames(
+      userId,
+      itemNames
+    );
 
-    return [
-      ...filterUserItemNames,
-      ...this.defaultRoleNames,
-    ];
+    return [...filterUserItemNames, ...this.defaultRoleNames];
   }
 }

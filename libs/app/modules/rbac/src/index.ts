@@ -1,5 +1,4 @@
-
-import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
+import { defineModule } from '@owl-app/lib-app-core/application/defines/module';
 import RouterPass from '@owl-app/lib-app-core/router/passthrough';
 
 import ListRoleRoute from './routes/role-list.vue';
@@ -31,8 +30,8 @@ export default defineModule({
             meta: {
               private: true,
             },
-          }
-        ]
+          },
+        ],
       },
       {
         name: 'permission-list',
@@ -42,7 +41,6 @@ export default defineModule({
           private: true,
         },
       },
-
-    ]
-  }
-})
+    ],
+  },
+});

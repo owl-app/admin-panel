@@ -1,7 +1,4 @@
-export {
-  transformAggregateQuery,
-  transformAggregateResponse,
-} from './aggregate.helpers';
+export { transformAggregateQuery, transformAggregateResponse } from './aggregate.helpers';
 export * from './filter.helpers';
 export {
   applyPaging,

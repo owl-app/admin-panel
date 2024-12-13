@@ -25,18 +25,14 @@ describe('ClassTransformerAssembler', () => {
 
   @Assembler(TestDTO, TestEntity)
   class TestAssembler extends AbstractAssembler<TestDTO, TestEntity> {
-    convertToCreateEntity(
-      create: DeepPartial<TestDTO>
-    ): DeepPartial<TestEntity> {
+    convertToCreateEntity(create: DeepPartial<TestDTO>): DeepPartial<TestEntity> {
       return {
         first: create.firstName,
         last: create.lastName,
       };
     }
 
-    convertToUpdateEntity(
-      update: DeepPartial<TestDTO>
-    ): DeepPartial<TestEntity> {
+    convertToUpdateEntity(update: DeepPartial<TestDTO>): DeepPartial<TestEntity> {
       return {
         first: update.firstName,
         last: update.lastName,
@@ -64,18 +60,14 @@ describe('ClassTransformerAssembler', () => {
       });
     }
 
-    convertAggregateQuery(
-      aggregate: AggregateQuery<TestDTO>
-    ): AggregateQuery<TestEntity> {
+    convertAggregateQuery(aggregate: AggregateQuery<TestDTO>): AggregateQuery<TestEntity> {
       return transformAggregateQuery(aggregate, {
         firstName: 'first',
         lastName: 'last',
       });
     }
 
-    convertAggregateResponse(
-      aggregate: AggregateResponse<TestEntity>
-    ): AggregateResponse<TestDTO> {
+    convertAggregateResponse(aggregate: AggregateResponse<TestEntity>): AggregateResponse<TestDTO> {
       return transformAggregateResponse(aggregate, {
         first: 'firstName',
         last: 'lastName',
@@ -110,18 +102,18 @@ describe('ClassTransformerAssembler', () => {
   describe('convertAsyncToDTO', () => {
     it('should call the convertToDTO implementation with the resolved value', () => {
       const assembler = new TestAssembler();
-      return expect(
-        assembler.convertAsyncToDTO(Promise.resolve(testEntity))
-      ).resolves.toEqual(testDTO);
+      return expect(assembler.convertAsyncToDTO(Promise.resolve(testEntity))).resolves.toEqual(
+        testDTO
+      );
     });
   });
 
   describe('convertAsyncToDTOs', () => {
     it('should call the convertToDTO implementation with the resolved value', () => {
       const assembler = new TestAssembler();
-      return expect(
-        assembler.convertAsyncToDTOs(Promise.resolve([testEntity]))
-      ).resolves.toEqual([testDTO]);
+      return expect(assembler.convertAsyncToDTOs(Promise.resolve([testEntity]))).resolves.toEqual([
+        testDTO,
+      ]);
     });
   });
 
@@ -135,18 +127,18 @@ describe('ClassTransformerAssembler', () => {
   describe('convertAsyncToEntity', () => {
     it('should call the convertToEntity implementation with the resolved value', () => {
       const assembler = new TestAssembler();
-      return expect(
-        assembler.convertAsyncToEntity(Promise.resolve(testDTO))
-      ).resolves.toEqual(testEntity);
+      return expect(assembler.convertAsyncToEntity(Promise.resolve(testDTO))).resolves.toEqual(
+        testEntity
+      );
     });
   });
 
   describe('convertAsyncToEntities', () => {
     it('should call the convertToEntity implementation with the resolved value', () => {
       const assembler = new TestAssembler();
-      return expect(
-        assembler.convertAsyncToEntities(Promise.resolve([testDTO]))
-      ).resolves.toEqual([testEntity]);
+      return expect(assembler.convertAsyncToEntities(Promise.resolve([testDTO]))).resolves.toEqual([
+        testEntity,
+      ]);
     });
   });
 });

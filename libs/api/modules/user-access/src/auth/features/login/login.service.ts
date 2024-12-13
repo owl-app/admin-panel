@@ -35,8 +35,7 @@ export class LoginHandler implements ICommandHandler<Login> {
 
     const user = await this.userRepository.getUserByEmail(command.email);
 
-    if (!user || !await this.jwtTokenService.validateToken(command.password, user.passwordHash)
-    ) {
+    if (!user || !(await this.jwtTokenService.validateToken(command.password, user.passwordHash))) {
       throw new InvalidAuthenticationError();
     }
 

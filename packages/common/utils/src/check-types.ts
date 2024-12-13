@@ -55,8 +55,8 @@ export function isEmpty(item: any) {
 
   return (
     !item ||
-    (`${item}''`).toLocaleLowerCase() === 'null' ||
-    (`${item}''`).toLocaleLowerCase() === 'undefined'
+    `${item}''`.toLocaleLowerCase() === 'null' ||
+    `${item}''`.toLocaleLowerCase() === 'undefined'
   );
 }
 
@@ -75,11 +75,10 @@ export function isJsObject(object: unknown) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isNumeric(val: any): boolean {
-  return !(val instanceof Array) && (val - parseFloat(val) + 1) >= 0;
+  return !(val instanceof Array) && val - parseFloat(val) + 1 >= 0;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function instanceOf <T>(value: any, fieldName: string): value is T {
+export function instanceOf<T>(value: any, fieldName: string): value is T {
   return fieldName in value;
 }
-  

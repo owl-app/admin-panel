@@ -48,9 +48,7 @@ describe('ServiceRegistry.register() register method', () => {
       registry.register(identifier, service);
 
       // Act & Assert
-      expect(() => registry.register(identifier, service)).toThrow(
-        ExistingServiceException
-      );
+      expect(() => registry.register(identifier, service)).toThrow(ExistingServiceException);
     });
 
     it('should handle registering a service with an empty string identifier', () => {

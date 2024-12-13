@@ -41,10 +41,7 @@ export interface QueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> {
    * @param selectRelations - additional relation to select and fetch in the same query.
    * @returns a promise with an array of records with total items that match the query.
    */
-  queryWithCount(
-    query: Query<DTO>,
-    opts?: QueryOptions
-  ): Promise<[DTO[], number]>;
+  queryWithCount(query: Query<DTO>, opts?: QueryOptions): Promise<[DTO[], number]>;
 
   /**
    * Perform an aggregate query
@@ -70,10 +67,7 @@ export interface QueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> {
    * @param opts - Additional options to apply when finding by id.
    * @returns the found record or undefined.
    */
-  findById(
-    id: string | number,
-    opts?: FindByIdOptions<DTO>
-  ): Promise<DTO | undefined>;
+  findById(id: string | number, opts?: FindByIdOptions<DTO>): Promise<DTO | undefined>;
 
   /**
    * Query for an array of relations.
@@ -282,21 +276,14 @@ export interface QueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>> {
    * @param opts - Additional opts to apply when updating one entity.
    * @returns the updated record.
    */
-  updateOne(
-    id: string | number,
-    update: U,
-    opts?: UpdateOneOptions<DTO>
-  ): Promise<DTO>;
+  updateOne(id: string | number, update: U, opts?: UpdateOneOptions<DTO>): Promise<DTO>;
 
   /**
    * Updates multiple records using a filter.
    * @param update - the update to apply.
    * @param filter - the filter used to specify records to update
    */
-  updateMany(
-    update: U,
-    filter: Filter<DTO> | undefined
-  ): Promise<UpdateManyResponse>;
+  updateMany(update: U, filter: Filter<DTO> | undefined): Promise<UpdateManyResponse>;
 
   /**
    * Delete a single record by id.
@@ -340,5 +327,5 @@ export function QueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>>(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   DTOClass: Class<DTO>
 ) {
-  return <Cls extends Class<QueryService<DTO, C, U>>>(cls: Cls): Cls | void =>  Injectable()(cls);
+  return <Cls extends Class<QueryService<DTO, C, U>>>(cls: Cls): Cls | void => Injectable()(cls);
 }

@@ -1,16 +1,12 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { AvalilableCollections, stopTimeValidationSchema, TimeActions } from '@owl-app/lib-contracts';
+import {
+  AvalilableCollections,
+  stopTimeValidationSchema,
+  TimeActions,
+} from '@owl-app/lib-contracts';
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
 import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 
@@ -33,7 +29,8 @@ export class StopWathController {
   constructor(
     @InjectAssemblerQueryService(TimeAssembler)
     readonly queryService: AppAssemblerQueryService<TimeResponse, TimeEntity>,
-    private readonly commandBus: CommandBus) {}
+    private readonly commandBus: CommandBus
+  ) {}
 
   @ApiOperation({ summary: 'Start watching' })
   @HttpCode(HttpStatus.OK)
@@ -50,13 +47,11 @@ export class StopWathController {
   })
   @Post('/stopwatch')
   @RoutePermissions(AvalilableCollections.TIME, TimeActions.START_WATCH)
-  async watch(
-    @Body() watch: WatchRequest
-  ): Promise<TimeResponse> {
+  async watch(@Body() watch: WatchRequest): Promise<TimeResponse> {
     const createdTime = await this.queryService.createWithRelations(
-      {...watch, timeIntervalStart: (new Date()).toISOString() },
+      { ...watch, timeIntervalStart: new Date().toISOString() },
       { timeIntervalEnd: { is: null } },
-      { forceFilters: ['user'] },
+      { forceFilters: ['user'] }
     );
 
     return createdTime;
@@ -102,7 +97,7 @@ export class StopWathController {
   ): Promise<TimeResponse> {
     const updatedTime = await this.queryService.updateWithRelations(
       { timeIntervalEnd: { is: null } },
-      {...stop, ... { timeIntervalEnd: (new Date()).toISOString() }},
+      { ...stop, ...{ timeIntervalEnd: new Date().toISOString() } },
       { forceFilters: ['user'] }
     );
 

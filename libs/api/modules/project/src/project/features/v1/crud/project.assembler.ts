@@ -5,7 +5,4 @@ import { ProjectEntity } from '../../../../domain/entity/project.entity';
 import { ProjectResponse } from '../../../dto/project.response';
 
 @Assembler(ProjectResponse, ProjectEntity)
-export class ProjectAssembler extends ClassTransformerAssembler<
-  ProjectResponse,
-  ProjectEntity
-> {}
+export class ProjectAssembler extends ClassTransformerAssembler<ProjectResponse, ProjectEntity> {}

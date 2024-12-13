@@ -1,5 +1,4 @@
-
-import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
+import { defineModule } from '@owl-app/lib-app-core/application/defines/module';
 
 import LoginRoute from './features/login/login.vue';
 import LogoutRoute from './features/logout/logout.vue';
@@ -47,7 +46,7 @@ export default defineModule({
         meta: {
           public: true,
         },
-      }
-    ]
-  }
-})
+      },
+    ],
+  },
+});

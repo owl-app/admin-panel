@@ -13,7 +13,7 @@ module.exports = {
       main: './src/database/seeder.ts',
       tsConfig: './tsconfig.app.json',
       optimization: false,
-      outputHashing: 'none'
+      outputHashing: 'none',
     }),
   ],
 };

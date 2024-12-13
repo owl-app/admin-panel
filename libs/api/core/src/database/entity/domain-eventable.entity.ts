@@ -19,10 +19,7 @@ export default class DomainEventableEntity {
     this.availableDomainEvents = [];
   }
 
-  public async publishEvents(
-    id: string,
-    eventEmitter: EventEmitter2
-  ): Promise<void> {
+  public async publishEvents(id: string, eventEmitter: EventEmitter2): Promise<void> {
     await Promise.all(
       this.domainEvents.map(async (event) => {
         const result = await eventEmitter.emitAsync(

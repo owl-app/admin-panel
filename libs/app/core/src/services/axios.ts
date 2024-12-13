@@ -1,13 +1,13 @@
 import axios from 'axios';
-import type { 
+import type {
   AxiosInterceptorManager,
   AxiosRequestConfig,
   AxiosResponse,
   CreateAxiosDefaults,
-  InternalAxiosRequestConfig 
-} from "axios";
+  InternalAxiosRequestConfig,
+} from 'axios';
 
-export interface ApiConfig<D> extends AxiosRequestConfig<D>{
+export interface ApiConfig<D> extends AxiosRequestConfig<D> {
   isAuthenticated?: boolean;
 }
 
@@ -21,18 +21,31 @@ export interface Api {
   delete<T = any, R = AxiosResponse<T>, D = any>(url: string, config?: ApiConfig<D>): Promise<R>;
   head<T = any, R = AxiosResponse<T>, D = any>(url: string, config?: ApiConfig<D>): Promise<R>;
   options<T = any, R = AxiosResponse<T>, D = any>(url: string, config?: ApiConfig<D>): Promise<R>;
-  post<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: ApiConfig<D>): Promise<R>;
-  put<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: ApiConfig<D>): Promise<R>;
-  patch<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: ApiConfig<D>): Promise<R>;
+  post<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    data?: D,
+    config?: ApiConfig<D>
+  ): Promise<R>;
+  put<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    data?: D,
+    config?: ApiConfig<D>
+  ): Promise<R>;
+  patch<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    data?: D,
+    config?: ApiConfig<D>
+  ): Promise<R>;
 }
 
 export type CreateApiDefaults<D = any> = CreateAxiosDefaults<D> & ApiConfig<D>;
 
-export type RequestConfig<D = any> = InternalAxiosRequestConfig<D> & ApiConfig<D> & {
-  id?: string;
-  start?: number;
-  measureLatency?: boolean;
-};
+export type RequestConfig<D = any> = InternalAxiosRequestConfig<D> &
+  ApiConfig<D> & {
+    id?: string;
+    start?: number;
+    measureLatency?: boolean;
+  };
 
 export type Response = AxiosResponse & { config: RequestConfig };
 
@@ -42,38 +55,56 @@ export function createApi(axiosConfig?: CreateApiDefaults): Api {
   return {
     interceptors: api.interceptors,
     ...{
-      async request<T = any, R = AxiosResponse<T>, D = any>(config: AxiosRequestConfig<D>): Promise<R>
-      {
+      async request<T = any, R = AxiosResponse<T>, D = any>(
+        config: AxiosRequestConfig<D>
+      ): Promise<R> {
         return api.request(config);
       },
-      async get<T = any, R = AxiosResponse<T>, D = any>(url: string, config?: ApiConfig<D>): Promise<R>
-      {
+      async get<T = any, R = AxiosResponse<T>, D = any>(
+        url: string,
+        config?: ApiConfig<D>
+      ): Promise<R> {
         return api.get(url, config);
       },
-      async delete<T = any, R = AxiosResponse<T>, D = any>(url: string, config?: ApiConfig<D>): Promise<R>
-      {
+      async delete<T = any, R = AxiosResponse<T>, D = any>(
+        url: string,
+        config?: ApiConfig<D>
+      ): Promise<R> {
         return api.delete(url, config);
       },
-      async head<T = any, R = AxiosResponse<T>, D = any>(url: string, config?: ApiConfig<D>): Promise<R>
-      {
+      async head<T = any, R = AxiosResponse<T>, D = any>(
+        url: string,
+        config?: ApiConfig<D>
+      ): Promise<R> {
         return api.head(url, config);
       },
-      async options<T = any, R = AxiosResponse<T>, D = any>(url: string, config?: ApiConfig<D>): Promise<R>
-      {
+      async options<T = any, R = AxiosResponse<T>, D = any>(
+        url: string,
+        config?: ApiConfig<D>
+      ): Promise<R> {
         return api.options(url, config);
       },
-      async post<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: ApiConfig<D>): Promise<R>
-      {
+      async post<T = any, R = AxiosResponse<T>, D = any>(
+        url: string,
+        data?: D,
+        config?: ApiConfig<D>
+      ): Promise<R> {
         return api.post(url, data, config);
       },
-      async put<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: ApiConfig<D>): Promise<R>
-      {
+      async put<T = any, R = AxiosResponse<T>, D = any>(
+        url: string,
+        data?: D,
+        config?: ApiConfig<D>
+      ): Promise<R> {
         return api.put(url, data, config);
       },
-      patch<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: ApiConfig<D>): Promise<R>
-      {
+      patch<T = any, R = AxiosResponse<T>, D = any>(
+        url: string,
+        data?: D,
+        config?: ApiConfig<D>
+      ): Promise<R> {
         return api.patch(url, data, config);
-      }
-    }
+      },
+    },
   };
 }

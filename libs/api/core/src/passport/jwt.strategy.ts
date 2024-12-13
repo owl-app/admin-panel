@@ -28,48 +28,42 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ignoreExpiration: false,
       secretOrKey: jwtConfig.secret,
       jsonWebTokenOptions: {
-        clockTolerance: jwtConfig.tokenClockTolerance
-      }
+        clockTolerance: jwtConfig.tokenClockTolerance,
+      },
     });
   }
 
   async validate(payload: IJwtTokenPayload): Promise<Partial<AuthUserData>> {
-    const user = await this.jwtTokenService.validateUserForJWTStragtegy(
-      payload.email
-    );
+    const user = await this.jwtTokenService.validateUserForJWTStragtegy(payload.email);
 
     if (!user) {
       throw new UnauthorizedException();
     }
 
-    const userPermissions = await this.rbacManager.getPermissionsByUserId(user.id)
+    const userPermissions = await this.rbacManager.getPermissionsByUserId(user.id);
 
     return {
       id: user.id,
       username: user.username,
       email: user.email,
       tenant: user.tenant,
-      roles: (await this.rbacManager.getRolesByUserId(user.id)).map(
-        (role) => role.name
-      ),
+      roles: (await this.rbacManager.getRolesByUserId(user.id)).map((role) => role.name),
       permissions: {
-        routes: userPermissions
-          .reduce((permissions: string[], item) => {
-            if(item.refer === PermissionReferType.ROUTE) {
-              permissions.push(item.name);
-            }
+        routes: userPermissions.reduce((permissions: string[], item) => {
+          if (item.refer === PermissionReferType.ROUTE) {
+            permissions.push(item.name);
+          }
 
-            return permissions;
-          }, []),
-        fields: userPermissions
-          .reduce((permissions: string[], item) => {
-            if(item.refer === PermissionReferType.FIELD) {
-              permissions.push(item.name);
-            }
+          return permissions;
+        }, []),
+        fields: userPermissions.reduce((permissions: string[], item) => {
+          if (item.refer === PermissionReferType.FIELD) {
+            permissions.push(item.name);
+          }
 
-            return permissions;
-          }, [])
-      }
+          return permissions;
+        }, []),
+      },
     };
   }
 }

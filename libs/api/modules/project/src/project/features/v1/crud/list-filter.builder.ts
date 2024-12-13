@@ -11,11 +11,9 @@ export class ListFilterBuilder extends QueryFilterBuilder<Project, FilterProject
   build(data: FilterProjectQuery): Filter<Project> {
     const filters: Filter<Project>[] = [];
 
-    filters.push(
-      this.filterRegistry.get('string').apply(['name'], data?.search)
-    );
+    filters.push(this.filterRegistry.get('string').apply(['name'], data?.search));
 
-    if(data?.clients) {
+    if (data?.clients) {
       filters.push({ client: { id: { in: data?.clients?.split(',') } } });
     }
 

@@ -45,31 +45,23 @@ describe('AssemblerQueryService', () => {
       });
     }
 
-    convertAggregateQuery(
-      aggregate: AggregateQuery<TestDTO>
-    ): AggregateQuery<TestEntity> {
+    convertAggregateQuery(aggregate: AggregateQuery<TestDTO>): AggregateQuery<TestEntity> {
       return transformAggregateQuery(aggregate, {
         foo: 'bar',
       });
     }
 
-    convertAggregateResponse(
-      aggregate: AggregateResponse<TestEntity>
-    ): AggregateResponse<TestDTO> {
+    convertAggregateResponse(aggregate: AggregateResponse<TestEntity>): AggregateResponse<TestDTO> {
       return transformAggregateResponse(aggregate, {
         bar: 'foo',
       });
     }
 
-    convertToCreateEntity(
-      create: DeepPartial<TestDTO>
-    ): DeepPartial<TestEntity> {
+    convertToCreateEntity(create: DeepPartial<TestDTO>): DeepPartial<TestEntity> {
       return { bar: create.foo };
     }
 
-    convertToUpdateEntity(
-      update: DeepPartial<TestDTO>
-    ): DeepPartial<TestEntity> {
+    convertToUpdateEntity(update: DeepPartial<TestDTO>): DeepPartial<TestEntity> {
       return { bar: update.foo };
     }
   }
@@ -83,15 +75,12 @@ describe('AssemblerQueryService', () => {
       );
 
       when(
-        mockQueryService.query(
-          objectContaining({ filter: { bar: { eq: 'bar' } } }),
-          undefined
-        )
+        mockQueryService.query(objectContaining({ filter: { bar: { eq: 'bar' } } }), undefined)
       ).thenResolve([{ bar: 'bar' }]);
 
-      return expect(
-        assemblerService.query({ filter: { foo: { eq: 'bar' } } })
-      ).resolves.toEqual([{ foo: 'bar' }]);
+      return expect(assemblerService.query({ filter: { foo: { eq: 'bar' } } })).resolves.toEqual([
+        { foo: 'bar' },
+      ]);
     });
   });
 
@@ -102,16 +91,11 @@ describe('AssemblerQueryService', () => {
         new TestAssembler(),
         instance(mockQueryService)
       );
-      when(
-        mockQueryService.count(
-          objectContaining({ bar: { eq: 'bar' } }),
-          undefined
-        )
-      ).thenResolve(1);
+      when(mockQueryService.count(objectContaining({ bar: { eq: 'bar' } }), undefined)).thenResolve(
+        1
+      );
 
-      return expect(
-        assemblerService.count({ foo: { eq: 'bar' } })
-      ).resolves.toBe(1);
+      return expect(assemblerService.count({ foo: { eq: 'bar' } })).resolves.toBe(1);
     });
   });
 
@@ -136,10 +120,7 @@ describe('AssemblerQueryService', () => {
         instance(mockQueryService)
       );
       when(
-        mockQueryService.findById(
-          1,
-          objectContaining({ filter: { bar: { eq: 'bar' } } })
-        )
+        mockQueryService.findById(1, objectContaining({ filter: { bar: { eq: 'bar' } } }))
       ).thenResolve({
         bar: 'bar',
       });
@@ -204,9 +185,7 @@ describe('AssemblerQueryService', () => {
           objectContaining({ filter: { foo: { eq: 'bar' } } })
         )
       ).thenCall((relationClass, relation, entities) =>
-        Promise.resolve(
-          new Map<TestEntity, TestDTO[]>([[entities[0], [result]]])
-        )
+        Promise.resolve(new Map<TestEntity, TestDTO[]>([[entities[0], [result]]]))
       );
       return expect(
         assemblerService.queryRelations(TestDTO, 'test', [{ foo: 'bar' }], {
@@ -292,11 +271,7 @@ describe('AssemblerQueryService', () => {
           aggQuery
         )
       ).thenCall((relationClass, relation, entities) =>
-        Promise.resolve(
-          new Map<TestEntity, AggregateResponse<TestDTO>>([
-            [entities[0], result],
-          ])
-        )
+        Promise.resolve(new Map<TestEntity, AggregateResponse<TestDTO>>([[entities[0], result]]))
       );
       return expect(
         assemblerService.aggregateRelations(
@@ -358,12 +333,7 @@ describe('AssemblerQueryService', () => {
       ).thenResolve(1);
 
       return expect(
-        assemblerService.countRelations(
-          TestDTO,
-          'test',
-          { foo: 'bar' },
-          { foo: { eq: 'bar' } }
-        )
+        assemblerService.countRelations(TestDTO, 'test', { foo: 'bar' }, { foo: { eq: 'bar' } })
       ).resolves.toBe(1);
     });
 
@@ -402,11 +372,7 @@ describe('AssemblerQueryService', () => {
       );
 
       when(
-        mockQueryService.findRelation(
-          TestDTO,
-          'test',
-          objectContaining({ bar: 'bar' })
-        )
+        mockQueryService.findRelation(TestDTO, 'test', objectContaining({ bar: 'bar' }))
       ).thenResolve({
         foo: 'bar',
       });
@@ -425,15 +391,9 @@ describe('AssemblerQueryService', () => {
       const dto: TestDTO = { foo: 'bar' };
       const entity: TestEntity = { bar: 'bar' };
       const result: TestDTO = { foo: 'baz' };
-      when(
-        mockQueryService.findRelation(
-          TestDTO,
-          'test',
-          deepEqual([entity]),
-          undefined
-        )
-      ).thenCall((relationClass, relation, entities) =>
-        Promise.resolve(new Map<TestEntity, TestDTO>([[entities[0], result]]))
+      when(mockQueryService.findRelation(TestDTO, 'test', deepEqual([entity]), undefined)).thenCall(
+        (relationClass, relation, entities) =>
+          Promise.resolve(new Map<TestEntity, TestDTO>([[entities[0], result]]))
       );
       return expect(
         assemblerService.findRelation(TestDTO, 'test', [{ foo: 'bar' }])
@@ -448,20 +408,13 @@ describe('AssemblerQueryService', () => {
         new TestAssembler(),
         instance(mockQueryService)
       );
-      when(
-        mockQueryService.addRelations(
-          'test',
-          1,
-          deepEqual([2, 3, 4]),
-          undefined
-        )
-      ).thenResolve({
+      when(mockQueryService.addRelations('test', 1, deepEqual([2, 3, 4]), undefined)).thenResolve({
         bar: 'baz',
       });
 
-      return expect(
-        assemblerService.addRelations('test', 1, [2, 3, 4])
-      ).resolves.toEqual({ foo: 'baz' });
+      return expect(assemblerService.addRelations('test', 1, [2, 3, 4])).resolves.toEqual({
+        foo: 'baz',
+      });
     });
 
     it('should transform the filter and results for a single entity', async () => {
@@ -480,14 +433,9 @@ describe('AssemblerQueryService', () => {
       ).thenResolve({
         bar: 'baz',
       });
-      const addResult = await assemblerService.addRelations(
-        'test',
-        1,
-        [2, 3, 4],
-        {
-          filter: { foo: { eq: 'bar' } },
-        }
-      );
+      const addResult = await assemblerService.addRelations('test', 1, [2, 3, 4], {
+        filter: { foo: { eq: 'bar' } },
+      });
       return expect(addResult).toEqual({ foo: 'baz' });
     });
   });
@@ -502,9 +450,7 @@ describe('AssemblerQueryService', () => {
         bar: 'baz',
       });
 
-      return expect(
-        assemblerService.setRelation('test', 1, 2)
-      ).resolves.toEqual({ foo: 'baz' });
+      return expect(assemblerService.setRelation('test', 1, 2)).resolves.toEqual({ foo: 'baz' });
     });
     it('should transform the options and results for a single entity', () => {
       const mockQueryService = mock<QueryService<TestEntity>>();
@@ -538,15 +484,11 @@ describe('AssemblerQueryService', () => {
         new TestAssembler(),
         instance(mockQueryService)
       );
-      when(
-        mockQueryService.setRelations('test', 1, deepEqual([2]), undefined)
-      ).thenResolve({
+      when(mockQueryService.setRelations('test', 1, deepEqual([2]), undefined)).thenResolve({
         bar: 'baz',
       });
 
-      return expect(
-        assemblerService.setRelations('test', 1, [2])
-      ).resolves.toEqual({ foo: 'baz' });
+      return expect(assemblerService.setRelations('test', 1, [2])).resolves.toEqual({ foo: 'baz' });
     });
     it('should transform the options and results for a single entity', () => {
       const mockQueryService = mock<QueryService<TestEntity>>();
@@ -581,19 +523,14 @@ describe('AssemblerQueryService', () => {
         instance(mockQueryService)
       );
       when(
-        mockQueryService.removeRelations(
-          'test',
-          1,
-          deepEqual([2, 3, 4]),
-          undefined
-        )
+        mockQueryService.removeRelations('test', 1, deepEqual([2, 3, 4]), undefined)
       ).thenResolve({
         bar: 'baz',
       });
 
-      return expect(
-        assemblerService.removeRelations('test', 1, [2, 3, 4])
-      ).resolves.toEqual({ foo: 'baz' });
+      return expect(assemblerService.removeRelations('test', 1, [2, 3, 4])).resolves.toEqual({
+        foo: 'baz',
+      });
     });
 
     it('should transform the options and results for a single entity', () => {
@@ -627,15 +564,11 @@ describe('AssemblerQueryService', () => {
         new TestAssembler(),
         instance(mockQueryService)
       );
-      when(
-        mockQueryService.removeRelation('test', 1, 2, undefined)
-      ).thenResolve({
+      when(mockQueryService.removeRelation('test', 1, 2, undefined)).thenResolve({
         bar: 'baz',
       });
 
-      return expect(
-        assemblerService.removeRelation('test', 1, 2)
-      ).resolves.toEqual({ foo: 'baz' });
+      return expect(assemblerService.removeRelation('test', 1, 2)).resolves.toEqual({ foo: 'baz' });
     });
     it('should transform the options and results for a single entity', () => {
       const mockQueryService = mock<QueryService<TestEntity>>();
@@ -682,12 +615,7 @@ describe('AssemblerQueryService', () => {
         new TestAssembler(),
         instance(mockQueryService)
       );
-      when(
-        mockQueryService.getById(
-          1,
-          deepEqual({ filter: { bar: { eq: 'bar' } } })
-        )
-      ).thenResolve({
+      when(mockQueryService.getById(1, deepEqual({ filter: { bar: { eq: 'bar' } } }))).thenResolve({
         bar: 'bar',
       });
 
@@ -704,15 +632,11 @@ describe('AssemblerQueryService', () => {
         new TestAssembler(),
         instance(mockQueryService)
       );
-      when(
-        mockQueryService.createOne(objectContaining({ bar: 'baz' }))
-      ).thenResolve({
+      when(mockQueryService.createOne(objectContaining({ bar: 'baz' }))).thenResolve({
         bar: 'baz',
       });
 
-      return expect(
-        assemblerService.createOne({ foo: 'baz' })
-      ).resolves.toEqual({ foo: 'baz' });
+      return expect(assemblerService.createOne({ foo: 'baz' })).resolves.toEqual({ foo: 'baz' });
     });
   });
 
@@ -723,13 +647,11 @@ describe('AssemblerQueryService', () => {
         new TestAssembler(),
         instance(mockQueryService)
       );
-      when(
-        mockQueryService.createMany(deepEqual([{ bar: 'baz' }]))
-      ).thenResolve([{ bar: 'baz' }]);
+      when(mockQueryService.createMany(deepEqual([{ bar: 'baz' }]))).thenResolve([{ bar: 'baz' }]);
 
-      return expect(
-        assemblerService.createMany([{ foo: 'baz' }])
-      ).resolves.toEqual([{ foo: 'baz' }]);
+      return expect(assemblerService.createMany([{ foo: 'baz' }])).resolves.toEqual([
+        { foo: 'baz' },
+      ]);
     });
   });
 
@@ -740,19 +662,11 @@ describe('AssemblerQueryService', () => {
         new TestAssembler(),
         instance(mockQueryService)
       );
-      when(
-        mockQueryService.updateOne(
-          1,
-          objectContaining({ bar: 'baz' }),
-          undefined
-        )
-      ).thenResolve({
+      when(mockQueryService.updateOne(1, objectContaining({ bar: 'baz' }), undefined)).thenResolve({
         bar: 'baz',
       });
 
-      return expect(
-        assemblerService.updateOne(1, { foo: 'baz' })
-      ).resolves.toEqual({ foo: 'baz' });
+      return expect(assemblerService.updateOne(1, { foo: 'baz' })).resolves.toEqual({ foo: 'baz' });
     });
 
     it('should transform the filter and results for a single entity', () => {
@@ -772,11 +686,7 @@ describe('AssemblerQueryService', () => {
       });
 
       return expect(
-        assemblerService.updateOne(
-          1,
-          { foo: 'baz' },
-          { filter: { foo: { eq: 'bar' } } }
-        )
+        assemblerService.updateOne(1, { foo: 'baz' }, { filter: { foo: { eq: 'bar' } } })
       ).resolves.toEqual({
         foo: 'baz',
       });
@@ -830,10 +740,7 @@ describe('AssemblerQueryService', () => {
         instance(mockQueryService)
       );
       when(
-        mockQueryService.deleteOne(
-          1,
-          objectContaining({ filter: { bar: { eq: 'bar' } } })
-        )
+        mockQueryService.deleteOne(1, objectContaining({ filter: { bar: { eq: 'bar' } } }))
       ).thenResolve({
         bar: 'baz',
       });
@@ -851,13 +758,11 @@ describe('AssemblerQueryService', () => {
         new TestAssembler(),
         instance(mockQueryService)
       );
-      when(
-        mockQueryService.deleteMany(objectContaining({ bar: { eq: 'bar' } }))
-      ).thenResolve({ deletedCount: 1 });
+      when(mockQueryService.deleteMany(objectContaining({ bar: { eq: 'bar' } }))).thenResolve({
+        deletedCount: 1,
+      });
 
-      return expect(
-        assemblerService.deleteMany({ foo: { eq: 'bar' } })
-      ).resolves.toEqual({
+      return expect(assemblerService.deleteMany({ foo: { eq: 'bar' } })).resolves.toEqual({
         deletedCount: 1,
       });
     });

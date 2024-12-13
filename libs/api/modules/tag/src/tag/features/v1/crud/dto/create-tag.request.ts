@@ -1,8 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateTagRequest{
-
-    @ApiProperty({ type: () => String })
-    name: string;
-
+export class CreateTagRequest {
+  @ApiProperty({ type: () => String })
+  name: string;
 }

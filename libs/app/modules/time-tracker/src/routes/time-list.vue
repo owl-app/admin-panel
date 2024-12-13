@@ -1,9 +1,15 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { DateTime } from 'luxon'
+import { DateTime } from 'luxon';
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 
-import { type Time, type Tag, type Project, AvalilableCollections, TimeActions } from "@owl-app/lib-contracts";
+import {
+  type Time,
+  type Tag,
+  type Project,
+  AvalilableCollections,
+  TimeActions,
+} from '@owl-app/lib-contracts';
 
 import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
@@ -11,13 +17,13 @@ import StringFilter from '@owl-app/lib-app-core/components/grid/components/filte
 import SelectFilter from '@owl-app/lib-app-core/components/grid/components/filters/select.vue';
 import DateRangeFilter from '@owl-app/lib-app-core/components/grid/components/filters/date-range.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
-import { useApi } from '@owl-app/lib-app-core/composables/use-system'
+import { useApi } from '@owl-app/lib-app-core/composables/use-system';
 
 import CreateInline from '../components/create-inline.vue';
 
 type GroupedWeeksAndDaysItem = {
-  sum: Duration,
-  items: Record<string, Time[]>
+  sum: Duration;
+  items: Record<string, Time[]>;
 };
 
 type GroupedWeeksAndDays = Record<string, Record<string, GroupedWeeksAndDaysItem>>;
@@ -37,7 +43,7 @@ const loadingData = ref(false);
 const columns = defineVaDataTableColumns([
   { label: 'Name', key: 'name', sortable: true },
   { label: ' ', key: 'actions' },
-])
+]);
 
 loadData();
 
@@ -56,10 +62,7 @@ async function loadProjects(): Promise<void> {
 async function loadData(): Promise<void> {
   loadingData.value = true;
 
-  await Promise.all([
-    loadTags(),
-    loadProjects()
-  ]);
+  await Promise.all([loadTags(), loadProjects()]);
 
   loadingData.value = false;
 }
@@ -70,45 +73,54 @@ function groupByWeek(items: Time[]) {
 
     return {
       from: curr.startOf('week').toFormat('yyyy-MM-dd').toString(),
-      to: curr.endOf('week').toFormat('yyyy-MM-dd').toString()
-    }
+      to: curr.endOf('week').toFormat('yyyy-MM-dd').toString(),
+    };
   }
 
   const groupedWeeks: GroupedWeeksAndDays = items.reduce((acc, obj) => {
     const { from, to } = getWeekRange(obj.timeIntervalStart as string);
 
     const weekKey = `${from} / ${to}`;
-    const dateKey = DateTime.fromISO(obj.timeIntervalStart as string).toLocaleString(DateTime.DATE_FULL);
+    const dateKey = DateTime.fromISO(obj.timeIntervalStart as string).toLocaleString(
+      DateTime.DATE_FULL
+    );
 
     if (!acc[weekKey]) {
       acc[weekKey] = {
-        sum: DateTime.fromISO(obj.timeIntervalEnd as string).diff(DateTime.fromISO(obj.timeIntervalStart as string)),
-        items: {} as Record<string, Time[]>
+        sum: DateTime.fromISO(obj.timeIntervalEnd as string).diff(
+          DateTime.fromISO(obj.timeIntervalStart as string)
+        ),
+        items: {} as Record<string, Time[]>,
       };
     } else {
-      acc[weekKey].sum = acc[weekKey]
-        .sum
-        .plus(DateTime.fromISO(obj.timeIntervalEnd as string).diff(DateTime.fromISO(obj.timeIntervalStart as string)));
+      acc[weekKey].sum = acc[weekKey].sum.plus(
+        DateTime.fromISO(obj.timeIntervalEnd as string).diff(
+          DateTime.fromISO(obj.timeIntervalStart as string)
+        )
+      );
     }
 
     if (!acc[weekKey].items[dateKey as string]) {
       acc[weekKey].items[dateKey as string] = {
-        sum: DateTime.fromISO(obj.timeIntervalEnd as string).diff(DateTime.fromISO(obj.timeIntervalStart as string)),
-        items: [] as Time[]
+        sum: DateTime.fromISO(obj.timeIntervalEnd as string).diff(
+          DateTime.fromISO(obj.timeIntervalStart as string)
+        ),
+        items: [] as Time[],
       };
     } else {
-      acc[weekKey].items[dateKey as string].sum = acc[weekKey]
-        .items[dateKey as string]
-        .sum
-        .plus(DateTime.fromISO(obj.timeIntervalEnd as string).diff(DateTime.fromISO(obj.timeIntervalStart as string)));
+      acc[weekKey].items[dateKey as string].sum = acc[weekKey].items[dateKey as string].sum.plus(
+        DateTime.fromISO(obj.timeIntervalEnd as string).diff(
+          DateTime.fromISO(obj.timeIntervalStart as string)
+        )
+      );
     }
 
     acc[weekKey].items[dateKey as string].items.push({
       ...obj,
       ...{
         timeIntervalStart: new Date(obj.timeIntervalStart),
-        timeIntervalEnd: new Date(obj.timeIntervalEnd)
-      }
+        timeIntervalEnd: new Date(obj.timeIntervalEnd),
+      },
     });
 
     return acc;
@@ -118,15 +130,15 @@ function groupByWeek(items: Time[]) {
     groupedWeeks[weekKey].items = Object.keys(groupedWeeks[weekKey].items)
       .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
       .reduce((sortedAcc: { [date: string]: Time[] }, dateKey: string) => {
-          sortedAcc[dateKey] = groupedWeeks[weekKey].items[dateKey];
-          return sortedAcc;
+        sortedAcc[dateKey] = groupedWeeks[weekKey].items[dateKey];
+        return sortedAcc;
       }, {});
 
-      Object.keys(groupedWeeks[weekKey].items).forEach((dateKey) => {
-        groupedWeeks[weekKey].items[dateKey].items.sort(
-          (a, b) => (b.timeIntervalStart as Date).getTime() - (a.timeIntervalStart as Date).getTime()
-        );
-      })
+    Object.keys(groupedWeeks[weekKey].items).forEach((dateKey) => {
+      groupedWeeks[weekKey].items[dateKey].items.sort(
+        (a, b) => (b.timeIntervalStart as Date).getTime() - (a.timeIntervalStart as Date).getTime()
+      );
+    });
   });
 
   const sortedByWeeks = Object.entries(groupedWeeks)
@@ -153,9 +165,9 @@ function getProjectUrlFilter(clientFitler: string | undefined): string {
 }
 
 async function exportCsv(filters: Record<string, string | string[]>) {
-  const response = await api.get('times/export-csv', { 
+  const response = await api.get('times/export-csv', {
     params: filters,
-    responseType: 'blob'
+    responseType: 'blob',
   });
 
   const blob = new Blob([response?.data], { type: 'text/csv' });
@@ -172,7 +184,6 @@ async function exportCsv(filters: Record<string, string | string[]>) {
 
 <template>
   <panel-layout>
-
     <create-inline
       ref="timerCreateInline"
       url="times"
@@ -185,7 +196,9 @@ async function exportCsv(filters: Record<string, string | string[]>) {
       @saved="gridRef?.reloadGrid"
     >
       <template #actions="{ save, isManual, startTimer, isTimerStart }">
-        <va-button v-if="!isManual && !isTimerStart" @click="startTimer()" class="w-full">START</va-button>
+        <va-button v-if="!isManual && !isTimerStart" @click="startTimer()" class="w-full"
+          >START</va-button
+        >
         <va-button v-if="isManual" @click="save()" class="w-full">ADD</va-button>
       </template>
     </create-inline>
@@ -193,8 +206,11 @@ async function exportCsv(filters: Record<string, string | string[]>) {
     <div class="mb-10" />
 
     <grid ref="gridRef" :columns="columns" defaultSort="id" url="times" layout="custom">
-      <template  #content-filter="{ filters, changeFilter, removeFilter }">
-        <div class="grid grid-cols-16 gap-2 grid-flow-col" style="margin-left:auto; grid-auto-flow: column;">
+      <template #content-filter="{ filters, changeFilter, removeFilter }">
+        <div
+          class="grid grid-cols-16 gap-2 grid-flow-col"
+          style="margin-left: auto; grid-auto-flow: column"
+        >
           <div class="col-start-1 col-end-4">
             <date-range-filter
               label="Date"
@@ -257,7 +273,7 @@ async function exportCsv(filters: Record<string, string | string[]>) {
           </div>
         </div>
         <div class="my-2 text-right text-xs font-bold underline">
-          <va-badge 
+          <va-badge
             text="Export to CSV"
             class="cursor-pointer"
             color="secondary"
@@ -276,10 +292,11 @@ async function exportCsv(filters: Record<string, string | string[]>) {
             <div class="flex mb-4">
               <va-chip>{{ startWeek }}</va-chip>
               <div class="ml-auto content-center">
-                <span class="text-xs">Week total:</span> <span class="font-bold text-lg ml-1">{{ groupWeek.sum.toFormat('hh:mm:ss') }}</span>
+                <span class="text-xs">Week total:</span>
+                <span class="font-bold text-lg ml-1">{{ groupWeek.sum.toFormat('hh:mm:ss') }}</span>
               </div>
             </div>
-            <va-card 
+            <va-card
               v-for="(groupDay, startDay) in groupWeek.items"
               :key="startDay"
               class="card-time mb-4"
@@ -291,24 +308,29 @@ async function exportCsv(filters: Record<string, string | string[]>) {
                 <div class="flex w-full normal-case">
                   <div class="content-center">{{ startDay }}</div>
                   <div class="ml-auto content-center">
-                    <span class="text-xs font-thin">Total:</span> <span class="text-lg ml-1">{{ groupDay.sum.toFormat('hh:mm:ss') }}</span>
+                    <span class="text-xs font-thin">Total:</span>
+                    <span class="text-lg ml-1">{{ groupDay.sum.toFormat('hh:mm:ss') }}</span>
                   </div>
                 </div>
               </va-card-title>
               <va-card-content>
                 <create-inline
-                  v-for="(time) in groupDay.items"
+                  v-for="time in groupDay.items"
                   :url="`times/${time.id}`"
                   :key="`${time.id}-${time.timeIntervalStart}-${time.timeIntervalEnd}`"
                   :default-value="time"
                   :is-saved-after-change="true"
                   :tag-options="[
                     ...tags,
-                    ...time.tags.filter(tag => tag.archived && !tags.find(existing => tag.id === existing.id))
+                    ...time.tags.filter(
+                      (tag) => tag.archived && !tags.find((existing) => tag.id === existing.id)
+                    ),
                   ]"
                   :project-options="[
                     ...projects,
-                    ...(projects?.find(project => project.id === time?.project?.id) ? [] : [time.project])
+                    ...(projects?.find((project) => project.id === time?.project?.id)
+                      ? []
+                      : [time.project]),
                   ]"
                   @saved="gridRef?.reloadGrid"
                 >
@@ -339,7 +361,7 @@ async function exportCsv(filters: Record<string, string | string[]>) {
         </va-inner-loading>
       </template>
     </grid>
-    <delete-modal 
+    <delete-modal
       ref="deleteModal"
       collection="times"
       v-model="showDeleteModal"

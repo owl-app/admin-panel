@@ -10,10 +10,10 @@
 <script lang="ts" setup>
 withDefaults(
   defineProps<{
-    color?: string
+    color?: string;
   }>(),
   {
     color: 'inherit',
-  },
-)
+  }
+);
 </script>

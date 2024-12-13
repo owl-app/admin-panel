@@ -21,9 +21,7 @@ export class RelationQueryService<
   C = DeepPartial<DTO>,
   U = DeepPartial<DTO>
 > extends ProxyQueryService<DTO, C, U> {
-  readonly relations:
-    | Record<string, QueryServiceRelation<DTO, unknown>>
-    | undefined;
+  readonly relations: Record<string, QueryServiceRelation<DTO, unknown>> | undefined;
 
   constructor(
     queryService: QueryService<DTO, C, U>,
@@ -33,9 +31,7 @@ export class RelationQueryService<
   constructor(relations: Record<string, QueryServiceRelation<DTO, unknown>>);
 
   constructor(
-    queryService:
-      | QueryService<DTO, C, U>
-      | Record<string, QueryServiceRelation<DTO, unknown>>,
+    queryService: QueryService<DTO, C, U> | Record<string, QueryServiceRelation<DTO, unknown>>,
     relations?: Record<string, QueryServiceRelation<DTO, unknown>>
   ) {
     if (typeof queryService.query === 'function') {
@@ -43,10 +39,7 @@ export class RelationQueryService<
       this.relations = relations;
     } else {
       super(NoOpQueryService.getInstance());
-      this.relations = queryService as Record<
-        string,
-        QueryServiceRelation<DTO, unknown>
-      >;
+      this.relations = queryService as Record<string, QueryServiceRelation<DTO, unknown>>;
     }
   }
 
@@ -128,27 +121,13 @@ export class RelationQueryService<
     dto: DTO | DTO[],
     filter: Filter<Relation>,
     aggregate: AggregateQuery<Relation>
-  ): Promise<
-    AggregateResponse<Relation>[] | Map<DTO, AggregateResponse<Relation>[]>
-  > {
+  ): Promise<AggregateResponse<Relation>[] | Map<DTO, AggregateResponse<Relation>[]>> {
     const serviceRelation = this.getRelation<Relation>(relationName);
     if (!serviceRelation) {
       if (Array.isArray(dto)) {
-        return super.aggregateRelations(
-          RelationClass,
-          relationName,
-          dto,
-          filter,
-          aggregate
-        );
+        return super.aggregateRelations(RelationClass, relationName, dto, filter, aggregate);
       }
-      return super.aggregateRelations(
-        RelationClass,
-        relationName,
-        dto,
-        filter,
-        aggregate
-      );
+      return super.aggregateRelations(RelationClass, relationName, dto, filter, aggregate);
     }
     const { query: qf, service } = serviceRelation;
     if (Array.isArray(dto)) {
@@ -164,10 +143,7 @@ export class RelationQueryService<
       );
       return map;
     }
-    return service.aggregate(
-      mergeQuery({ filter }, qf(dto)).filter ?? {},
-      aggregate
-    );
+    return service.aggregate(mergeQuery({ filter }, qf(dto)).filter ?? {}, aggregate);
   }
 
   override countRelations<Relation>(
@@ -202,9 +178,7 @@ export class RelationQueryService<
       const map = new Map<DTO, number>();
       await Promise.all(
         dto.map(async (d) => {
-          const count = await service.count(
-            mergeQuery({ filter }, qf(d)).filter || {}
-          );
+          const count = await service.count(mergeQuery({ filter }, qf(d)).filter || {});
           map.set(d, count);
         })
       );
@@ -268,15 +242,11 @@ export class RelationQueryService<
       return map;
     }
     return (
-      await service.query(
-        mergeQuery(qf(dto), { paging: { limit: 1 }, filter: opts?.filter })
-      )
+      await service.query(mergeQuery(qf(dto), { paging: { limit: 1 }, filter: opts?.filter }))
     )[0];
   }
 
-  getRelation<Relation>(
-    name: string
-  ): QueryServiceRelation<DTO, Relation> | undefined {
+  getRelation<Relation>(name: string): QueryServiceRelation<DTO, Relation> | undefined {
     if (this.relations !== undefined) {
       const relation = this.relations[name];
       if (relation) {

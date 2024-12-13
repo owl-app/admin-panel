@@ -104,12 +104,7 @@ export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>>
     query: Query<Relation>
   ): Promise<Relation[] | Map<DTO, Relation[]>> {
     if (Array.isArray(dto)) {
-      return this.proxied.queryRelations(
-        RelationClass,
-        relationName,
-        dto,
-        query
-      );
+      return this.proxied.queryRelations(RelationClass, relationName, dto, query);
     }
     return this.proxied.queryRelations(RelationClass, relationName, dto, query);
   }
@@ -135,19 +130,9 @@ export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>>
     filter: Filter<Relation>
   ): Promise<number | Map<DTO, number>> {
     if (Array.isArray(dto)) {
-      return this.proxied.countRelations(
-        RelationClass,
-        relationName,
-        dto,
-        filter
-      );
+      return this.proxied.countRelations(RelationClass, relationName, dto, filter);
     }
-    return this.proxied.countRelations(
-      RelationClass,
-      relationName,
-      dto,
-      filter
-    );
+    return this.proxied.countRelations(RelationClass, relationName, dto, filter);
   }
 
   /**
@@ -210,10 +195,7 @@ export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>>
     return this.proxied.restoreOne(id, opts);
   }
 
-  async findById(
-    id: string | number,
-    opts?: FindByIdOptions<DTO>
-  ): Promise<DTO | undefined> {
+  async findById(id: string | number, opts?: FindByIdOptions<DTO>): Promise<DTO | undefined> {
     return this.proxied.findById(id, opts);
   }
 
@@ -225,10 +207,7 @@ export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>>
     return this.proxied.query(query, opts);
   }
 
-  queryWithCount(
-    query: Query<DTO>,
-    opts?: QueryOptions | undefined
-  ): Promise<[DTO[], number]> {
+  queryWithCount(query: Query<DTO>, opts?: QueryOptions | undefined): Promise<[DTO[], number]> {
     return this.proxied.queryWithCount(query, opts);
   }
 
@@ -248,11 +227,7 @@ export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>>
     return this.proxied.updateMany(update, filter);
   }
 
-  updateOne(
-    id: string | number,
-    update: U,
-    opts?: UpdateOneOptions<DTO>
-  ): Promise<DTO> {
+  updateOne(id: string | number, update: U, opts?: UpdateOneOptions<DTO>): Promise<DTO> {
     return this.proxied.updateOne(id, update, opts);
   }
 
@@ -276,24 +251,10 @@ export class ProxyQueryService<DTO, C = DeepPartial<DTO>, U = DeepPartial<DTO>>
     dto: DTO | DTO[],
     filter: Filter<Relation>,
     aggregate: AggregateQuery<Relation>
-  ): Promise<
-    AggregateResponse<Relation>[] | Map<DTO, AggregateResponse<Relation>[]>
-  > {
+  ): Promise<AggregateResponse<Relation>[] | Map<DTO, AggregateResponse<Relation>[]>> {
     if (Array.isArray(dto)) {
-      return this.proxied.aggregateRelations(
-        RelationClass,
-        relationName,
-        dto,
-        filter,
-        aggregate
-      );
+      return this.proxied.aggregateRelations(RelationClass, relationName, dto, filter, aggregate);
     }
-    return this.proxied.aggregateRelations(
-      RelationClass,
-      relationName,
-      dto,
-      filter,
-      aggregate
-    );
+    return this.proxied.aggregateRelations(RelationClass, relationName, dto, filter, aggregate);
   }
 }

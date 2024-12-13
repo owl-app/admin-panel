@@ -8,7 +8,6 @@ export enum TypesItem {
  * Both roles and permissions are items.
  */
 export abstract class Item {
-
   /**
    * Type of the item.
    */
@@ -44,7 +43,7 @@ export abstract class Item {
     description: string | null = null,
     ruleName: string | null = null,
     createdDate: Date | null = null,
-    updatedDate: Date | null = null,
+    updatedDate: Date | null = null
   ) {
     this.name = name;
     this.description = description;
@@ -53,11 +52,9 @@ export abstract class Item {
     this.updatedDate = updatedDate;
   }
 
-  getName(): string
-  {
+  getName(): string {
     return this.name;
   }
-
 
   public get createdAt(): Date | null {
     return this.createdDate;
@@ -83,14 +80,7 @@ export abstract class Item {
     return this.updatedDate !== null;
   }
 
-  toArray(): [string, string | null, string | null, Date | null, Date | null]
-  {
-    return  [
-      this.name,
-      this.description,
-      this.ruleName,
-      this.createdDate,
-      this.updatedDate
-    ];
+  toArray(): [string, string | null, string | null, Date | null, Date | null] {
+    return [this.name, this.description, this.ruleName, this.createdDate, this.updatedDate];
   }
 }

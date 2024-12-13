@@ -20,11 +20,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 
-import {
-  AvalilableCollections,
-  CrudActions,
-  timeValidationSchema,
-} from '@owl-app/lib-contracts';
+import { AvalilableCollections, CrudActions, timeValidationSchema } from '@owl-app/lib-contracts';
 
 import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query';
 import { InjectAssemblerQueryService, SortDirection } from '@owl-app/nestjs-query-core';
@@ -40,12 +36,8 @@ import { AppAssemblerQueryService } from '@owl-app/lib-api-core/query/core/servi
 import { TimeEntity } from '../../../../domain/entity/time.entity';
 import { TimeResponse } from '../../../dto/time.response';
 import { TimeAssembler } from '../../../assembler/time.assembler';
-import {
-  CreateTimeRequest,
-  UpdateTimeRequest,
-  TimePaginatedResponse,
-} from './dto';
-import { FilterTimeRequest } from '../../../dto'
+import { CreateTimeRequest, UpdateTimeRequest, TimePaginatedResponse } from './dto';
+import { FilterTimeRequest } from '../../../dto';
 
 @ApiTags('Time Tracker Manage')
 @Controller('times')
@@ -85,8 +77,7 @@ export class TimeCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Post()
   @RoutePermissions(AvalilableCollections.TIME, CrudActions.CREATE)
@@ -94,9 +85,7 @@ export class TimeCrudController {
     @Body(new ValibotValidationPipe(timeValidationSchema))
     createTimeRequest: CreateTimeRequest
   ) {
-    const createdTime = await this.service.createWithRelations(
-      createTimeRequest,
-    );
+    const createdTime = await this.service.createWithRelations(createTimeRequest);
 
     return createdTime;
   }
@@ -112,8 +101,7 @@ export class TimeCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Put(':id')
@@ -123,10 +111,7 @@ export class TimeCrudController {
     @Body(new ValibotValidationPipe(timeValidationSchema))
     updateTimeRequest: UpdateTimeRequest
   ): Promise<TimeResponse> {
-    const updatedTime = await this.service.updateWithRelations(
-      id,
-      updateTimeRequest,
-    );
+    const updatedTime = await this.service.updateWithRelations(id, updateTimeRequest);
 
     return updatedTime;
   }
@@ -155,8 +140,7 @@ export class TimeCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Get()
   @RoutePermissions(AvalilableCollections.TIME, CrudActions.LIST)

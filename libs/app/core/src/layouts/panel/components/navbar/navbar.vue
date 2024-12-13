@@ -16,11 +16,8 @@
             <OwlLogo />
             <div class="flex items-center">
               <div class="title">OWL</div>
-              <div class="subtitle ml-3 mb-auto align-start">
-                time tracker
-              </div>
+              <div class="subtitle ml-3 mb-auto align-start">time tracker</div>
             </div>
-            
           </div>
         </RouterLink>
       </div>
@@ -32,18 +29,18 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
-import { useAppStore } from '../../../../stores/app'
-import OwlLogo from '../../../../components/logo-cropped.vue'
-import NavbarActions from './components/navbar-actions.vue'
+import { storeToRefs } from 'pinia';
+import { useAppStore } from '../../../../stores/app';
+import OwlLogo from '../../../../components/logo-cropped.vue';
+import NavbarActions from './components/navbar-actions.vue';
 
 defineProps({
   isMobile: { type: Boolean, default: false },
-})
+});
 
-const appStore = useAppStore()
+const appStore = useAppStore();
 
-const { isSidebarMinimized } = storeToRefs(appStore)
+const { isSidebarMinimized } = storeToRefs(appStore);
 </script>
 
 <style lang="scss" scoped>
@@ -81,7 +78,7 @@ const { isSidebarMinimized } = storeToRefs(appStore)
       color: #6b6a69;
       font-family: sans-serif;
     }
-    
+
     .subtitle {
       color: #6b6a69;
       font-family: sans-serif;

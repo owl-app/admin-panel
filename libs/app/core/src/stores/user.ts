@@ -56,7 +56,11 @@ export const useUserStore = defineStore({
       this.error = null;
 
       try {
-        const { data } = await api.post('/auth/login', { email, password }, { isAuthenticated: false });
+        const { data } = await api.post(
+          '/auth/login',
+          { email, password },
+          { isAuthenticated: false }
+        );
 
         this.logged(data.accessTokenExpires, data.refreshTokenExpires);
       } catch (error: any) {
@@ -107,16 +111,19 @@ export const useUserStore = defineStore({
     },
     logged(accessTokenExpires = null, refreshTokenExpires = null) {
       this.authenticated = true;
-      this.accessTokenExpiry = (Date.now() + (accessTokenExpires ?? 0));
-      this.refreshTokenExpiry = (Date.now() + (refreshTokenExpires ?? 0));
+      this.accessTokenExpiry = Date.now() + (accessTokenExpires ?? 0);
+      this.refreshTokenExpiry = Date.now() + (refreshTokenExpires ?? 0);
     },
     async register(email: string, passwordNew: string, passwordNewRepeat: string) {
       this.loading = true;
       this.error = null;
 
       try {
-        await api.post('/registration', { email, passwordNew, passwordNewRepeat }, { isAuthenticated: false });
-
+        await api.post(
+          '/registration',
+          { email, passwordNew, passwordNewRepeat },
+          { isAuthenticated: false }
+        );
       } catch (error: any) {
         throw error.response?.data?.message ?? error.message;
       } finally {

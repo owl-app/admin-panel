@@ -4,17 +4,21 @@ import * as bcrypt from 'bcrypt';
 
 import { User } from '@owl-app/lib-contracts';
 import { type IJwtConfig } from '@owl-app/lib-api-core/config/jwt';
-import { IJwtTokenService, IJwtTokenPayload, Token } from '@owl-app/lib-api-core/passport/jwt-token.interface';
+import {
+  IJwtTokenService,
+  IJwtTokenPayload,
+  Token,
+} from '@owl-app/lib-api-core/passport/jwt-token.interface';
 import { getMilliseconds } from '@owl-app/lib-api-core/utils/get-milliseconds';
 
 import type { IUserRepository } from '../database/repository/user-repository.interface';
 
 @Injectable()
 export default class JwtTokenService implements IJwtTokenService<User> {
-  constructor( 
+  constructor(
     private readonly jwtConfig: IJwtConfig,
     private readonly userRepository: IUserRepository,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   createToken(payload: IJwtTokenPayload, secret: string, expiresIn: string): string {
@@ -52,7 +56,7 @@ export default class JwtTokenService implements IJwtTokenService<User> {
     return false;
   }
 
-  async validateUserForJWTStragtegy(email: string): Promise<User|null> {
+  async validateUserForJWTStragtegy(email: string): Promise<User | null> {
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) {
       return null;
@@ -60,17 +64,14 @@ export default class JwtTokenService implements IJwtTokenService<User> {
     return user;
   }
 
-  async getUserIfRefreshTokenMatches(refreshToken: string, email: string): Promise<User|null> {
+  async getUserIfRefreshTokenMatches(refreshToken: string, email: string): Promise<User | null> {
     const user = await this.userRepository.getUserByEmail(email);
 
     if (!user) {
       return null;
     }
 
-    const isRefreshTokenMatching = await bcrypt.compare(
-      refreshToken,
-      user.hashRefreshToken
-    );
+    const isRefreshTokenMatching = await bcrypt.compare(refreshToken, user.hashRefreshToken);
     if (isRefreshTokenMatching) {
       return user;
     }
@@ -84,11 +85,7 @@ export default class JwtTokenService implements IJwtTokenService<User> {
 
   private async setCurrentRefreshToken(refreshToken: string, email: string) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-    
-    await this.userRepository.updateRefreshToken(
-      email,
-      currentHashedRefreshToken
-    );
+
+    await this.userRepository.updateRefreshToken(email, currentHashedRefreshToken);
   }
 }
-

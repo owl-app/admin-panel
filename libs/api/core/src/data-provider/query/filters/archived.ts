@@ -11,16 +11,12 @@ export interface FilterArchivedQuery {
 }
 
 export class FilterArchivedApiProperty implements FilterArchivedQuery {
-
-  @ApiProperty({ enum: ArchiveOptions})
+  @ApiProperty({ enum: ArchiveOptions })
   @IsOptional()
   archived?: ArchiveOptions;
-
 }
 
-export class ArchivedFilter<Entity>
-  implements FilterCustom<SelectQueryBuilder<Entity>>
-{
+export class ArchivedFilter<Entity> implements FilterCustom<SelectQueryBuilder<Entity>> {
   apply<QueryData extends FilterArchivedQuery>(
     data: QueryData,
     qb: SelectQueryBuilder<Entity>

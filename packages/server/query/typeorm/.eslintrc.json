@@ -15,7 +15,7 @@
     // airbnb default this doesnt work when using parameter decorators.
     "@typescript-eslint/no-useless-constructor": "off",
     // override airbnb to allow class interface merging
-    "@typescript-eslint/no-redeclare": ["error", { "ignoreDeclarationMerge": true}],
+    "@typescript-eslint/no-redeclare": ["error", { "ignoreDeclarationMerge": true }],
 
     "@typescript-eslint/ban-ts-comment": "off"
   },

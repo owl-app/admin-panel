@@ -4,7 +4,8 @@
   "ignorePatterns": ["!**/*"],
   "rules": {
     "import/no-extraneous-dependencies": [
-      "error", {
+      "error",
+      {
         "devDependencies": true,
         "optionalDependencies": true,
         "peerDependencies": true
@@ -16,9 +17,7 @@
     {
       "files": ["*.ts", "*.tsx"],
       "parserOptions": {
-        "project": [
-          "apps/api-e2e/tsconfig.eslint.json"
-        ]
+        "project": ["apps/api-e2e/tsconfig.eslint.json"]
       }
     }
   ]

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { computed, ref, watch, VNode, Fragment, Ref } from 'vue'
+import { computed, ref, watch, VNode, Fragment, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { debounce, DebouncedFunc, snakeCase } from 'lodash';
-import * as v from 'valibot'
-import { BaseSchema, BaseIssue, FlatErrors } from 'valibot'
-import { useForm } from 'vuestic-ui'
+import * as v from 'valibot';
+import { BaseSchema, BaseIssue, FlatErrors } from 'valibot';
+import { useForm } from 'vuestic-ui';
 
 import { isEmpty } from '@owl-app/utils';
 
@@ -12,47 +12,39 @@ import type { Item, PrimaryKey } from '../../types/item';
 import { SaveMethodOptions, useItem } from '../../composables/use-item';
 
 interface Props {
-  collection: string,
-  schema?: BaseSchema<unknown, unknown, BaseIssue<unknown>> | null,
-  primaryKey?: PrimaryKey | undefined,
-  defaultValue?: Item | null,
-  classForm?: string,
-  clearFormAfterSave?: boolean,
-  action?: string,
+  collection: string;
+  schema?: BaseSchema<unknown, unknown, BaseIssue<unknown>> | null;
+  primaryKey?: PrimaryKey | undefined;
+  defaultValue?: Item | null;
+  classForm?: string;
+  clearFormAfterSave?: boolean;
+  action?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  clearFormAfterSave: true
-})
+  clearFormAfterSave: true,
+});
 
 const emit = defineEmits<{
-  (event: 'saved', dataSaved: any, formData: Ref): void
-}>()
+  (event: 'saved', dataSaved: any, formData: Ref): void;
+}>();
 
 const { t } = useI18n();
-const formData = ref({ ...props.defaultValue ?? {} })
-const validationErrors = ref<any>({})
-const { 
-    primaryKey,
-    item,
-    loading,
-    saving,
-    validationServerErrors,
-    getItem,
-    save,
-    action,
-  } = useItem<Item>(props.collection, props.primaryKey);
-  
-const { fields } = useForm('owl-form')
+const formData = ref({ ...(props.defaultValue ?? {}) });
+const validationErrors = ref<any>({});
+const { primaryKey, item, loading, saving, validationServerErrors, getItem, save, action } =
+  useItem<Item>(props.collection, props.primaryKey);
+
+const { fields } = useForm('owl-form');
 const isValid = ref(!props?.schema);
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(formData.value).some((key) => {
     return (
       formData.value[key as keyof Item] !== (item.value ?? props.defaultValue)?.[key as keyof Item]
-    )
-  })
-})
+    );
+  });
+});
 
 let immediateValidation = false;
 let textDebounce: DebouncedFunc<(...args: any[]) => any>;
@@ -61,8 +53,8 @@ defineExpose({
   isFormHasUnsavedChanges,
   formData,
   validationErrors,
-  validationServerErrors
-})
+  validationServerErrors,
+});
 
 watch(
   () => [props.primaryKey, props.action],
@@ -85,11 +77,11 @@ watch(
 
       formData.value = {
         ...item.value,
-      }
+      };
     }
   },
-  { immediate: true },
-)
+  { immediate: true }
+);
 
 watch(
   [formData],
@@ -101,8 +93,8 @@ watch(
       debouceValidate(1000);
     }
   },
-  { deep: true },
-)
+  { deep: true }
+);
 
 watch(
   () => validationServerErrors.value,
@@ -114,30 +106,30 @@ watch(
       isValid.value = true;
     }
   },
-  { deep: true },
-)
+  { deep: true }
+);
 
 const getUnSlottedVNodes = (nodes: VNode[]) => {
   if (Array.isArray(nodes) && nodes[0].type === Fragment) {
-    return nodes[0].children as VNode[]
+    return nodes[0].children as VNode[];
   }
 
-  return nodes
-}
+  return nodes;
+};
 
 function validate(showAllErrors = false): boolean {
   clearServerValidationErrors();
 
   if (!props.schema) return true;
 
-  if(textDebounce) {
+  if (textDebounce) {
     textDebounce.cancel();
   }
 
   const result = v.safeParse(props.schema, { ...formData.value });
 
   if (result.issues) {
-    const flattenResult = v.flatten(result.issues)?.nested ?? {}
+    const flattenResult = v.flatten(result.issues)?.nested ?? {};
 
     validationErrors.value = getErrors(flattenResult, showAllErrors);
     isValid.value = false;
@@ -151,35 +143,39 @@ function validate(showAllErrors = false): boolean {
   return true;
 }
 
-function getErrors(flatErrors: FlatErrors<undefined>['nested'], showAllErrors = false): Record<string, string> {
+function getErrors(
+  flatErrors: FlatErrors<undefined>['nested'],
+  showAllErrors = false
+): Record<string, string> {
   let errors = {};
 
   fields.value.forEach((field) => {
     if (
       (field.isDirty || field.isTouched || showAllErrors) &&
-      field.name !== undefined && 
-      (flatErrors && Object.keys(flatErrors).includes(field.name))
+      field.name !== undefined &&
+      flatErrors &&
+      Object.keys(flatErrors).includes(field.name)
     ) {
-      if(showAllErrors) {
+      if (showAllErrors) {
         field.isTouched = true;
       }
 
-      errors = { 
-        ...errors, 
-        ...{ 
+      errors = {
+        ...errors,
+        ...{
           [field.name]: (flatErrors[field.name] ?? []).map((error) => {
-            return t(`validation.${snakeCase(error.replace(/\s+/g,"_"))}`)
-          })
-        }
+            return t(`validation.${snakeCase(error.replace(/\s+/g, '_'))}`);
+          }),
+        },
       };
     }
-  })
+  });
 
   return errors;
 }
 
 function debouceValidate(time: number) {
-  if(textDebounce) {
+  if (textDebounce) {
     textDebounce.cancel();
   }
 
@@ -198,10 +194,10 @@ const saveForm = async (method?: SaveMethodOptions) => {
     validationErrors.value = {};
 
     if (props.clearFormAfterSave) {
-      formData.value = {}
+      formData.value = {};
     }
   }
-}
+};
 
 function clearServerValidationErrors() {
   fields.value.forEach((field) => {
@@ -210,40 +206,48 @@ function clearServerValidationErrors() {
         delete validationErrors.value[key];
         delete validationServerErrors.value[key];
       }
-    })
-  })
+    });
+  });
 }
 
 const makeSlotRef = () => {
   return new Proxy(formData, {
-    get (value, key) {
+    get(value, key) {
       if (key === 'ref') {
-        return formData.value
+        return formData.value;
       }
 
-      return Reflect.get(v, key)
+      return Reflect.get(v, key);
     },
-    set (_, key, value) {
+    set(_, key, value) {
       if (key === 'ref') {
-        formData.value = value
-        return true
+        formData.value = value;
+        return true;
       }
 
-      return Reflect.set(formData, key, value)
+      return Reflect.set(formData, key, value);
     },
-  })
-}
+  });
+};
 </script>
 
 <template>
   <VaInnerLoading :loading="loading || saving">
-    <va-form 
-      ref="owl-form"
-      :class="classForm"
-    >
+    <va-form ref="owl-form" :class="classForm">
       <template v-if="$slots.fields">
-        <template v-for="child in getUnSlottedVNodes($slots.fields({data: makeSlotRef(), validation: validationErrors }))" :key="child.key">
-          <component :is="child" @focusout="$event.stopPropagation(); validate();" />
+        <template
+          v-for="child in getUnSlottedVNodes(
+            $slots.fields({ data: makeSlotRef(), validation: validationErrors })
+          )"
+          :key="child.key"
+        >
+          <component
+            :is="child"
+            @focusout="
+              $event.stopPropagation();
+              validate();
+            "
+          />
         </template>
       </template>
 

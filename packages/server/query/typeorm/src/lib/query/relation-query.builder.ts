@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AggregateQuery, Class, Query } from '@owl-app/nestjs-query-core';
 import lodashFilter from 'lodash.filter';
-import {
-  Brackets,
-  ObjectLiteral,
-  Repository,
-  SelectQueryBuilder,
-} from 'typeorm';
+import { Brackets, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
 import { DriverUtils } from 'typeorm/driver/DriverUtils';
 import { ColumnMetadata } from 'typeorm/metadata/ColumnMetadata';
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
@@ -54,10 +49,7 @@ interface RelationQuery<Relation, Entity> {
     rawRelations: RawRelation[]
   ): Relation[];
 
-  batchSelect(
-    qb: SelectQueryBuilder<Relation>,
-    entities: Entity[]
-  ): SelectQueryBuilder<Relation>;
+  batchSelect(qb: SelectQueryBuilder<Relation>, entities: Entity[]): SelectQueryBuilder<Relation>;
 
   whereCondition(entity: Entity): SQLFragment;
 }
@@ -99,21 +91,14 @@ export class RelationQueryBuilder<Entity, Relation> {
     readonly relation: string,
     filterQueryBuilder?: FilterQueryBuilder<Relation>
   ) {
-    this.relationRepo = this.repo.manager.getRepository<Relation>(
-      this.relationMeta.from
-    );
+    this.relationRepo = this.repo.manager.getRepository<Relation>(this.relationMeta.from);
     this.filterQueryBuilder =
       filterQueryBuilder ?? new FilterQueryBuilder<Relation>(this.relationRepo);
     this.paramCount = 0;
   }
 
-  public select(
-    entity: Entity,
-    query: Query<Relation>
-  ): SelectQueryBuilder<Relation> {
-    const hasRelations = this.filterQueryBuilder.filterHasRelations(
-      query.filter
-    );
+  public select(entity: Entity, query: Query<Relation>): SelectQueryBuilder<Relation> {
+    const hasRelations = this.filterQueryBuilder.filterHasRelations(query.filter);
 
     let relationBuilder = this.createRelationQueryBuilder(entity);
     relationBuilder = hasRelations
@@ -131,10 +116,7 @@ export class RelationQueryBuilder<Entity, Relation> {
       query.filter,
       relationBuilder.alias
     );
-    relationBuilder = this.filterQueryBuilder.applyPaging(
-      relationBuilder,
-      query.paging
-    );
+    relationBuilder = this.filterQueryBuilder.applyPaging(relationBuilder, query.paging);
 
     return this.filterQueryBuilder.applySorting(
       relationBuilder,
@@ -164,10 +146,7 @@ export class RelationQueryBuilder<Entity, Relation> {
     qb = this.filterQueryBuilder.applySorting(qb, query.sorting, qb.alias);
     qb = this.filterQueryBuilder.applyPaging(qb, query.paging);
 
-    if (
-      this.relationRepo.metadata.deleteDateColumn?.propertyName &&
-      !withDeleted
-    ) {
+    if (this.relationRepo.metadata.deleteDateColumn?.propertyName && !withDeleted) {
       qb = qb.andWhere(
         `${qb.alias}.${this.relationRepo.metadata.deleteDateColumn.propertyName} IS NULL`
       );
@@ -186,19 +165,12 @@ export class RelationQueryBuilder<Entity, Relation> {
       this.entityIndexColName,
     ].map((c) => this.escapeName(c));
 
-    const unionFragment = this.createUnionAggregateSubQuery(
-      entities,
-      query,
-      aggregateQuery
-    );
+    const unionFragment = this.createUnionAggregateSubQuery(entities, query, aggregateQuery);
 
     return this.relationRepo.manager.connection
       .createQueryBuilder()
       .select(selects)
-      .from<EntityIndexRelation<Record<string, unknown>>>(
-        `(${unionFragment.sql})`,
-        this.unionAlias
-      )
+      .from<EntityIndexRelation<Record<string, unknown>>>(`(${unionFragment.sql})`, this.unionAlias)
       .setParameters(unionFragment.params);
   }
 
@@ -236,9 +208,7 @@ export class RelationQueryBuilder<Entity, Relation> {
       return this.relationMetadata;
     }
 
-    const relation = this.repo.metadata.relations.find(
-      (r) => r.propertyName === this.relation
-    );
+    const relation = this.repo.metadata.relations.find((r) => r.propertyName === this.relation);
 
     if (!relation) {
       throw new Error(`Unable to find entity for relation '${this.relation}'`);
@@ -283,12 +253,8 @@ export class RelationQueryBuilder<Entity, Relation> {
     return { sql: unionSql, params: unionSqls.parameters };
   }
 
-  private createRelationQueryBuilder(
-    entity: Entity
-  ): SelectQueryBuilder<Relation> {
-    const queryBuilder = this.relationRepo.createQueryBuilder(
-      this.relationMeta.fromAlias
-    );
+  private createRelationQueryBuilder(entity: Entity): SelectQueryBuilder<Relation> {
+    const queryBuilder = this.relationRepo.createQueryBuilder(this.relationMeta.fromAlias);
 
     const joinedBuilder = this.relationMeta.joins.reduce((qb, join) => {
       const conditions = join.conditions.map(
@@ -323,13 +289,11 @@ export class RelationQueryBuilder<Entity, Relation> {
       },
     ];
 
-    const fromPrimaryKeys = relation.inverseEntityMetadata.primaryColumns.map(
-      (pk) => ({
-        selectPath: `${relation.propertyName}.${pk.propertyName}`,
-        databasePath: pk.databasePath,
-        propertyName: pk.propertyName,
-      })
-    );
+    const fromPrimaryKeys = relation.inverseEntityMetadata.primaryColumns.map((pk) => ({
+      selectPath: `${relation.propertyName}.${pk.propertyName}`,
+      databasePath: pk.databasePath,
+      propertyName: pk.propertyName,
+    }));
 
     return {
       relation,
@@ -350,36 +314,25 @@ export class RelationQueryBuilder<Entity, Relation> {
           (columns, column) => ({
             ...columns,
 
-            [this.buildAlias(joinAlias, column.propertyName)]:
-              column.getEntityValue(entity),
+            [this.buildAlias(joinAlias, column.propertyName)]: column.getEntityValue(entity),
           }),
           {} as Partial<Entity>
         );
 
-        const filteredentityRelations = lodashFilter(
-          rawRelations,
-          rawFilter
-        ) as RawRelation[];
+        const filteredentityRelations = lodashFilter(rawRelations, rawFilter) as RawRelation[];
 
         return filteredentityRelations.reduce(
-          (
-            entityRelations: Array<RawRelation | Relation>,
-            rawRelation: RawRelation | Relation
-          ) => {
-            const filter =
-              this.getRelationPrimaryKeysPropertyNameAndColumnsName().reduce(
-                (columns: Partial<Entity>, column) => ({
-                  ...columns,
+          (entityRelations: Array<RawRelation | Relation>, rawRelation: RawRelation | Relation) => {
+            const filter = this.getRelationPrimaryKeysPropertyNameAndColumnsName().reduce(
+              (columns: Partial<Entity>, column) => ({
+                ...columns,
 
-                  [column.propertyName]:
-                    rawRelation[column.columnName as keyof typeof rawRelation],
-                }),
-                {} as Partial<Entity>
-              );
-
-            return entityRelations.concat(
-              lodashFilter(relations, filter) as Relation[]
+                [column.propertyName]: rawRelation[column.columnName as keyof typeof rawRelation],
+              }),
+              {} as Partial<Entity>
             );
+
+            return entityRelations.concat(lodashFilter(relations, filter) as Relation[]);
           },
           [] as Relation[]
         ) as Relation[];
@@ -387,9 +340,7 @@ export class RelationQueryBuilder<Entity, Relation> {
 
       batchSelect: (queryBuilder, entities) => {
         this.existingAlias = queryBuilder.expressionMap.aliases.find(
-          (alias) =>
-            alias.type === 'join' &&
-            alias.target === relation.entityMetadata.target
+          (alias) => alias.type === 'join' && alias.target === relation.entityMetadata.target
         );
 
         // Set the alias to use for the join
@@ -422,11 +373,7 @@ export class RelationQueryBuilder<Entity, Relation> {
               ({ leftHand, rightHand }) => `${leftHand} = ${rightHand}`
             );
 
-            return qb.innerJoin(
-              join.target,
-              join.alias,
-              conditions.join(' AND ')
-            );
+            return qb.innerJoin(join.target, join.alias, conditions.join(' AND '));
           }, queryBuilder);
         }
 
@@ -455,12 +402,13 @@ export class RelationQueryBuilder<Entity, Relation> {
   ): RelationQuery<Relation, Entity> {
     const aliasName = relation.propertyName;
     const columns = relation.inverseRelation.joinColumns;
-    const fromPrimaryKeys: PrimaryKey[] =
-      relation.inverseEntityMetadata.primaryColumns.map((pk) => ({
+    const fromPrimaryKeys: PrimaryKey[] = relation.inverseEntityMetadata.primaryColumns.map(
+      (pk) => ({
         selectPath: `${aliasName}.${pk.propertyName}`,
         databasePath: pk.databasePath,
         propertyName: pk.propertyName,
-      }));
+      })
+    );
 
     return {
       relation,
@@ -472,8 +420,7 @@ export class RelationQueryBuilder<Entity, Relation> {
         const filter = columns.reduce(
           (columnsFilter, column) => ({
             ...columnsFilter,
-            [column.propertyName]:
-              column.referencedColumn.getEntityValue(entity),
+            [column.propertyName]: column.referencedColumn.getEntityValue(entity),
           }),
           {} as Partial<Entity>
         );
@@ -487,8 +434,7 @@ export class RelationQueryBuilder<Entity, Relation> {
           .map((column) => {
             const paramName = this.getParamName(aliasName);
             params[paramName] = entities.map(
-              (entity) =>
-                column.referencedColumn.getEntityValue(entity) as unknown
+              (entity) => column.referencedColumn.getEntityValue(entity) as unknown
             );
 
             return `${aliasName}.${column.propertyPath} IN (:...${paramName})`;
@@ -514,9 +460,7 @@ export class RelationQueryBuilder<Entity, Relation> {
     };
   }
 
-  private getManyToManyOwnerMeta(
-    relation: RelationMetadata
-  ): RelationQuery<Relation, Entity> {
+  private getManyToManyOwnerMeta(relation: RelationMetadata): RelationQuery<Relation, Entity> {
     const mainAlias = relation.propertyName;
     const joinAlias = relation.junctionEntityMetadata.tableName;
     const joins: JoinColumn[] = [
@@ -530,13 +474,11 @@ export class RelationQueryBuilder<Entity, Relation> {
       },
     ];
 
-    const fromPrimaryKeys = relation.inverseEntityMetadata.primaryColumns.map(
-      (pk) => ({
-        selectPath: `${mainAlias}.${pk.propertyName}`,
-        databasePath: pk.databasePath,
-        propertyName: pk.propertyName,
-      })
-    );
+    const fromPrimaryKeys = relation.inverseEntityMetadata.primaryColumns.map((pk) => ({
+      selectPath: `${mainAlias}.${pk.propertyName}`,
+      databasePath: pk.databasePath,
+      propertyName: pk.propertyName,
+    }));
 
     return {
       relation,
@@ -549,20 +491,17 @@ export class RelationQueryBuilder<Entity, Relation> {
         entity: Entity,
         relations: Relation[],
         rawRelations: RawRelation[]
-      ): Relation[] => this.batchMapRelationsManyToMany<RawRelation>(
-        joinAlias,
-        relation.joinColumns,
-        entity,
-        relations,
-        rawRelations
-      ),
+      ): Relation[] =>
+        this.batchMapRelationsManyToMany<RawRelation>(
+          joinAlias,
+          relation.joinColumns,
+          entity,
+          relations,
+          rawRelations
+        ),
 
-      batchSelect: (qb, entities: Entity[]) => this.batchSelectManyToMany(
-        qb,
-        entities,
-        joinAlias,
-        relation.joinColumns
-      ),
+      batchSelect: (qb, entities: Entity[]) =>
+        this.batchSelectManyToMany(qb, entities, joinAlias, relation.joinColumns),
 
       whereCondition: (entity: Entity): SQLFragment => {
         const params: ObjectLiteral = {};
@@ -571,8 +510,7 @@ export class RelationQueryBuilder<Entity, Relation> {
           .map((joinColumn) => {
             const paramName = this.getParamName(joinColumn.propertyName);
 
-            params[paramName] =
-              joinColumn.referencedColumn.getEntityValue(entity);
+            params[paramName] = joinColumn.referencedColumn.getEntityValue(entity);
             return `${joinAlias}.${joinColumn.propertyName} = :${paramName}`;
           })
           .join(' AND ');
@@ -598,13 +536,11 @@ export class RelationQueryBuilder<Entity, Relation> {
       },
     ];
 
-    const fromPrimaryKeys = relation.inverseEntityMetadata.primaryColumns.map(
-      (pk) => ({
-        selectPath: `${mainAlias}.${pk.propertyName}`,
-        databasePath: pk.databasePath,
-        propertyName: pk.propertyName,
-      })
-    );
+    const fromPrimaryKeys = relation.inverseEntityMetadata.primaryColumns.map((pk) => ({
+      selectPath: `${mainAlias}.${pk.propertyName}`,
+      databasePath: pk.databasePath,
+      propertyName: pk.propertyName,
+    }));
 
     return {
       relation,
@@ -617,23 +553,25 @@ export class RelationQueryBuilder<Entity, Relation> {
         entity: Entity,
         relations: Relation[],
         rawRelations: RawRelation[]
-      ): Relation[] => this.batchMapRelationsManyToMany<RawRelation>(
-        joinAlias,
-        relation.inverseRelation.inverseJoinColumns,
-        entity,
-        relations,
-        rawRelations
-      ),
+      ): Relation[] =>
+        this.batchMapRelationsManyToMany<RawRelation>(
+          joinAlias,
+          relation.inverseRelation.inverseJoinColumns,
+          entity,
+          relations,
+          rawRelations
+        ),
 
       batchSelect: (
         qb: SelectQueryBuilder<Relation>,
         entities: Entity[]
-      ): SelectQueryBuilder<Relation> => this.batchSelectManyToMany(
-        qb,
-        entities,
-        joinAlias,
-        relation.inverseRelation.inverseJoinColumns
-      ),
+      ): SelectQueryBuilder<Relation> =>
+        this.batchSelectManyToMany(
+          qb,
+          entities,
+          joinAlias,
+          relation.inverseRelation.inverseJoinColumns
+        ),
 
       whereCondition: (entity: Entity): SQLFragment => {
         const params: ObjectLiteral = {};
@@ -642,8 +580,7 @@ export class RelationQueryBuilder<Entity, Relation> {
           .map((inverseJoinColumn) => {
             const paramName = this.getParamName(inverseJoinColumn.propertyName);
 
-            params[paramName] =
-              inverseJoinColumn.referencedColumn.getEntityValue(entity);
+            params[paramName] = inverseJoinColumn.referencedColumn.getEntityValue(entity);
 
             return `${joinAlias}.${inverseJoinColumn.propertyName} = :${paramName}`;
           })
@@ -711,29 +648,19 @@ export class RelationQueryBuilder<Entity, Relation> {
     // First filter the raw relations with the PK of the entity, then filter the relations
     // with the PK of the raw relation
 
-    const filteRawRelations = lodashFilter(
-      rawRelations,
-      rawFilter
-    ) as RawRelation[];
+    const filteRawRelations = lodashFilter(rawRelations, rawFilter) as RawRelation[];
 
     return filteRawRelations.reduce(
-      (
-        entityRelations: Array<RawRelation | Relation>,
-        rawRelation: RawRelation | Relation
-      ) => {
-        const filter =
-          this.getRelationPrimaryKeysPropertyNameAndColumnsName().reduce(
-            (columnsFilter, column) => ({
-              ...columnsFilter,
-              [column.propertyName]:
-                rawRelation[column.columnName as keyof typeof rawRelation],
-            }),
-            {} as Partial<Entity>
-          );
-
-        return entityRelations.concat(
-          lodashFilter(relations, filter) as Relation[]
+      (entityRelations: Array<RawRelation | Relation>, rawRelation: RawRelation | Relation) => {
+        const filter = this.getRelationPrimaryKeysPropertyNameAndColumnsName().reduce(
+          (columnsFilter, column) => ({
+            ...columnsFilter,
+            [column.propertyName]: rawRelation[column.columnName as keyof typeof rawRelation],
+          }),
+          {} as Partial<Entity>
         );
+
+        return entityRelations.concat(lodashFilter(relations, filter) as Relation[]);
       },
       [] as Relation[]
     ) as Relation[];

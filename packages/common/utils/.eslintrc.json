@@ -5,11 +5,8 @@
     {
       "files": ["*.ts", "*.tsx"],
       "parserOptions": {
-        "project": [
-          "packages/common/utils/tsconfig.eslint.json"
-        ]
+        "project": ["packages/common/utils/tsconfig.eslint.json"]
       }
     }
   ]
 }
-

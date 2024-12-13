@@ -1,9 +1,4 @@
-import {
-  ApiExtraModels,
-  ApiQuery,
-  ApiQueryOptions,
-  getSchemaPath,
-} from '@nestjs/swagger';
+import { ApiExtraModels, ApiQuery, ApiQueryOptions, getSchemaPath } from '@nestjs/swagger';
 import { applyDecorators } from '@nestjs/common';
 import { isObjectOrFunction } from '@owl-app/utils';
 

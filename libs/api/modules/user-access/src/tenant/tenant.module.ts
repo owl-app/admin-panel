@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common'
+import { Module } from '@nestjs/common';
 
-import { WinstonLoggerModule } from '@owl-app/winston-logger-nestjs'
+import { WinstonLoggerModule } from '@owl-app/winston-logger-nestjs';
 
-import { AppTypeOrmModule } from '@owl-app/lib-api-core/typeorm/app-typeorm.module'
-import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository'
+import { AppTypeOrmModule } from '@owl-app/lib-api-core/typeorm/app-typeorm.module';
+import { InjectableRepository } from '@owl-app/lib-api-core/database/repository/injectable.repository';
 
-import { TenantEntitySchema } from '../database/entity-schema/tenant.entity-schema'
+import { TenantEntitySchema } from '../database/entity-schema/tenant.entity-schema';
 
-import { CreateTenantWhenUserIsRegisteredDomainEventHandler } from './event-handlers/create-tenant-when-user-is-registered.domain-event-handler'
+import { CreateTenantWhenUserIsRegisteredDomainEventHandler } from './event-handlers/create-tenant-when-user-is-registered.domain-event-handler';
 
 @Module({
   imports: [
@@ -17,15 +17,11 @@ import { CreateTenantWhenUserIsRegisteredDomainEventHandler } from './event-hand
         {
           entity: TenantEntitySchema,
           repository: InjectableRepository,
-        }
-      ]
+        },
+      ],
     }),
   ],
-  controllers: [
-
-  ],
-  providers: [
-    CreateTenantWhenUserIsRegisteredDomainEventHandler,
-  ]
+  controllers: [],
+  providers: [CreateTenantWhenUserIsRegisteredDomainEventHandler],
 })
 export class TenantModule {}

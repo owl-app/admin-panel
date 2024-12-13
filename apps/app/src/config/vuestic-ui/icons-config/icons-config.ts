@@ -1,5 +1,5 @@
-import { createIconsConfig } from 'vuestic-ui'
-import aliases from './aliases'
+import { createIconsConfig } from 'vuestic-ui';
+import aliases from './aliases';
 
 export default createIconsConfig({
   aliases,
@@ -36,4 +36,4 @@ export default createIconsConfig({
       resolve: ({ content }) => ({ content }),
     },
   ],
-})
+});

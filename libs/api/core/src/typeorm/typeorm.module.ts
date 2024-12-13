@@ -10,18 +10,12 @@ import { createAppTypeOrmProviders } from './app-typeorm.providers';
 export class TypeOrmModule {
   static forFeature(
     opts: AppTypeOrmOpts,
-    dataSource:
-      | DataSource
-      | DataSourceOptions
-      | string = DEFAULT_DATA_SOURCE_NAME
+    dataSource: DataSource | DataSourceOptions | string = DEFAULT_DATA_SOURCE_NAME
   ): DynamicModule {
     const providers = createAppTypeOrmProviders(opts.entities, dataSource);
     const entities = opts.entities.map((entity) => entity.entity);
 
-    const baseTypeOrmModule = BaseTypeOrmModule.forFeature(
-      entities,
-      dataSource
-    );
+    const baseTypeOrmModule = BaseTypeOrmModule.forFeature(entities, dataSource);
 
     return {
       imports: [baseTypeOrmModule, ...(opts.imports ?? [])],

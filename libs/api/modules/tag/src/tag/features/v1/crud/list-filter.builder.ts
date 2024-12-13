@@ -10,9 +10,7 @@ export class ListFilterBuilder extends QueryFilterBuilder<Tag, FilterTagDto> {
   build(data: FilterTagDto): Filter<Tag> {
     const filters: Filter<Tag>[] = [];
 
-    filters.push(
-      this.filterRegistry.get('string').apply(['name'], data?.search)
-    );
+    filters.push(this.filterRegistry.get('string').apply(['name'], data?.search));
 
     return {
       or: filters,

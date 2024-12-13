@@ -10,16 +10,12 @@ import { TENANT_ENTITY } from '../../entity-tokens';
 import { EntitySetter } from '../../registry/interfaces/entity-setter';
 
 @Injectable()
-export class TenantRelationSetter<Entity extends TenantAware>
-  implements EntitySetter<Entity>
-{
+export class TenantRelationSetter<Entity extends TenantAware> implements EntitySetter<Entity> {
   constructor(readonly configService: ConfigService) {}
 
   supports(metadata: EntityMetadata): boolean {
-    return (
-      !!metadata.relations.find(
-        (r) => r.type === TENANT_ENTITY && r.propertyName === 'tenant'
-      )
+    return !!metadata.relations.find(
+      (r) => r.type === TENANT_ENTITY && r.propertyName === 'tenant'
     );
   }
 

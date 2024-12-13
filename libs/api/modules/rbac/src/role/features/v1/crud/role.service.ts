@@ -7,7 +7,10 @@ import { DeepPartial } from '@owl-app/nestjs-query-core';
 import { Permission } from '@owl-app/lib-api-core/rbac/types/permission';
 import { FilterQuery } from '@owl-app/lib-api-core/registry/interfaces/filter-query';
 import { EntitySetter } from '@owl-app/lib-api-core/registry/interfaces/entity-setter';
-import { AppTypeOrmQueryService, AppTypeOrmQueryServiceOpts } from '@owl-app/lib-api-core/query/typeorm/services/app-typeorm-query.service';
+import {
+  AppTypeOrmQueryService,
+  AppTypeOrmQueryServiceOpts,
+} from '@owl-app/lib-api-core/query/typeorm/services/app-typeorm-query.service';
 
 import { RoleEntity } from '../../../../domain/entity/role.entity';
 import { RoleSettingEntity } from '../../../../domain/entity/role-setting.entity';
@@ -20,14 +23,12 @@ export class RoleService extends AppTypeOrmQueryService<RoleEntity> {
     readonly filters: Registry<FilterQuery<RoleEntity>>,
     readonly setters: Registry<EntitySetter<RoleEntity>>,
     private dataSource: DataSource,
-    private rbacManager: RbacManager<Permission, Role>,
+    private rbacManager: RbacManager<Permission, Role>
   ) {
     super(repository, opts, filters, setters);
   }
 
-  public override async createOne(
-    record: DeepPartial<RoleEntity>
-  ): Promise<RoleEntity> {
+  public override async createOne(record: DeepPartial<RoleEntity>): Promise<RoleEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -54,20 +55,14 @@ export class RoleService extends AppTypeOrmQueryService<RoleEntity> {
     }
   }
 
-  async updateOne(
-    id: number | string,
-    update: DeepPartial<RoleEntity>
-  ): Promise<RoleEntity> {
+  async updateOne(id: number | string, update: DeepPartial<RoleEntity>): Promise<RoleEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      await this.rbacManager.updateRole(
-        id as string,
-        mapper.toPersistence(update)
-      );
+      await this.rbacManager.updateRole(id as string, mapper.toPersistence(update));
 
       const roleSetting = new RoleSettingEntity();
       roleSetting.displayName = update.setting?.displayName;

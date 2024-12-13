@@ -36,11 +36,7 @@ export abstract class ExceptionBase extends Error {
    * in application's log files. Only include non-sensitive
    * info that may help with debugging.
    */
-  constructor(
-    readonly message: string,
-    readonly cause?: Error,
-    readonly metadata?: unknown
-  ) {
+  constructor(readonly message: string, readonly cause?: Error, readonly metadata?: unknown) {
     super(message);
     Error.captureStackTrace(this, this.constructor);
     const ctx = RequestContextService.getContext();

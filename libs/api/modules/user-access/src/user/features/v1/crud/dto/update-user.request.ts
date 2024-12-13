@@ -4,7 +4,7 @@ import { IsOptional } from 'class-validator';
 import type { Role } from '@owl-app/lib-contracts';
 
 export class UpdateUserRequest {
-  @ApiProperty({ type: () => String, example: 'test@fajny.pl'})
+  @ApiProperty({ type: () => String, example: 'test@fajny.pl' })
   email?: string;
 
   @ApiProperty({ type: () => String })
@@ -26,4 +26,3 @@ export class UpdateUserRequest {
   @IsOptional()
   role?: Role;
 }
-

@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import { AvalilableCollections, Project, CrudActions, CommonActions } from "@owl-app/lib-contracts";
+import { AvalilableCollections, Project, CrudActions, CommonActions } from '@owl-app/lib-contracts';
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
@@ -13,7 +13,7 @@ import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue
 import ArchiveModal from '@owl-app/lib-app-core/components/modal/archive-modal.vue';
 import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 
-import ProjectModal from '../components/project-modal.vue'
+import ProjectModal from '../components/project-modal.vue';
 
 const { t } = useI18n();
 
@@ -31,20 +31,20 @@ const headerBar = {
   title: t('projects'),
   description: 'Managing projects in system',
   icon: 'source_notes',
-}
+};
 
 const columns = defineVaDataTableColumns([
   { label: 'Name', key: 'name', sortable: true, tdClass: ['is-line-through'] },
   { label: ' ', key: 'actions' },
-])
+]);
 const getRowBind = (row: Project): Record<string, string> => {
   if (row.archived) {
     return {
-      class: "archived"
+      class: 'archived',
     };
   }
   return {};
-}
+};
 </script>
 
 <template>
@@ -58,7 +58,6 @@ const getRowBind = (row: Project): Record<string, string> => {
       :headerBar="headerBar"
       :row-bind="getRowBind"
     >
-
       <template #header-bar-actions>
         <va-button
           preset="primary"
@@ -73,8 +72,11 @@ const getRowBind = (row: Project): Record<string, string> => {
         </va-button>
       </template>
 
-      <template  #content-filter="{ filters, changeFilter, removeFilter }">
-        <div class="grid grid-cols-12 gap-2 grid-flow-col" style="margin-left:auto; grid-auto-flow: column;">
+      <template #content-filter="{ filters, changeFilter, removeFilter }">
+        <div
+          class="grid grid-cols-12 gap-2 grid-flow-col"
+          style="margin-left: auto; grid-auto-flow: column"
+        >
           <div class="col-start-1 col-end-3">
             <archived-filter
               :modelValue="filters.archived"
@@ -159,27 +161,15 @@ const getRowBind = (row: Project): Record<string, string> => {
         </div>
       </template>
     </grid>
-    <project-modal
-      ref="projectModal"
-      v-model="showModal"
-      @saved="gridRef?.reloadGrid()"
-    />
+    <project-modal ref="projectModal" v-model="showModal" @saved="gridRef?.reloadGrid()" />
     <delete-modal
       ref="deleteModal"
       collection="projects"
       v-model="showDeleteModal"
       @deleted="gridRef?.reloadGrid"
     />
-    <archive-modal
-      ref="archiveModal"
-      collection="projects"
-      @archived="gridRef?.reloadGrid"
-    />
-    <archive-modal
-      ref="restoreModal"
-      collection="projects"
-      @archived="gridRef?.reloadGrid"
-    />
+    <archive-modal ref="archiveModal" collection="projects" @archived="gridRef?.reloadGrid" />
+    <archive-modal ref="restoreModal" collection="projects" @archived="gridRef?.reloadGrid" />
   </panel-layout>
 </template>
 

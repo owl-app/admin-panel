@@ -107,4 +107,4 @@ export default [
     name: 'key',
     to: 'ion-md-key',
   },
-]
+];

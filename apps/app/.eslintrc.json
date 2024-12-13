@@ -1,9 +1,6 @@
 {
   "root": true,
-  "extends": [
-    "eslint-config-custom/front",
-    "../../.eslintrc.base.json"
-  ],
+  "extends": ["eslint-config-custom/front", "../../.eslintrc.base.json"],
   "ignorePatterns": ["!**/*"],
   "rules": {
     "no-console": ["error", { "allow": ["warn", "error", "log", "timeEnd", "info", "time"] }]
@@ -12,11 +9,8 @@
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.vue"],
       "parserOptions": {
-        "project": [
-          "apps/app/tsconfig.eslint.json"
-        ]
+        "project": ["apps/app/tsconfig.eslint.json"]
       }
     }
   ]
 }
-

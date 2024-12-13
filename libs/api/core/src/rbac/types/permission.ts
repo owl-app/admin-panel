@@ -1,7 +1,6 @@
-import { Permission as BasePermission } from "@owl-app/rbac-manager";
+import { Permission as BasePermission } from '@owl-app/rbac-manager';
 
-export class Permission extends BasePermission
-{
+export class Permission extends BasePermission {
   refer: string;
 
   collection: string;
@@ -13,7 +12,7 @@ export class Permission extends BasePermission
     createdAt: Date | null = null,
     updatedAt: Date | null = null,
     collection: string = null,
-    refer: string = null,
+    refer: string = null
   ) {
     super(name, description, ruleName, createdAt, updatedAt);
 

@@ -5,7 +5,10 @@ import { DeepPartial } from '@owl-app/nestjs-query-core';
 
 import { Permission } from '@owl-app/lib-api-core/rbac/types/permission';
 import { RbacManager, Role } from '@owl-app/rbac-manager';
-import { AppTypeOrmQueryService, AppTypeOrmQueryServiceOpts } from '@owl-app/lib-api-core/query/typeorm/services/app-typeorm-query.service';
+import {
+  AppTypeOrmQueryService,
+  AppTypeOrmQueryServiceOpts,
+} from '@owl-app/lib-api-core/query/typeorm/services/app-typeorm-query.service';
 import { FilterQuery } from '@owl-app/lib-api-core/registry/interfaces/filter-query';
 import { EntitySetter } from '@owl-app/lib-api-core/registry/interfaces/entity-setter';
 
@@ -40,10 +43,7 @@ export class PermissionService extends AppTypeOrmQueryService<PermissionEntity> 
     id: number | string,
     update: DeepPartial<PermissionEntity>
   ): Promise<PermissionEntity> {
-    await this.rbacManager.updatePermission(
-      id as string,
-      mapper.toPersistence(update)
-    );
+    await this.rbacManager.updatePermission(id as string, mapper.toPersistence(update));
 
     return mapper.toResponse(update);
   }
@@ -57,7 +57,6 @@ export class PermissionService extends AppTypeOrmQueryService<PermissionEntity> 
   }
 
   private resolveName(record: DeepPartial<PermissionEntity>): void {
-    record.name =
-      `${record.refer}_${record.collection}_${record.name}`.toUpperCase();
+    record.name = `${record.refer}_${record.collection}_${record.name}`.toUpperCase();
   }
 }

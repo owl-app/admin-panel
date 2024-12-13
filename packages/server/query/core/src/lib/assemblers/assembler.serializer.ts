@@ -9,9 +9,7 @@ export type AssemblerSerializer<T> = (instance: T) => object;
 export function AssemblerSerializer<T>(serializer: AssemblerSerializer<T>) {
   return <Cls extends Class<T>>(cls: Cls): Cls | void => {
     if (reflector.isDefined(cls)) {
-      throw new Error(
-        `Assembler Serializer already registered for ${cls.name}`
-      );
+      throw new Error(`Assembler Serializer already registered for ${cls.name}`);
     }
     reflector.set(cls, serializer);
     return cls;

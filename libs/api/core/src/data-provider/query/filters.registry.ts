@@ -1,10 +1,7 @@
 import { RegistryServiceModule } from '@owl-app/registry-nestjs';
 import { Filter as FilterQueryService } from '@owl-app/nestjs-query-core';
 
-import {
-  DATA_PROVIDER_FILTER_REGISTRY,
-  DATA_PROVIDER_FILTER_CUSTOM_REGISTRY,
-} from '../contants';
+import { DATA_PROVIDER_FILTER_REGISTRY, DATA_PROVIDER_FILTER_CUSTOM_REGISTRY } from '../contants';
 import { Filter } from '../filtering/filter';
 import { FilterCustom } from '../filtering/filter-custom';
 
@@ -20,9 +17,7 @@ export const FiltersRegistry = RegistryServiceModule.forFeature<
   },
 });
 
-export const FitersCustomRegistry = RegistryServiceModule.forFeature<
-  FilterCustom<unknown>
->({
+export const FitersCustomRegistry = RegistryServiceModule.forFeature<FilterCustom<unknown>>({
   name: DATA_PROVIDER_FILTER_CUSTOM_REGISTRY,
   services: {
     archived: ArchivedFilter,

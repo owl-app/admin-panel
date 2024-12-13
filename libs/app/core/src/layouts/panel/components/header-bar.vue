@@ -10,12 +10,10 @@ withDefaults(defineProps<Props>(), { borderedBottom: false });
 </script>
 
 <template>
-  <div :class="`grid grid-cols-${Object.keys($slots).length+1} gap-2`">
-    <div class="header-bar"
-      :class="{ 'header-bar--borderred-bottom': borderedBottom }"
-    >
+  <div :class="`grid grid-cols-${Object.keys($slots).length + 1} gap-2`">
+    <div class="header-bar" :class="{ 'header-bar--borderred-bottom': borderedBottom }">
       <div class="header-icon">
-          <va-icon class="material-symbols-outlined" :name="icon" :size="30" color="#158DE3" />
+        <va-icon class="material-symbols-outlined" :name="icon" :size="30" color="#158DE3" />
       </div>
 
       <div class="title">
@@ -35,7 +33,7 @@ withDefaults(defineProps<Props>(), { borderedBottom: false });
 
   &--borderred-bottom {
     padding-bottom: 0.8rem;
-    border-bottom: 1px solid var(--va-background-border)
+    border-bottom: 1px solid var(--va-background-border);
   }
 
   display: flex;
@@ -50,7 +48,7 @@ withDefaults(defineProps<Props>(), { borderedBottom: false });
     }
 
     .description {
-      font-size: .8rem;
+      font-size: 0.8rem;
       font-weight: 400;
       color: #878d99;
       margin-top: 0.6rem;

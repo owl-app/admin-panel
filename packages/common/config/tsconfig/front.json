@@ -17,6 +17,6 @@
     "noImplicitAny": true,
     "importsNotUsedAsValues": "remove",
     "verbatimModuleSyntax": false,
-    "jsx": "preserve",
+    "jsx": "preserve"
   }
 }

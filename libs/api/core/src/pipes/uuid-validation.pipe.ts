@@ -14,9 +14,7 @@ export class UUIDValidationPipe implements PipeTransform<string> {
       throw new NotFoundException('Validation failed (uuid is expected)');
     }
     if (!isUUID(value)) {
-      throw new NotAcceptableException(
-        'Validation failed (valid uuid is expected)'
-      );
+      throw new NotAcceptableException('Validation failed (valid uuid is expected)');
     }
     return value;
   }

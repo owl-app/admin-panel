@@ -54,9 +54,7 @@ export class AssemblerQueryService<
   async createMany(items: C[]): Promise<DTO[]> {
     const { assembler } = this;
     const converted = await assembler.convertToCreateEntities(items);
-    return this.assembler.convertAsyncToDTOs(
-      this.queryService.createMany(converted)
-    );
+    return this.assembler.convertAsyncToDTOs(this.queryService.createMany(converted));
   }
 
   async createOne(item: C): Promise<DTO> {
@@ -66,9 +64,7 @@ export class AssemblerQueryService<
 
   async deleteMany(filter: Filter<DTO>): Promise<DeleteManyResponse> {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.queryService.deleteMany(
-      this.assembler.convertQuery({ filter }).filter
-    );
+    return this.queryService.deleteMany(this.assembler.convertQuery({ filter }).filter);
   }
 
   deleteOne(id: number | string, opts?: DeleteOneOptions<DTO>): Promise<DTO> {
@@ -83,14 +79,8 @@ export class AssemblerQueryService<
     );
   }
 
-  async findById(
-    id: string | number,
-    opts?: FindByIdOptions<DTO>
-  ): Promise<DTO | undefined> {
-    const entity = await this.queryService.findById(
-      id,
-      this.convertFilterable(opts)
-    );
+  async findById(id: string | number, opts?: FindByIdOptions<DTO>): Promise<DTO | undefined> {
+    const entity = await this.queryService.findById(id, this.convertFilterable(opts));
     if (!entity) {
       return undefined;
     }
@@ -109,10 +99,7 @@ export class AssemblerQueryService<
     );
   }
 
-  queryWithCount(
-    query: Query<DTO>,
-    opts?: QueryOptions
-  ): Promise<[DTO[], number]> {
+  queryWithCount(query: Query<DTO>, opts?: QueryOptions): Promise<[DTO[], number]> {
     return this.assembler.convertAsyncToDTOsWithCount(
       this.queryService.queryWithCount(this.assembler.convertQuery(query), opts)
     );
@@ -129,16 +116,11 @@ export class AssemblerQueryService<
       opts
     );
 
-    return aggregateResponse.map((agg) =>
-      this.assembler.convertAggregateResponse(agg)
-    );
+    return aggregateResponse.map((agg) => this.assembler.convertAggregateResponse(agg));
   }
 
   count(filter: Filter<DTO>, opts?: CountOptions): Promise<number> {
-    return this.queryService.count(
-      this.assembler.convertQuery({ filter }).filter || {},
-      opts
-    );
+    return this.queryService.count(this.assembler.convertQuery({ filter }).filter || {}, opts);
   }
 
   /**
@@ -361,10 +343,7 @@ export class AssemblerQueryService<
     );
   }
 
-  async updateMany(
-    update: U,
-    filter: Filter<DTO>
-  ): Promise<UpdateManyResponse> {
+  async updateMany(update: U, filter: Filter<DTO>): Promise<UpdateManyResponse> {
     return this.queryService.updateMany(
       await this.assembler.convertToUpdateEntity(update),
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -372,11 +351,7 @@ export class AssemblerQueryService<
     );
   }
 
-  async updateOne(
-    id: string | number,
-    update: U,
-    opts?: UpdateOneOptions<DTO>
-  ): Promise<DTO> {
+  async updateOne(id: string | number, update: U, opts?: UpdateOneOptions<DTO>): Promise<DTO> {
     return this.assembler.convertAsyncToDTO(
       this.queryService.updateOne(
         id,
@@ -406,9 +381,7 @@ export class AssemblerQueryService<
     dto: DTO | DTO[],
     filter: Filter<Relation>,
     aggregate: AggregateQuery<Relation>
-  ): Promise<
-    AggregateResponse<Relation>[] | Map<DTO, AggregateResponse<Relation>[]>
-  > {
+  ): Promise<AggregateResponse<Relation>[] | Map<DTO, AggregateResponse<Relation>[]>> {
     if (Array.isArray(dto)) {
       const entities = this.assembler.convertToEntities(dto);
       const relationMap = await this.queryService.aggregateRelations(
@@ -433,17 +406,14 @@ export class AssemblerQueryService<
     );
   }
 
-  convertFilterable(
-    filterable?: Filterable<DTO>
-  ): Filterable<Entity> | undefined {
+  convertFilterable(filterable?: Filterable<DTO>): Filterable<Entity> | undefined {
     if (!filterable) {
       return undefined;
     }
 
     return {
       ...filterable,
-      filter: this.assembler.convertQuery({ filter: filterable?.filter })
-        .filter,
+      filter: this.assembler.convertQuery({ filter: filterable?.filter }).filter,
     };
   }
 

@@ -20,13 +20,13 @@ export class RefreshToken {
 export class RefreshTokenHandler implements ICommandHandler<RefreshToken> {
   constructor(
     @Inject(IJwtTokenService)
-    private readonly jwtTokenService: IJwtTokenService<UserEntity>,
+    private readonly jwtTokenService: IJwtTokenService<UserEntity>
   ) {}
 
   async execute(data: RefreshToken): Promise<Record<'accessToken' | 'refreshToken', Token>> {
-    if (!await this.jwtTokenService.getUserIfRefreshTokenMatches(data.token, data.email)) {
-       throw new InvalidAuthenticationError();
-     }
+    if (!(await this.jwtTokenService.getUserIfRefreshTokenMatches(data.token, data.email))) {
+      throw new InvalidAuthenticationError();
+    }
 
     const accessToken = await this.jwtTokenService.getJwtToken(data.email);
     const refreshToken = await this.jwtTokenService.getJwtRefreshToken(data.email);

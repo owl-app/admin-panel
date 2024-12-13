@@ -32,10 +32,7 @@ import { PaginatedQuery } from '@owl-app/lib-api-core/pagination/paginated.query
 import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider';
 import { InjectPaginatedQueryService } from '@owl-app/lib-api-core/data-provider/query/decorators/inject-paginated-query.decorator';
 import { Paginated } from '@owl-app/lib-api-core/pagination/pagination';
-import {
-  AssemblerQueryService,
-  InjectAssemblerQueryService,
-} from '@owl-app/nestjs-query-core';
+import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
 
 import { RoleResponse } from '../../../dto/role.response.dto';
@@ -56,11 +53,7 @@ export class CrudController {
     @InjectAssemblerQueryService(RoleAssembler)
     readonly service: AssemblerQueryService<RoleResponse, RoleEntity>,
     @InjectPaginatedQueryService(RoleEntity)
-    readonly paginatedService: DataProvider<
-      Paginated<RoleResponse>,
-      FilterRoleDto,
-      RoleEntity
-    >
+    readonly paginatedService: DataProvider<Paginated<RoleResponse>, FilterRoleDto, RoleEntity>
   ) {}
 
   @ApiOperation({ summary: 'Find role by id' })
@@ -91,8 +84,7 @@ export class CrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Post()
   @RoutePermissions(AvalilableCollections.ROLE, CrudActions.CREATE)
@@ -114,16 +106,12 @@ export class CrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Put(':name')
   @RoutePermissions(AvalilableCollections.ROLE, CrudActions.UPDATE)
-  async updateRole(
-    @Param('name') name: string,
-    @Body() updateRoleDto: UpdateRoleRequest
-  ) {
+  async updateRole(@Param('name') name: string, @Body() updateRoleDto: UpdateRoleRequest) {
     const updatedRole = await this.service.updateOne(name, updateRoleDto);
 
     return updatedRole;
@@ -153,14 +141,10 @@ export class CrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Get()
-  @RoutePermissions(AvalilableCollections.ROLE, [
-    CrudActions.LIST,
-    RoleActions.AVAILABLE,
-  ])
+  @RoutePermissions(AvalilableCollections.ROLE, [CrudActions.LIST, RoleActions.AVAILABLE])
   async paginated(
     @Query('filters') filters: FilterRoleDto,
     @Query() pagination: PaginatedQuery

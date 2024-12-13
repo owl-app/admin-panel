@@ -1,6 +1,5 @@
-import { Item, TypesItem } from "./base.item";
+import { Item, TypesItem } from './base.item';
 
-export class Permission extends Item
-{
+export class Permission extends Item {
   type = TypesItem.PERMISSION;
 }

@@ -9,27 +9,21 @@ import { FilterQuery } from '../../../registry/interfaces/filter-query';
 
 import { FilterQueryBuilder } from './filter-query.builder';
 
-export class RelationQueryBuilder<
+export class RelationQueryBuilder<Entity, Relation> extends BaseRelationqueryBuilder<
   Entity,
   Relation
-> extends BaseRelationqueryBuilder<Entity, Relation> {
+> {
   constructor(
     readonly repo: Repository<Entity>,
     readonly relation: string,
     readonly filters?: Registry<FilterQuery<Relation>>
   ) {
     super(repo, relation);
-    const filterQueryBuilder = new FilterQueryBuilder<Relation>(
-      this.relationRepo,
-      filters
-    );
+    const filterQueryBuilder = new FilterQueryBuilder<Relation>(this.relationRepo, filters);
     this.filterQueryBuilder = filterQueryBuilder;
   }
 
-  public select(
-    entity: Entity,
-    query: Query<Relation>
-  ): SelectQueryBuilder<Relation> {
+  public select(entity: Entity, query: Query<Relation>): SelectQueryBuilder<Relation> {
     const qb = super.select(entity, query);
 
     const filters = this.filters?.all();

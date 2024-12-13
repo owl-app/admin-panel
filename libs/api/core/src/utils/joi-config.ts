@@ -36,10 +36,7 @@ export default class JoiUtil {
    * @param config    Entire configuration object.
    * @param propName  The property name that we want to extract.
    */
-  static extractByPropName<T>(
-    config: JoiConfig<T>,
-    propName: keyof ConfigProps
-  ): T | SchemaMap<T> {
+  static extractByPropName<T>(config: JoiConfig<T>, propName: keyof ConfigProps): T | SchemaMap<T> {
     const arr: unknown[] = Object.keys(config).map((key) => ({
       [key]: config[key as keyof T][propName],
     }));

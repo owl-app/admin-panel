@@ -1,9 +1,4 @@
-import {
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AvalilableCollections, TimeActions } from '@owl-app/lib-contracts';
@@ -24,8 +19,8 @@ import { TimeEntity } from '../../../../domain/entity/time.entity';
 export class InProgressController {
   constructor(
     @InjectAssemblerQueryService(TimeAssembler)
-    readonly queryService: AppAssemblerQueryService<TimeResponse, TimeEntity>,
-  ) { }
+    readonly queryService: AppAssemblerQueryService<TimeResponse, TimeEntity>
+  ) {}
 
   @ApiOperation({ description: 'In progress' })
   @HttpCode(HttpStatus.OK)
@@ -36,10 +31,10 @@ export class InProgressController {
   })
   @Get('in-progress')
   @RoutePermissions(AvalilableCollections.TIME, TimeActions.IN_PROGRESS)
-  async inProgress(): Promise<TimeResponse|null> {
+  async inProgress(): Promise<TimeResponse | null> {
     const time = await this.queryService.query(
       {
-        filter: { 
+        filter: {
           timeIntervalEnd: { is: null },
         },
         relations: [

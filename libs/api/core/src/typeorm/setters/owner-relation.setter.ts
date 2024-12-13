@@ -10,17 +10,11 @@ import { USER_ENTITY } from '../../entity-tokens';
 import { EntitySetter } from '../../registry/interfaces/entity-setter';
 
 @Injectable()
-export class OwnerRelationSetter<Entity extends UserAware>
-  implements EntitySetter<Entity>
-{
+export class OwnerRelationSetter<Entity extends UserAware> implements EntitySetter<Entity> {
   constructor(readonly configService: ConfigService) {}
 
   supports(metadata: EntityMetadata): boolean {
-    return (
-      !!metadata.relations.find(
-        (r) => r.type === USER_ENTITY && r.propertyName === 'user'
-      )
-    );
+    return !!metadata.relations.find((r) => r.type === USER_ENTITY && r.propertyName === 'user');
   }
 
   execute<T extends DeepPartial<Entity>>(entityOrEntities: T | T[]): void {

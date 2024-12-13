@@ -1,14 +1,14 @@
-import { AvalilableCollections, CrudActions } from "@owl-app/lib-contracts";
+import { AvalilableCollections, CrudActions } from '@owl-app/lib-contracts';
 
-import { usePermissions } from "../../../../composables/use-permissions";
+import { usePermissions } from '../../../../composables/use-permissions';
 
 export interface INavigationRoute {
   name: string;
   displayName: string;
   hasPermission: boolean;
   meta: {
-    icon: string,
-    untrackedPages?: string[],
+    icon: string;
+    untrackedPages?: string[];
   };
   children?: INavigationRoute[];
 }
@@ -33,7 +33,7 @@ export default function getRoutes() {
       {
         name: 'manage',
         displayName: 'manage',
-        children: [ 
+        children: [
           {
             name: 'client-list',
             displayName: 'clients',
@@ -58,7 +58,7 @@ export default function getRoutes() {
             },
             hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.PROJECT),
           },
-        ]
+        ],
       },
       {
         name: 'permissions',
@@ -86,7 +86,7 @@ export default function getRoutes() {
       {
         name: 'system',
         displayName: 'system',
-        children: [ 
+        children: [
           {
             name: 'user-list',
             displayName: 'users',
@@ -95,8 +95,8 @@ export default function getRoutes() {
             },
             hasPermission: hasRoutePermission(CrudActions.LIST, AvalilableCollections.USER),
           },
-        ]
+        ],
       },
     ] as INavigationRoute[],
-  }
+  };
 }

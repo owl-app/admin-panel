@@ -1,13 +1,6 @@
 {
-  "extends": [
-    "airbnb-base",
-    "airbnb-typescript/base",
-    "plugin:@nx/typescript"
-  ],
-  "plugins": [
-    "@nx",
-    "@typescript-eslint"
-  ],
+  "extends": ["airbnb-base", "airbnb-typescript/base", "plugin:@nx/typescript"],
+  "plugins": ["@nx", "@typescript-eslint"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
@@ -41,9 +34,7 @@
       "rules": {}
     },
     {
-      "files": [
-        "**.test.ts"
-      ],
+      "files": ["**.test.ts"],
       "rules": {
         "@typescript-eslint/ban-ts-comment": "warn"
       }

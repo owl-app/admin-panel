@@ -1,10 +1,4 @@
-import {
-  Class,
-  DeepPartial,
-  MapReflector,
-  MetaValue,
-  ValueReflector,
-} from '../common';
+import { Class, DeepPartial, MapReflector, MetaValue, ValueReflector } from '../common';
 import { AggregateQuery, AggregateResponse, Query } from '../interfaces';
 import { ASSEMBLER_CLASSES_KEY, ASSEMBLER_KEY } from './constants';
 
@@ -44,25 +38,19 @@ export interface Assembler<
    * Convert a Entity aggregate response query to an dto aggregate.
    * @param aggregate - the aggregate query to convert.
    */
-  convertAggregateResponse(
-    aggregate: AggregateResponse<Entity>
-  ): AggregateResponse<DTO>;
+  convertAggregateResponse(aggregate: AggregateResponse<Entity>): AggregateResponse<DTO>;
 
   /**
    * Convert a create dto input to the equivalent create entity type
    * @param createDTO
    */
-  convertToCreateEntity(
-    createDTO: CreateDTO
-  ): CreateEntity | Promise<CreateEntity>;
+  convertToCreateEntity(createDTO: CreateDTO): CreateEntity | Promise<CreateEntity>;
 
   /**
    * Convert a update dto input to the equivalent update entity type
    * @param createDTO
    */
-  convertToUpdateEntity(
-    createDTO: UpdateDTO
-  ): UpdateEntity | Promise<UpdateEntity>;
+  convertToUpdateEntity(createDTO: UpdateDTO): UpdateEntity | Promise<UpdateEntity>;
 
   /**
    * Convert an array of entities to a an of DTOs
@@ -92,9 +80,7 @@ export interface Assembler<
    * Convert an array of entities to an array of DTOs with count.
    * @param entities - the promise that should resolve with the entity array.
    */
-  convertAsyncToDTOsWithCount(
-    entities: Promise<[Entity[], number]>
-  ): Promise<[DTO[], number]>;
+  convertAsyncToDTOsWithCount(entities: Promise<[Entity[], number]>): Promise<[DTO[], number]>;
 
   /**
    * Convert a DTO to an entity.
@@ -112,9 +98,7 @@ export interface Assembler<
    * Convert an array of create DTOs to an array of create entities
    * @param createDtos
    */
-  convertToCreateEntities(
-    createDtos: CreateDTO[]
-  ): Array<CreateEntity | Promise<CreateEntity>>;
+  convertToCreateEntities(createDtos: CreateDTO[]): Array<CreateEntity | Promise<CreateEntity>>;
 }
 
 const assemblerReflector = new ValueReflector(ASSEMBLER_CLASSES_KEY);
@@ -139,13 +123,9 @@ export function Assembler<
   U = DeepPartial<DTO>,
   UE = DeepPartial<Entity>
 >(DTOClass: Class<DTO>, EntityClass: Class<Entity>) {
-  return <Cls extends Class<Assembler<DTO, Entity, C, CE, U, UE>>>(
-    cls: Cls
-  ): Cls | void => {
+  return <Cls extends Class<Assembler<DTO, Entity, C, CE, U, UE>>>(cls: Cls): Cls | void => {
     if (reflector.has(DTOClass, EntityClass)) {
-      throw new Error(
-        `Assembler already registered for ${DTOClass.name} ${EntityClass.name}`
-      );
+      throw new Error(`Assembler already registered for ${DTOClass.name} ${EntityClass.name}`);
     }
     assemblerReflector.set(cls, { DTOClass, EntityClass });
     reflector.set(DTOClass, EntityClass, cls);
@@ -156,10 +136,7 @@ export function Assembler<
 export function getAssemblers<DTO>(
   DTOClass: Class<DTO>
 ): MetaValue<
-  Map<
-    Class<unknown>,
-    Class<Assembler<DTO, unknown, unknown, unknown, unknown, unknown>>
-  >
+  Map<Class<unknown>, Class<Assembler<DTO, unknown, unknown, unknown, unknown, unknown>>>
 > {
   return reflector.get(DTOClass);
 }

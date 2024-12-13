@@ -8,11 +8,7 @@ export type Token = {
 };
 
 export interface IJwtTokenService<User> {
-  createToken(
-    payload: IJwtTokenPayload,
-    secret: string,
-    expiresIn: string
-  ): string;
+  createToken(payload: IJwtTokenPayload, secret: string, expiresIn: string): string;
 
   getJwtToken(email: string): Promise<Token>;
 
@@ -22,10 +18,7 @@ export interface IJwtTokenService<User> {
 
   validateUserForJWTStragtegy(email: string): Promise<User | null>;
 
-  getUserIfRefreshTokenMatches(
-    refreshToken: string,
-    email: string
-  ): Promise<User | null>;
+  getUserIfRefreshTokenMatches(refreshToken: string, email: string): Promise<User | null>;
 
   removeRefreshToken(email: string): Promise<void>;
 }

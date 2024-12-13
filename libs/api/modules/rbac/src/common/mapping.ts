@@ -15,22 +15,17 @@ export class RbacItemMapper<
 
   toPersistence(request: Entity): BaseItem {
     // eslint-disable-next-line new-cap
-    return new (this.item)(
-      request.name,
-      request.description,
-      request.ruleName
-    );
+    return new this.item(request.name, request.description, request.ruleName);
   }
 
-  toResponse(item: DeepPartial<BaseAuthItemEntity>): Response
-  {
+  toResponse(item: DeepPartial<BaseAuthItemEntity>): Response {
     // eslint-disable-next-line new-cap
-    const role = new (this.response);
+    const role = new this.response();
     role.name = item.name;
     role.description = item.description;
     role.ruleName = item.ruleName;
     role.createdAt = item.createdAt;
-    role.updatedAt = item.updatedAt; 
+    role.updatedAt = item.updatedAt;
 
     return role;
   }

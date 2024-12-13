@@ -4,13 +4,11 @@
       <h1 class="font-semibold text-4xl mb-4">Log in</h1>
       <p class="text-base mb-4 leading-5">
         New to Owl?
-        <RouterLink :to="{ name: 'register' }" class="font-semibold text-primary">Sign up</RouterLink>
+        <RouterLink :to="{ name: 'register' }" class="font-semibold text-primary"
+          >Sign up</RouterLink
+        >
       </p>
-      <owl-form
-        collection="auth/login"
-        :schema="loginValidationSchema"
-        @saved="$emit('logged');"
-      >
+      <owl-form collection="auth/login" :schema="loginValidationSchema" @saved="$emit('logged')">
         <template #fields="{ data, validation }">
           <va-input
             v-model="data.ref.email"
@@ -49,7 +47,7 @@
 
         <template #actions="{ validate, data }">
           <div class="auth-layout__options flex flex-col sm:flex-row sm:items-center justify-start">
-            <RouterLink 
+            <RouterLink
               class="mt-2 sm:mt-0 font-semibold text-primary ml-auto"
               :to="{ name: 'recovery-password' }"
             >
@@ -74,12 +72,12 @@
 <script lang="ts" setup>
 import { useToast } from 'vuestic-ui';
 
-import { loginValidationSchema } from "@owl-app/lib-contracts";
+import { loginValidationSchema } from '@owl-app/lib-contracts';
 import { useUserStore } from '@owl-app/lib-app-core/stores/user';
 import { router } from '@owl-app/lib-app-core/application/router';
 import OwlForm from '@owl-app/lib-app-core/components/form/form.vue';
 
-const userStore = useUserStore()
+const userStore = useUserStore();
 const { init: notify } = useToast();
 
 const login = async (email: string, password: string) => {
@@ -92,8 +90,8 @@ const login = async (email: string, password: string) => {
       message: error,
       color: 'danger',
       position: 'bottom-right',
-      offsetY: 30
-    })
+      offsetY: 30,
+    });
   }
-}
+};
 </script>

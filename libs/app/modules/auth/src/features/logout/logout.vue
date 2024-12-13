@@ -3,7 +3,7 @@ import { onMounted } from 'vue';
 
 import { useUserStore } from '@owl-app/lib-app-core/stores/user';
 
-const userStore = useUserStore()
+const userStore = useUserStore();
 
 onMounted(() => {
   userStore.logout();

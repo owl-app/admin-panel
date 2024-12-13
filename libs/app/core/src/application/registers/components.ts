@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { App } from "vue";
+import { App } from 'vue';
 
-export function registerComponents(app: App): void {
-}
+export function registerComponents(app: App): void {}

@@ -3,10 +3,7 @@ import { FlatErrors } from 'valibot';
 export type ApiErrors = FlatErrors<undefined>;
 
 export class ValidationErrorException extends Error {
-  constructor(
-    private errors: FlatErrors<undefined>,
-    message = 'Validation error'
-  ) {
+  constructor(private errors: FlatErrors<undefined>, message = 'Validation error') {
     super(message);
   }
 

@@ -1,4 +1,4 @@
-import { Role } from "@owl-app/lib-contracts";
+import { Role } from '@owl-app/lib-contracts';
 
 export interface RegisterUserProps {
   email: string;

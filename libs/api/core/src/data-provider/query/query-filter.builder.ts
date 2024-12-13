@@ -1,10 +1,7 @@
 import { SelectQueryBuilder } from 'typeorm';
 
 import { Registry } from '@owl-app/registry';
-import {
-  Filter as FilterQueryService,
-  SelectRelation,
-} from '@owl-app/nestjs-query-core';
+import { Filter as FilterQueryService, SelectRelation } from '@owl-app/nestjs-query-core';
 
 import { FilterBuilder } from '../filter.builder';
 import { Filter } from '../filtering/filter';
@@ -15,9 +12,7 @@ export abstract class QueryFilterBuilder<Entity, FilterData>
 {
   constructor(
     readonly filterRegistry: Registry<Filter<FilterQueryService<Entity>>>,
-    readonly filterCustomRegistry: Registry<
-      FilterCustom<SelectQueryBuilder<Entity>>
-    >
+    readonly filterCustomRegistry: Registry<FilterCustom<SelectQueryBuilder<Entity>>>
   ) {}
 
   abstract build(filters: FilterData): FilterQueryService<Entity>;

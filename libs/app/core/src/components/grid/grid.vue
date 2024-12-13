@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { isEqual, isEmpty, omit } from 'lodash';
-import { computed, PropType, ref, watch } from 'vue'
+import { computed, PropType, ref, watch } from 'vue';
 import { LocationQueryRaw, useRoute, useRouter } from 'vue-router';
 // eslint-disable-next-line import/no-unresolved
 import { DataTableColumnSource, DataTableRowBind } from 'vuestic-ui/web-components';
 
-import HeaderBar, { type Props as HeaderBarProps } from '../../layouts/panel/components/header-bar.vue';
+import HeaderBar, {
+  type Props as HeaderBarProps,
+} from '../../layouts/panel/components/header-bar.vue';
 
 import { useItems } from '../../composables/use-items';
 
@@ -50,10 +52,10 @@ const props = defineProps({
   grid: {
     type: Boolean as PropType<boolean>,
     required: false,
-    default: false
+    default: false,
   },
-  rowBind: { 
-    type: null as unknown as PropType<DataTableRowBind | undefined> 
+  rowBind: {
+    type: null as unknown as PropType<DataTableRowBind | undefined>,
   },
 });
 
@@ -61,35 +63,22 @@ const router = useRouter();
 const route = useRoute();
 let filtersChanged = false;
 
-const { 
-  sortRef: sort,
-  limitRef: limit,
-  pageRef: page,
-  filterRef: filter
-} = useItemOptions();
+const { sortRef: sort, limitRef: limit, pageRef: page, filterRef: filter } = useItemOptions();
 
-const {
-    items,
-    loading,
-    totalPages,
-    totalCount,
-    getItems,
-    reset,
-    addItem,
-  } = useItems(props.url, {
-    limit,
-    page,
-    sort,
-    filter
-  });
+const { items, loading, totalPages, totalCount, getItems, reset, addItem } = useItems(props.url, {
+  limit,
+  page,
+  sort,
+  filter,
+});
 
 defineExpose({
   reloadGrid,
   addItem,
-})
+});
 
 const showingFrom = computed(() => {
-  if(page.value > 1 ) {
+  if (page.value > 1) {
     return limit.value * (page.value - 1);
   }
 
@@ -99,7 +88,7 @@ const showingFrom = computed(() => {
 const showingTo = computed(() => {
   const to: number = limit.value * page.value;
 
-  if(to > (totalCount?.value ?? 0)) {
+  if (to > (totalCount?.value ?? 0)) {
     return totalCount;
   }
 
@@ -113,12 +102,12 @@ let firstLoad = true;
 watch(
   () => route.query,
   () => {
-    if(isEmpty(route.query)) {
+    if (isEmpty(route.query)) {
       reset();
       firstLoad = true;
     }
   }
-)
+);
 
 watch(
   [limit, sort, filter, page],
@@ -130,17 +119,23 @@ watch(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [oldLimit, oldSort, oldFilter, oldPage] = before;
 
-    if(newPage !== oldPage && !firstLoad) {
+    if (newPage !== oldPage && !firstLoad) {
       router.push({ query: { ...route.query, page: page.value } });
     }
 
-    if(newLimit !== oldLimit && !firstLoad) {
+    if (newLimit !== oldLimit && !firstLoad) {
       router.push({ query: { ...route.query, limit: limit.value, page: 1 } });
     }
 
-    if(!isEqual(newFilter, oldFilter) && !firstLoad) {
+    if (!isEqual(newFilter, oldFilter) && !firstLoad) {
       filtersChanged = true;
-      router.push({ query: { ...route.query, ...{ filters: filter.value}, page: 1 } as unknown as LocationQueryRaw });
+      router.push({
+        query: {
+          ...route.query,
+          ...{ filters: filter.value },
+          page: 1,
+        } as unknown as LocationQueryRaw,
+      });
     }
 
     firstLoad = false;
@@ -152,18 +147,22 @@ const changeFilter = (data: any) => {
   filter.value = {
     ...filter.value,
     ...data,
-  }
+  };
 };
 
 const removeFilter = (key: string) => {
-  filter.value = omit(filter.value, key)
+  filter.value = omit(filter.value, key);
 };
 
 function useItemOptions() {
   const pageRef = ref(route.query.page ? parseInt(route.query.page as string, 10) : 1);
-  const limitRef = ref(route.query.limit ? parseInt(route.query?.limit as string, 10) : props.defaultLimit);
+  const limitRef = ref(
+    route.query.limit ? parseInt(route.query?.limit as string, 10) : props.defaultLimit
+  );
   const sortRef = ref([props.defaultSort]);
-  const filterRef = ref(route.query?.filters as Record<string, any> ?? props.defaultFilters ?? {});
+  const filterRef = ref(
+    (route.query?.filters as Record<string, any>) ?? props.defaultFilters ?? {}
+  );
 
   return { pageRef, limitRef, sortRef, filterRef };
 }
@@ -185,14 +184,14 @@ async function reloadGrid() {
         <slot name="header-bar-actions" />
       </template>
     </header-bar>
-    <va-card style="margin-bottom: 10px;" v-if="!!$slots.filters">
+    <va-card style="margin-bottom: 10px" v-if="!!$slots.filters">
       <va-card-content>
         <va-collapse
-            :model-value="(!isEmpty(filter) || filtersChanged)"
-            class="min-w-96"
-            header="Filters"
-            icon="filter_list"
-          >
+          :model-value="!isEmpty(filter) || filtersChanged"
+          class="min-w-96"
+          header="Filters"
+          icon="filter_list"
+        >
           <slot
             name="filters"
             :filters="filter"
@@ -212,11 +211,7 @@ async function reloadGrid() {
 
     <va-card>
       <va-card-content>
-        <slot 
-          name="custom"
-          v-if="props.layout === 'custom'"
-          v-bind="{ items, loading }"
-        />
+        <slot name="custom" v-if="props.layout === 'custom'" v-bind="{ items, loading }" />
         <va-data-table
           :items="items"
           :columns="columns"
@@ -233,7 +228,10 @@ async function reloadGrid() {
         </va-data-table>
 
         <div class="wrapper-bottom">
-          <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-top py-2" v-if="showLimit">
+          <div
+            class="flex flex-col-reverse md:flex-row gap-2 justify-between items-top py-2"
+            v-if="showLimit"
+          >
             <div>
               Results per page
               <VaSelect v-model="limit" class="!w-20" :options="availableLimit" />

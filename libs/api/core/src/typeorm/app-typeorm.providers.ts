@@ -13,9 +13,7 @@ export function createAppTypeOrmProviders(
     ({ entity, repository: Repository = null, inject = null, repositoryToken = null }) => ({
       provide: repositoryToken ?? getRepositoryToken(entity, dataSource),
       useFactory: (ds: DataSource, ...injectArgs) => {
-        const entityMetadata = ds.entityMetadatas.find(
-          (meta) => meta.target === entity
-        );
+        const entityMetadata = ds.entityMetadatas.find((meta) => meta.target === entity);
         const isTreeEntity = typeof entityMetadata?.treeType !== 'undefined';
 
         let baseRepo;
@@ -44,9 +42,7 @@ export function createAppTypeOrmProviders(
        * that occurs when "TypeOrm#forFeature()" method is called with the same number
        * of arguments and all entities share the same class names.
        */
-      targetEntitySchema: getMetadataArgsStorage().tables.find(
-        (item) => item.target === entity
-      ),
+      targetEntitySchema: getMetadataArgsStorage().tables.find((item) => item.target === entity),
     })
   );
 }

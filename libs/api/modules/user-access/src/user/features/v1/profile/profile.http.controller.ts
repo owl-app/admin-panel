@@ -1,12 +1,4 @@
-import {
-  Controller,
-  HttpStatus,
-  Get,
-  Put,
-  Body,
-  HttpCode,
-  Injectable,
-} from '@nestjs/common';
+import { Controller, HttpStatus, Get, Put, Body, HttpCode, Injectable } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -20,9 +12,7 @@ import {
   profileUserValidationSchema,
   UserActions,
 } from '@owl-app/lib-contracts';
-import {
-  InjectAssemblerQueryService,
-} from '@owl-app/nestjs-query-core';
+import { InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 
 import type { AppQueryService } from '@owl-app/lib-api-core/query/core/services/app-query.service';
 import { ValibotValidationPipe } from '@owl-app/lib-api-core/validation/valibot.pipe';
@@ -31,9 +21,7 @@ import { RoutePermissions } from '@owl-app/lib-api-core/rbac/decorators/route-pe
 import { RequestContextService } from '@owl-app/lib-api-core/context/app-request-context';
 
 import { UserEntity } from '../../../../domain/entity/user.entity';
-import {
-  UpdateProfileRequest,
-} from './dto/update-profile.request';
+import { UpdateProfileRequest } from './dto/update-profile.request';
 import { ProfileAssembler } from './profile.assembler';
 import { ProfileDto } from './dto/profile.dto';
 
@@ -44,7 +32,7 @@ import { ProfileDto } from './dto/profile.dto';
 export class ProfileController {
   constructor(
     @InjectAssemblerQueryService(ProfileAssembler)
-    readonly service: AppQueryService<UserEntity>,
+    readonly service: AppQueryService<UserEntity>
   ) {}
 
   @ApiOperation({ summary: 'Get user profile' })
@@ -73,8 +61,7 @@ export class ProfileController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Put('/profile')
@@ -85,10 +72,9 @@ export class ProfileController {
   ): Promise<ProfileDto> {
     const updatedProfile = await this.service.updateWithRelations(
       RequestContextService.getCurrentUserId(),
-      updateProfileRequest,
+      updateProfileRequest
     );
 
     return updatedProfile;
   }
-
 }

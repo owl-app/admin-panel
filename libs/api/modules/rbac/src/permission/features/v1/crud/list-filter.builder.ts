@@ -4,17 +4,12 @@ import { Filter } from '@owl-app/nestjs-query-core';
 
 import { FilterPermissionDto } from './dto';
 
-export class ListFilterBuilder extends QueryFilterBuilder<
-  Permission,
-  FilterPermissionDto
-> {
+export class ListFilterBuilder extends QueryFilterBuilder<Permission, FilterPermissionDto> {
   build(data: FilterPermissionDto): Filter<Permission> {
     const filters: Filter<Permission>[] = [];
 
     if (data?.search) {
-      filters.push(
-        this.filterRegistry.get('string').apply(['name'], data?.search)
-      );
+      filters.push(this.filterRegistry.get('string').apply(['name'], data?.search));
     }
 
     if (data?.refer) {

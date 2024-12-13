@@ -1,3 +1,1 @@
-export function registerViews(): void {
-
-}
+export function registerViews(): void {}

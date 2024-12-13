@@ -1,5 +1,4 @@
-
-import { defineModule } from '@owl-app/lib-app-core/application/defines/module'
+import { defineModule } from '@owl-app/lib-app-core/application/defines/module';
 
 import ListRoute from './routes/list.vue';
 import ProfileRoute from './routes/profile.vue';
@@ -29,7 +28,7 @@ export default defineModule({
         meta: {
           private: true,
         },
-      }
-    ]
-  }
-})
+      },
+    ],
+  },
+});

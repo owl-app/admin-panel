@@ -41,10 +41,7 @@ export class SQLComparisonBuilder<Entity> {
   };
 
   constructor(
-    readonly comparisonMap: Record<
-      string,
-      string
-    > = SQLComparisonBuilder.DEFAULT_COMPARISON_MAP
+    readonly comparisonMap: Record<string, string> = SQLComparisonBuilder.DEFAULT_COMPARISON_MAP
   ) {}
 
   private get paramName(): string {
@@ -167,18 +164,12 @@ export class SQLComparisonBuilder<Entity> {
     };
   }
 
-  private checkNonEmptyArray<F extends keyof Entity>(
-    val: EntityComparisonField<Entity, F>
-  ): void {
+  private checkNonEmptyArray<F extends keyof Entity>(val: EntityComparisonField<Entity, F>): void {
     if (!Array.isArray(val)) {
-      throw new Error(
-        `Invalid in value expected an array got ${JSON.stringify(val)}`
-      );
+      throw new Error(`Invalid in value expected an array got ${JSON.stringify(val)}`);
     }
     if (!val.length) {
-      throw new Error(
-        `Invalid in value expected a non-empty array got ${JSON.stringify(val)}`
-      );
+      throw new Error(`Invalid in value expected a non-empty array got ${JSON.stringify(val)}`);
     }
   }
 
@@ -198,9 +189,7 @@ export class SQLComparisonBuilder<Entity> {
       };
     }
     throw new Error(
-      `Invalid value for between expected {lower: val, upper: val} got ${JSON.stringify(
-        val
-      )}`
+      `Invalid value for between expected {lower: val, upper: val} got ${JSON.stringify(val)}`
     );
   }
 
@@ -220,20 +209,13 @@ export class SQLComparisonBuilder<Entity> {
       };
     }
     throw new Error(
-      `Invalid value for not between expected {lower: val, upper: val} got ${JSON.stringify(
-        val
-      )}`
+      `Invalid value for not between expected {lower: val, upper: val} got ${JSON.stringify(val)}`
     );
   }
 
   private isBetweenVal<F extends keyof Entity>(
     val: EntityComparisonField<Entity, F>
   ): val is CommonFieldComparisonBetweenType<Entity[F]> {
-    return (
-      val !== null &&
-      typeof val === 'object' &&
-      'lower' in val &&
-      'upper' in val
-    );
+    return val !== null && typeof val === 'object' && 'lower' in val && 'upper' in val;
   }
 }

@@ -1,10 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class TokenResponse {
+  @ApiProperty({ type: () => Number })
+  accessTokenExpires: number;
 
-    @ApiProperty({ type: () => Number })
-    accessTokenExpires: number;
-
-    @ApiProperty({ type: () => Number })
-    refreshTokenExpires: number;
+  @ApiProperty({ type: () => Number })
+  refreshTokenExpires: number;
 }

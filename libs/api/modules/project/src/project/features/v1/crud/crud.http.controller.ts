@@ -28,10 +28,7 @@ import {
   projectValidationSchema,
 } from '@owl-app/lib-contracts';
 
-import {
-  AssemblerQueryService,
-  InjectAssemblerQueryService,
-} from '@owl-app/nestjs-query-core';
+import { AssemblerQueryService, InjectAssemblerQueryService } from '@owl-app/nestjs-query-core';
 import { UUIDValidationPipe } from '@owl-app/lib-api-core/pipes/uuid-validation.pipe';
 import { ApiErrorResponse } from '@owl-app/lib-api-core/api/api-error.response';
 import type { DataProvider } from '@owl-app/lib-api-core/data-provider/data.provider';
@@ -94,8 +91,7 @@ export class ProjectCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Post()
   @RoutePermissions(AvalilableCollections.PROJECT, CrudActions.CREATE)
@@ -119,8 +115,7 @@ export class ProjectCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Put(':id')
@@ -159,14 +154,10 @@ export class ProjectCrudController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      'Invalid input, The response body may contain clues as to what went wrong',
+    description: 'Invalid input, The response body may contain clues as to what went wrong',
   })
   @Get()
-  @RoutePermissions(AvalilableCollections.PROJECT, [
-    CrudActions.LIST,
-    ProjectActions.AVAILABLE,
-  ])
+  @RoutePermissions(AvalilableCollections.PROJECT, [CrudActions.LIST, ProjectActions.AVAILABLE])
   async paginated(
     @Query('filters') filters: FilterProjectQuery,
     @Query(new ValidationPipe({ transform: true }))

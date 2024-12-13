@@ -3,14 +3,14 @@ import { ref } from 'vue';
 import { defineVaDataTableColumns } from 'vuestic-ui/web-components';
 import { useI18n } from 'vue-i18n';
 
-import { AvalilableCollections, CrudActions } from "@owl-app/lib-contracts";
+import { AvalilableCollections, CrudActions } from '@owl-app/lib-contracts';
 
 import Grid from '@owl-app/lib-app-core/components/grid/grid.vue';
 import StringFilter from '@owl-app/lib-app-core/components/grid/components/filters/string.vue';
 import DeleteModal from '@owl-app/lib-app-core/components/modal/delete-modal.vue';
 import { usePermissions } from '@owl-app/lib-app-core/composables/use-permissions';
 
-import PermissionModal from '../components/permission-modal.vue'
+import PermissionModal from '../components/permission-modal.vue';
 import ReferSelect from '../components/form/refer-select.vue';
 import CollectionSelect from '../components/form/collection-select.vue';
 
@@ -28,7 +28,7 @@ const headerBar = {
   title: t('permissions'),
   description: 'Managing permissions in system',
   icon: 'vpn_key',
-}
+};
 
 const columns = defineVaDataTableColumns([
   { label: 'Description', key: 'description', sortable: true },
@@ -36,7 +36,7 @@ const columns = defineVaDataTableColumns([
   { label: 'Refer', key: 'refer', sortable: true },
   { label: 'Collection', key: 'collection', sortable: true },
   { label: ' ', key: 'actions' },
-])
+]);
 </script>
 
 <template>
@@ -65,7 +65,7 @@ const columns = defineVaDataTableColumns([
       <template #filters="{ filters, changeFilter, removeFilter }">
         <div class="grid grid-cols-12 gap-2">
           <div class="col-span-4">
-            <string-filter 
+            <string-filter
               :data="filters?.search"
               :change-filter="changeFilter"
               :remove-filter="removeFilter"
@@ -113,12 +113,8 @@ const columns = defineVaDataTableColumns([
         </div>
       </template>
     </grid>
-    <permission-modal
-      ref="permissionModal"
-      v-model="showModal"
-      @saved="gridRef?.reloadGrid()"
-    />
-    <delete-modal 
+    <permission-modal ref="permissionModal" v-model="showModal" @saved="gridRef?.reloadGrid()" />
+    <delete-modal
       ref="deleteModal"
       collection="rbac/permissions"
       v-model="showDeleteModal"

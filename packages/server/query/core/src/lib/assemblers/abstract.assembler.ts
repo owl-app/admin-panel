@@ -48,13 +48,9 @@ export abstract class AbstractAssembler<
 
   abstract convertQuery(query: Query<DTO>): Query<Entity>;
 
-  abstract convertAggregateQuery(
-    aggregate: AggregateQuery<DTO>
-  ): AggregateQuery<Entity>;
+  abstract convertAggregateQuery(aggregate: AggregateQuery<DTO>): AggregateQuery<Entity>;
 
-  abstract convertAggregateResponse(
-    aggregate: AggregateResponse<Entity>
-  ): AggregateResponse<DTO>;
+  abstract convertAggregateResponse(aggregate: AggregateResponse<Entity>): AggregateResponse<DTO>;
 
   abstract convertToCreateEntity(create: C): CE | Promise<CE>;
 
