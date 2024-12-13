@@ -1,8 +1,5 @@
 {
   "name": "tsconfig",
   "version": "0.0.1",
-  "type": "module",
-  "devDependencies": {
-    "@tsconfig/node18": "18.2.2"
-  }
+  "type": "module"
 }

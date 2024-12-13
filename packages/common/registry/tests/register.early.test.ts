@@ -1,7 +1,6 @@
 // Unit tests for: register
-
-import { ExistingServiceException } from '../exception/existing.service.exception';
-import { ServiceRegistry } from '../service.registry';
+import { ExistingServiceException } from '../src/exception/existing.service.exception';
+import { ServiceRegistry } from '../src/service.registry';
 
 describe('ServiceRegistry.register() register method', () => {
   let registry: ServiceRegistry<unknown>;
@@ -10,7 +9,6 @@ describe('ServiceRegistry.register() register method', () => {
     registry = new ServiceRegistry();
   });
 
-  // Happy Path Tests
   describe('Happy Paths', () => {
     it('should register a new service successfully', () => {
       // Arrange
@@ -21,7 +19,8 @@ describe('ServiceRegistry.register() register method', () => {
       registry.register(identifier, service);
 
       // Assert
-      expect(registry.get(identifier)).toBe(service);
+      expect(registry.has(identifier)).toBe(true);
+      expect(registry.get(identifier)).toEqual(service);
     });
 
     it('should register multiple services successfully', () => {
@@ -34,14 +33,15 @@ describe('ServiceRegistry.register() register method', () => {
       registry.register('service2', service2);
 
       // Assert
-      expect(registry.get('service1')).toBe(service1);
-      expect(registry.get('service2')).toBe(service2);
+      expect(registry.has('service1')).toBe(true);
+      expect(registry.has('service2')).toBe(true);
+      expect(registry.get('service1')).toEqual(service1);
+      expect(registry.get('service2')).toEqual(service2);
     });
   });
 
-  // Edge Case Tests
   describe('Edge Cases', () => {
-    it('should throw ExistingServiceException when registering a service with an existing identifier', () => {
+    it('should throw an ExistingServiceException when trying to register a service with an existing identifier', () => {
       // Arrange
       const identifier = 'service1';
       const service = { name: 'Test Service' };
@@ -62,7 +62,8 @@ describe('ServiceRegistry.register() register method', () => {
       registry.register(identifier, service);
 
       // Assert
-      expect(registry.get(identifier)).toBe(service);
+      expect(registry.has(identifier)).toBe(true);
+      expect(registry.get(identifier)).toEqual(service);
     });
 
     it('should handle registering a service with a very long identifier', () => {
@@ -74,7 +75,8 @@ describe('ServiceRegistry.register() register method', () => {
       registry.register(identifier, service);
 
       // Assert
-      expect(registry.get(identifier)).toBe(service);
+      expect(registry.has(identifier)).toBe(true);
+      expect(registry.get(identifier)).toEqual(service);
     });
 
     it('should handle registering a service with special characters in the identifier', () => {
@@ -86,7 +88,8 @@ describe('ServiceRegistry.register() register method', () => {
       registry.register(identifier, service);
 
       // Assert
-      expect(registry.get(identifier)).toBe(service);
+      expect(registry.has(identifier)).toBe(true);
+      expect(registry.get(identifier)).toEqual(service);
     });
   });
 });

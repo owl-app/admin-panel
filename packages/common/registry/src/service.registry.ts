@@ -1,47 +1,57 @@
-import { ExistingServiceException } from "./exception/existing.service.exception";
-import { NonExistingServiceException } from "./exception/non-existing.service.exception";
-import type { Registry } from "./types";
+import { cloneDeep } from 'lodash';
 
-export class ServiceRegistry<T> implements Registry<T>
-{
-    private services: Record<string, T> = {}
+import { ExistingServiceException } from './exception/existing.service.exception';
+import { NonExistingServiceException } from './exception/non-existing.service.exception';
+import type { Registry } from './types';
 
-    constructor(readonly context = 'service'){}
+export class ServiceRegistry<T> implements Registry<T> {
+  private services: Record<string, T> = {};
 
-    all(): Record<string, T>
-    {
-        return this.services;
+  constructor(readonly context = 'service') {}
+
+  all(): Record<string, T> {
+    const copiedServices: Record<string, T> = {};
+
+    Object.keys(this.services).forEach((key) => {
+      copiedServices[key] = cloneDeep(this.services[key]);
+    });
+
+    return copiedServices;
+  }
+
+  register(identifier: string, service: T): void {
+    if (this.has(identifier)) {
+      throw new ExistingServiceException(this.context, identifier);
     }
 
-    register(identifier: string, service: T): void
-    {
-        if (this.has(identifier)) {
-            throw new ExistingServiceException(this.context, identifier);
-        }
+    this.services[identifier] = service;
+  }
 
-        this.services[identifier] = service;
+  unregister(identifier: string): void {
+    if (!this.has(identifier)) {
+      throw new NonExistingServiceException(
+        this.context,
+        identifier,
+        Object.getOwnPropertyNames(this.services)
+      );
     }
 
-    unregister(identifier: string): void
-    {
-        if (!this.has(identifier)) {
-            throw new NonExistingServiceException(this.context, identifier, Object.getOwnPropertyNames(this.services));
-        }
+    delete this.services[identifier];
+  }
 
-        delete (this.services[identifier]);
+  has(identifier: string): boolean {
+    return this.services[identifier] !== undefined;
+  }
+
+  get(identifier: string): T {
+    if (!this.has(identifier)) {
+      throw new NonExistingServiceException(
+        this.context,
+        identifier,
+        Object.getOwnPropertyNames(this.services)
+      );
     }
 
-    has(identifier: string): boolean
-    {
-        return this.services[identifier] !== undefined;
-    }
-
-    get(identifier: string): T
-    {
-        if (!this.has(identifier)) {
-            throw new NonExistingServiceException(this.context, identifier, Object.getOwnPropertyNames(this.services));
-        }
-
-        return this.services[identifier];
-    }
+    return cloneDeep(this.services[identifier]);
+  }
 }
