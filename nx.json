@@ -39,18 +39,8 @@
     }
   },
   "plugins": [
-    {
-      "plugin": "@nx/eslint/plugin",
-      "options": {
-        "targetName": "lint"
-      }
-    },
-    {
-      "plugin": "@nx/jest/plugin",
-      "options": {
-        "targetName": "test"
-      }
-    },
+    { "plugin": "@nx/eslint/plugin", "options": { "targetName": "lint" } },
+    { "plugin": "@nx/jest/plugin", "options": { "targetName": "test" } },
     {
       "plugin": "@nx/webpack/plugin",
       "options": {
@@ -80,8 +70,7 @@
     }
   ],
   "release": {
-    "version": {
-      "preVersionCommand": "yarn nx run-many -t build"
-    }
-  }
+    "version": { "preVersionCommand": "yarn nx run-many -t build" }
+  },
+  "nxCloudAccessToken": "ZDY2ZmE1ZTEtYmJiYS00ZWU1LWE5OTEtMDM3MTFmYWNkNTYzfHJlYWQtd3JpdGU="
 }
