@@ -3,7 +3,8 @@ import { NonExistingServiceException } from '../src/exception/non-existing.servi
 import { ServiceRegistry } from '../src/service.registry';
 
 describe('ServiceRegistry.get() get method', () => {
-  let registry: ServiceRegistry<unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let registry: ServiceRegistry<any>;
 
   beforeEach(() => {
     registry = new ServiceRegistry();

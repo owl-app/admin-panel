@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: '@owl-app/registry',
   preset: '../../../jest.preset.js',
