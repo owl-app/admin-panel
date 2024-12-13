@@ -1,17 +1,20 @@
 import chalk from 'chalk';
-import { ClassSerializerInterceptor, INestApplication } from '@nestjs/common'
+import { urlencoded, json } from 'express'
+import cookieParser from 'cookie-parser'
+
+import { ClassSerializerInterceptor, INestApplication, NestModule } from '@nestjs/common'
 import { NestFactory, Reflector } from '@nestjs/core'
 import { NestExpressApplication } from '@nestjs/platform-express'
-import { urlencoded, json } from 'express'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+
+import { Class } from '@owl-app/types';
 import { APP_CONFIG_NAME, IConfigApp } from '@owl-app/lib-api-core/config'
 import { JwtAuthGuard } from '@owl-app/lib-api-core/passport/jwt.guard'
 import { RoutePermissionGuard } from '@owl-app/lib-api-core/rbac/guards/route-permission.guard'
-import cookieParser from 'cookie-parser'
 
 export async function bootstrap(
-    bootstrapModule: INestApplication
+    bootstrapModule: Class<NestModule>
 ): Promise<INestApplication> {
     const app = await NestFactory.create<NestExpressApplication>(bootstrapModule, {
         logger: ['log', 'error', 'warn', 'debug', 'verbose'],
