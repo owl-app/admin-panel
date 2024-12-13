@@ -3,8 +3,8 @@ import { debounce } from 'lodash';
 
 import { Project, Tag, Time } from '@owl-app/lib-contracts';
 
-import api from '../services/api';
 import { defineStore } from 'pinia';
+import api from '../services/api';
 
 export const useTimeStore = defineStore({
   id: 'timeStore',

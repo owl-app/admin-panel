@@ -1,5 +1,5 @@
-import { i18n } from '../application/lang';
 import type { Locale } from 'date-fns';
+import { i18n } from '../application/lang';
 
 const locales: { lang: string; locale: Locale }[] = [];
 
@@ -13,15 +13,21 @@ export async function loadDateFNSLocale(lang: string) {
 
 	let locale;
 
-	for (const l of localesToTry) {
+	const localePromises = localesToTry.map(async (l) => {
 		try {
 			const mod = await importDateLocale(l);
-			locale = mod.default;
-			locales.push({ lang, locale });
-			break;
+			return { lang, locale: mod.default };
 		} catch {
-			continue;
+			return null;
 		}
+	});
+
+	const results = await Promise.all(localePromises);
+	const validLocale = results.find((result) => result !== null);
+
+	if (validLocale) {
+		locales.push(validLocale);
+		locale = validLocale.locale;
 	}
 
 	return locale;

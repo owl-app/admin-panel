@@ -1,6 +1,6 @@
-import { API_INJECT,  STORES_INJECT } from '../application/contants';
 import type { AxiosInstance } from 'axios';
 import { inject } from 'vue';
+import { API_INJECT,  STORES_INJECT } from '../application/contants';
 
 export function useStores(): Record<string, any> {
 	const stores = inject<Record<string, any>>(STORES_INJECT);

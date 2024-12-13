@@ -24,7 +24,7 @@ export const defaultRoutes: RouteRecordRaw[] = [
 ];
 
 export const router = createRouter({
-  history: createWebHistory(getRootPath()+ 'admin/'),
+  history: createWebHistory(`${getRootPath() }admin/`),
   routes: defaultRoutes,
   parseQuery(search: string): LocationQuery {
     return qs.parse(search) as LocationQuery;
@@ -40,12 +40,15 @@ export const onBeforeEach: NavigationGuard = async (to, from) => {
     .filter(({ event }) => event === LIFECYCLE_EVENTS.REQUEST.ON_BEFORE_EACH)
 
   for (const event of events) {
+    // eslint-disable-next-line no-await-in-loop
     result = await event.callback(to, from);
 
     if (result) {
       return result;
     }
   }
+
+  return undefined;
 };
 
 export const onAfterEach: NavigationHookAfter = async (to, from) => {
@@ -62,6 +65,8 @@ export const onAfterEach: NavigationHookAfter = async (to, from) => {
   if (result) {
     return result;
   }
+
+  return undefined;
 };
 
 router.beforeEach(onBeforeEach);

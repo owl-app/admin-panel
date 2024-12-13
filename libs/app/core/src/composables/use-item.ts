@@ -24,7 +24,7 @@ export type UsableItem<T extends Item> = {
   getItem: (params?: Record<string, any>) => Promise<void>;
   isNew: ComputedRef<boolean>;
   saving: Ref<boolean>;
-  save: (data: T, method?: SaveMethodOptions) => Promise<T>;
+  save: (data: T, method?: SaveMethodOptions) => Promise<void>;
   deleting: Ref<boolean>;
   remove: () => Promise<void>;
   archiving: Ref<boolean>;
@@ -34,7 +34,7 @@ export type UsableItem<T extends Item> = {
 };
 
 export function useItem<T extends Item>(
-  //change to collection like in directus with permissions
+  // change to collection like in directus with permissions
   collection: string,
   id?: PrimaryKey | undefined,
 ): UsableItem<T> {
@@ -79,7 +79,7 @@ export function useItem<T extends Item>(
     action,
   };
 
-  async function getItem(params?: Record<string, any>) {
+  async function getItem(params?: Record<string, any>): Promise<void> {
     loading.value = true;
     error.value = null;
 
@@ -93,8 +93,7 @@ export function useItem<T extends Item>(
       loading.value = false;
     }
   }
-
-  async function save(data: T, method?: SaveMethodOptions) {
+  async function save(data: T, method?: SaveMethodOptions): Promise<void|null> {
     saving.value = true;
     let saveMethod = method;
 
@@ -124,11 +123,13 @@ export function useItem<T extends Item>(
       validationServerErrors.value = {};
 
       return response.data;
-    } catch (error) {
-      saveErrorHandler(error);
+    } catch (errorResponse: any) {
+      saveErrorHandler(errorResponse);
     } finally {
       saving.value = false;
     }
+
+    return null;
   }
 
   async function remove() {
@@ -179,11 +180,11 @@ export function useItem<T extends Item>(
     }
   }
 
-  function saveErrorHandler(error: any) {
-    if (error?.response?.data?.errors) {
-      validationServerErrors.value = error.response.data.errors
+  function saveErrorHandler(errorResponse: any) {
+    if (errorResponse?.response?.data?.errors) {
+      validationServerErrors.value = errorResponse.response.data.errors
     } else {
-      throw error;
+      throw errorResponse;
     }
   }
 }

@@ -105,7 +105,7 @@ export class BaseRepository<
   ): Promise<T | T[]> {
     const savedEntity = await this.getManager().save<Entity, T>(
       this.metadata.target as EntityTarget<Entity>,
-      Array.isArray(entityOrEntities) ? entityOrEntities : [entityOrEntities],
+      entityOrEntities as never,
       options
     );
 

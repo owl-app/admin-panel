@@ -1,40 +1,3 @@
-<template>
-  <VaDropdown :offset="[13, 0]" class="notification-dropdown" stick-to-edges :close-on-content-click="false">
-    <template #anchor>
-      <VaButton preset="secondary" color="textPrimary">
-        <VaBadge overlap>
-          <template #text> 2+</template>
-          <VaIconNotification class="notification-dropdown__icon" />
-        </VaBadge>
-      </VaButton>
-    </template>
-    <VaDropdownContent class="h-full sm:max-w-[420px] sm:h-auto">
-      <section class="sm:max-h-[320px] p-4 overflow-auto">
-        <VaList class="space-y-1 mb-2">
-          <template v-for="(item, index) in notificationsWithRelativeTime" :key="item.id">
-            <VaListItem class="text-base">
-              <VaListItemSection icon class="mx-0 p-0">
-                <VaIcon :name="item.icon" color="secondary" />
-              </VaListItemSection>
-              <VaListItemSection>
-                {{ item.message }}
-              </VaListItemSection>
-              <VaListItemSection icon class="mx-1">
-                {{ item.updateTimestamp }}
-              </VaListItemSection>
-            </VaListItem>
-            <VaListSeparator v-if="item.separator && index !== notificationsWithRelativeTime.length - 1" class="mx-3" />
-          </template>
-        </VaList>
-
-        <VaButton preset="primary" class="w-full" @click="displayAllNotifications = !displayAllNotifications"
-          >{{ displayAllNotifications ? t('notifications.less') : t('notifications.all') }}
-        </VaButton>
-      </section>
-    </VaDropdownContent>
-  </VaDropdown>
-</template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -162,6 +125,43 @@ const notificationsWithRelativeTime = computed(() => {
   })
 })
 </script>
+
+<template>
+  <VaDropdown :offset="[13, 0]" class="notification-dropdown" stick-to-edges :close-on-content-click="false">
+    <template #anchor>
+      <VaButton preset="secondary" color="textPrimary">
+        <VaBadge overlap>
+          <template #text> 2+</template>
+          <VaIconNotification class="notification-dropdown__icon" />
+        </VaBadge>
+      </VaButton>
+    </template>
+    <VaDropdownContent class="h-full sm:max-w-[420px] sm:h-auto">
+      <section class="sm:max-h-[320px] p-4 overflow-auto">
+        <VaList class="space-y-1 mb-2">
+          <template v-for="(item, index) in notificationsWithRelativeTime" :key="item.id">
+            <VaListItem class="text-base">
+              <VaListItemSection icon class="mx-0 p-0">
+                <VaIcon :name="item.icon" color="secondary" />
+              </VaListItemSection>
+              <VaListItemSection>
+                {{ item.message }}
+              </VaListItemSection>
+              <VaListItemSection icon class="mx-1">
+                {{ item.updateTimestamp }}
+              </VaListItemSection>
+            </VaListItem>
+            <VaListSeparator v-if="item.separator && index !== notificationsWithRelativeTime.length - 1" class="mx-3" />
+          </template>
+        </VaList>
+
+        <VaButton preset="primary" class="w-full" @click="displayAllNotifications = !displayAllNotifications"
+          >{{ displayAllNotifications ? t('notifications.less') : t('notifications.all') }}
+        </VaButton>
+      </section>
+    </VaDropdownContent>
+  </VaDropdown>
+</template>
 
 <style lang="scss" scoped>
 .notification-dropdown {

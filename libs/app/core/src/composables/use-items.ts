@@ -86,7 +86,9 @@ export function useItems(
 
       if (isEqual(after, before)) return;
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [newLimit, newSort, newFilter, newPage] = after;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [oldLimit, oldSort, oldFilter, oldPage] = before;
 
       if (

@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { watch, ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
-
-import { useI18n } from 'vue-i18n'
-import { useColors } from 'vuestic-ui'
+import { watch, ref, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { useColors } from 'vuestic-ui';
 
 import getRoutes, { type INavigationRoute } from './routes'
 import SidebarItem from './sidebar-item.vue'
@@ -25,7 +24,7 @@ const value = ref<boolean[]>([])
 
 const writableVisible = computed({
   get: () => props.visible,
-  set: (v: boolean) => emit('update:visible'),
+  set: () => emit('update:visible'),
 })
 
 const isActiveChildRoute = (child: INavigationRoute) => {
@@ -54,39 +53,39 @@ const routeHasActiveChild = (section: INavigationRoute) => {
   })
 }
 
-const filterRoutesByPermission = (routes: INavigationRoute[]): INavigationRoute[] => {
-  return routes
-    .filter(route => route.hasPermission || route.children)
-    .map(route => {
-      if (route.children) {
+const filterRoutesByPermission = (routes: INavigationRoute[]): INavigationRoute[] => 
+  routes
+    .filter(routeNavigation => routeNavigation.hasPermission || routeNavigation.children)
+    .map(routeNavigation => {
+      if (routeNavigation.children) {
         return {
-          ...route,
-          children: filterRoutesByPermission(route.children)
+          ...routeNavigation,
+          children: filterRoutesByPermission(routeNavigation.children)
         };
       }
 
-      return route;
+      return routeNavigation;
     });
-}
 
 const navigationRoutes = getRoutes();
 
-const setActiveExpand = () =>
-  (value.value = navigationRoutes.routes.map((route: INavigationRoute) => routeHasActiveChild(route)))
+const setActiveExpand = () => {
+  value.value = navigationRoutes.routes.map((navRoute: INavigationRoute) => routeHasActiveChild(navRoute));
+}
 
 const sidebarWidth = computed(() => (props.mobile ? '100vw' : '280px'))
 const color = computed(() => getColor('background-secondary'))
 const activeColor = computed(() => colorToRgba(getColor('focus'), 0.1))
 const availableNavigationRoutes = filterRoutesByPermission(navigationRoutes.routes);
 
-const iconColor = (route: INavigationRoute) => (routeHasActiveChild(route) ? 'primary' : 'secondary')
-const textColor = (route: INavigationRoute) => (routeHasActiveChild(route) ? 'primary' : 'textPrimary')
+const iconColor = (routeNavigation: INavigationRoute) => (routeHasActiveChild(routeNavigation) ? 'primary' : 'secondary')
+const textColor = (routeNavigation: INavigationRoute) => (routeHasActiveChild(routeNavigation) ? 'primary' : 'textPrimary')
 
 watch(() => route.fullPath, setActiveExpand, { immediate: true })
 </script>
 
 <template>
-  <VaSidebar v-model="writableVisible" :width="sidebarWidth" :color="color" minimized-width="0" color="">
+  <VaSidebar v-model="writableVisible" :width="sidebarWidth" :color="color" minimized-width="0">
       <slot v-for="(route, index) in availableNavigationRoutes" :key="index">
         <VaSidebarItemContent v-if="route.children && route.children.length > 0" class="title-section">
           <VaSidebarItemTitle>

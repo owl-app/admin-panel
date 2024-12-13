@@ -15,7 +15,7 @@
       "!{projectRoot}/**/*.cy.[jt]s?(x)",
       "!{projectRoot}/cypress.config.[jt]s"
     ],
-    "sharedGlobals": ["{workspaceRoot}/packages/utils/**/*"]
+    "sharedGlobals": ["{workspaceRoot}/packages/**/*"]
   },
   "nxCloudAccessToken": "OWJiODI5MjItOWRiYS00ZmViLTg4NWEtZWFiNzBmYmM1NTA4fHJlYWQtd3JpdGU=",
   "targetDefaults": {

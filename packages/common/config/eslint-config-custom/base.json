@@ -4,25 +4,20 @@
     "airbnb-typescript/base",
     "plugin:@nx/typescript"
   ],
-  "parser": "@typescript-eslint/parser",
   "plugins": [
     "@nx",
     "@typescript-eslint"
   ],
-  "parserOptions": {
-    "project": [
-      "./tsconfig.eslint.json"
-    ]
-  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
+      "extends": ["plugin:@nx/typescript"],
       "rules": {
         "@nx/enforce-module-boundaries": [
           "error",
           {
             "enforceBuildableLibDependency": true,
-            "allow": [],
+            "allow": ["@owl-app/*"],
             "depConstraints": [
               {
                 "sourceTag": "*",
@@ -34,7 +29,12 @@
       }
     },
     {
-      "files": ["*.spec.ts", "*.spec.tsx"],
+      "files": ["*.js"],
+      "extends": ["plugin:@nx/javascript"],
+      "rules": {}
+    },
+    {
+      "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js"],
       "env": {
         "jest": true
       },

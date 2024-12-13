@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { isEqual, isEmpty, omit } from 'lodash';
-import { computed, PropType, ref, watch, Ref } from 'vue'
+import { computed, PropType, ref, watch } from 'vue'
 import { LocationQueryRaw, useRoute, useRouter } from 'vue-router';
-
+// eslint-disable-next-line import/no-unresolved
 import { DataTableColumnSource, DataTableRowBind } from 'vuestic-ui/web-components';
 
 import HeaderBar, { type Props as HeaderBarProps } from '../../layouts/panel/components/header-bar.vue';
@@ -61,7 +61,12 @@ const router = useRouter();
 const route = useRoute();
 let filtersChanged = false;
 
-const { sort, limit, page, filter } = useItemOptions();
+const { 
+  sortRef: sort,
+  limitRef: limit,
+  pageRef: page,
+  filterRef: filter
+} = useItemOptions();
 
 const {
     items,
@@ -120,7 +125,9 @@ watch(
   (after, before) => {
     if (isEqual(after, before)) return;
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [newLimit, newSort, newFilter, newPage] = after;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [oldLimit, oldSort, oldFilter, oldPage] = before;
 
     if(newPage !== oldPage && !firstLoad) {
@@ -153,12 +160,12 @@ const removeFilter = (key: string) => {
 };
 
 function useItemOptions() {
-  const page = ref(route.query.page ? parseInt(route.query.page as string) : 1);
-  const limit = ref(route.query.limit ? parseInt(route.query?.limit as string) : props.defaultLimit);
-  const sort = ref([props.defaultSort]);
-  const filter = ref(route.query?.filters as Record<string, any> ?? props.defaultFilters ?? {});
+  const pageRef = ref(route.query.page ? parseInt(route.query.page as string, 10) : 1);
+  const limitRef = ref(route.query.limit ? parseInt(route.query?.limit as string, 10) : props.defaultLimit);
+  const sortRef = ref([props.defaultSort]);
+  const filterRef = ref(route.query?.filters as Record<string, any> ?? props.defaultFilters ?? {});
 
-  return { sort, limit, page, filter };
+  return { pageRef, limitRef, sortRef, filterRef };
 }
 
 async function reloadGrid() {

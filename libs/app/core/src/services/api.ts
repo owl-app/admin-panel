@@ -5,7 +5,7 @@ import { useLatencyStore } from '../stores/latency';
 import { useRequestsStore } from '../stores/requests';
 import { useUserStore } from '../stores/user';
 import { translateAPIError } from '../application/lang';
-import Config from '../config';
+import { Config } from '../config';
 import { createApi, RequestConfig, Response } from './axios';
 
 type Callback = () => void;
@@ -32,7 +32,9 @@ const registerRequest = (callback: Callback) => {
 };
 
 const onRrefreshed = async () => {
-  refreshRequests.forEach(async (callback) => await callback());
+  refreshRequests.forEach(async (callback) => {
+    await callback()
+  });
   refreshRequests = [];
 };
 
@@ -74,7 +76,9 @@ export const onRequest = async (config: RequestConfig): Promise<RequestConfig> =
   }
 
   if (config?.isAuthenticated && Date.now() > userStore.refreshTokenExpiry) {
-    return Promise.reject({ response: { status: 401, data: { message: 'Session expired' } } });
+    const error = { response: { status: 401, data: { message: 'Session expired' } } };
+
+    return Promise.reject(error);
   }
 
   return requestConfig;
@@ -92,7 +96,7 @@ export const onError = async (error: RequestError): Promise<RequestError | void>
 
     await userStore.logout(false);
 
-    return;
+    return undefined;
   }
 
   const { data } = error?.response || {};

@@ -1,5 +1,3 @@
-import { App } from 'vue';
-
-export function registerDirectives(app: App): void {
+export function registerDirectives(): void {
 
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ArchiveOptions } from '@owl-app/lib-contracts';
 import { useI18n } from 'vue-i18n'
+
+import { ArchiveOptions } from '@owl-app/lib-contracts';
 
 const model = defineModel<string>();
 

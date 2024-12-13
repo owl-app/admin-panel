@@ -1,3 +1,21 @@
+<script lang="ts" setup>
+import { useI18n } from 'vue-i18n'
+
+import { INavigationRoute } from './routes'
+
+defineProps<{
+  route: INavigationRoute,
+  active: boolean,
+  activeColor: string,
+  textColor: string,
+  iconColor: string,
+  hasPermission: boolean,
+}>()
+
+const { t } = useI18n()
+
+</script>
+
 <template>
   <VaSidebarItem
       :to="{ name: route.name }"
@@ -23,20 +41,3 @@
       </VaSidebarItemContent>
     </VaSidebarItem>
 </template>
-<script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
-
-import { INavigationRoute } from './routes'
-
-defineProps<{
-  route: INavigationRoute,
-  active: boolean,
-  activeColor: string,
-  textColor: string,
-  iconColor: string,
-  hasPermission: boolean,
-}>()
-
-const { t } = useI18n()
-
-</script>./routes

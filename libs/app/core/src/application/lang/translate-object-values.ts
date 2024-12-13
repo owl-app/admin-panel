@@ -1,10 +1,10 @@
-import { translate as translateString } from './translate-literal';
 import { cloneDeep } from 'lodash';
+import { translate as translateString } from './translate-literal';
 
 export function translate<T extends Record<string, any> | string>(obj: T): T {
 	if (typeof obj === 'string') {
 		return obj.replace(/(\$t:[a-zA-Z0-9.-]*)/g, (match) => translateString(match)) as T;
-	} else {
+	} 
 		const newObj = cloneDeep(obj);
 
 		Object.entries(newObj).forEach(([key, val]) => {
@@ -13,5 +13,5 @@ export function translate<T extends Record<string, any> | string>(obj: T): T {
 		});
 
 		return newObj;
-	}
+	
 }

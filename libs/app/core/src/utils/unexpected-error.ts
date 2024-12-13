@@ -1,8 +1,10 @@
+import { StoreGeneric } from 'pinia';
+
 import type { RequestError } from '../services/api';
 import { i18n } from '../application/lang';
 import { useNotificationsStore } from '../stores/notifications';
 
-let store: any;
+let store: StoreGeneric;
 
 export function unexpectedError(error: unknown): void {
 	if (!store) store = useNotificationsStore();

@@ -36,15 +36,6 @@ export function isClassInstance(item: any): boolean {
 }
 
 /**
- * Check value not empty.
- * @param item
- * @returns {boolean}
- */
-export function isNotEmpty(item: any): boolean {
-  return !isEmpty(item);
-}
-
-/**
  * Check value empty.
  * @param item
  * @returns {boolean}
@@ -62,6 +53,15 @@ export function isEmpty(item: any) {
       (item + '').toLocaleLowerCase() === 'undefined'
     );
   }
+}
+
+/**
+ * Check value not empty.
+ * @param item
+ * @returns {boolean}
+ */
+export function isNotEmpty(item: any): boolean {
+  return !isEmpty(item);
 }
 
 export function isJsObject(object: any) {

@@ -1,33 +1,3 @@
-<template>
-  <VaLayout
-    :top="{ fixed: true, order: 2 }"
-    :left="{ fixed: true, absolute: breakpoints.mdDown, order: 1, overlay: breakpoints.mdDown && !isSidebarMinimized }"
-    @leftOverlayClick="isSidebarMinimized = true"
-  >
-    <template #top>
-      <AppNavbar :is-mobile="isMobile" />
-    </template>
-
-    <template #left>
-      <AppSidebar :minimized="isSidebarMinimized" :animated="!isMobile" :mobile="isMobile" />
-    </template>
-
-    <template #content>
-      <div :class="{ minimized: isSidebarMinimized }" class="app-layout__sidebar-wrapper">
-        <div v-if="isFullScreenSidebar" class="flex justify-end">
-          <VaButton class="px-4 py-4" icon="md_close" preset="plain" @click="onCloseSidebarButtonClick" />
-        </div>
-      </div>
-      <AppLayoutNavigation v-if="!isMobile" class="p-4" />
-      <main class="p-4 pt-0">
-        <article>
-          <slot />
-        </article>
-      </main>
-    </template>
-  </VaLayout>
-</template>
-
 <script setup>
 import { onBeforeUnmount, onMounted, ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -80,6 +50,36 @@ const onCloseSidebarButtonClick = () => {
   isSidebarMinimized.value = true
 }
 </script>
+
+<template>
+  <VaLayout
+    :top="{ fixed: true, order: 2 }"
+    :left="{ fixed: true, absolute: breakpoints.mdDown, order: 1, overlay: breakpoints.mdDown && !isSidebarMinimized }"
+    @leftOverlayClick="isSidebarMinimized = true"
+  >
+    <template #top>
+      <AppNavbar :is-mobile="isMobile" />
+    </template>
+
+    <template #left>
+      <AppSidebar :minimized="isSidebarMinimized" :animated="!isMobile" :mobile="isMobile" />
+    </template>
+
+    <template #content>
+      <div :class="{ minimized: isSidebarMinimized }" class="app-layout__sidebar-wrapper">
+        <div v-if="isFullScreenSidebar" class="flex justify-end">
+          <VaButton class="px-4 py-4" icon="md_close" preset="plain" @click="onCloseSidebarButtonClick" />
+        </div>
+      </div>
+      <AppLayoutNavigation v-if="!isMobile" class="p-4" />
+      <main class="p-4 pt-0">
+        <article>
+          <slot />
+        </article>
+      </main>
+    </template>
+  </VaLayout>
+</template>
 
 <style lang="scss" scoped>
 // Prevent icon jump on animation

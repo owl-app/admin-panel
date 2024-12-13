@@ -1,12 +1,11 @@
-import { DateTime } from 'luxon';
-
-import { User } from '@owl-app/lib-contracts';
-
-import api from '../services/api';
-import { userName } from '../utils/user-name';
 import { defineStore } from 'pinia';
 import type { RouteLocationRaw } from 'vue-router';
 import { useLocalStorage } from '@vueuse/core';
+
+import { User } from '@owl-app/lib-contracts';
+
+import { userName } from '../utils/user-name';
+import api from '../services/api';
 import { router } from '../application/router';
 
 export const useUserStore = defineStore({
@@ -116,7 +115,7 @@ export const useUserStore = defineStore({
       this.error = null;
 
       try {
-        const { data } = await api.post('/registration', { email, passwordNew, passwordNewRepeat }, { isAuthenticated: false });
+        await api.post('/registration', { email, passwordNew, passwordNewRepeat }, { isAuthenticated: false });
 
       } catch (error: any) {
         throw error.response?.data?.message ?? error.message;

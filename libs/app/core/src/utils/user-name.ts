@@ -1,5 +1,5 @@
-import { i18n } from "../application/lang";
 import { User } from "@owl-app/lib-contracts"
+import { i18n } from "../application/lang";
 
 export function userName(user?: Partial<User>): string {
 	if (!user) {

@@ -21,6 +21,7 @@ export class TransactionalRepository<Entity> extends Repository<Entity> {
         RequestContextService.cleanTransactionConnection();
       }
     });
+
     return resultTransaction;
   }
 

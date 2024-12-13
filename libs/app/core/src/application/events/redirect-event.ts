@@ -3,7 +3,7 @@ import { RouteLocationNormalized } from "vue-router";
 import { LIFECYCLE_EVENTS } from "../contants";
 import { defineRequestEvent } from "../defines/events";
 import { useUserStore } from "../../stores/user";
-import { useAppStore } from "../..//stores/app";
+import { useAppStore } from "../../stores/app";
 
 export default defineRequestEvent({
 	name: 'redirect-event',
@@ -15,15 +15,17 @@ export default defineRequestEvent({
 
         if((to.name === 'login' || to.fullPath === '/') && to.name !== from.name && userStore.authenticated) {
             return '/times';
-        } else if (to.meta?.public !== true && !userStore.authenticated && to.matched.length > 0) {
-            return '/login?redirect=' + encodeURIComponent(to.fullPath);
-        } else if (appStore.initializing) {
+        } if (to.meta?.public !== true && !userStore.authenticated && to.matched.length > 0) {
+            return `/login?redirect=${  encodeURIComponent(to.fullPath)}`;
+        } if (appStore.initializing) {
             // done initializing
             appStore.initializing = false;
             appStore.initialized = true;
 
             return to.fullPath;
         }
+
+        return undefined;
 	}
 })
 	

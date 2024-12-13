@@ -3,12 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { useColors } from 'vuestic-ui'
-
-const { getColor } = useColors()
-
-const props = withDefaults(
+withDefaults(
   defineProps<{
     height?: number
     start?: string
@@ -20,11 +15,4 @@ const props = withDefaults(
     end: undefined,
   },
 )
-
-const colorsComputed = computed(() => {
-  return {
-    start: getColor(props.start),
-    end: getColor(props.end || props.start),
-  }
-})
 </script>

@@ -26,7 +26,7 @@ export interface Api {
   patch<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: ApiConfig<D>): Promise<R>;
 }
 
-export type CreateApiDefaults<D = any, V = InternalAxiosRequestConfig> = CreateAxiosDefaults<D> & ApiConfig<D>;
+export type CreateApiDefaults<D = any> = CreateAxiosDefaults<D> & ApiConfig<D>;
 
 export type RequestConfig<D = any> = InternalAxiosRequestConfig<D> & ApiConfig<D> & {
   id?: string;

@@ -143,18 +143,18 @@ function validate(showAllErrors = false): boolean {
     isValid.value = false;
 
     return false;
-  } else {
-    validationErrors.value = {};
-    isValid.value = true;
-
-    return true;
   }
+
+  validationErrors.value = {};
+  isValid.value = true;
+
+  return true;
 }
 
 function getErrors(flatErrors: FlatErrors<undefined>['nested'], showAllErrors = false): Record<string, string> {
   let errors = {};
 
-  fields.value.map((field) => {
+  fields.value.forEach((field) => {
     if (
       (field.isDirty || field.isTouched || showAllErrors) &&
       field.name !== undefined && 
@@ -204,7 +204,7 @@ const saveForm = async (method?: SaveMethodOptions) => {
 }
 
 function clearServerValidationErrors() {
-  fields.value.map((field) => {
+  fields.value.forEach((field) => {
     Object.keys(validationServerErrors.value).forEach((key) => {
       if (field.name === key && field.isDirty) {
         delete validationErrors.value[key];
@@ -216,7 +216,7 @@ function clearServerValidationErrors() {
 
 const makeSlotRef = () => {
   return new Proxy(formData, {
-    get (v, key) {
+    get (value, key) {
       if (key === 'ref') {
         return formData.value
       }

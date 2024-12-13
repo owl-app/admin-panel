@@ -1,14 +1,21 @@
-import api from '../services/api';
-import { Snackbar, SnackbarRaw } from '../types/notifications';
-import { Notification } from '../types/notifications';
 import { reverse, sortBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
+import api from '../services/api';
+import { Snackbar, SnackbarRaw , Notification } from '../types/notifications';
 import { useUserStore } from './user';
+
+export type NotificationStore = {
+	dialogs: Snackbar[];
+	queue: Snackbar[];
+	previous: Snackbar[];
+	notifications: Notification[];
+	unread: number;
+}
 
 export const useNotificationsStore = defineStore({
 	id: 'notificationsStore',
-	state: () => ({
+	state: (): NotificationStore => ({
 		dialogs: [] as Snackbar[],
 		queue: [] as Snackbar[],
 		previous: [] as Snackbar[],

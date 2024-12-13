@@ -47,8 +47,6 @@ export default defineRequestEvent({
     appStore.initializing = true;
 
     try {
-      const currentUser = userStore.currentUser;
-
       const hydratedStores = ['userStore'];
       await Promise.all(
         stores

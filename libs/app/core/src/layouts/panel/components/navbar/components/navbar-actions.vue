@@ -1,3 +1,16 @@
+<script lang="ts" setup>
+import { useTimeStore } from '../../../../../stores/time'
+
+import ProfileDropdown from './dropdowns/profile-dropdown.vue'
+// import NotificationDropdown from './dropdowns/notification-dropdown.vue'
+
+defineProps({
+  isMobile: { type: Boolean, default: false },
+})
+
+const timeStore = useTimeStore();
+</script>
+
 <template>
   <div class="app-navbar-actions">
     <div v-if="timeStore.active">
@@ -13,23 +26,6 @@
     <ProfileDropdown class="app-navbar-actions__item app-navbar-actions__item--profile mr-1" />
   </div>
 </template>
-
-<script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
-
-import { useTimeStore } from '../../../../../stores/time'
-
-import ProfileDropdown from './dropdowns/profile-dropdown.vue'
-// import NotificationDropdown from './dropdowns/notification-dropdown.vue'
-
-defineProps({
-  isMobile: { type: Boolean, default: false },
-})
-
-
-const { t } = useI18n()
-const timeStore = useTimeStore();
-</script>
 
 <style lang="scss">
 .app-navbar-actions {

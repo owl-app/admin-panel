@@ -14,41 +14,41 @@
     </VaModal>
   </template>
   
-  <script lang="ts" setup>
-  import { ref} from 'vue';
-  import type { Item, PrimaryKey } from '../../types/item';
-  import { useItem } from '../../composables/use-item';
-  
-  const props = defineProps<{
-    collection: string,
-  }>()
+<script lang="ts" setup>
+import { ref } from 'vue';
 
-  let archived = ref(false);
-  
-  const emit = defineEmits<{
-    (event: 'archived'): void
-  }>()
-  
-  defineExpose({
-    show,
-  })
-  
-  const model = defineModel<boolean>();
-  
-  const { primaryKey, archiving, archive } = useItem<Item>(props.collection);
-  
-  const onDelete = async () => {
-    await archive(archived.value);
-  
-    emit('archived');
-  
-    model.value = false;
-  }
-  
-  function show(isArchived: boolean, id?: PrimaryKey): void {
-    model.value = true;
-    primaryKey.value = id;
-    archived.value  = isArchived;
-  }
-  </script>
-  
+import type { Item, PrimaryKey } from '../../types/item';
+import { useItem } from '../../composables/use-item';
+
+const props = defineProps<{
+  collection: string,
+}>()
+
+const archived = ref(false);
+
+const emit = defineEmits<{
+  (event: 'archived'): void
+}>()
+
+defineExpose({
+  show,
+})
+
+const model = defineModel<boolean>();
+
+const { primaryKey, archiving, archive } = useItem<Item>(props.collection);
+
+const onDelete = async () => {
+  await archive(archived.value);
+
+  emit('archived');
+
+  model.value = false;
+}
+
+function show(isArchived: boolean, id?: PrimaryKey): void {
+  model.value = true;
+  primaryKey.value = id;
+  archived.value  = isArchived;
+}
+</script>

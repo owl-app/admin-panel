@@ -10,24 +10,23 @@ withDefaults(defineProps<Props>(), { borderedBottom: false });
 </script>
 
 <template>
-<div :class="`grid grid-cols-${Object.keys($slots).length+1} gap-2`">
-  <div class="header-bar"
-    :class="{ 'header-bar--borderred-bottom': borderedBottom }"
-  >
-    <div class="header-icon">
-        <va-icon class="material-symbols-outlined" :name="icon" :size="30" color="#158DE3" />
-    </div>
+  <div :class="`grid grid-cols-${Object.keys($slots).length+1} gap-2`">
+    <div class="header-bar"
+      :class="{ 'header-bar--borderred-bottom': borderedBottom }"
+    >
+      <div class="header-icon">
+          <va-icon class="material-symbols-outlined" :name="icon" :size="30" color="#158DE3" />
+      </div>
 
-    <div class="title">
-      <h1 v-if="title">{{ title }}</h1>
-      <div class="description" v-if="description">{{ description }}</div>
+      <div class="title">
+        <h1 v-if="title">{{ title }}</h1>
+        <div class="description" v-if="description">{{ description }}</div>
+      </div>
+    </div>
+    <div class="content-top header-actions" v-if="$slots.actions">
+      <slot name="actions"></slot>
     </div>
   </div>
-  <div class="content-top header-actions" v-if="$slots.actions">
-    <slot name="actions"></slot>
-  </div>
-</div>
-
 </template>
 
 <style lang="scss" scoped>

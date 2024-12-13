@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import { useBreakpoint } from 'vuestic-ui'
+import OwlLogo from '../../components/logo-white.vue'
+
+const breakpoint = useBreakpoint()
+</script>
+
 <template>
   <VaLayout v-if="breakpoint.lgUp" class="h-screen bg-[var(--va-background-secondary)]">
     <template #left>
@@ -33,9 +40,3 @@
   </VaLayout>
 </template>
 
-<script lang="ts" setup>
-import { useBreakpoint } from 'vuestic-ui'
-import OwlLogo from '../../components/logo-white.vue'
-
-const breakpoint = useBreakpoint()
-</script>

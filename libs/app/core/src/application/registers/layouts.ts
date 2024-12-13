@@ -1,5 +1,5 @@
 import { App, defineAsyncComponent } from 'vue';
-import AuthLayout from '../../layouts/auth/';
+import { AuthLayout } from "../../layouts/auth";
 
 const PanelLayout = defineAsyncComponent(() => import('../../layouts/panel'));
 

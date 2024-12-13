@@ -214,6 +214,7 @@ async function exportCsv(filters: Record<string, string | string[]>) {
               :remove-filter="removeFilter"
             />
           </div>
+          {{ !!filters?.clients }}
           <div class="col-start-6 col-end-8">
             <select-filter
               :url="`projects?pageable=0${getProjectUrlFilter(filters?.clients)}`"
@@ -221,6 +222,7 @@ async function exportCsv(filters: Record<string, string | string[]>) {
               name="projects"
               textBy="name"
               trackBy="id"
+              :eagerLoading="!filters?.clients"
               :loading="loadingData"
               :options="projects"
               :data="filters?.projects"

@@ -37,6 +37,7 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useColors } from 'vuestic-ui'
+
 import { useUserStore } from '../../../../../../stores/user'
 
 const userStore = useUserStore()
@@ -96,7 +97,14 @@ withDefaults(
 const isShown = ref(false)
 
 const resolveLinkAttribute = (item: ProfileListItem) => {
-  return item.to ? { to: { name: item.to } } : item.href ? { href: item.href, target: '_blank' } : {}
+  if (item.to) {
+    return { to: { name: item.to } }
+  }
+  if (item.href) {
+    return { href: item.href, target: '_blank' }
+  } 
+
+  return {}
 }
 </script>
 

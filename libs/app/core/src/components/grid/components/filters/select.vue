@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { isEqual } from 'lodash';
 import { PropType, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n'
 
 import { useApi } from '../../../../composables/use-system'
-import { isEqual } from 'lodash';
 
 const props = defineProps({
   data: {
@@ -54,6 +54,11 @@ const props = defineProps({
     required: false,
     default: false
   },
+  eagerLoading: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
 });
 
 defineEmits([
@@ -67,7 +72,7 @@ const { t } = useI18n()
 const availableOptions = ref<any[]>([]);
 const loadingData = ref(props.loading);
 
-if(!props.options) {
+if(!props.eagerLoading) {
   loadData();
 }
 
@@ -96,7 +101,7 @@ watch(
 watch(
   ()=> [props.loading],
   async () => {
-    if (props.options) {
+    if (props.options && props.eagerLoading) {
       availableOptions.value = props.options.map((item) => getOption(item));
       model.value = getValuesFromFilter();
     }
@@ -137,14 +142,12 @@ function clear() {
 
 function getValuesFromFilter() {
   return availableOptions?.value.filter((option: any) => {
-    if (props.data?.split(',').includes(option[props.trackBy])) {
-      return option;
-    }
+    return props.data?.split(',').includes(option[props.trackBy]);
   });
 }
 
 function getOption(item: any) {
-  return { [[props.trackBy]]: item[props.trackBy], [props.textBy]: item[props.textBy], archived: item?.archived ?? false };
+  return { [props.trackBy as string]: item[props.trackBy], [props.textBy]: item[props.textBy], archived: item?.archived ?? false };
 }
 </script>
 

@@ -1,4 +1,4 @@
-export interface Config {
+export interface AppConfig {
   api: {
     baseUrl: string;
     prefix: string;
@@ -6,12 +6,10 @@ export interface Config {
   }
 }
 
-const config: Config = {
+export const Config: AppConfig = {
   api: {
     baseUrl: import.meta.env.VITE_API_BASE_URL,
     prefix: import.meta.env.VITE_API_PREFIX,
-    tokenClockTolerance: parseInt(import.meta.env.TOKEN_CLOCK_TOLERANCE) || 2000,
+    tokenClockTolerance: parseInt(import.meta.env.TOKEN_CLOCK_TOLERANCE, 10) || 2000,
   }
 }
-
-export default config;
