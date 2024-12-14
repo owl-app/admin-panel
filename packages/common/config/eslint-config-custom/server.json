@@ -16,5 +16,19 @@
         }
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "**.test.ts"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "max-classes-per-file": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-empty-interface": "off"
+
+      }
+    }
+  ]
 }

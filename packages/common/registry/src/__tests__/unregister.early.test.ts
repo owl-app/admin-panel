@@ -1,6 +1,6 @@
 // Unit tests for: unregister
-import { NonExistingServiceException } from '../src/exception/non-existing.service.exception';
-import { ServiceRegistry } from '../src/service.registry';
+import { NonExistingServiceException } from '../exception/non-existing.service.exception';
+import { ServiceRegistry } from '../service.registry';
 
 describe('ServiceRegistry.unregister() unregister method', () => {
   let registry: ServiceRegistry<unknown>;

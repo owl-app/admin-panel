@@ -1,6 +1,6 @@
 // Unit tests for: register
-import { ExistingServiceException } from '../src/exception/existing.service.exception';
-import { ServiceRegistry } from '../src/service.registry';
+import { ExistingServiceException } from '../exception/existing.service.exception';
+import { ServiceRegistry } from '../service.registry';
 
 describe('ServiceRegistry.register() register method', () => {
   let registry: ServiceRegistry<unknown>;

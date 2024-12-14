@@ -1,5 +1,5 @@
 // Unit tests for: has
-import { ServiceRegistry } from '../src/service.registry';
+import { ServiceRegistry } from '../service.registry';
 
 describe('ServiceRegistry.has() has method', () => {
   let serviceRegistry: ServiceRegistry<unknown>;

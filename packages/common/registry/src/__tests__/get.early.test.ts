@@ -1,6 +1,6 @@
 // Unit tests for: get
-import { NonExistingServiceException } from '../src/exception/non-existing.service.exception';
-import { ServiceRegistry } from '../src/service.registry';
+import { NonExistingServiceException } from '../exception/non-existing.service.exception';
+import { ServiceRegistry } from '../service.registry';
 
 describe('ServiceRegistry.get() get method', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

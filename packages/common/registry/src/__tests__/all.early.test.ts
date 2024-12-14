@@ -1,5 +1,5 @@
 // Unit tests for: all
-import { ServiceRegistry } from '../src/service.registry';
+import { ServiceRegistry } from '../service.registry';
 
 // Import necessary modules and classes
 describe('ServiceRegistry.all() all method', () => {
